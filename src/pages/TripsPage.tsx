@@ -1,31 +1,32 @@
 import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TRIPS } from '../constants/text';
-import { mockTrips } from '../data/mock';
 import { formatCurrency, formatDate } from '../utils/format';
-import type { TripStatus } from '../types';
+import { useData } from '../contexts/DataContext';
+import type { TripStatus, Trip } from '../types';
 
 const TripsPage = () => {
   const navigate = useNavigate();
+  const { trips, updateTrip, addInvoice } = useData();
   const [tab, setTab] = useState<'active' | 'ready'>('active');
   const [selectedTripIds, setSelectedTripIds] = useState<string[]>([]);
 
   // Active trips: in-transit + delivered but not yet confirmed
   const activeTrips = useMemo(() => {
-    return mockTrips.filter(
+    return trips.filter(
       (trip) => trip.status !== 'delivered' || !trip.documentsConfirmed
     );
-  }, []);
+  }, [trips]);
 
   // Ready trips: delivered + confirmed + not invoiced (ready for invoicing)
   const readyTrips = useMemo(() => {
-    return mockTrips.filter(
+    return trips.filter(
       (trip) =>
         trip.status === 'delivered' &&
         trip.documentsConfirmed &&
         !trip.invoiced
     );
-  }, []);
+  }, [trips]);
 
   const displayedTrips = tab === 'active' ? activeTrips : readyTrips;
 
@@ -77,15 +78,32 @@ const TripsPage = () => {
     );
 
     if (confirmed) {
-      // In a real app, this would:
-      // 1. Confirm the selected trips via API
-      // 2. Create the invoice via API
-      // 3. Mark the trips as invoiced
+      // Mark all selected trips as invoiced
+      selectedTripIds.forEach((tripId) => {
+        updateTrip(tripId, { invoiced: true });
+      });
+
+      // Create the invoice
+      const newInvoice = {
+        id: `invoice-${Date.now()}`,
+        fleetId: 'fleet-1',
+        clientId: selectedTrips[0].clientId,
+        clientName: selectedTrips[0].clientName,
+        tripIds: selectedTripIds,
+        amount: totalAmount,
+        status: 'pending' as const,
+        issueDate: new Date().toISOString().split('T')[0],
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+          .toISOString()
+          .split('T')[0],
+        paidDate: null,
+      };
+      addInvoice(newInvoice);
+
       alert(
         `✓ ${selectedTrips.length} sefer onaylandı ve fatura oluşturuldu!\n\nFaturayı Ödemeler sayfasından görüntüleyebilirsiniz.`
       );
       setSelectedTripIds([]);
-      // Navigate to invoices page
       navigate('/invoices');
     }
   };
@@ -116,7 +134,7 @@ const TripsPage = () => {
     }
   };
 
-  const getTripActionLabel = (trip: typeof mockTrips[0]) => {
+  const getTripActionLabel = (trip: Trip) => {
     if (trip.status === 'delivered' && trip.deliveryDocuments.length === 0) {
       return { label: '📸 Belge Yükle', color: 'bg-blue-600 text-white' };
     } else if (

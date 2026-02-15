@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { mockTrips, mockInvoices } from '../data/mock';
+import { useState, useEffect } from 'react';
+import { useData } from '../contexts/DataContext';
 import { TRIPS, EXPENSES, DOCUMENTS, INVOICES } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import FileUpload from '../components/common/FileUpload';
@@ -9,14 +9,23 @@ import type { Document } from '../types';
 const TripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const navigate = useNavigate();
+  const { trips, invoices, updateTrip } = useData();
 
-  const trip = mockTrips.find((t) => t.id === tripId);
+  const trip = trips.find((t) => t.id === tripId);
   const [documents, setDocuments] = useState<Document[]>(trip?.deliveryDocuments || []);
   const [documentsConfirmed, setDocumentsConfirmed] = useState<boolean>(trip?.documentsConfirmed || false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
+  // Sync with context when trip changes
+  useEffect(() => {
+    if (trip) {
+      setDocuments(trip.deliveryDocuments);
+      setDocumentsConfirmed(trip.documentsConfirmed);
+    }
+  }, [trip]);
+
   // Check if invoice already exists for this trip
-  const existingInvoice = mockInvoices.find((inv) => inv.tripIds.includes(tripId || ''));
+  const existingInvoice = invoices.find((inv) => inv.tripIds.includes(tripId || ''));
 
   if (!trip) {
     return (
@@ -76,9 +85,13 @@ const TripDetailPage = () => {
     );
 
     if (confirmed) {
+      // Update the trip in the global context
+      updateTrip(trip.id, {
+        deliveryDocuments: documents,
+        documentsConfirmed: true,
+      });
       setDocumentsConfirmed(true);
-      alert('✓ Belgeler onaylandı! Şimdi bu seferi fatura oluşturma sayfasında seçebilirsiniz.');
-      // In a real app, this would update the trip in the backend
+      alert('✓ Belgeler onaylandı! Seferler sayfasında "Fatura Hazır" sekmesinde görünecek.');
     }
   };
 

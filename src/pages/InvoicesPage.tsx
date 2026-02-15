@@ -1,27 +1,28 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { INVOICES, COMMON } from '../constants/text';
-import { mockInvoices } from '../data/mock';
+import { useData } from '../contexts/DataContext';
 import { formatCurrency, formatDate } from '../utils/format';
 import type { InvoiceStatus } from '../types';
 
 const InvoicesPage = () => {
+  const { invoices } = useData();
   const [filter, setFilter] = useState<InvoiceStatus | 'all'>('all');
 
   // Calculate summary statistics
   const summary = useMemo(() => {
-    const totalOutstanding = mockInvoices
+    const totalOutstanding = invoices
       .filter((inv) => inv.status !== 'paid')
       .reduce((sum, inv) => sum + inv.amount, 0);
 
-    const totalOverdue = mockInvoices
+    const totalOverdue = invoices
       .filter((inv) => inv.status === 'overdue')
       .reduce((sum, inv) => sum + inv.amount, 0);
 
     // Paid this month
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const paidThisMonth = mockInvoices
+    const paidThisMonth = invoices
       .filter((inv) => {
         if (inv.status !== 'paid' || !inv.paidDate) return false;
         const paidDate = new Date(inv.paidDate);
@@ -30,7 +31,7 @@ const InvoicesPage = () => {
       .reduce((sum, inv) => sum + inv.amount, 0);
 
     // Average payment time (for paid invoices)
-    const paidInvoices = mockInvoices.filter((inv) => inv.status === 'paid' && inv.paidDate);
+    const paidInvoices = invoices.filter((inv) => inv.status === 'paid' && inv.paidDate);
     const avgPaymentDays = paidInvoices.length > 0
       ? Math.round(
           paidInvoices.reduce((sum, inv) => {
@@ -52,17 +53,17 @@ const InvoicesPage = () => {
 
   // Filter invoices
   const filteredInvoices = useMemo(() => {
-    if (filter === 'all') return mockInvoices;
-    return mockInvoices.filter((inv) => inv.status === filter);
+    if (filter === 'all') return invoices;
+    return invoices.filter((inv) => inv.status === filter);
   }, [filter]);
 
   // Count by status
   const counts = useMemo(() => {
     return {
-      all: mockInvoices.length,
-      overdue: mockInvoices.filter((inv) => inv.status === 'overdue').length,
-      pending: mockInvoices.filter((inv) => inv.status === 'pending').length,
-      paid: mockInvoices.filter((inv) => inv.status === 'paid').length,
+      all: invoices.length,
+      overdue: invoices.filter((inv) => inv.status === 'overdue').length,
+      pending: invoices.filter((inv) => inv.status === 'pending').length,
+      paid: invoices.filter((inv) => inv.status === 'paid').length,
     };
   }, []);
 
@@ -92,7 +93,7 @@ const InvoicesPage = () => {
     }
   };
 
-  const getDaysInfo = (invoice: typeof mockInvoices[0]) => {
+  const getDaysInfo = (invoice: typeof invoices[0]) => {
     const today = new Date();
     const dueDate = new Date(invoice.dueDate);
     const diffTime = dueDate.getTime() - today.getTime();
