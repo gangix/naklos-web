@@ -34,6 +34,7 @@ export default defineConfig({
     host: true,
     allowedHosts: [
       '.trycloudflare.com',
+      '.loca.lt',
       'localhost',
       '192.168.178.121'
     ]
