@@ -36,6 +36,9 @@ export interface Truck {
   monthlyRevenue: number;
   tripCount: number;
   utilizationRate: number;
+  compulsoryInsuranceExpiry: string | null;
+  comprehensiveInsuranceExpiry: string | null;
+  inspectionExpiry: string | null;
 }
 
 export interface Driver {
@@ -50,6 +53,13 @@ export interface Driver {
   status: DriverStatus;
   assignedTruckId: string | null;
   assignedTruckPlate?: string;
+  email?: string;
+  emergencyContact?: {
+    name: string;
+    phone: string;
+    relationship: string;
+  };
+  certificates: ProfessionalCertificate[];
 }
 
 export interface Client {
@@ -87,6 +97,7 @@ export interface Trip {
   startedAt: string | null;
   completedAt: string | null;
   estimatedArrival: string | null;
+  deliveryDocuments: Document[];
 }
 
 export interface TripExpenses {
@@ -120,9 +131,27 @@ export interface DashboardStats {
   availableDrivers: number;
 }
 
+export interface Document {
+  id: string;
+  name: string;
+  type: 'delivery-confirmation' | 'other';
+  mimeType: string;
+  dataUrl: string; // base64 encoded
+  uploadedAt: string;
+  size: number;
+}
+
+export interface ProfessionalCertificate {
+  type: 'SRC' | 'CPC';
+  number: string;
+  issueDate: string;
+  expiryDate: string;
+}
+
 export interface Warning {
   id: string;
-  type: 'overdue-invoice' | 'license-expiring' | 'document-expiring';
+  type: 'overdue-invoice' | 'license-expiring' | 'document-expiring'
+       | 'insurance-expiring' | 'inspection-expiring' | 'certificate-expiring';
   message: string;
   severity: 'info' | 'warning' | 'error';
   relatedId: string;

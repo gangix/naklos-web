@@ -42,6 +42,7 @@ export const mockTrips: Trip[] = [
     startedAt: yesterday.toISOString(),
     completedAt: null,
     estimatedArrival: tomorrow.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-2',
@@ -61,6 +62,7 @@ export const mockTrips: Trip[] = [
     startedAt: yesterday.toISOString(),
     completedAt: null,
     estimatedArrival: today.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-3',
@@ -80,6 +82,7 @@ export const mockTrips: Trip[] = [
     startedAt: yesterday.toISOString(),
     completedAt: null,
     estimatedArrival: today.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-4',
@@ -99,6 +102,7 @@ export const mockTrips: Trip[] = [
     startedAt: yesterday.toISOString(),
     completedAt: null,
     estimatedArrival: tomorrow.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-5',
@@ -118,6 +122,7 @@ export const mockTrips: Trip[] = [
     startedAt: yesterday.toISOString(),
     completedAt: null,
     estimatedArrival: today.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-6',
@@ -137,6 +142,7 @@ export const mockTrips: Trip[] = [
     startedAt: today.toISOString(),
     completedAt: null,
     estimatedArrival: today.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-7',
@@ -156,6 +162,7 @@ export const mockTrips: Trip[] = [
     startedAt: yesterday.toISOString(),
     completedAt: null,
     estimatedArrival: tomorrow.toISOString(),
+    deliveryDocuments: [],
   },
   {
     id: 'trip-8',
@@ -175,6 +182,7 @@ export const mockTrips: Trip[] = [
     startedAt: today.toISOString(),
     completedAt: null,
     estimatedArrival: today.toISOString(),
+    deliveryDocuments: [],
   },
 
   // Completed trips (22)
@@ -196,6 +204,26 @@ export const mockTrips: Trip[] = [
     startedAt: twoDaysAgo.toISOString(),
     completedAt: yesterday.toISOString(),
     estimatedArrival: null,
+    deliveryDocuments: [
+      {
+        id: 'doc-1',
+        name: 'teslimat-onay-1.jpg',
+        type: 'delivery-confirmation',
+        mimeType: 'image/jpeg',
+        dataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE4IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+VGVzbGltYXQgT25hecSxPC90ZXh0Pjwvc3ZnPg==',
+        uploadedAt: yesterday.toISOString(),
+        size: 245600,
+      },
+      {
+        id: 'doc-2',
+        name: 'teslimat-onay-2.jpg',
+        type: 'delivery-confirmation',
+        mimeType: 'image/jpeg',
+        dataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2NjZiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE4IiBmaWxsPSIjNjY5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+xLBtemEgRm90b8SfcmFmxLE8L3RleHQ+PC9zdmc+',
+        uploadedAt: yesterday.toISOString(),
+        size: 198400,
+      },
+    ],
   },
   {
     id: 'trip-10',
@@ -215,6 +243,17 @@ export const mockTrips: Trip[] = [
     startedAt: twoDaysAgo.toISOString(),
     completedAt: yesterday.toISOString(),
     estimatedArrival: null,
+    deliveryDocuments: [
+      {
+        id: 'doc-3',
+        name: 'delivery-proof.jpg',
+        type: 'delivery-confirmation',
+        mimeType: 'image/jpeg',
+        dataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2ZmZiIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE4IiBmaWxsPSIjMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+QmVsZ2U8L3RleHQ+PC9zdmc+',
+        uploadedAt: yesterday.toISOString(),
+        size: 312800,
+      },
+    ],
   },
   // Adding 20 more completed trips with varied data
   ...Array.from({ length: 20 }, (_, i) => {
@@ -261,6 +300,7 @@ export const mockTrips: Trip[] = [
       startedAt: startedDate.toISOString(),
       completedAt: completedDate.toISOString(),
       estimatedArrival: null,
+      deliveryDocuments: [],
     };
   }),
 ];

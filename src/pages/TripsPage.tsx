@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { TRIPS } from '../constants/text';
 import { mockTrips } from '../data/mock';
 import { formatCurrency } from '../utils/format';
@@ -71,13 +72,24 @@ const TripsPage = () => {
       {/* Trip list */}
       <div className="space-y-3">
         {filteredTrips.map((trip) => (
-          <div key={trip.id} className="bg-white rounded-lg p-4 shadow-sm">
+          <Link
+            key={trip.id}
+            to={`/trips/${trip.id}`}
+            className="block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
+          >
             <div className="flex items-start justify-between mb-2">
-              <div>
-                <p className="font-bold text-gray-900">
-                  {trip.originCity} → {trip.destinationCity}
-                </p>
-                <p className="text-sm text-gray-600 mt-1">{trip.clientName}</p>
+              <div className="flex items-center gap-2">
+                <div>
+                  <p className="font-bold text-gray-900">
+                    {trip.originCity} → {trip.destinationCity}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">{trip.clientName}</p>
+                </div>
+                {trip.status === 'delivered' && trip.deliveryDocuments.length > 0 && (
+                  <span className="text-lg" title={`${trip.deliveryDocuments.length} belge yüklendi`}>
+                    📎
+                  </span>
+                )}
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(trip.status)}`}>
                 {getStatusLabel(trip.status)}
@@ -87,7 +99,7 @@ const TripsPage = () => {
               <span>{trip.truckPlate}</span>
               <span className="font-bold text-green-600">{formatCurrency(trip.revenue)}</span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
