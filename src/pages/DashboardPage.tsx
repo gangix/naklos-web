@@ -30,13 +30,15 @@ const DashboardPage = () => {
     // Overdue
     const overdue = mockClients.reduce((sum, client) => sum + client.overdue, 0);
 
-    // Truck warnings
-    const truckWarnings = warnings.filter((w) => w.relatedType === 'truck');
-    const criticalTruckWarnings = truckWarnings.filter((w) => w.severity === 'error').length;
+    // Truck warnings (critical only)
+    const truckWarnings = warnings.filter(
+      (w) => w.relatedType === 'truck' && w.severity === 'error'
+    );
 
-    // Driver warnings
-    const driverWarnings = warnings.filter((w) => w.relatedType === 'driver');
-    const criticalDriverWarnings = driverWarnings.filter((w) => w.severity === 'error').length;
+    // Driver warnings (critical only)
+    const driverWarnings = warnings.filter(
+      (w) => w.relatedType === 'driver' && w.severity === 'error'
+    );
 
     return {
       totalTrucks: mockTrucks.length,
@@ -46,8 +48,8 @@ const DashboardPage = () => {
       monthlyRevenue,
       monthlyProfit,
       overdue,
-      truckWarnings: criticalTruckWarnings,
-      driverWarnings: criticalDriverWarnings,
+      truckWarnings,
+      driverWarnings,
     };
   }, [trips, warnings]);
 
@@ -64,34 +66,42 @@ const DashboardPage = () => {
         <p className="text-sm text-gray-600 mt-1">{mockFleet.name}</p>
       </div>
 
-      {/* Main Action Cards */}
-      <div className="space-y-3 mb-6">
+      {/* Main Cards - Only 3 */}
+      <div className="space-y-3">
         {/* Vehicles Card */}
         <button
           onClick={() => navigate('/trucks')}
           className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
-                🚛
-              </div>
-              <div>
-                <p className="font-bold text-gray-900">Araçlar</p>
-                <p className="text-sm text-gray-600">
-                  {stats.trucksInTransit} yolda · {stats.totalTrucks} toplam
-                </p>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+              🚛
             </div>
-            <div className="flex items-center gap-2">
-              {stats.truckWarnings > 0 && (
-                <div className="px-3 py-1 bg-red-50 border border-red-200 rounded-full">
-                  <span className="text-xs font-medium text-red-700">
-                    🚨 {stats.truckWarnings} uyarı
-                  </span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1">
+                <p className="font-bold text-gray-900">Araçlar</p>
+                <span className="text-gray-400 text-xl">›</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {stats.trucksInTransit} yolda · {stats.totalTrucks} toplam
+              </p>
+              {stats.truckWarnings.length > 0 && (
+                <div className="space-y-1">
+                  {stats.truckWarnings.slice(0, 2).map((warning) => (
+                    <p
+                      key={warning.id}
+                      className="text-xs text-red-700 bg-red-50 px-2 py-1 rounded"
+                    >
+                      🚨 {warning.message.split(' - ')[1]}
+                    </p>
+                  ))}
+                  {stats.truckWarnings.length > 2 && (
+                    <p className="text-xs text-red-600">
+                      +{stats.truckWarnings.length - 2} diğer uyarı
+                    </p>
+                  )}
                 </div>
               )}
-              <span className="text-gray-400 text-xl">›</span>
             </div>
           </div>
         </button>
@@ -101,27 +111,35 @@ const DashboardPage = () => {
           onClick={() => navigate('/drivers')}
           className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl">
-                👤
-              </div>
-              <div>
-                <p className="font-bold text-gray-900">Sürücüler</p>
-                <p className="text-sm text-gray-600">
-                  {stats.driversOnTrip} seferde · {stats.totalDrivers} toplam
-                </p>
-              </div>
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+              👤
             </div>
-            <div className="flex items-center gap-2">
-              {stats.driverWarnings > 0 && (
-                <div className="px-3 py-1 bg-red-50 border border-red-200 rounded-full">
-                  <span className="text-xs font-medium text-red-700">
-                    🚨 {stats.driverWarnings} uyarı
-                  </span>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1">
+                <p className="font-bold text-gray-900">Sürücüler</p>
+                <span className="text-gray-400 text-xl">›</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">
+                {stats.driversOnTrip} seferde · {stats.totalDrivers} toplam
+              </p>
+              {stats.driverWarnings.length > 0 && (
+                <div className="space-y-1">
+                  {stats.driverWarnings.slice(0, 2).map((warning) => (
+                    <p
+                      key={warning.id}
+                      className="text-xs text-red-700 bg-red-50 px-2 py-1 rounded"
+                    >
+                      🚨 {warning.message.split(' - ')[1]}
+                    </p>
+                  ))}
+                  {stats.driverWarnings.length > 2 && (
+                    <p className="text-xs text-red-600">
+                      +{stats.driverWarnings.length - 2} diğer uyarı
+                    </p>
+                  )}
                 </div>
               )}
-              <span className="text-gray-400 text-xl">›</span>
             </div>
           </div>
         </button>
@@ -131,89 +149,28 @@ const DashboardPage = () => {
           onClick={() => navigate('/invoices')}
           className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl">
-                💰
-              </div>
-              <div>
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-2xl flex-shrink-0">
+              💰
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-1">
                 <p className="font-bold text-gray-900">Bu Ay Gelir</p>
-                <p className="text-lg font-bold text-green-600">
-                  {formatCurrency(stats.monthlyRevenue)}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Kar: {formatCurrency(stats.monthlyProfit)}
-                </p>
+                <span className="text-gray-400 text-xl">›</span>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
+              <p className="text-lg font-bold text-green-600 mb-1">
+                {formatCurrency(stats.monthlyRevenue)}
+              </p>
+              <p className="text-xs text-gray-600 mb-2">
+                Kar: {formatCurrency(stats.monthlyProfit)}
+              </p>
               {stats.overdue > 0 && (
-                <div className="px-3 py-1 bg-red-50 border border-red-200 rounded-full">
-                  <span className="text-xs font-medium text-red-700">
-                    ⚠️ Gecikmiş
-                  </span>
-                </div>
+                <p className="text-xs text-red-700 bg-red-50 px-2 py-1 rounded">
+                  ⚠️ {formatCurrency(stats.overdue)} vadesi geçmiş
+                </p>
               )}
-              <span className="text-gray-400 text-xl">›</span>
             </div>
           </div>
-        </button>
-      </div>
-
-      {/* Critical Warnings Only */}
-      {(stats.truckWarnings > 0 || stats.driverWarnings > 0 || stats.overdue > 0) && (
-        <div className="bg-red-50 border-2 border-red-300 rounded-lg p-4 mb-6">
-          <h3 className="font-bold text-red-900 mb-2 flex items-center gap-2">
-            <span className="text-xl">⚠️</span>
-            Acil Dikkat Gereken Konular
-          </h3>
-          <div className="space-y-2">
-            {stats.truckWarnings > 0 && (
-              <button
-                onClick={() => navigate('/trucks')}
-                className="w-full text-left text-sm text-red-800 hover:text-red-900 flex items-center justify-between"
-              >
-                <span>🚛 {stats.truckWarnings} araç belgesi 7 gün içinde sona eriyor</span>
-                <span className="text-red-400">›</span>
-              </button>
-            )}
-            {stats.driverWarnings > 0 && (
-              <button
-                onClick={() => navigate('/drivers')}
-                className="w-full text-left text-sm text-red-800 hover:text-red-900 flex items-center justify-between"
-              >
-                <span>👤 {stats.driverWarnings} sürücü belgesi 7 gün içinde sona eriyor</span>
-                <span className="text-red-400">›</span>
-              </button>
-            )}
-            {stats.overdue > 0 && (
-              <button
-                onClick={() => navigate('/invoices')}
-                className="w-full text-left text-sm text-red-800 hover:text-red-900 flex items-center justify-between"
-              >
-                <span>💰 {formatCurrency(stats.overdue)} vadesi geçmiş ödeme</span>
-                <span className="text-red-400">›</span>
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          onClick={() => navigate('/trips')}
-          className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
-        >
-          <div className="text-2xl mb-2">📦</div>
-          <p className="text-sm font-medium text-gray-900">Seferler</p>
-        </button>
-        <button
-          onClick={() => navigate('/clients')}
-          className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
-        >
-          <div className="text-2xl mb-2">👥</div>
-          <p className="text-sm font-medium text-gray-900">Müşteriler</p>
         </button>
       </div>
     </div>
