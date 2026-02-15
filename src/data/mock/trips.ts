@@ -10,6 +10,18 @@ threeDaysAgo.setDate(today.getDate() - 3);
 const tomorrow = new Date(today);
 tomorrow.setDate(today.getDate() + 1);
 
+// Helper to map client IDs to names (needed for trip generation)
+const mockClients = [
+  { id: 'client-1', companyName: 'Anadolu Gıda A.Ş.' },
+  { id: 'client-2', companyName: 'Ege Tekstil Ltd.' },
+  { id: 'client-3', companyName: 'Marmara İnşaat' },
+  { id: 'client-4', companyName: 'Akdeniz Mobilya' },
+  { id: 'client-5', companyName: 'Başkent Lojistik A.Ş.' },
+  { id: 'client-6', companyName: 'Karadeniz Tarım Ürünleri' },
+  { id: 'client-7', companyName: 'İç Anadolu Ticaret' },
+  { id: 'client-8', companyName: 'Marmara Gıda Dağıtım' },
+];
+
 export const mockTrips: Trip[] = [
   // Active trips (8) - in-transit
   {
@@ -251,16 +263,4 @@ export const mockTrips: Trip[] = [
       estimatedArrival: null,
     };
   }),
-];
-
-// Helper to calculate mock clients reference (needed for trip generation above)
-const mockClients = [
-  { id: 'client-1', companyName: 'Anadolu Gıda A.Ş.' },
-  { id: 'client-2', companyName: 'Ege Tekstil Ltd.' },
-  { id: 'client-3', companyName: 'Marmara İnşaat' },
-  { id: 'client-4', companyName: 'Akdeniz Mobilya' },
-  { id: 'client-5', companyName: 'Başkent Lojistik A.Ş.' },
-  { id: 'client-6', companyName: 'Karadeniz Tarım Ürünleri' },
-  { id: 'client-7', companyName: 'İç Anadolu Ticaret' },
-  { id: 'client-8', companyName: 'Marmara Gıda Dağıtım' },
 ];
