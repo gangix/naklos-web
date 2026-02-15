@@ -110,17 +110,18 @@ const DriversPage = () => {
             className="block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <div>
+              <div className="flex items-center gap-2 flex-1">
+                <div className="flex-1">
                   <p className="font-bold text-gray-900">
                     {driver.firstName} {driver.lastName}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">{driver.phone}</p>
                 </div>
                 {hasUrgentWarning(driver.id) && (
-                  <span className="text-lg" title="Belgesi yakında sona eriyor">
-                    🚨
-                  </span>
+                  <div className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded-md">
+                    <span className="text-base">🚨</span>
+                    <span className="text-xs font-medium text-red-700">Uyarı</span>
+                  </div>
                 )}
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(driver.status)}`}>

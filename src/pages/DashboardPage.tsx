@@ -6,12 +6,31 @@ import { calculateWarnings } from '../utils/warnings';
 const DashboardPage = () => {
   // Calculate statistics from mock data
   const stats = useMemo(() => {
-    // Active trips
-    const activeTrips = mockTrips.filter((t) => t.status !== 'delivered').length;
+    // Truck statistics
+    const totalTrucks = mockTrucks.length;
+    const trucksInTransit = mockTrucks.filter((t) => t.status === 'in-transit').length;
+    const trucksAvailable = mockTrucks.filter((t) => t.status === 'available').length;
+    const trucksMaintenance = mockTrucks.filter((t) => t.status === 'maintenance').length;
 
-    // Available trucks and drivers
-    const availableTrucks = mockTrucks.filter((t) => t.status === 'available').length;
-    const availableDrivers = mockDrivers.filter((d) => d.status === 'available').length;
+    // Driver statistics
+    const totalDrivers = mockDrivers.length;
+    const driversOnTrip = mockDrivers.filter((d) => d.status === 'on-trip').length;
+    const driversAvailable = mockDrivers.filter((d) => d.status === 'available').length;
+    const driversOffDuty = mockDrivers.filter((d) => d.status === 'off-duty').length;
+
+    // Trip statistics
+    const activeTrips = mockTrips.filter((t) => t.status !== 'delivered').length;
+    const allTimeTrips = mockTrips.length;
+    const completedTrips = mockTrips.filter((t) => t.status === 'delivered').length;
+
+    // This month's trips
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const thisMonthTrips = mockTrips.filter((t) => {
+      const tripDate = new Date(t.createdAt);
+      return tripDate >= firstDayOfMonth;
+    });
+    const thisMonthCompleted = thisMonthTrips.filter((t) => t.status === 'delivered').length;
 
     // Financial calculations (last 30 days)
     const thirtyDaysAgo = new Date();
@@ -39,14 +58,28 @@ const DashboardPage = () => {
     const overdueWarning = overdueInvoiceCount > 0;
 
     return {
+      // Truck stats
+      totalTrucks,
+      trucksInTransit,
+      trucksAvailable,
+      trucksMaintenance,
+      // Driver stats
+      totalDrivers,
+      driversOnTrip,
+      driversAvailable,
+      driversOffDuty,
+      // Trip stats
+      activeTrips,
+      allTimeTrips,
+      completedTrips,
+      thisMonthTrips: thisMonthTrips.length,
+      thisMonthCompleted,
+      // Financial
       monthlyRevenue,
       monthlyProfit,
       outstanding,
       overdue,
       overdueInvoiceCount,
-      activeTrips,
-      availableTrucks,
-      availableDrivers,
       overdueWarning,
     };
   }, []);
@@ -90,6 +123,96 @@ const DashboardPage = () => {
         </div>
       </div>
 
+      {/* Fleet Overview Section */}
+      <div className="mb-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Filo Durumu</h2>
+
+        {/* Trucks Overview */}
+        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">🚛</span>
+              <div>
+                <p className="text-sm text-gray-600">Toplam Araç</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalTrucks}</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-100">
+            <div className="text-center">
+              <p className="text-lg font-bold text-blue-600">{stats.trucksInTransit}</p>
+              <p className="text-xs text-gray-600">Yolda</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-green-600">{stats.trucksAvailable}</p>
+              <p className="text-xs text-gray-600">Müsait</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-orange-600">{stats.trucksMaintenance}</p>
+              <p className="text-xs text-gray-600">Bakımda</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Drivers Overview */}
+        <div className="bg-white rounded-lg p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">👤</span>
+              <div>
+                <p className="text-sm text-gray-600">Toplam Şoför</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.totalDrivers}</p>
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-100">
+            <div className="text-center">
+              <p className="text-lg font-bold text-blue-600">{stats.driversOnTrip}</p>
+              <p className="text-xs text-gray-600">Seferde</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-green-600">{stats.driversAvailable}</p>
+              <p className="text-xs text-gray-600">Müsait</p>
+            </div>
+            <div className="text-center">
+              <p className="text-lg font-bold text-gray-600">{stats.driversOffDuty}</p>
+              <p className="text-xs text-gray-600">İzinli</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Trip Statistics Section */}
+      <div className="mb-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Sefer İstatistikleri</h2>
+        <div className="bg-white rounded-lg p-4 shadow-sm">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Bu Ay</p>
+              <p className="text-2xl font-bold text-primary-600">{stats.thisMonthTrips}</p>
+              <p className="text-xs text-gray-500 mt-1">{stats.thisMonthCompleted} tamamlandı</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Aktif Seferler</p>
+              <p className="text-2xl font-bold text-blue-600">{stats.activeTrips}</p>
+              <p className="text-xs text-gray-500 mt-1">devam ediyor</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Toplam Sefer</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.allTimeTrips}</p>
+              <p className="text-xs text-gray-500 mt-1">tüm zamanlar</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-1">Tamamlanma</p>
+              <p className="text-2xl font-bold text-green-600">
+                {Math.round((stats.completedTrips / stats.allTimeTrips) * 100)}%
+              </p>
+              <p className="text-xs text-gray-500 mt-1">{stats.completedTrips}/{stats.allTimeTrips}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Warnings */}
       {(stats.overdueWarning || warnings.length > 0) && (
         <div className="mb-6 space-y-2">
@@ -117,21 +240,6 @@ const DashboardPage = () => {
         </div>
       )}
 
-      {/* Quick stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-white rounded-lg p-4 shadow-sm text-center">
-          <p className="text-3xl font-bold text-primary-600">{stats.activeTrips}</p>
-          <p className="text-xs text-gray-600 mt-1">{DASHBOARD.activeTrips}</p>
-        </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm text-center">
-          <p className="text-3xl font-bold text-primary-600">{stats.availableTrucks}</p>
-          <p className="text-xs text-gray-600 mt-1">{DASHBOARD.availableTrucks}</p>
-        </div>
-        <div className="bg-white rounded-lg p-4 shadow-sm text-center">
-          <p className="text-3xl font-bold text-primary-600">{stats.availableDrivers}</p>
-          <p className="text-xs text-gray-600 mt-1">{DASHBOARD.availableDrivers}</p>
-        </div>
-      </div>
     </div>
   );
 };
