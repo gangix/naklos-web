@@ -11,6 +11,7 @@ import InvoicesPage from './pages/InvoicesPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import InvoiceCreatePage from './pages/InvoiceCreatePage';
 import ClientsPage from './pages/ClientsPage';
+import MorePage from './pages/MorePage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="invoices/create" element={<InvoiceCreatePage />} />
           <Route path="invoices/:invoiceId" element={<InvoiceDetailPage />} />
           <Route path="clients" element={<ClientsPage />} />
+          <Route path="more" element={<MorePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

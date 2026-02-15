@@ -1,19 +1,25 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { NAV } from '../../constants/text';
 
 const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const navItems = [
-    { path: '/dashboard', label: NAV.dashboard, icon: '🏠' },
-    { path: '/trucks', label: NAV.trucks, icon: '🚛' },
-    { path: '/trips', label: NAV.trips, icon: '📦' },
-    { path: '/invoices', label: NAV.invoices, icon: '💰' },
-    { path: '/drivers', label: NAV.drivers, icon: '👤' },
+    { path: '/dashboard', label: 'Ana Sayfa', icon: '🏠' },
+    { path: '/trips', label: 'Seferler', icon: '📦' },
+    { path: '/trucks', label: 'Araçlar', icon: '🚛' },
+    { path: '/more', label: 'Diğer', icon: '☰' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/more') {
+      // More tab is active if on drivers, invoices, clients, or more page
+      return ['/drivers', '/invoices', '/clients', '/more'].some((p) =>
+        location.pathname.startsWith(p)
+      );
+    }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
