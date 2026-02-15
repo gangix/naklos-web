@@ -10,7 +10,7 @@ const Layout = () => {
     { path: '/trucks', label: NAV.trucks, icon: '🚛' },
     { path: '/trips', label: NAV.trips, icon: '📦' },
     { path: '/clients', label: NAV.clients, icon: '👥' },
-    { path: '/more', label: NAV.more, icon: '☰' },
+    { path: '/drivers', label: NAV.drivers, icon: '👤' },
   ];
 
   const isActive = (path: string) => location.pathname === path;

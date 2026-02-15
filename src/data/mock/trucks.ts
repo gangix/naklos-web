@@ -1,5 +1,22 @@
 import type { Truck } from '../../types';
 
+// Helper to calculate dates for insurance/inspection
+const today = new Date();
+const threeMonthsFromNow = new Date(today);
+threeMonthsFromNow.setMonth(today.getMonth() + 3);
+const twoMonthsFromNow = new Date(today);
+twoMonthsFromNow.setMonth(today.getMonth() + 2);
+const tenDaysFromNow = new Date(today);
+tenDaysFromNow.setDate(today.getDate() + 10);
+const oneYearFromNow = new Date(today);
+oneYearFromNow.setFullYear(today.getFullYear() + 1);
+const sixMonthsFromNow = new Date(today);
+sixMonthsFromNow.setMonth(today.getMonth() + 6);
+const twentyDaysFromNow = new Date(today);
+twentyDaysFromNow.setDate(today.getDate() + 20);
+const fiveDaysFromNow = new Date(today);
+fiveDaysFromNow.setDate(today.getDate() + 5);
+
 export const mockTrucks: Truck[] = [
   // In-transit trucks (8)
   {
@@ -15,6 +32,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 145000,
     tripCount: 12,
     utilizationRate: 92,
+    compulsoryInsuranceExpiry: tenDaysFromNow.toISOString().split('T')[0], // EXPIRING SOON
+    comprehensiveInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: sixMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-2',
@@ -29,6 +49,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 128000,
     tripCount: 10,
     utilizationRate: 88,
+    compulsoryInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: twentyDaysFromNow.toISOString().split('T')[0], // EXPIRING SOON
   },
   {
     id: 'truck-3',
@@ -43,6 +66,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 165000,
     tripCount: 11,
     utilizationRate: 95,
+    compulsoryInsuranceExpiry: twoMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: fiveDaysFromNow.toISOString().split('T')[0], // EXPIRING VERY SOON
+    inspectionExpiry: oneYearFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-4',
@@ -57,6 +83,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 152000,
     tripCount: 13,
     utilizationRate: 90,
+    compulsoryInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    inspectionExpiry: threeMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-5',
@@ -71,6 +100,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 135000,
     tripCount: 11,
     utilizationRate: 87,
+    compulsoryInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: sixMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-6',
@@ -85,6 +117,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 158000,
     tripCount: 10,
     utilizationRate: 93,
+    compulsoryInsuranceExpiry: twoMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    inspectionExpiry: threeMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-7',
@@ -99,6 +134,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 148000,
     tripCount: 12,
     utilizationRate: 91,
+    compulsoryInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: twoMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: oneYearFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-8',
@@ -113,6 +151,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 142000,
     tripCount: 11,
     utilizationRate: 89,
+    compulsoryInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: twoMonthsFromNow.toISOString().split('T')[0],
   },
 
   // Available trucks (4)
@@ -129,6 +170,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 138000,
     tripCount: 10,
     utilizationRate: 85,
+    compulsoryInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: threeMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-10',
@@ -143,6 +187,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 125000,
     tripCount: 9,
     utilizationRate: 82,
+    compulsoryInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: twoMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: oneYearFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-11',
@@ -157,6 +204,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 155000,
     tripCount: 11,
     utilizationRate: 88,
+    compulsoryInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    inspectionExpiry: twoMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-12',
@@ -171,6 +221,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 98000,
     tripCount: 7,
     utilizationRate: 72,
+    compulsoryInsuranceExpiry: twoMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: sixMonthsFromNow.toISOString().split('T')[0],
   },
 
   // Maintenance trucks (2)
@@ -187,6 +240,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 132000,
     tripCount: 10,
     utilizationRate: 78,
+    compulsoryInsuranceExpiry: oneYearFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: sixMonthsFromNow.toISOString().split('T')[0],
   },
   {
     id: 'truck-14',
@@ -201,6 +257,9 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 145000,
     tripCount: 11,
     utilizationRate: 84,
+    compulsoryInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: twoMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: oneYearFromNow.toISOString().split('T')[0],
   },
 
   // Unassigned (1)
@@ -217,5 +276,8 @@ export const mockTrucks: Truck[] = [
     monthlyRevenue: 0,
     tripCount: 0,
     utilizationRate: 0,
+    compulsoryInsuranceExpiry: threeMonthsFromNow.toISOString().split('T')[0],
+    comprehensiveInsuranceExpiry: sixMonthsFromNow.toISOString().split('T')[0],
+    inspectionExpiry: twoMonthsFromNow.toISOString().split('T')[0],
   },
 ];

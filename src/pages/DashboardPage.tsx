@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { DASHBOARD, COMMON } from '../constants/text';
 import { mockFleet, mockTrucks, mockDrivers, mockTrips, mockInvoices, mockClients } from '../data/mock';
+import { calculateWarnings } from '../utils/warnings';
 
 const DashboardPage = () => {
   // Calculate statistics from mock data
@@ -37,15 +38,6 @@ const DashboardPage = () => {
     // Warnings
     const overdueWarning = overdueInvoiceCount > 0;
 
-    // Check for expiring licenses (within 7 days)
-    const sevenDaysFromNow = new Date();
-    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-
-    const expiringLicenses = mockDrivers.filter((driver) => {
-      const expiryDate = new Date(driver.licenseExpiryDate);
-      return expiryDate <= sevenDaysFromNow && expiryDate >= new Date();
-    });
-
     return {
       monthlyRevenue,
       monthlyProfit,
@@ -56,9 +48,11 @@ const DashboardPage = () => {
       availableTrucks,
       availableDrivers,
       overdueWarning,
-      expiringLicenses: expiringLicenses.length,
     };
   }, []);
+
+  // Calculate all warnings using centralized utility
+  const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -97,7 +91,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Warnings */}
-      {(stats.overdueWarning || stats.expiringLicenses > 0) && (
+      {(stats.overdueWarning || warnings.length > 0) && (
         <div className="mb-6 space-y-2">
           {stats.overdueWarning && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -106,13 +100,20 @@ const DashboardPage = () => {
               </p>
             </div>
           )}
-          {stats.expiringLicenses > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <p className="text-sm text-yellow-800">
-                ⚠️ {stats.expiringLicenses} ehliyet 7 gün içinde sona eriyor
-              </p>
-            </div>
-          )}
+          {warnings
+            .filter((w) => w.severity === 'error')
+            .map((warning) => (
+              <div key={warning.id} className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-sm text-red-800">🚨 {warning.message}</p>
+              </div>
+            ))}
+          {warnings
+            .filter((w) => w.severity === 'warning')
+            .map((warning) => (
+              <div key={warning.id} className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                <p className="text-sm text-yellow-800">⚠️ {warning.message}</p>
+              </div>
+            ))}
         </div>
       )}
 

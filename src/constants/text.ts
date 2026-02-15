@@ -7,6 +7,7 @@ export const NAV = {
   trucks: 'Araçlar',
   trips: 'Seferler',
   clients: 'Müşteriler',
+  drivers: 'Şoförler',
   more: 'Daha Fazla',
 } as const;
 
@@ -35,6 +36,46 @@ export const TRUCKS = {
   assignmentInfo: 'Atama Bilgileri',
   recentTrips: 'Son Seferler',
   earnings: 'Kazançlar',
+  insurance: 'Sigorta',
+  compulsoryInsurance: 'Zorunlu Trafik Sigortası',
+  comprehensiveInsurance: 'Kasko',
+  inspection: 'Muayene',
+  expiryDate: 'Son Geçerlilik Tarihi',
+  basicInfo: 'Temel Bilgiler',
+  documents: 'Belgeler',
+  location: 'Konum',
+  performance: 'Performans',
+  monthlyRevenue: 'Aylık Gelir',
+  tripCount: 'Sefer Sayısı',
+  utilization: 'Kullanım Oranı',
+} as const;
+
+export const DRIVERS = {
+  title: 'Şoförler',
+  available: 'Müsait',
+  onTrip: 'Seferde',
+  offDuty: 'İzinli',
+  all: 'Tümü',
+  fullName: 'Ad Soyad',
+  phone: 'Telefon',
+  email: 'E-posta',
+  license: 'Ehliyet',
+  licenseNumber: 'Ehliyet No',
+  licenseClass: 'Ehliyet Sınıfı',
+  licenseExpiry: 'Ehliyet Geçerlilik',
+  certificates: 'Sertifikalar',
+  srcCertificate: 'SRC Belgesi',
+  cpcCertificate: 'CPC Belgesi',
+  certificateNumber: 'Belge No',
+  issueDate: 'Veriliş Tarihi',
+  expiryDate: 'Son Geçerlilik',
+  emergencyContact: 'Acil Durum İletişim',
+  contactInfo: 'İletişim Bilgileri',
+  contactName: 'İsim',
+  contactPhone: 'Telefon',
+  relationship: 'Yakınlık',
+  assignedTruck: 'Atanmış Araç',
+  status: 'Durum',
 } as const;
 
 export const TRIPS = {
@@ -54,6 +95,14 @@ export const TRIPS = {
   assigned: 'Atandı',
   inTransit: 'Yolda',
   delivered: 'Teslim Edildi',
+  tripInfo: 'Sefer Bilgileri',
+  financial: 'Mali Bilgiler',
+  timeline: 'Zaman Çizelgesi',
+  created: 'Oluşturuldu',
+  started: 'Başladı',
+  completedAt: 'Tamamlandı',
+  estimated: 'Tahmini Varış',
+  netProfit: 'Net Kâr',
 } as const;
 
 export const CLIENTS = {
@@ -96,8 +145,32 @@ export const COMMON = {
   days: 'gün',
 } as const;
 
+export const DOCUMENTS = {
+  title: 'Belgeler',
+  upload: 'Belge Yükle',
+  deliveryConfirmation: 'Teslimat Onayı',
+  uploadPhoto: 'Fotoğraf Yükle',
+  takePhoto: 'Fotoğraf Çek',
+  maxSize: 'Maks. boyut',
+  noDocuments: 'Henüz belge yüklenmemiş',
+  documentCount: 'belge',
+  uploadedAt: 'Yüklenme',
+  maxLimit: 'Maksimum 3 fotoğraf yüklenebilir',
+  fileTooLarge: 'Dosya boyutu çok büyük',
+  invalidFileType: 'Geçersiz dosya türü',
+  uploadSuccess: 'Belge başarıyla yüklendi',
+  uploadError: 'Yükleme sırasında hata oluştu',
+} as const;
+
 export const WARNINGS = {
   overdueInvoices: 'fatura vadesi geçmiş',
   licenseExpiring: 'ehliyet süresi doluyor',
   documentExpiring: 'belgesi süresi doluyor',
+  insuranceExpiring: 'sigorta süresi doluyor',
+  inspectionExpiring: 'muayene süresi doluyor',
+  certificateExpiring: 'sertifika süresi doluyor',
+  daysRemaining: 'gün kaldı',
+  expired: 'Süresi dolmuş',
+  expiringSoon: 'Yakında sona eriyor',
+  valid: 'Geçerli',
 } as const;

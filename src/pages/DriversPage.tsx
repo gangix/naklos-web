@@ -1,52 +1,53 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { TRUCKS } from '../constants/text';
-import { mockTrucks, mockDrivers } from '../data/mock';
+import { DRIVERS } from '../constants/text';
+import { mockDrivers } from '../data/mock';
 import { calculateWarnings } from '../utils/warnings';
-import type { TruckStatus } from '../types';
+import { mockTrucks } from '../data/mock';
+import type { DriverStatus } from '../types';
 
-const TrucksPage = () => {
-  const [filter, setFilter] = useState<TruckStatus | 'all'>('all');
+const DriversPage = () => {
+  const [filter, setFilter] = useState<DriverStatus | 'all'>('all');
 
-  const filteredTrucks = useMemo(() => {
-    if (filter === 'all') return mockTrucks;
-    return mockTrucks.filter((truck) => truck.status === filter);
+  const filteredDrivers = useMemo(() => {
+    if (filter === 'all') return mockDrivers;
+    return mockDrivers.filter((driver) => driver.status === filter);
   }, [filter]);
 
-  // Calculate warnings to show indicators on truck cards
+  // Calculate warnings to show indicators on driver cards
   const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
 
-  // Check if a truck has any expiring documents within 7 days
-  const hasUrgentWarning = (truckId: string): boolean => {
+  // Check if a driver has any expiring documents within 7 days
+  const hasUrgentWarning = (driverId: string): boolean => {
     return warnings.some(
       (w) =>
-        w.relatedId === truckId &&
-        w.relatedType === 'truck' &&
+        w.relatedId === driverId &&
+        w.relatedType === 'driver' &&
         w.severity === 'error'
     );
   };
 
-  const getStatusColor = (status: TruckStatus) => {
+  const getStatusColor = (status: DriverStatus) => {
     switch (status) {
       case 'available':
         return 'bg-green-100 text-green-700';
-      case 'in-transit':
+      case 'on-trip':
         return 'bg-blue-100 text-blue-700';
-      case 'maintenance':
-        return 'bg-orange-100 text-orange-700';
+      case 'off-duty':
+        return 'bg-gray-100 text-gray-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
   };
 
-  const getStatusLabel = (status: TruckStatus) => {
+  const getStatusLabel = (status: DriverStatus) => {
     switch (status) {
       case 'available':
-        return TRUCKS.available;
-      case 'in-transit':
-        return TRUCKS.inTransit;
-      case 'maintenance':
-        return TRUCKS.maintenance;
+        return DRIVERS.available;
+      case 'on-trip':
+        return DRIVERS.onTrip;
+      case 'off-duty':
+        return DRIVERS.offDuty;
       default:
         return status;
     }
@@ -54,7 +55,7 @@ const TrucksPage = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRUCKS.title}</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-4">{DRIVERS.title}</h1>
 
       {/* Filter chips */}
       <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
@@ -66,7 +67,7 @@ const TrucksPage = () => {
               : 'bg-gray-100 text-gray-700'
           }`}
         >
-          {TRUCKS.all} ({mockTrucks.length})
+          {DRIVERS.all} ({mockDrivers.length})
         </button>
         <button
           onClick={() => setFilter('available')}
@@ -76,64 +77,63 @@ const TrucksPage = () => {
               : 'bg-gray-100 text-gray-700'
           }`}
         >
-          {TRUCKS.available} ({mockTrucks.filter((t) => t.status === 'available').length})
+          {DRIVERS.available} ({mockDrivers.filter((d) => d.status === 'available').length})
         </button>
         <button
-          onClick={() => setFilter('in-transit')}
+          onClick={() => setFilter('on-trip')}
           className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-            filter === 'in-transit'
+            filter === 'on-trip'
               ? 'bg-primary-600 text-white'
               : 'bg-gray-100 text-gray-700'
           }`}
         >
-          {TRUCKS.inTransit} ({mockTrucks.filter((t) => t.status === 'in-transit').length})
+          {DRIVERS.onTrip} ({mockDrivers.filter((d) => d.status === 'on-trip').length})
         </button>
         <button
-          onClick={() => setFilter('maintenance')}
+          onClick={() => setFilter('off-duty')}
           className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-            filter === 'maintenance'
+            filter === 'off-duty'
               ? 'bg-primary-600 text-white'
               : 'bg-gray-100 text-gray-700'
           }`}
         >
-          {TRUCKS.maintenance} ({mockTrucks.filter((t) => t.status === 'maintenance').length})
+          {DRIVERS.offDuty} ({mockDrivers.filter((d) => d.status === 'off-duty').length})
         </button>
       </div>
 
-      {/* Truck list */}
+      {/* Driver list */}
       <div className="space-y-3">
-        {filteredTrucks.map((truck) => (
+        {filteredDrivers.map((driver) => (
           <Link
-            key={truck.id}
-            to={`/trucks/${truck.id}`}
+            key={driver.id}
+            to={`/drivers/${driver.id}`}
             className="block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <div>
-                  <p className="font-bold text-gray-900">{truck.plateNumber}</p>
-                  <p className="text-sm text-gray-600 mt-1">{truck.type}</p>
+                  <p className="font-bold text-gray-900">
+                    {driver.firstName} {driver.lastName}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">{driver.phone}</p>
                 </div>
-                {hasUrgentWarning(truck.id) && (
+                {hasUrgentWarning(driver.id) && (
                   <span className="text-lg" title="Belgesi yakında sona eriyor">
                     🚨
                   </span>
                 )}
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(truck.status)}`}>
-                {getStatusLabel(truck.status)}
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(driver.status)}`}>
+                {getStatusLabel(driver.status)}
               </span>
             </div>
-            <div className="text-sm text-gray-600">
-              <p>
-                {TRUCKS.driver}: {truck.assignedDriverName || 'Atanmadı'}
-              </p>
-              {truck.lastPosition && (
-                <p className="text-xs text-gray-500 mt-1">
-                  📍 {truck.lastPosition.city}
+            {driver.assignedTruckPlate && (
+              <div className="text-sm text-gray-600">
+                <p>
+                  {DRIVERS.assignedTruck}: {driver.assignedTruckPlate}
                 </p>
-              )}
-            </div>
+              </div>
+            )}
           </Link>
         ))}
       </div>
@@ -141,4 +141,4 @@ const TrucksPage = () => {
   );
 };
 
-export default TrucksPage;
+export default DriversPage;
