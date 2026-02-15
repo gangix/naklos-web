@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockInvoices, mockTrips } from '../data/mock';
+import { mockInvoices, mockTrips, mockFleet, mockClients } from '../data/mock';
 import { INVOICES } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
+import { downloadInvoicePDF, generateInvoiceEmailLink } from '../utils/invoicePdf';
 
 const InvoiceDetailPage = () => {
   const { invoiceId } = useParams<{ invoiceId: string }>();
@@ -19,6 +20,28 @@ const InvoiceDetailPage = () => {
 
   // Get related trips
   const relatedTrips = mockTrips.filter((trip) => invoice.tripIds.includes(trip.id));
+
+  // Get client info for email
+  const client = mockClients.find((c) => c.id === invoice.clientId);
+
+  // Handle PDF download
+  const handleDownloadPDF = () => {
+    downloadInvoicePDF(invoice, relatedTrips, {
+      name: mockFleet.name,
+      phone: mockFleet.phone,
+      email: mockFleet.email,
+    });
+  };
+
+  // Handle email
+  const handleSendEmail = () => {
+    if (!client?.email) {
+      alert('Müşteri e-posta adresi bulunamadı');
+      return;
+    }
+    const emailLink = generateInvoiceEmailLink(invoice, relatedTrips, client.email);
+    window.location.href = emailLink;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -151,11 +174,22 @@ const InvoiceDetailPage = () => {
         )}
       </div>
 
-      {/* Placeholder for future actions */}
-      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-        <p className="text-sm text-blue-800">
-          💡 Yakında: E-posta gönderme ve PDF indirme özellikleri eklenecek
-        </p>
+      {/* Action Buttons */}
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <button
+          onClick={handleSendEmail}
+          className="flex items-center justify-center gap-2 py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors"
+        >
+          <span className="text-lg">📧</span>
+          <span>E-posta Gönder</span>
+        </button>
+        <button
+          onClick={handleDownloadPDF}
+          className="flex items-center justify-center gap-2 py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 active:bg-green-800 transition-colors"
+        >
+          <span className="text-lg">📄</span>
+          <span>PDF İndir</span>
+        </button>
       </div>
     </div>
   );
