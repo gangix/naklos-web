@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/naklos-web/sw.js', { scope: '/naklos-web/' })})}
