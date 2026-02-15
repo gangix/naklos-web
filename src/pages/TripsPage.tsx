@@ -1,55 +1,91 @@
+import { useState, useMemo } from 'react';
 import { TRIPS } from '../constants/text';
+import { mockTrips } from '../data/mock';
+import { formatCurrency } from '../utils/format';
+import { TripStatus } from '../types';
 
 const TripsPage = () => {
+  const [tab, setTab] = useState<'active' | 'completed'>('active');
+
+  const filteredTrips = useMemo(() => {
+    if (tab === 'active') {
+      return mockTrips.filter((trip) => trip.status !== 'delivered');
+    }
+    return mockTrips.filter((trip) => trip.status === 'delivered');
+  }, [tab]);
+
+  const getStatusColor = (status: TripStatus) => {
+    switch (status) {
+      case 'assigned':
+        return 'bg-yellow-100 text-yellow-700';
+      case 'in-transit':
+        return 'bg-blue-100 text-blue-700';
+      case 'delivered':
+        return 'bg-green-100 text-green-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const getStatusLabel = (status: TripStatus) => {
+    switch (status) {
+      case 'assigned':
+        return TRIPS.assigned;
+      case 'in-transit':
+        return TRIPS.inTransit;
+      case 'delivered':
+        return TRIPS.delivered;
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRIPS.title}</h1>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4 border-b border-gray-200">
-        <button className="px-4 py-2 text-primary-600 border-b-2 border-primary-600 font-medium">
-          {TRIPS.active}
+        <button
+          onClick={() => setTab('active')}
+          className={`px-4 py-2 font-medium ${
+            tab === 'active'
+              ? 'text-primary-600 border-b-2 border-primary-600'
+              : 'text-gray-600'
+          }`}
+        >
+          {TRIPS.active} ({mockTrips.filter((t) => t.status !== 'delivered').length})
         </button>
-        <button className="px-4 py-2 text-gray-600 font-medium">
-          {TRIPS.completed}
+        <button
+          onClick={() => setTab('completed')}
+          className={`px-4 py-2 font-medium ${
+            tab === 'completed'
+              ? 'text-primary-600 border-b-2 border-primary-600'
+              : 'text-gray-600'
+          }`}
+        >
+          {TRIPS.completed} ({mockTrips.filter((t) => t.status === 'delivered').length})
         </button>
       </div>
 
       {/* Trip list */}
       <div className="space-y-3">
-        {[
-          {
-            route: 'Istanbul → Ankara',
-            client: 'Anadolu Gıda A.Ş.',
-            truck: '34 ABC 123',
-            revenue: '₺12,500',
-          },
-          {
-            route: 'Istanbul → İzmir',
-            client: 'Ege Tekstil Ltd.',
-            truck: '34 DEF 456',
-            revenue: '₺18,000',
-          },
-          {
-            route: 'Ankara → Antalya',
-            client: 'Akdeniz Mobilya',
-            truck: '06 GHI 789',
-            revenue: '₺22,000',
-          },
-        ].map((trip, index) => (
-          <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
+        {filteredTrips.map((trip) => (
+          <div key={trip.id} className="bg-white rounded-lg p-4 shadow-sm">
             <div className="flex items-start justify-between mb-2">
               <div>
-                <p className="font-bold text-gray-900">{trip.route}</p>
-                <p className="text-sm text-gray-600 mt-1">{trip.client}</p>
+                <p className="font-bold text-gray-900">
+                  {trip.originCity} → {trip.destinationCity}
+                </p>
+                <p className="text-sm text-gray-600 mt-1">{trip.clientName}</p>
               </div>
-              <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
-                {TRIPS.inTransit}
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(trip.status)}`}>
+                {getStatusLabel(trip.status)}
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm text-gray-600">
-              <span>{trip.truck}</span>
-              <span className="font-bold text-green-600">{trip.revenue}</span>
+            <div className="flex items-center justify-between text-sm text-gray-600 pt-2 border-t border-gray-100">
+              <span>{trip.truckPlate}</span>
+              <span className="font-bold text-green-600">{formatCurrency(trip.revenue)}</span>
             </div>
           </div>
         ))}
