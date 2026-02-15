@@ -30,4 +30,12 @@ export default defineConfig({
       }
     })
   ],
+  server: {
+    host: true,
+    allowedHosts: [
+      '.trycloudflare.com',
+      'localhost',
+      '192.168.178.121'
+    ]
+  }
 })
