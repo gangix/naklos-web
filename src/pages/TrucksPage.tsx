@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { TRUCKS } from '../constants/text';
 import { mockTrucks } from '../data/mock';
-import { TruckStatus } from '../types';
+import type { TruckStatus } from '../types';
 
 const TrucksPage = () => {
   const [filter, setFilter] = useState<TruckStatus | 'all'>('all');

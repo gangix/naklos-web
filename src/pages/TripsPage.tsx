@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { TRIPS } from '../constants/text';
 import { mockTrips } from '../data/mock';
 import { formatCurrency } from '../utils/format';
-import { TripStatus } from '../types';
+import type { TripStatus } from '../types';
 
 const TripsPage = () => {
   const [tab, setTab] = useState<'active' | 'completed'>('active');
