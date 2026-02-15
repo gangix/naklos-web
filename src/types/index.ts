@@ -98,6 +98,8 @@ export interface Trip {
   completedAt: string | null;
   estimatedArrival: string | null;
   deliveryDocuments: Document[];
+  documentsConfirmed: boolean;
+  invoiced: boolean;
 }
 
 export interface TripExpenses {

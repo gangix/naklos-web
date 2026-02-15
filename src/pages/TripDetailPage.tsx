@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { mockTrips, mockInvoices } from '../data/mock';
-import { TRIPS, EXPENSES, DOCUMENTS } from '../constants/text';
+import { TRIPS, EXPENSES, DOCUMENTS, INVOICES } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import FileUpload from '../components/common/FileUpload';
 import type { Document } from '../types';
@@ -12,16 +12,11 @@ const TripDetailPage = () => {
 
   const trip = mockTrips.find((t) => t.id === tripId);
   const [documents, setDocuments] = useState<Document[]>(trip?.deliveryDocuments || []);
+  const [documentsConfirmed, setDocumentsConfirmed] = useState<boolean>(trip?.documentsConfirmed || false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
   // Check if invoice already exists for this trip
   const existingInvoice = mockInvoices.find((inv) => inv.tripIds.includes(tripId || ''));
-
-  // Can generate invoice if: trip is delivered AND has documents AND no invoice exists yet
-  const canGenerateInvoice =
-    trip?.status === 'delivered' &&
-    documents.length > 0 &&
-    !existingInvoice;
 
   if (!trip) {
     return (
@@ -73,18 +68,17 @@ const TripDetailPage = () => {
     setDocuments([...documents, document]);
   };
 
-  const handleGenerateInvoice = () => {
-    if (!trip) return;
+  const handleConfirmDocuments = () => {
+    if (!trip || documents.length === 0) return;
 
-    // Show confirmation
     const confirmed = window.confirm(
-      `${trip.originCity} → ${trip.destinationCity} seferi için fatura oluşturulsun mu?\n\nTutar: ${formatCurrency(trip.revenue)}\nMüşteri: ${trip.clientName}`
+      `${documents.length} adet teslimat belgesini onaylıyor musunuz?\n\nOnayladıktan sonra bu sefer fatura oluşturma için hazır olacak.`
     );
 
     if (confirmed) {
-      alert('Fatura oluşturuldu! Ödemeler sayfasından görüntüleyebilirsiniz.');
-      // In a real app, this would create a new invoice in the backend
-      // For now, we just show success message
+      setDocumentsConfirmed(true);
+      alert('✓ Belgeler onaylandı! Şimdi bu seferi fatura oluşturma sayfasında seçebilirsiniz.');
+      // In a real app, this would update the trip in the backend
     }
   };
 
@@ -241,10 +235,10 @@ const TripDetailPage = () => {
         </div>
       )}
 
-      {/* Generate Invoice Section */}
+      {/* Document Confirmation & Invoice Section */}
       {trip?.status === 'delivered' && (
         <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">Fatura Oluştur</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Onayı ve Fatura</h2>
 
           {existingInvoice ? (
             <div className="bg-green-50 border border-green-200 rounded-lg p-3">
@@ -261,21 +255,36 @@ const TripDetailPage = () => {
           ) : documents.length === 0 ? (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
               <p className="text-sm text-yellow-800">
-                ⚠️ Fatura oluşturmak için teslimat belgesi yüklemeniz gerekiyor
+                ⚠️ Fatura oluşturmak için önce teslimat belgesi yüklemeniz gerekiyor
               </p>
             </div>
-          ) : (
+          ) : !documentsConfirmed ? (
             <div>
               <p className="text-sm text-gray-600 mb-3">
-                Teslimat belgeleri yüklendi. Şimdi fatura oluşturabilirsiniz.
+                {documents.length} adet teslimat belgesi yüklendi. Belgeleri kontrol edip onaylayın.
               </p>
               <button
-                onClick={handleGenerateInvoice}
-                disabled={!canGenerateInvoice}
-                className="w-full py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                onClick={handleConfirmDocuments}
+                className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center justify-center gap-2"
+              >
+                <span className="text-lg">✓</span>
+                <span>{DOCUMENTS.confirmDocuments}</span>
+              </button>
+            </div>
+          ) : (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <p className="text-sm text-green-800 mb-3">
+                ✓ {DOCUMENTS.documentsConfirmed}
+              </p>
+              <p className="text-sm text-gray-700 mb-3">
+                {DOCUMENTS.readyForInvoicing}
+              </p>
+              <button
+                onClick={() => navigate('/invoices/create')}
+                className="w-full py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors flex items-center justify-center gap-2"
               >
                 <span className="text-lg">📄</span>
-                <span>Fatura Oluştur ({formatCurrency(trip.revenue)})</span>
+                <span>{INVOICES.createMultiTripInvoice}</span>
               </button>
             </div>
           )}

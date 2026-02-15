@@ -129,6 +129,9 @@ export const INVOICES = {
   invoiceDetails: 'Fatura Detayları',
   relatedTrips: 'İlgili Seferler',
   paymentInfo: 'Ödeme Bilgileri',
+  createInvoice: 'Fatura Oluştur',
+  selectTrips: 'Sefer Seç',
+  createMultiTripInvoice: 'Toplu Fatura Oluştur',
 } as const;
 
 export const CLIENTS = {
@@ -186,6 +189,10 @@ export const DOCUMENTS = {
   invalidFileType: 'Geçersiz dosya türü',
   uploadSuccess: 'Belge başarıyla yüklendi',
   uploadError: 'Yükleme sırasında hata oluştu',
+  confirmDocuments: 'Belgeleri Onayla',
+  documentsConfirmed: 'Belgeler Onaylandı',
+  confirmationRequired: 'Fatura oluşturmak için önce belgeleri onaylamanız gerekiyor',
+  readyForInvoicing: 'Bu sefer fatura oluşturma için hazır',
 } as const;
 
 export const WARNINGS = {

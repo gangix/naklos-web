@@ -9,6 +9,7 @@ import DriversPage from './pages/DriversPage';
 import DriverDetailPage from './pages/DriverDetailPage';
 import InvoicesPage from './pages/InvoicesPage';
 import InvoiceDetailPage from './pages/InvoiceDetailPage';
+import InvoiceCreatePage from './pages/InvoiceCreatePage';
 import ClientsPage from './pages/ClientsPage';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="drivers" element={<DriversPage />} />
           <Route path="drivers/:driverId" element={<DriverDetailPage />} />
           <Route path="invoices" element={<InvoicesPage />} />
+          <Route path="invoices/create" element={<InvoiceCreatePage />} />
           <Route path="invoices/:invoiceId" element={<InvoiceDetailPage />} />
           <Route path="clients" element={<ClientsPage />} />
         </Route>

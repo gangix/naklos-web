@@ -43,6 +43,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: tomorrow.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-2',
@@ -63,6 +65,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: today.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-3',
@@ -83,6 +87,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: today.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-4',
@@ -103,6 +109,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: tomorrow.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-5',
@@ -123,6 +131,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: today.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-6',
@@ -143,6 +153,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: today.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-7',
@@ -163,6 +175,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: tomorrow.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   {
     id: 'trip-8',
@@ -183,6 +197,8 @@ export const mockTrips: Trip[] = [
     completedAt: null,
     estimatedArrival: today.toISOString(),
     deliveryDocuments: [],
+    documentsConfirmed: false,
+    invoiced: false,
   },
 
   // Completed trips (22)
@@ -224,6 +240,8 @@ export const mockTrips: Trip[] = [
         size: 198400,
       },
     ],
+    documentsConfirmed: true,
+    invoiced: true,
   },
   {
     id: 'trip-10',
@@ -254,6 +272,8 @@ export const mockTrips: Trip[] = [
         size: 312800,
       },
     ],
+    documentsConfirmed: false,
+    invoiced: false,
   },
   // Adding 20 more completed trips with varied data
   ...Array.from({ length: 20 }, (_, i) => {
@@ -301,6 +321,8 @@ export const mockTrips: Trip[] = [
       completedAt: completedDate.toISOString(),
       estimatedArrival: null,
       deliveryDocuments: [],
+      documentsConfirmed: false,
+      invoiced: false,
     };
   }),
 ];
