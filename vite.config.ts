@@ -4,6 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/naklos-web/',
   plugins: [
     react(),
     VitePWA({
@@ -14,19 +15,7 @@ export default defineConfig({
         description: 'Filo ve nakliye yönetim sistemi',
         theme_color: '#0070f3',
         background_color: '#ffffff',
-        display: 'standalone',
-        icons: [
-          {
-            src: '/icon-192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '/icon-512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
+        display: 'standalone'
       }
     })
   ],

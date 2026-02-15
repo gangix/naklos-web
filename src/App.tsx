@@ -8,7 +8,7 @@ import MorePage from './pages/MorePage';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/naklos-web">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" replace />} />
