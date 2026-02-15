@@ -6,8 +6,9 @@ export const NAV = {
   dashboard: 'Ana Sayfa',
   trucks: 'Araçlar',
   trips: 'Seferler',
-  clients: 'Müşteriler',
+  invoices: 'Ödemeler',
   drivers: 'Şoförler',
+  clients: 'Müşteriler',
   more: 'Daha Fazla',
 } as const;
 
@@ -103,6 +104,31 @@ export const TRIPS = {
   completedAt: 'Tamamlandı',
   estimated: 'Tahmini Varış',
   netProfit: 'Net Kâr',
+} as const;
+
+export const INVOICES = {
+  title: 'Ödemeler ve Faturalar',
+  all: 'Tümü',
+  overdue: 'Vadesi Geçmiş',
+  pending: 'Bekleyen',
+  paid: 'Ödenen',
+  amount: 'Tutar',
+  issueDate: 'Düzenleme',
+  dueDate: 'Vade',
+  paidDate: 'Ödeme',
+  client: 'Müşteri',
+  status: 'Durum',
+  trips: 'Seferler',
+  summary: 'Özet',
+  totalOutstanding: 'Toplam Bakiye',
+  totalOverdue: 'Toplam Vadesi Geçmiş',
+  paidThisMonth: 'Bu Ay Ödenen',
+  avgPaymentTime: 'Ort. Ödeme Süresi',
+  daysOverdue: 'gün gecikmiş',
+  daysUntilDue: 'gün kaldı',
+  invoiceDetails: 'Fatura Detayları',
+  relatedTrips: 'İlgili Seferler',
+  paymentInfo: 'Ödeme Bilgileri',
 } as const;
 
 export const CLIENTS = {

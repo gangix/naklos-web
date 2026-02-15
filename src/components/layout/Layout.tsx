@@ -9,7 +9,7 @@ const Layout = () => {
     { path: '/dashboard', label: NAV.dashboard, icon: '🏠' },
     { path: '/trucks', label: NAV.trucks, icon: '🚛' },
     { path: '/trips', label: NAV.trips, icon: '📦' },
-    { path: '/clients', label: NAV.clients, icon: '👥' },
+    { path: '/invoices', label: NAV.invoices, icon: '💰' },
     { path: '/drivers', label: NAV.drivers, icon: '👤' },
   ];
 
