@@ -26,6 +26,13 @@ const TrucksPage = () => {
     );
   };
 
+  // Get all warnings for a specific truck
+  const getTruckWarnings = (truckId: string) => {
+    return warnings.filter(
+      (w) => w.relatedId === truckId && w.relatedType === 'truck'
+    );
+  };
+
   const getStatusColor = (status: TruckStatus) => {
     switch (status) {
       case 'available':
@@ -135,6 +142,24 @@ const TrucksPage = () => {
                 </p>
               )}
             </div>
+
+            {/* Document warnings */}
+            {getTruckWarnings(truck.id).length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
+                {getTruckWarnings(truck.id).map((warning) => (
+                  <div
+                    key={warning.id}
+                    className={`text-xs px-2 py-1 rounded ${
+                      warning.severity === 'error'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-yellow-50 text-yellow-700'
+                    }`}
+                  >
+                    {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message.split(' - ')[1]}
+                  </div>
+                ))}
+              </div>
+            )}
           </Link>
         ))}
       </div>

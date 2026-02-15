@@ -27,6 +27,13 @@ const DriversPage = () => {
     );
   };
 
+  // Get all warnings for a specific driver
+  const getDriverWarnings = (driverId: string) => {
+    return warnings.filter(
+      (w) => w.relatedId === driverId && w.relatedType === 'driver'
+    );
+  };
+
   const getStatusColor = (status: DriverStatus) => {
     switch (status) {
       case 'available':
@@ -133,6 +140,24 @@ const DriversPage = () => {
                 <p>
                   {DRIVERS.assignedTruck}: {driver.assignedTruckPlate}
                 </p>
+              </div>
+            )}
+
+            {/* License & Certificate warnings */}
+            {getDriverWarnings(driver.id).length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
+                {getDriverWarnings(driver.id).map((warning) => (
+                  <div
+                    key={warning.id}
+                    className={`text-xs px-2 py-1 rounded ${
+                      warning.severity === 'error'
+                        ? 'bg-red-50 text-red-700'
+                        : 'bg-yellow-50 text-yellow-700'
+                    }`}
+                  >
+                    {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message.split(' - ')[1]}
+                  </div>
+                ))}
               </div>
             )}
           </Link>

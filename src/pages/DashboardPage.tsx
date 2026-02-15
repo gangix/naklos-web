@@ -87,6 +87,22 @@ const DashboardPage = () => {
   // Calculate all warnings using centralized utility
   const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
 
+  // Trip-related alerts
+  const tripAlerts = useMemo(() => {
+    const delivered = mockTrips.filter((t) => t.status === 'delivered');
+    const waitingForDocs = delivered.filter((t) => t.deliveryDocuments.length === 0);
+    const readyToConfirm = delivered.filter(
+      (t) => t.deliveryDocuments.length > 0 && !t.documentsConfirmed
+    );
+    const readyToInvoice = delivered.filter((t) => t.documentsConfirmed && !t.invoiced);
+
+    return {
+      waitingForDocs: waitingForDocs.length,
+      readyToConfirm: readyToConfirm.length,
+      readyToInvoice: readyToInvoice.length,
+    };
+  }, []);
+
   // Format currency
   const formatCurrency = (amount: number) => {
     return `${COMMON.currency}${amount.toLocaleString('tr-TR')}`;
@@ -99,6 +115,67 @@ const DashboardPage = () => {
         <h1 className="text-2xl font-bold text-gray-900">Naklos</h1>
         <p className="text-sm text-gray-600 mt-1">{mockFleet.name}</p>
       </div>
+
+      {/* ALERTS SECTION - Prominent at top */}
+      {(stats.overdueWarning || warnings.length > 0 || tripAlerts.waitingForDocs > 0 || tripAlerts.readyToConfirm > 0) && (
+        <div className="mb-6 space-y-2">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">⚠️ Dikkat Gereken Konular</h2>
+
+          {/* Critical alerts (errors) */}
+          {warnings
+            .filter((w) => w.severity === 'error')
+            .map((warning) => (
+              <div key={warning.id} className="bg-red-50 border-2 border-red-300 rounded-lg p-3">
+                <p className="text-sm font-medium text-red-900">🚨 {warning.message}</p>
+              </div>
+            ))}
+
+          {/* Overdue invoices */}
+          {stats.overdueWarning && (
+            <div className="bg-red-50 border-2 border-red-300 rounded-lg p-3">
+              <p className="text-sm font-medium text-red-900">
+                💰 {stats.overdueInvoiceCount} fatura vadesi geçmiş - toplam {formatCurrency(stats.overdue)}
+              </p>
+            </div>
+          )}
+
+          {/* Warning alerts */}
+          {warnings
+            .filter((w) => w.severity === 'warning')
+            .map((warning) => (
+              <div key={warning.id} className="bg-yellow-50 border border-yellow-300 rounded-lg p-3">
+                <p className="text-sm text-yellow-900">⚠️ {warning.message}</p>
+              </div>
+            ))}
+
+          {/* Trip alerts - waiting for documents */}
+          {tripAlerts.waitingForDocs > 0 && (
+            <div className="bg-blue-50 border border-blue-300 rounded-lg p-3">
+              <p className="text-sm text-blue-900">
+                📦 {tripAlerts.waitingForDocs} sefer tamamlandı, belge yüklemesi bekleniyor
+              </p>
+            </div>
+          )}
+
+          {/* Trip alerts - ready to confirm */}
+          {tripAlerts.readyToConfirm > 0 && (
+            <div className="bg-purple-50 border border-purple-300 rounded-lg p-3">
+              <p className="text-sm text-purple-900">
+                ✅ {tripAlerts.readyToConfirm} seferin belgeleri yüklendi, onay bekleniyor
+              </p>
+            </div>
+          )}
+
+          {/* Trip alerts - ready to invoice */}
+          {tripAlerts.readyToInvoice > 0 && (
+            <div className="bg-green-50 border border-green-300 rounded-lg p-3">
+              <p className="text-sm text-green-900">
+                💵 {tripAlerts.readyToInvoice} sefer fatura oluşturmaya hazır
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Financial summary cards */}
       <div className="grid grid-cols-2 gap-4 mb-6">
@@ -212,33 +289,6 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
-
-      {/* Warnings */}
-      {(stats.overdueWarning || warnings.length > 0) && (
-        <div className="mb-6 space-y-2">
-          {stats.overdueWarning && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-sm text-red-800">
-                ⚠️ {stats.overdueInvoiceCount} fatura vadesi geçmiş
-              </p>
-            </div>
-          )}
-          {warnings
-            .filter((w) => w.severity === 'error')
-            .map((warning) => (
-              <div key={warning.id} className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-800">🚨 {warning.message}</p>
-              </div>
-            ))}
-          {warnings
-            .filter((w) => w.severity === 'warning')
-            .map((warning) => (
-              <div key={warning.id} className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <p className="text-sm text-yellow-800">⚠️ {warning.message}</p>
-              </div>
-            ))}
-        </div>
-      )}
 
     </div>
   );
