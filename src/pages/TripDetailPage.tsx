@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { mockTrips } from '../data/mock';
+import { mockTrips, mockInvoices } from '../data/mock';
 import { TRIPS, EXPENSES, DOCUMENTS } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import FileUpload from '../components/common/FileUpload';
@@ -13,6 +13,15 @@ const TripDetailPage = () => {
   const trip = mockTrips.find((t) => t.id === tripId);
   const [documents, setDocuments] = useState<Document[]>(trip?.deliveryDocuments || []);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+
+  // Check if invoice already exists for this trip
+  const existingInvoice = mockInvoices.find((inv) => inv.tripIds.includes(tripId || ''));
+
+  // Can generate invoice if: trip is delivered AND has documents AND no invoice exists yet
+  const canGenerateInvoice =
+    trip?.status === 'delivered' &&
+    documents.length > 0 &&
+    !existingInvoice;
 
   if (!trip) {
     return (
@@ -62,6 +71,21 @@ const TripDetailPage = () => {
       return;
     }
     setDocuments([...documents, document]);
+  };
+
+  const handleGenerateInvoice = () => {
+    if (!trip) return;
+
+    // Show confirmation
+    const confirmed = window.confirm(
+      `${trip.originCity} → ${trip.destinationCity} seferi için fatura oluşturulsun mu?\n\nTutar: ${formatCurrency(trip.revenue)}\nMüşteri: ${trip.clientName}`
+    );
+
+    if (confirmed) {
+      alert('Fatura oluşturuldu! Ödemeler sayfasından görüntüleyebilirsiniz.');
+      // In a real app, this would create a new invoice in the backend
+      // For now, we just show success message
+    }
   };
 
   const handleDocumentClick = (doc: Document) => {
@@ -176,7 +200,7 @@ const TripDetailPage = () => {
 
       {/* Delivery documents section */}
       {trip.status === 'delivered' && (
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{DOCUMENTS.deliveryConfirmation}</h2>
 
           {/* Uploaded documents grid */}
@@ -213,6 +237,47 @@ const TripDetailPage = () => {
             <p className="text-xs text-center text-gray-500 mt-3">
               {DOCUMENTS.maxLimit}
             </p>
+          )}
+        </div>
+      )}
+
+      {/* Generate Invoice Section */}
+      {trip?.status === 'delivered' && (
+        <div className="bg-white rounded-lg p-4 shadow-sm">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Fatura Oluştur</h2>
+
+          {existingInvoice ? (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <p className="text-sm text-green-800 mb-2">
+                ✓ Bu sefer için fatura oluşturulmuş
+              </p>
+              <button
+                onClick={() => navigate(`/invoices/${existingInvoice.id}`)}
+                className="text-sm text-green-700 font-medium underline"
+              >
+                Faturayı Görüntüle →
+              </button>
+            </div>
+          ) : documents.length === 0 ? (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <p className="text-sm text-yellow-800">
+                ⚠️ Fatura oluşturmak için teslimat belgesi yüklemeniz gerekiyor
+              </p>
+            </div>
+          ) : (
+            <div>
+              <p className="text-sm text-gray-600 mb-3">
+                Teslimat belgeleri yüklendi. Şimdi fatura oluşturabilirsiniz.
+              </p>
+              <button
+                onClick={handleGenerateInvoice}
+                disabled={!canGenerateInvoice}
+                className="w-full py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                <span className="text-lg">📄</span>
+                <span>Fatura Oluştur ({formatCurrency(trip.revenue)})</span>
+              </button>
+            </div>
           )}
         </div>
       )}
