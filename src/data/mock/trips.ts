@@ -1,4 +1,4 @@
-import { Trip } from '../../types';
+import type { Trip } from '../../types';
 
 const today = new Date();
 const yesterday = new Date(today);

@@ -1,4 +1,4 @@
-import { Fleet } from '../../types';
+import type { Fleet } from '../../types';
 
 export const mockFleet: Fleet = {
   id: 'fleet-1',

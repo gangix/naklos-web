@@ -1,4 +1,4 @@
-import { Truck } from '../../types';
+import type { Truck } from '../../types';
 
 export const mockTrucks: Truck[] = [
   // In-transit trucks (8)

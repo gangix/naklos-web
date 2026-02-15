@@ -1,4 +1,4 @@
-import { Driver } from '../../types';
+import type { Driver } from '../../types';
 
 // Helper to calculate dates
 const today = new Date();

@@ -1,4 +1,4 @@
-import { Invoice } from '../../types';
+import type { Invoice } from '../../types';
 
 const today = new Date();
 
