@@ -16,7 +16,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     relatedName: 'Mehmet Yılmaz',
     submittedBy: 'driver',
     submittedByName: 'Mehmet Yılmaz',
-    imageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...', // Mock base64
+    imageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+RG9jdW1lbnQ8L3RleHQ+PC9zdmc+',
     suggestedExpiryDate: '2029-03-15',
     confirmedExpiryDate: null,
     status: 'pending',
@@ -25,7 +25,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     reviewedBy: null,
     rejectionReason: null,
     rejectionNote: null,
-    previousImageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...', // Mock base64
+    previousImageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjODg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+T2xkIERvYzwvdGV4dD48L3N2Zz4=',
     previousExpiryDate: '2026-03-15',
   },
 
@@ -38,7 +38,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     relatedName: 'Ali Demir',
     submittedBy: 'driver',
     submittedByName: 'Ali Demir',
-    imageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...',
+    imageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+RG9jdW1lbnQ8L3RleHQ+PC9zdmc+',
     suggestedExpiryDate: '2029-06-20',
     confirmedExpiryDate: null,
     status: 'pending',
@@ -47,7 +47,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     reviewedBy: null,
     rejectionReason: null,
     rejectionNote: null,
-    previousImageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...',
+    previousImageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjODg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+T2xkIERvYzwvdGV4dD48L3N2Zz4=',
     previousExpiryDate: '2026-06-20',
   },
 
@@ -60,7 +60,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     relatedName: '34 ABC 123',
     submittedBy: 'manager',
     submittedByName: 'Fleet Manager',
-    imageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...',
+    imageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+RG9jdW1lbnQ8L3RleHQ+PC9zdmc+',
     suggestedExpiryDate: '2027-01-10',
     confirmedExpiryDate: '2027-01-10',
     status: 'approved',
@@ -69,7 +69,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     reviewedBy: 'Fleet Manager',
     rejectionReason: null,
     rejectionNote: null,
-    previousImageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...',
+    previousImageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjODg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+T2xkIERvYzwvdGV4dD48L3N2Zz4=',
     previousExpiryDate: '2026-01-10',
   },
 
@@ -82,7 +82,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     relatedName: 'Hasan Kaya',
     submittedBy: 'driver',
     submittedByName: 'Hasan Kaya',
-    imageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...',
+    imageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2VlZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjE0IiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+RG9jdW1lbnQ8L3RleHQ+PC9zdmc+',
     suggestedExpiryDate: '2029-04-01',
     confirmedExpiryDate: null,
     status: 'rejected',
@@ -91,7 +91,7 @@ export const mockDocumentSubmissions: DocumentSubmission[] = [
     reviewedBy: 'Fleet Manager',
     rejectionReason: 'blurry',
     rejectionNote: 'Lütfen daha net bir fotoğraf çekin',
-    previousImageDataUrl: 'data:image/jpeg;base64,/9j/4AAQSkZJRg...',
+    previousImageDataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2RkZCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LXNpemU9IjEyIiBmaWxsPSIjODg4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+T2xkIERvYzwvdGV4dD48L3N2Zz4=',
     previousExpiryDate: '2026-04-01',
   },
 ];
