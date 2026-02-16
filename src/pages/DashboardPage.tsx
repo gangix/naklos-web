@@ -8,7 +8,7 @@ import { getBadgeSize } from '../utils/badgeHelpers';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const { trips } = useData();
+  const { trips, documentSubmissions, truckAssignmentRequests } = useData();
   const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
 
   // Calculate statistics
@@ -53,6 +53,18 @@ const DashboardPage = () => {
       (w) => w.relatedType === 'driver' && w.severity === 'error'
     );
 
+    // Truck document approvals
+    const truckDocApprovalsCount = documentSubmissions.filter(
+      (doc) => doc.status === 'pending' && doc.relatedType === 'truck'
+    ).length;
+
+    // Driver document + truck assignment approvals
+    const driverApprovalsCount =
+      documentSubmissions.filter(
+        (doc) => doc.status === 'pending' && doc.relatedType === 'driver'
+      ).length +
+      truckAssignmentRequests.filter((req) => req.status === 'pending').length;
+
     // Total counts
     const totalTrips = trips.filter(
       (trip) => trip.status === 'in-progress' || trip.status === 'created'
@@ -66,12 +78,14 @@ const DashboardPage = () => {
       completedLastMonth: completedLastMonth.length,
       truckWarningsCount: truckWarnings.length,
       driverWarningsCount: driverWarnings.length,
+      truckDocApprovalsCount,
+      driverApprovalsCount,
       totalTrips,
       totalTrucks,
       totalDrivers,
       hasData: totalTrucks > 0 || totalDrivers > 0 || trips.length > 0,
     };
-  }, [trips, warnings]);
+  }, [trips, warnings, documentSubmissions, truckAssignmentRequests]);
 
   // Get current and previous month names
   const currentMonthName = getTurkishMonthName(new Date().getMonth());
@@ -202,9 +216,9 @@ const DashboardPage = () => {
 
         {/* Araçlar Card */}
         <button
-          onClick={() => navigate('/manager/trucks')}
+          onClick={() => navigate(stats.truckDocApprovalsCount > 0 ? '/manager/trucks?tab=pending' : '/manager/trucks')}
           className={`relative bg-white rounded-xl shadow-sm hover:shadow-md transition-all text-left border border-gray-200 group ${
-            stats.truckWarningsCount > 0 ? 'p-6 max-lg:pt-8' : 'p-6'
+            stats.truckWarningsCount > 0 || stats.truckDocApprovalsCount > 0 ? 'p-6 max-lg:pt-8' : 'p-6'
           }`}
         >
           {/* Warning Badge */}
@@ -217,18 +231,36 @@ const DashboardPage = () => {
             );
           })()}
 
+          {/* Approval Badge (positioned to the left of warning badge if both exist) */}
+          {stats.truckDocApprovalsCount > 0 && (() => {
+            const badgeSize = getBadgeSize(stats.truckDocApprovalsCount);
+            const positionClass = stats.truckWarningsCount > 0
+              ? '-top-2 right-12 lg:-top-2 lg:right-12'
+              : badgeSize.positionClass;
+            return (
+              <div className={`absolute ${positionClass} ${badgeSize.sizeClass} bg-orange-500 rounded-full flex items-center justify-center text-white ${badgeSize.textClass} shadow-lg`}>
+                {stats.truckDocApprovalsCount}
+              </div>
+            );
+          })()}
+
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 group-hover:scale-110 transition-transform">
               🚛
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-bold text-gray-900 mb-1">Araçlar</h3>
+              {stats.truckDocApprovalsCount > 0 && (
+                <p className="text-sm text-orange-600 font-medium">
+                  {stats.truckDocApprovalsCount} belge onay bekliyor
+                </p>
+              )}
               {stats.truckWarningsCount > 0 && (
                 <p className="text-sm text-red-600 font-medium">
                   {stats.truckWarningsCount} araç uyarısı var
                 </p>
               )}
-              {stats.truckWarningsCount === 0 && (
+              {stats.truckWarningsCount === 0 && stats.truckDocApprovalsCount === 0 && (
                 <p className="text-sm text-gray-500">
                   Tüm belgeler güncel
                 </p>
@@ -243,9 +275,9 @@ const DashboardPage = () => {
 
         {/* Sürücüler Card */}
         <button
-          onClick={() => navigate('/manager/drivers')}
+          onClick={() => navigate(stats.driverApprovalsCount > 0 ? '/manager/drivers?tab=pending' : '/manager/drivers')}
           className={`relative bg-white rounded-xl shadow-sm hover:shadow-md transition-all text-left border border-gray-200 group ${
-            stats.driverWarningsCount > 0 ? 'p-6 max-lg:pt-8' : 'p-6'
+            stats.driverWarningsCount > 0 || stats.driverApprovalsCount > 0 ? 'p-6 max-lg:pt-8' : 'p-6'
           }`}
         >
           {/* Warning Badge */}
@@ -258,18 +290,36 @@ const DashboardPage = () => {
             );
           })()}
 
+          {/* Approval Badge (positioned to the left of warning badge if both exist) */}
+          {stats.driverApprovalsCount > 0 && (() => {
+            const badgeSize = getBadgeSize(stats.driverApprovalsCount);
+            const positionClass = stats.driverWarningsCount > 0
+              ? '-top-2 right-12 lg:-top-2 lg:right-12'
+              : badgeSize.positionClass;
+            return (
+              <div className={`absolute ${positionClass} ${badgeSize.sizeClass} bg-orange-500 rounded-full flex items-center justify-center text-white ${badgeSize.textClass} shadow-lg`}>
+                {stats.driverApprovalsCount}
+              </div>
+            );
+          })()}
+
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center text-3xl flex-shrink-0 group-hover:scale-110 transition-transform">
               👤
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-bold text-gray-900 mb-1">Sürücüler</h3>
+              {stats.driverApprovalsCount > 0 && (
+                <p className="text-sm text-orange-600 font-medium">
+                  {stats.driverApprovalsCount} onay bekliyor
+                </p>
+              )}
               {stats.driverWarningsCount > 0 && (
                 <p className="text-sm text-red-600 font-medium">
                   {stats.driverWarningsCount} sürücü uyarısı var
                 </p>
               )}
-              {stats.driverWarningsCount === 0 && (
+              {stats.driverWarningsCount === 0 && stats.driverApprovalsCount === 0 && (
                 <p className="text-sm text-gray-500">
                   Tüm belgeler güncel
                 </p>

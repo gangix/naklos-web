@@ -1,21 +1,32 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, FileText, Building2, Bell } from 'lucide-react';
+import { Home, Truck, Users, FileText, Building2 } from 'lucide-react';
 import { useData } from '../../contexts/DataContext';
 
 const ManagerSidebar = () => {
-  const { documentSubmissions, truckAssignmentRequests } = useData();
+  const { documentSubmissions, truckAssignmentRequests, trips } = useData();
 
-  // Calculate pending approvals count
-  const pendingCount =
-    documentSubmissions.filter((doc) => doc.status === 'pending').length +
+  // Calculate pending approval counts per context
+  const tripsPendingCount = trips.filter(
+    (trip) => trip.status === 'delivered' && trip.deliveryDocuments.length > 0
+  ).length;
+
+  const trucksPendingCount = documentSubmissions.filter(
+    (doc) =>
+      doc.status === 'pending' &&
+      doc.relatedType === 'truck'
+  ).length;
+
+  const driversPendingCount =
+    documentSubmissions.filter(
+      (doc) => doc.status === 'pending' && doc.relatedType === 'driver'
+    ).length +
     truckAssignmentRequests.filter((req) => req.status === 'pending').length;
 
   const menuItems = [
     { path: '/manager/dashboard', label: 'Ana Sayfa', icon: Home },
-    { path: '/manager/approvals', label: 'Onaylar', icon: Bell, badge: pendingCount },
-    { path: '/manager/trips', label: 'Seferler', icon: Truck },
-    { path: '/manager/trucks', label: 'Araçlar', icon: Truck },
-    { path: '/manager/drivers', label: 'Sürücüler', icon: Users },
+    { path: '/manager/trips', label: 'Seferler', icon: Truck, badge: tripsPendingCount },
+    { path: '/manager/trucks', label: 'Araçlar', icon: Truck, badge: trucksPendingCount },
+    { path: '/manager/drivers', label: 'Sürücüler', icon: Users, badge: driversPendingCount },
     { path: '/manager/invoices', label: 'Faturalar', icon: FileText },
     { path: '/manager/clients', label: 'Müşteriler', icon: Building2 },
   ];
