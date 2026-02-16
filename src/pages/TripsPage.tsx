@@ -250,32 +250,36 @@ const TripsPage = () => {
         >
           Planlanmış ({plannedTrips.length})
         </button>
-        <button
-          onClick={() => {
-            setTab('pending');
-            setSelectedTripIds([]);
-          }}
-          className={`px-4 py-2 font-medium whitespace-nowrap ${
-            tab === 'pending'
-              ? 'text-primary-600 border-b-2 border-primary-600'
-              : 'text-gray-600'
-          }`}
-        >
-          Onay Bekliyor ({pendingTrips.length})
-        </button>
-        <button
-          onClick={() => {
-            setTab('ready');
-            setSelectedTripIds([]);
-          }}
-          className={`px-4 py-2 font-medium whitespace-nowrap ${
-            tab === 'ready'
-              ? 'text-primary-600 border-b-2 border-primary-600'
-              : 'text-gray-600'
-          }`}
-        >
-          Fatura Hazır ({readyTrips.length})
-        </button>
+        {pendingTrips.length > 0 && (
+          <button
+            onClick={() => {
+              setTab('pending');
+              setSelectedTripIds([]);
+            }}
+            className={`px-4 py-2 font-medium whitespace-nowrap ${
+              tab === 'pending'
+                ? 'text-primary-600 border-b-2 border-primary-600'
+                : 'text-gray-600'
+            }`}
+          >
+            Onay Bekliyor ({pendingTrips.length})
+          </button>
+        )}
+        {readyTrips.length > 0 && (
+          <button
+            onClick={() => {
+              setTab('ready');
+              setSelectedTripIds([]);
+            }}
+            className={`px-4 py-2 font-medium whitespace-nowrap ${
+              tab === 'ready'
+                ? 'text-primary-600 border-b-2 border-primary-600'
+                : 'text-gray-600'
+            }`}
+          >
+            Fatura Hazır ({readyTrips.length})
+          </button>
+        )}
       </div>
 
       {/* Planned Tab */}

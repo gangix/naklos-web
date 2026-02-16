@@ -160,26 +160,30 @@ const TrucksPage = () => {
         >
           Araçlar ({mockTrucks.length})
         </button>
-        <button
-          onClick={() => setTab('pending')}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            tab === 'pending'
-              ? 'border-primary-600 text-primary-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          Onay Bekliyor ({pendingSubmissions.length})
-        </button>
-        <button
-          onClick={() => setTab('history')}
-          className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-            tab === 'history'
-              ? 'border-primary-600 text-primary-600'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          }`}
-        >
-          Geçmiş
-        </button>
+        {pendingSubmissions.length > 0 && (
+          <button
+            onClick={() => setTab('pending')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              tab === 'pending'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Onay Bekliyor ({pendingSubmissions.length})
+          </button>
+        )}
+        {completedSubmissions.length > 0 && (
+          <button
+            onClick={() => setTab('history')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              tab === 'history'
+                ? 'border-primary-600 text-primary-600'
+                : 'border-transparent text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            Geçmiş
+          </button>
+        )}
       </div>
 
       {/* Truck List Tab */}
