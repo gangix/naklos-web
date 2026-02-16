@@ -13,6 +13,7 @@ import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import InvoiceCreatePage from './pages/InvoiceCreatePage';
 import ClientsPage from './pages/ClientsPage';
 import MorePage from './pages/MorePage';
+import ManagerApprovalsPage from './pages/ManagerApprovalsPage';
 
 // Driver pages
 import DriverDashboardPage from './pages/driver/DriverDashboardPage';
@@ -33,6 +34,7 @@ function App() {
         <Route path="/manager" element={<ManagerLayout />}>
           <Route index element={<Navigate to="/manager/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="approvals" element={<ManagerApprovalsPage />} />
           <Route path="trucks" element={<TrucksPage />} />
           <Route path="trucks/:truckId" element={<TruckDetailPage />} />
           <Route path="trips" element={<TripsPage />} />

@@ -1,9 +1,18 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, FileText, Building2 } from 'lucide-react';
+import { Home, Truck, Users, FileText, Building2, Bell } from 'lucide-react';
+import { useData } from '../../contexts/DataContext';
 
 const ManagerSidebar = () => {
+  const { documentSubmissions, truckAssignmentRequests } = useData();
+
+  // Calculate pending approvals count
+  const pendingCount =
+    documentSubmissions.filter((doc) => doc.status === 'pending').length +
+    truckAssignmentRequests.filter((req) => req.status === 'pending').length;
+
   const menuItems = [
     { path: '/manager/dashboard', label: 'Ana Sayfa', icon: Home },
+    { path: '/manager/approvals', label: 'Onaylar', icon: Bell, badge: pendingCount },
     { path: '/manager/trips', label: 'Seferler', icon: Truck },
     { path: '/manager/trucks', label: 'Araçlar', icon: Truck },
     { path: '/manager/drivers', label: 'Sürücüler', icon: Users },
@@ -27,7 +36,7 @@ const ManagerSidebar = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors relative ${
                   isActive
                     ? 'bg-slate-800 text-white'
                     : 'text-slate-300 hover:bg-slate-800 hover:text-white'
@@ -35,7 +44,12 @@ const ManagerSidebar = () => {
               }
             >
               <Icon className="h-5 w-5" />
-              <span>{item.label}</span>
+              <span className="flex-1">{item.label}</span>
+              {item.badge && item.badge > 0 && (
+                <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold bg-red-500 text-white rounded-full">
+                  {item.badge}
+                </span>
+              )}
             </NavLink>
           );
         })}
