@@ -56,7 +56,7 @@ const ManagerSidebar = () => {
             >
               <Icon className="h-5 w-5" />
               <span className="flex-1">{item.label}</span>
-              {item.badge && item.badge > 0 && (
+              {item.badge !== undefined && item.badge > 0 && (
                 <span className="flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-bold bg-red-500 text-white rounded-full">
                   {item.badge}
                 </span>
