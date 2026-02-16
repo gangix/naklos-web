@@ -3,7 +3,8 @@ import { useData } from '../contexts/DataContext';
 import { APPROVALS } from '../constants/text';
 import { formatDate } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
-import type { DocumentSubmission } from '../types';
+import TruckAssignmentModal from '../components/common/TruckAssignmentModal';
+import type { DocumentSubmission, TruckAssignmentRequest } from '../types';
 
 type ApprovalItemType = 'document' | 'truck_request';
 
@@ -23,6 +24,8 @@ const ManagerApprovalsPage = () => {
   const [selectedTab, setSelectedTab] = useState<'all' | 'documents' | 'trucks'>('all');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
+  const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<TruckAssignmentRequest | null>(null);
 
   // Combine all approval items
   const allItems: ApprovalItem[] = [
@@ -94,8 +97,11 @@ const ManagerApprovalsPage = () => {
         setReviewModalOpen(true);
       }
     } else {
-      alert(`Araç talebi inceleme modalı açılacak: ${item.id}`);
-      // TODO: Open TruckAssignmentModal
+      const request = truckAssignmentRequests.find((req) => req.id === item.id);
+      if (request) {
+        setSelectedRequest(request);
+        setAssignmentModalOpen(true);
+      }
     }
   };
 
@@ -223,6 +229,18 @@ const ManagerApprovalsPage = () => {
             setSelectedSubmission(null);
           }}
           submission={selectedSubmission}
+        />
+      )}
+
+      {/* Truck Assignment Modal */}
+      {assignmentModalOpen && selectedRequest && (
+        <TruckAssignmentModal
+          isOpen={assignmentModalOpen}
+          onClose={() => {
+            setAssignmentModalOpen(false);
+            setSelectedRequest(null);
+          }}
+          request={selectedRequest}
         />
       )}
     </div>
