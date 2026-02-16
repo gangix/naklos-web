@@ -8,7 +8,7 @@ const MorePage = () => {
     {
       icon: '👤',
       title: 'Sürücüler',
-      description: 'Şoför listesi ve belgeler',
+      description: 'Sürücü listesi ve belgeler',
       path: '/drivers',
       color: 'bg-green-100',
     },

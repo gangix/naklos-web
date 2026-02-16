@@ -7,7 +7,7 @@ export const NAV = {
   trucks: 'Araçlar',
   trips: 'Seferler',
   invoices: 'Ödemeler',
-  drivers: 'Şoförler',
+  drivers: 'Sürücüler',
   clients: 'Müşteriler',
   more: 'Daha Fazla',
 } as const;
@@ -20,7 +20,7 @@ export const DASHBOARD = {
   profit: 'Net Kâr',
   activeTrips: 'Aktif Seferler',
   availableTrucks: 'Müsait Araçlar',
-  availableDrivers: 'Müsait Şoförler',
+  availableDrivers: 'Müsait Sürücüler',
 } as const;
 
 export const TRUCKS = {
@@ -32,7 +32,7 @@ export const TRUCKS = {
   plateNumber: 'Plaka',
   type: 'Tür',
   status: 'Durum',
-  driver: 'Şoför',
+  driver: 'Sürücü',
   currentTrip: 'Aktif Sefer',
   assignmentInfo: 'Atama Bilgileri',
   recentTrips: 'Son Seferler',
@@ -52,7 +52,7 @@ export const TRUCKS = {
 } as const;
 
 export const DRIVERS = {
-  title: 'Şoförler',
+  title: 'Sürücüler',
   available: 'Müsait',
   onTrip: 'Seferde',
   offDuty: 'İzinli',
@@ -88,7 +88,7 @@ export const TRIPS = {
   route: 'Güzergah',
   client: 'Müşteri',
   truck: 'Araç',
-  driver: 'Şoför',
+  driver: 'Sürücü',
   status: 'Durum',
   revenue: 'Gelir',
   expenses: 'Giderler',
@@ -154,7 +154,6 @@ export const CLIENTS = {
 export const EXPENSES = {
   fuel: 'Yakıt',
   tolls: 'HGS/OGS',
-  driverFee: 'Şoför Ücreti',
   other: 'Diğer',
   total: 'Toplam Gider',
 } as const;

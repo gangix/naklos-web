@@ -61,7 +61,6 @@ const DriverTripCreatePage = () => {
       expenses: {
         fuel: 0,
         tolls: 0,
-        driverFee: 0,
         other: 0,
         otherReason: '',
       },

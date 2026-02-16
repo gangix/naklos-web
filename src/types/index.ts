@@ -111,7 +111,6 @@ export interface Trip {
 export interface TripExpenses {
   fuel: number;
   tolls: number;
-  driverFee: number;
   other: number;
   otherReason?: string;
 }

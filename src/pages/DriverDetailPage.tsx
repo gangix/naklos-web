@@ -13,7 +13,7 @@ const DriverDetailPage = () => {
   if (!driver) {
     return (
       <div className="p-4">
-        <p className="text-center text-gray-600">Şoför bulunamadı</p>
+        <p className="text-center text-gray-600">Sürücü bulunamadı</p>
       </div>
     );
   }

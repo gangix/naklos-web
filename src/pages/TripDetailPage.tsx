@@ -30,7 +30,6 @@ const TripDetailPage = () => {
     expenses: {
       fuel: trip?.expenses.fuel || 0,
       tolls: trip?.expenses.tolls || 0,
-      driverFee: trip?.expenses.driverFee || 0,
       other: trip?.expenses.other || 0,
       otherReason: trip?.expenses.otherReason || '',
     },
@@ -52,7 +51,6 @@ const TripDetailPage = () => {
         expenses: {
           fuel: trip.expenses.fuel || 0,
           tolls: trip.expenses.tolls || 0,
-          driverFee: trip.expenses.driverFee || 0,
           other: trip.expenses.other || 0,
           otherReason: trip.expenses.otherReason || '',
         },
@@ -161,7 +159,6 @@ const TripDetailPage = () => {
         expenses: {
           fuel: trip.expenses.fuel || 0,
           tolls: trip.expenses.tolls || 0,
-          driverFee: trip.expenses.driverFee || 0,
           other: trip.expenses.other || 0,
           otherReason: trip.expenses.otherReason || '',
         },
