@@ -1,12 +1,18 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockTrucks } from '../data/mock';
 import { TRUCKS } from '../constants/text';
 import { formatCurrency } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
+import DocumentUploadModal from '../components/common/DocumentUploadModal';
+import type { DocumentCategory } from '../types';
 
 const TruckDetailPage = () => {
   const { truckId } = useParams<{ truckId: string }>();
   const navigate = useNavigate();
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
+  const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
 
   const truck = mockTrucks.find((t) => t.id === truckId);
 
@@ -42,6 +48,12 @@ const TruckDetailPage = () => {
       default:
         return status;
     }
+  };
+
+  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string | null) => {
+    setUploadCategory(category);
+    setUploadCurrentExpiry(currentExpiry);
+    setUploadModalOpen(true);
   };
 
   return (
@@ -82,19 +94,57 @@ const TruckDetailPage = () => {
       {/* Document expiry section */}
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.documents}</h2>
-        <div className="grid grid-cols-1 gap-3">
-          <ExpiryBadge
-            label={TRUCKS.compulsoryInsurance}
-            date={truck.compulsoryInsuranceExpiry}
-          />
-          <ExpiryBadge
-            label={TRUCKS.comprehensiveInsurance}
-            date={truck.comprehensiveInsuranceExpiry}
-          />
-          <ExpiryBadge
-            label={TRUCKS.inspection}
-            date={truck.inspectionExpiry}
-          />
+        <div className="space-y-3">
+          {/* Compulsory Insurance */}
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.compulsoryInsurance}</h3>
+              <button
+                onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                Güncelle
+              </button>
+            </div>
+            <ExpiryBadge
+              label=""
+              date={truck.compulsoryInsuranceExpiry}
+            />
+          </div>
+
+          {/* Comprehensive Insurance */}
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.comprehensiveInsurance}</h3>
+              <button
+                onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                Güncelle
+              </button>
+            </div>
+            <ExpiryBadge
+              label=""
+              date={truck.comprehensiveInsuranceExpiry}
+            />
+          </div>
+
+          {/* Inspection */}
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.inspection}</h3>
+              <button
+                onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                Güncelle
+              </button>
+            </div>
+            <ExpiryBadge
+              label=""
+              date={truck.inspectionExpiry}
+            />
+          </div>
         </div>
       </div>
 
@@ -134,6 +184,21 @@ const TruckDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Document Upload Modal */}
+      {uploadModalOpen && uploadCategory && (
+        <DocumentUploadModal
+          isOpen={uploadModalOpen}
+          onClose={() => setUploadModalOpen(false)}
+          category={uploadCategory}
+          relatedType="truck"
+          relatedId={truck.id}
+          relatedName={truck.plateNumber}
+          submittedByName="Fleet Manager"
+          currentExpiryDate={uploadCurrentExpiry}
+          previousImageUrl={null}
+        />
+      )}
     </div>
   );
 };

@@ -4,11 +4,16 @@ import { useData } from '../../contexts/DataContext';
 import { mockDrivers, mockTrucks } from '../../data/mock';
 import { TRUCK_REQUEST, TRUCKS, COMMON } from '../../constants/text';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
+import DocumentUploadModal from '../../components/common/DocumentUploadModal';
+import type { DocumentCategory } from '../../types';
 
 const DriverTruckPage = () => {
   const { user } = useAuth();
   const { truckAssignmentRequests, requestTruckAssignment } = useData();
   const [showTruckSelector, setShowTruckSelector] = useState(false);
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
+  const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
 
   // Find current driver
   const driver = mockDrivers.find((d) => d.id === user?.driverId);
@@ -45,6 +50,12 @@ const DriverTruckPage = () => {
 
     setShowTruckSelector(false);
     alert('Araç talebi gönderildi. Yöneticiniz inceleyecek.');
+  };
+
+  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string | null) => {
+    setUploadCategory(category);
+    setUploadCurrentExpiry(currentExpiry);
+    setUploadModalOpen(true);
   };
 
   // If truck assigned, show truck details
@@ -89,7 +100,15 @@ const DriverTruckPage = () => {
           {/* Compulsory Insurance */}
           {assignedTruck.compulsoryInsuranceExpiry && (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
-              <h3 className="text-sm font-bold text-gray-900 mb-2">{TRUCKS.compulsoryInsurance}</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-gray-900">{TRUCKS.compulsoryInsurance}</h3>
+                <button
+                  onClick={() => handleDocumentUpdate('compulsory-insurance', assignedTruck.compulsoryInsuranceExpiry)}
+                  className="text-sm text-primary-600 font-medium"
+                >
+                  Güncelle
+                </button>
+              </div>
               <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.compulsoryInsuranceExpiry} />
             </div>
           )}
@@ -97,7 +116,15 @@ const DriverTruckPage = () => {
           {/* Comprehensive Insurance */}
           {assignedTruck.comprehensiveInsuranceExpiry && (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
-              <h3 className="text-sm font-bold text-gray-900 mb-2">{TRUCKS.comprehensiveInsurance}</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-gray-900">{TRUCKS.comprehensiveInsurance}</h3>
+                <button
+                  onClick={() => handleDocumentUpdate('comprehensive-insurance', assignedTruck.comprehensiveInsuranceExpiry)}
+                  className="text-sm text-primary-600 font-medium"
+                >
+                  Güncelle
+                </button>
+              </div>
               <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.comprehensiveInsuranceExpiry} />
             </div>
           )}
@@ -105,7 +132,15 @@ const DriverTruckPage = () => {
           {/* Inspection */}
           {assignedTruck.inspectionExpiry && (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
-              <h3 className="text-sm font-bold text-gray-900 mb-2">{TRUCKS.inspection}</h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-gray-900">{TRUCKS.inspection}</h3>
+                <button
+                  onClick={() => handleDocumentUpdate('inspection', assignedTruck.inspectionExpiry)}
+                  className="text-sm text-primary-600 font-medium"
+                >
+                  Güncelle
+                </button>
+              </div>
               <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.inspectionExpiry} />
             </div>
           )}
@@ -114,9 +149,24 @@ const DriverTruckPage = () => {
         {/* Info note */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
-            ℹ️ Araç belgelerini sadece görüntüleyebilirsiniz. Belge güncellemeleri için yöneticinizle iletişime geçin.
+            ℹ️ Araç belgelerini güncelleyebilirsiniz. Yüklediğiniz belgeler yöneticiniz tarafından onaylandıktan sonra geçerli olacak.
           </p>
         </div>
+
+        {/* Document Upload Modal */}
+        {uploadModalOpen && uploadCategory && assignedTruck && (
+          <DocumentUploadModal
+            isOpen={uploadModalOpen}
+            onClose={() => setUploadModalOpen(false)}
+            category={uploadCategory}
+            relatedType="truck"
+            relatedId={assignedTruck.id}
+            relatedName={assignedTruck.plateNumber}
+            submittedByName={`${driver.firstName} ${driver.lastName}`}
+            currentExpiryDate={uploadCurrentExpiry}
+            previousImageUrl={null}
+          />
+        )}
       </div>
     );
   }

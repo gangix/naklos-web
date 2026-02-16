@@ -1,12 +1,18 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockDrivers } from '../data/mock';
 import { DRIVERS } from '../constants/text';
 import ExpiryBadge from '../components/common/ExpiryBadge';
+import DocumentUploadModal from '../components/common/DocumentUploadModal';
 import { formatDate } from '../utils/format';
+import type { DocumentCategory } from '../types';
 
 const DriverDetailPage = () => {
   const { driverId } = useParams<{ driverId: string }>();
   const navigate = useNavigate();
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
+  const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
 
   const driver = mockDrivers.find((d) => d.id === driverId);
 
@@ -45,6 +51,12 @@ const DriverDetailPage = () => {
   };
 
   const fullName = `${driver.firstName} ${driver.lastName}`;
+
+  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string) => {
+    setUploadCategory(category);
+    setUploadCurrentExpiry(currentExpiry);
+    setUploadModalOpen(true);
+  };
 
   return (
     <div className="p-4 pb-20">
@@ -104,7 +116,15 @@ const DriverDetailPage = () => {
 
       {/* License info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{DRIVERS.license}</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.license}</h2>
+          <button
+            onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
+            className="text-sm text-primary-600 font-medium"
+          >
+            Güncelle
+          </button>
+        </div>
         <div className="space-y-3 mb-3">
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseNumber}</p>
@@ -128,9 +148,17 @@ const DriverDetailPage = () => {
           <div className="space-y-3">
             {driver.certificates.map((cert, index) => (
               <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
-                <h3 className="text-sm font-bold text-gray-900 mb-3">
-                  {cert.type === 'SRC' ? DRIVERS.srcCertificate : DRIVERS.cpcCertificate}
-                </h3>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold text-gray-900">
+                    {cert.type === 'SRC' ? DRIVERS.srcCertificate : DRIVERS.cpcCertificate}
+                  </h3>
+                  <button
+                    onClick={() => handleDocumentUpdate(cert.type.toLowerCase() as DocumentCategory, cert.expiryDate)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    Güncelle
+                  </button>
+                </div>
                 <div className="space-y-2 mb-3">
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{DRIVERS.certificateNumber}</p>
@@ -157,6 +185,21 @@ const DriverDetailPage = () => {
           <h2 className="text-lg font-bold text-gray-900 mb-2">{DRIVERS.assignedTruck}</h2>
           <p className="text-sm font-medium text-gray-900">{driver.assignedTruckPlate}</p>
         </div>
+      )}
+
+      {/* Document Upload Modal */}
+      {uploadModalOpen && uploadCategory && (
+        <DocumentUploadModal
+          isOpen={uploadModalOpen}
+          onClose={() => setUploadModalOpen(false)}
+          category={uploadCategory}
+          relatedType="driver"
+          relatedId={driver.id}
+          relatedName={fullName}
+          submittedByName="Fleet Manager"
+          currentExpiryDate={uploadCurrentExpiry}
+          previousImageUrl={null}
+        />
       )}
     </div>
   );
