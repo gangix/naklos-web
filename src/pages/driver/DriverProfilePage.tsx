@@ -4,12 +4,17 @@ import { useData } from '../../contexts/DataContext';
 import { mockDrivers } from '../../data/mock';
 import { PROFILE, DRIVERS, COMMON } from '../../constants/text';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
+import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import { formatDate } from '../../utils/format';
+import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
   const { user } = useAuth();
   const { documentSubmissions } = useData();
   const [isEditing, setIsEditing] = useState(false);
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
+  const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
 
   // Find current driver
   const driver = mockDrivers.find((d) => d.id === user?.driverId);
@@ -58,9 +63,10 @@ const DriverProfilePage = () => {
     setIsEditing(false);
   };
 
-  const handleDocumentUpdate = (category: string) => {
-    // TODO: Open DocumentUploadModal
-    alert(`${category} belgesi güncelleme - Modal açılacak`);
+  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string) => {
+    setUploadCategory(category);
+    setUploadCurrentExpiry(currentExpiry);
+    setUploadModalOpen(true);
   };
 
   return (
@@ -187,7 +193,7 @@ const DriverProfilePage = () => {
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-bold text-gray-900">{DRIVERS.license}</h3>
             <button
-              onClick={() => handleDocumentUpdate('license')}
+              onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
               className="text-sm text-primary-600 font-medium"
             >
               Güncelle
@@ -216,7 +222,7 @@ const DriverProfilePage = () => {
                     {cert.type === 'SRC' ? DRIVERS.srcCertificate : DRIVERS.cpcCertificate}
                   </h3>
                   <button
-                    onClick={() => handleDocumentUpdate(cert.type.toLowerCase())}
+                    onClick={() => handleDocumentUpdate(cert.type.toLowerCase() as DocumentCategory, cert.expiryDate)}
                     className="text-sm text-primary-600 font-medium"
                   >
                     Güncelle
@@ -242,6 +248,21 @@ const DriverProfilePage = () => {
           </>
         )}
       </div>
+
+      {/* Document Upload Modal */}
+      {uploadModalOpen && uploadCategory && (
+        <DocumentUploadModal
+          isOpen={uploadModalOpen}
+          onClose={() => setUploadModalOpen(false)}
+          category={uploadCategory}
+          relatedType="driver"
+          relatedId={driver.id}
+          relatedName={`${driver.firstName} ${driver.lastName}`}
+          submittedByName={`${driver.firstName} ${driver.lastName}`}
+          currentExpiryDate={uploadCurrentExpiry}
+          previousImageUrl={null} // TODO: Get from existing documents
+        />
+      )}
     </div>
   );
 };

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useData } from '../contexts/DataContext';
 import { APPROVALS } from '../constants/text';
 import { formatDate } from '../utils/format';
+import DocumentReviewModal from '../components/common/DocumentReviewModal';
+import type { DocumentSubmission } from '../types';
 
 type ApprovalItemType = 'document' | 'truck_request';
 
@@ -19,6 +21,8 @@ interface ApprovalItem {
 const ManagerApprovalsPage = () => {
   const { documentSubmissions, truckAssignmentRequests } = useData();
   const [selectedTab, setSelectedTab] = useState<'all' | 'documents' | 'trucks'>('all');
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
 
   // Combine all approval items
   const allItems: ApprovalItem[] = [
@@ -84,8 +88,11 @@ const ManagerApprovalsPage = () => {
     if (item.status !== 'pending') return; // Only pending items are clickable
 
     if (item.type === 'document') {
-      alert(`Belge inceleme modalı açılacak: ${item.id}`);
-      // TODO: Open DocumentReviewModal
+      const submission = documentSubmissions.find((sub) => sub.id === item.id);
+      if (submission) {
+        setSelectedSubmission(submission);
+        setReviewModalOpen(true);
+      }
     } else {
       alert(`Araç talebi inceleme modalı açılacak: ${item.id}`);
       // TODO: Open TruckAssignmentModal
@@ -205,6 +212,18 @@ const ManagerApprovalsPage = () => {
             </button>
           ))}
         </div>
+      )}
+
+      {/* Document Review Modal */}
+      {reviewModalOpen && selectedSubmission && (
+        <DocumentReviewModal
+          isOpen={reviewModalOpen}
+          onClose={() => {
+            setReviewModalOpen(false);
+            setSelectedSubmission(null);
+          }}
+          submission={selectedSubmission}
+        />
       )}
     </div>
   );
