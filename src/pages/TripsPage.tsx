@@ -202,11 +202,21 @@ const TripsPage = () => {
       };
     }
 
-    // Complete and ready
+    // Planned trip with all info (created status, ready to start)
+    if (trip.status === 'created') {
+      return {
+        bgColor: 'bg-white',
+        borderColor: 'border-l-4 border-green-400',
+        statusBadge: 'bg-green-100 text-green-700',
+        label: 'Planlanmış'
+      };
+    }
+
+    // Other statuses (shouldn't normally appear in planned tab)
     return {
       bgColor: 'bg-white',
-      borderColor: 'border-l-4 border-green-400',
-      statusBadge: 'bg-green-100 text-green-700',
+      borderColor: 'border-l-4 border-gray-400',
+      statusBadge: 'bg-gray-100 text-gray-700',
       label: 'Hazır'
     };
   };
