@@ -190,7 +190,7 @@ const InvoicesPage = () => {
           return (
             <Link
               key={invoice.id}
-              to={`/invoices/${invoice.id}`}
+              to={`/manager/invoices/${invoice.id}`}
               className="block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-2">
