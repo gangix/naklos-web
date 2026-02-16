@@ -164,6 +164,63 @@ const TripsPage = () => {
     }
   };
 
+  // Get card styling based on trip completeness and status
+  const getTripCardStyle = (trip: Trip) => {
+    // Check what's missing
+    const hasTruck = !!trip.truckPlate;
+    const hasDriver = !!trip.driverName;
+    const hasClient = !!trip.clientName;
+    const hasRevenue = !!trip.revenue;
+
+    // Unassigned trip (created, missing truck/driver)
+    if (trip.status === 'created' && (!hasTruck || !hasDriver)) {
+      return {
+        bgColor: 'bg-amber-50',
+        borderColor: 'border-l-4 border-amber-400',
+        statusBadge: 'bg-amber-100 text-amber-700',
+        label: 'Atanmamış'
+      };
+    }
+
+    // Assigned but in progress
+    if (trip.status === 'in-progress') {
+      return {
+        bgColor: 'bg-blue-50',
+        borderColor: 'border-l-4 border-blue-400',
+        statusBadge: 'bg-blue-100 text-blue-700',
+        label: 'Devam Ediyor'
+      };
+    }
+
+    // Missing client or revenue info
+    if (trip.status === 'created' && (!hasClient || !hasRevenue)) {
+      return {
+        bgColor: 'bg-orange-50',
+        borderColor: 'border-l-4 border-orange-400',
+        statusBadge: 'bg-orange-100 text-orange-700',
+        label: 'Eksik Bilgi'
+      };
+    }
+
+    // Complete and ready
+    return {
+      bgColor: 'bg-white',
+      borderColor: 'border-l-4 border-green-400',
+      statusBadge: 'bg-green-100 text-green-700',
+      label: 'Hazır'
+    };
+  };
+
+  // Get missing information for a trip
+  const getMissingInfo = (trip: Trip) => {
+    const missing = [];
+    if (!trip.truckPlate) missing.push('Araç');
+    if (!trip.driverName) missing.push('Sürücü');
+    if (!trip.clientName) missing.push('Müşteri');
+    if (!trip.revenue) missing.push('Ücret');
+    return missing;
+  };
+
   const getTripActionLabel = (_trip: Trip, tabContext: string) => {
     if (tabContext === 'planned') {
       // Show "Detaylar" button for all planned trips (created or in-progress)
@@ -234,13 +291,16 @@ const TripsPage = () => {
           ) : (
             displayedTrips.map((trip) => {
               const action = getTripActionLabel(trip, 'planned');
+              const cardStyle = getTripCardStyle(trip);
+              const missingInfo = getMissingInfo(trip);
+
               return (
                 <div
                   key={trip.id}
-                  className="bg-white rounded-lg p-4 shadow-sm"
+                  className={`${cardStyle.bgColor} ${cardStyle.borderColor} rounded-lg p-4 shadow-sm`}
                 >
                   <div className="flex items-start justify-between mb-2">
-                    <div>
+                    <div className="flex-1">
                       <p className="font-bold text-gray-900">
                         {trip.originCity} → {trip.destinationCity}
                       </p>
@@ -249,11 +309,9 @@ const TripsPage = () => {
                       </p>
                     </div>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                        trip.status
-                      )}`}
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${cardStyle.statusBadge}`}
                     >
-                      {getStatusLabel(trip.status)}
+                      {cardStyle.label}
                     </span>
                   </div>
 
@@ -265,6 +323,23 @@ const TripsPage = () => {
                       </span>
                     )}
                   </div>
+
+                  {/* Missing information indicator */}
+                  {missingInfo.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-gray-200">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-medium text-gray-600">Eksik:</span>
+                        {missingInfo.map((info, index) => (
+                          <span
+                            key={index}
+                            className="text-xs px-2 py-1 bg-red-100 text-red-700 rounded"
+                          >
+                            {info}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {action && (
                     <Link
