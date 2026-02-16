@@ -7,7 +7,6 @@ const DriverBottomNav = () => {
   const tabs = [
     { id: 'home', label: 'Ana Sayfa', icon: '🏠', path: '/driver' },
     { id: 'trips', label: 'Seferler', icon: '📦', path: '/driver/trips' },
-    { id: 'profile', label: 'Profil', icon: '👤', path: '/driver/profile' },
   ];
 
   const isActive = (path: string) => {
