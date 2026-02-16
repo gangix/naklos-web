@@ -181,8 +181,6 @@ const DriversPage = () => {
             Geçmiş
           </button>
         )}
-        {/* Spacer to push pending tab to the right */}
-        <div className="flex-1"></div>
         {totalPending > 0 && (
           <button
             onClick={() => setTab('pending')}

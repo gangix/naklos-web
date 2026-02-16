@@ -172,8 +172,6 @@ const TrucksPage = () => {
             Geçmiş
           </button>
         )}
-        {/* Spacer to push pending tab to the right */}
-        <div className="flex-1"></div>
         {pendingSubmissions.length > 0 && (
           <button
             onClick={() => setTab('pending')}
