@@ -268,7 +268,7 @@ const TripsPage = () => {
 
                   {action && (
                     <Link
-                      to={`/trips/${trip.id}`}
+                      to={`/manager/trips/${trip.id}`}
                       className={`mt-3 w-full py-2 px-4 rounded-lg font-medium text-center block ${action.color}`}
                     >
                       {action.label}
@@ -342,7 +342,7 @@ const TripsPage = () => {
 
                   {action && (
                     <Link
-                      to={`/trips/${trip.id}`}
+                      to={`/manager/trips/${trip.id}`}
                       className={`mt-3 w-full py-2 px-4 rounded-lg font-medium text-center block ${action.color}`}
                     >
                       {action.label}
