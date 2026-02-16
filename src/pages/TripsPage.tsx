@@ -260,21 +260,6 @@ const TripsPage = () => {
         >
           Planlanmış ({plannedTrips.length})
         </button>
-        {pendingTrips.length > 0 && (
-          <button
-            onClick={() => {
-              setTab('pending');
-              setSelectedTripIds([]);
-            }}
-            className={`px-4 py-2 font-medium whitespace-nowrap ${
-              tab === 'pending'
-                ? 'text-primary-600 border-b-2 border-primary-600'
-                : 'text-gray-600'
-            }`}
-          >
-            Onay Bekliyor ({pendingTrips.length})
-          </button>
-        )}
         {readyTrips.length > 0 && (
           <button
             onClick={() => {
@@ -288,6 +273,23 @@ const TripsPage = () => {
             }`}
           >
             Fatura Hazır ({readyTrips.length})
+          </button>
+        )}
+        {/* Spacer to push pending tab to the right */}
+        <div className="flex-1"></div>
+        {pendingTrips.length > 0 && (
+          <button
+            onClick={() => {
+              setTab('pending');
+              setSelectedTripIds([]);
+            }}
+            className={`px-4 py-2 font-medium whitespace-nowrap ${
+              tab === 'pending'
+                ? 'text-orange-600 border-b-2 border-orange-600'
+                : 'text-orange-600'
+            }`}
+          >
+            Onay Bekliyor ({pendingTrips.length})
           </button>
         )}
       </div>

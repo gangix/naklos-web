@@ -169,18 +169,6 @@ const DriversPage = () => {
         >
           Sürücüler ({mockDrivers.length})
         </button>
-        {totalPending > 0 && (
-          <button
-            onClick={() => setTab('pending')}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-              tab === 'pending'
-                ? 'border-primary-600 text-primary-600'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            Onay Bekliyor ({totalPending})
-          </button>
-        )}
         {(completedDocSubmissions.length > 0 || completedTruckRequests.length > 0) && (
           <button
             onClick={() => setTab('history')}
@@ -191,6 +179,20 @@ const DriversPage = () => {
             }`}
           >
             Geçmiş
+          </button>
+        )}
+        {/* Spacer to push pending tab to the right */}
+        <div className="flex-1"></div>
+        {totalPending > 0 && (
+          <button
+            onClick={() => setTab('pending')}
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+              tab === 'pending'
+                ? 'border-orange-600 text-orange-600'
+                : 'border-transparent text-orange-600 hover:text-orange-700'
+            }`}
+          >
+            Onay Bekliyor ({totalPending})
           </button>
         )}
       </div>
