@@ -164,11 +164,10 @@ const TripsPage = () => {
     }
   };
 
-  const getTripActionLabel = (trip: Trip, tabContext: string) => {
+  const getTripActionLabel = (_trip: Trip, tabContext: string) => {
     if (tabContext === 'planned') {
-      if (trip.status === 'created') {
-        return { label: 'Detaylar', color: 'bg-blue-600 text-white' };
-      }
+      // Show "Detaylar" button for all planned trips (created or in-progress)
+      return { label: 'Detaylar', color: 'bg-blue-600 text-white' };
     } else if (tabContext === 'pending') {
       return { label: '👁 İncele ve Onayla', color: 'bg-orange-600 text-white' };
     }
