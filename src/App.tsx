@@ -19,6 +19,8 @@ import DriverDashboardPage from './pages/driver/DriverDashboardPage';
 import DriverTripsPage from './pages/driver/DriverTripsPage';
 import DriverTripCreatePage from './pages/driver/DriverTripCreatePage';
 import DriverTripDetailPage from './pages/driver/DriverTripDetailPage';
+import DriverProfilePage from './pages/driver/DriverProfilePage';
+import DriverTruckPage from './pages/driver/DriverTruckPage';
 
 function App() {
   return (
@@ -50,6 +52,8 @@ function App() {
           <Route path="trips" element={<DriverTripsPage />} />
           <Route path="trips/create" element={<DriverTripCreatePage />} />
           <Route path="trips/:tripId" element={<DriverTripDetailPage />} />
+          <Route path="truck" element={<DriverTruckPage />} />
+          <Route path="profile" element={<DriverProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>

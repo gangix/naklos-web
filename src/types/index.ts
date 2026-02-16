@@ -184,3 +184,46 @@ export interface TripTemplate {
   createdAt: string;
   lastTriggeredAt: string | null;
 }
+
+// Document Management Types
+export type DocumentSubmissionStatus = 'pending' | 'approved' | 'rejected';
+export type DocumentCategory = 'license' | 'src' | 'cpc' | 'compulsory-insurance' | 'comprehensive-insurance' | 'inspection';
+
+export interface DocumentSubmission {
+  id: string;
+  category: DocumentCategory;
+  relatedType: 'driver' | 'truck';
+  relatedId: string; // driverId or truckId
+  relatedName: string; // driver name or truck plate
+  submittedBy: 'driver' | 'manager';
+  submittedByName: string;
+  imageDataUrl: string; // base64 photo
+  suggestedExpiryDate: string;
+  confirmedExpiryDate: string | null; // set by manager on approval
+  status: DocumentSubmissionStatus;
+  submittedAt: string;
+  reviewedAt: string | null;
+  reviewedBy: string | null;
+  rejectionReason: string | null; // predefined code
+  rejectionNote: string | null; // free text (required for 'other')
+  previousImageDataUrl: string | null; // for side-by-side comparison
+  previousExpiryDate: string | null;
+}
+
+// Truck Assignment Request Types
+export type AssignmentRequestStatus = 'pending' | 'approved' | 'rejected';
+
+export interface TruckAssignmentRequest {
+  id: string;
+  driverId: string;
+  driverName: string;
+  preferredTruckId: string;
+  preferredTruckPlate: string;
+  assignedTruckId: string | null; // may differ from preferred
+  assignedTruckPlate: string | null;
+  status: AssignmentRequestStatus;
+  requestedAt: string;
+  reviewedAt: string | null;
+  reviewedBy: string | null;
+  rejectionNote: string | null;
+}

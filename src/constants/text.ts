@@ -206,3 +206,81 @@ export const WARNINGS = {
   expiringSoon: 'Yakında sona eriyor',
   valid: 'Geçerli',
 } as const;
+
+export const APPROVALS = {
+  title: 'Onay Bekleyenler',
+  pending: 'Bekliyor',
+  approved: 'Onaylandı',
+  rejected: 'Reddedildi',
+  approve: 'Onayla',
+  reject: 'Reddet',
+  review: 'İncele',
+  documentSubmission: 'Belge Güncellemesi',
+  truckRequest: 'Araç Talebi',
+  submittedBy: 'Gönderen',
+  submittedAt: 'Gönderim Tarihi',
+  suggestedDate: 'Önerilen Tarih',
+  currentDate: 'Mevcut Tarih',
+  newDate: 'Yeni Tarih',
+  previousDocument: 'Önceki Belge',
+  newDocument: 'Yeni Belge',
+  confirmDate: 'Tarihi Onayla',
+  selectReason: 'Ret Nedeni Seçin',
+  rejectionNote: 'Not (opsiyonel)',
+  noPendingApprovals: 'Onay bekleyen öğe yok',
+  pendingCount: 'bekliyor',
+} as const;
+
+export const DOCUMENT_UPLOAD = {
+  title: 'Belge Güncelle',
+  selectDocument: 'Belge Seç',
+  takePhoto: 'Fotoğraf Çek',
+  chooseFromGallery: 'Galeriden Seç',
+  expiryDate: 'Yeni Geçerlilik Tarihi',
+  suggestDate: 'Tarih Gir',
+  submit: 'Gönder',
+  uploading: 'Yükleniyor...',
+  success: 'Belge başarıyla gönderildi',
+  error: 'Bir hata oluştu',
+  pending: 'Onay Bekliyor',
+  update: 'Güncelle',
+  view: 'Görüntüle',
+  history: 'Geçmiş',
+  uploadedBy: 'Yükleyen',
+  reviewedBy: 'Onaylayan',
+} as const;
+
+export const TRUCK_REQUEST = {
+  title: 'Araç Talebi',
+  request: 'Talep Oluştur',
+  selectTruck: 'Araç Seç',
+  preferredTruck: 'Tercih Edilen Araç',
+  assignedTruck: 'Atanan Araç',
+  availableTrucks: 'Müsait Araçlar',
+  noAvailable: 'Müsait araç bulunmuyor',
+  requestSent: 'Talep Gönderildi',
+  pending: 'İnceleniyor',
+  approved: 'Onaylandı',
+  rejected: 'Reddedildi',
+  noTruckAssigned: 'Henüz araç atanmadı',
+  requestTruck: 'Araç Talep Et',
+} as const;
+
+export const REJECTION_REASONS = {
+  blurry: 'Fotoğraf bulanık',
+  wrong_type: 'Yanlış belge türü',
+  expired: 'Süresi geçmiş belge',
+  mismatch: 'Bilgiler uyuşmuyor',
+  incomplete: 'Eksik sayfa',
+  other: 'Diğer',
+} as const;
+
+export const PROFILE = {
+  title: 'Profil',
+  personalInfo: 'Kişisel Bilgiler',
+  documents: 'Belgelerim',
+  editInfo: 'Bilgileri Düzenle',
+  updateDocuments: 'Belgeleri Güncelle',
+  myTruck: 'Aracım',
+  noTruck: 'Araç atanmamış',
+} as const;
