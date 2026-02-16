@@ -7,6 +7,7 @@ interface DataContextType {
   trips: Trip[];
   invoices: Invoice[];
   updateTrip: (tripId: string, updates: Partial<Trip>) => void;
+  addTrip: (trip: Trip) => void;
   addInvoice: (invoice: Invoice) => void;
 }
 
@@ -24,12 +25,16 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  const addTrip = (trip: Trip) => {
+    setTrips((prev) => [...prev, trip]);
+  };
+
   const addInvoice = (invoice: Invoice) => {
     setInvoices((prev) => [...prev, invoice]);
   };
 
   return (
-    <DataContext.Provider value={{ trips, invoices, updateTrip, addInvoice }}>
+    <DataContext.Provider value={{ trips, invoices, updateTrip, addTrip, addInvoice }}>
       {children}
     </DataContext.Provider>
   );

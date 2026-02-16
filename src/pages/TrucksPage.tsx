@@ -8,11 +8,6 @@ import type { TruckStatus } from '../types';
 const TrucksPage = () => {
   const [filter, setFilter] = useState<TruckStatus | 'all'>('all');
 
-  const filteredTrucks = useMemo(() => {
-    if (filter === 'all') return mockTrucks;
-    return mockTrucks.filter((truck) => truck.status === filter);
-  }, [filter]);
-
   // Calculate warnings to show indicators on truck cards
   const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
 
@@ -32,6 +27,21 @@ const TrucksPage = () => {
       (w) => w.relatedId === truckId && w.relatedType === 'truck'
     );
   };
+
+  // Filter and sort trucks (warnings to the top)
+  const filteredTrucks = useMemo(() => {
+    let trucks = filter === 'all' ? mockTrucks : mockTrucks.filter((truck) => truck.status === filter);
+
+    // Sort trucks with warnings to the top
+    return trucks.sort((a, b) => {
+      const aHasWarning = hasUrgentWarning(a.id);
+      const bHasWarning = hasUrgentWarning(b.id);
+
+      if (aHasWarning && !bHasWarning) return -1;
+      if (!aHasWarning && bHasWarning) return 1;
+      return 0;
+    });
+  }, [filter, warnings]);
 
   const getStatusColor = (status: TruckStatus) => {
     switch (status) {
@@ -109,12 +119,16 @@ const TrucksPage = () => {
 
       {/* Truck list */}
       <div className="space-y-3">
-        {filteredTrucks.map((truck) => (
-          <Link
-            key={truck.id}
-            to={`/trucks/${truck.id}`}
-            className="block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
-          >
+        {filteredTrucks.map((truck) => {
+          const hasWarning = hasUrgentWarning(truck.id);
+          return (
+            <Link
+              key={truck.id}
+              to={`/trucks/${truck.id}`}
+              className={`block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
+                hasWarning ? 'border-2 border-red-500' : 'border border-gray-200'
+              }`}
+            >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2 flex-1">
                 <div className="flex-1">
@@ -161,7 +175,8 @@ const TrucksPage = () => {
               </div>
             )}
           </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

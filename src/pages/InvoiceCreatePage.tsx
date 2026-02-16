@@ -10,15 +10,18 @@ const InvoiceCreatePage = () => {
   const [selectedTripIds, setSelectedTripIds] = useState<string[]>([]);
 
   // Get trips that are ready for invoicing:
-  // - status: delivered
-  // - documentsConfirmed: true
+  // - status: approved
+  // - approvedByManager: true
   // - invoiced: false
+  // - has clientId and revenue (not nullable)
   const availableTrips = useMemo(() => {
     return mockTrips.filter(
       (trip) =>
-        trip.status === 'delivered' &&
-        trip.documentsConfirmed === true &&
-        trip.invoiced === false
+        trip.status === 'approved' &&
+        trip.approvedByManager === true &&
+        trip.invoiced === false &&
+        trip.clientId !== null &&
+        trip.revenue !== null
     );
   }, []);
 
@@ -26,10 +29,12 @@ const InvoiceCreatePage = () => {
   const tripsByClient = useMemo(() => {
     const grouped: Record<string, Trip[]> = {};
     availableTrips.forEach((trip) => {
-      if (!grouped[trip.clientId]) {
+      if (trip.clientId && !grouped[trip.clientId]) {
         grouped[trip.clientId] = [];
       }
-      grouped[trip.clientId].push(trip);
+      if (trip.clientId) {
+        grouped[trip.clientId].push(trip);
+      }
     });
     return grouped;
   }, [availableTrips]);
@@ -45,10 +50,12 @@ const InvoiceCreatePage = () => {
   }, [selectedTrips]);
 
   const totalAmount = useMemo(() => {
-    return selectedTrips.reduce((sum, trip) => sum + trip.revenue, 0);
+    return selectedTrips.reduce((sum, trip) => sum + (trip.revenue || 0), 0);
   }, [selectedTrips]);
 
-  const handleToggleTrip = (tripId: string, clientId: string) => {
+  const handleToggleTrip = (tripId: string, clientId: string | null) => {
+    if (!clientId) return;
+
     setSelectedTripIds((prev) => {
       // If this is the first selection, just add it
       if (prev.length === 0) {
@@ -87,7 +94,7 @@ const InvoiceCreatePage = () => {
       // 1. Create the invoice via API
       // 2. Mark the selected trips as invoiced
       // 3. Navigate to the new invoice detail page
-      navigate('/invoices');
+      navigate('/manager/invoices');
     }
   };
 
@@ -189,7 +196,7 @@ const InvoiceCreatePage = () => {
                           </span>
                         </div>
                         <span className="font-bold text-green-600">
-                          {formatCurrency(trip.revenue)}
+                          {formatCurrency(trip.revenue || 0)}
                         </span>
                       </div>
                       <div className="flex items-center justify-between text-xs text-gray-500 pl-7">

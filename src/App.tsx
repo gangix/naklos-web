@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './components/layout/Layout';
+import ManagerLayout from './components/layout/ManagerLayout';
+import DriverLayout from './components/layout/DriverLayout';
 import DashboardPage from './pages/DashboardPage';
 import TrucksPage from './pages/TrucksPage';
 import TruckDetailPage from './pages/TruckDetailPage';
@@ -13,12 +14,22 @@ import InvoiceCreatePage from './pages/InvoiceCreatePage';
 import ClientsPage from './pages/ClientsPage';
 import MorePage from './pages/MorePage';
 
+// Driver pages
+import DriverDashboardPage from './pages/driver/DriverDashboardPage';
+import DriverTripsPage from './pages/driver/DriverTripsPage';
+import DriverTripCreatePage from './pages/driver/DriverTripCreatePage';
+import DriverTripDetailPage from './pages/driver/DriverTripDetailPage';
+
 function App() {
   return (
     <BrowserRouter basename="/naklos-web">
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
+        {/* Root redirect */}
+        <Route path="/" element={<Navigate to="/manager/dashboard" replace />} />
+
+        {/* Fleet Manager Routes */}
+        <Route path="/manager" element={<ManagerLayout />}>
+          <Route index element={<Navigate to="/manager/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="trucks" element={<TrucksPage />} />
           <Route path="trucks/:truckId" element={<TruckDetailPage />} />
@@ -31,6 +42,14 @@ function App() {
           <Route path="invoices/:invoiceId" element={<InvoiceDetailPage />} />
           <Route path="clients" element={<ClientsPage />} />
           <Route path="more" element={<MorePage />} />
+        </Route>
+
+        {/* Driver Routes */}
+        <Route path="/driver" element={<DriverLayout />}>
+          <Route index element={<DriverDashboardPage />} />
+          <Route path="trips" element={<DriverTripsPage />} />
+          <Route path="trips/create" element={<DriverTripCreatePage />} />
+          <Route path="trips/:tripId" element={<DriverTripDetailPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -154,7 +154,7 @@ const InvoiceDetailPage = () => {
                     {trip.originCity} → {trip.destinationCity}
                   </p>
                   <p className="text-sm font-bold text-green-600">
-                    {formatCurrency(trip.revenue)}
+                    {formatCurrency(trip.revenue || 0)}
                   </p>
                 </div>
                 <div className="flex items-center justify-between text-xs text-gray-500">

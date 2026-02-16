@@ -4,7 +4,7 @@
 
 export type TruckStatus = 'available' | 'in-transit' | 'maintenance';
 export type DriverStatus = 'available' | 'on-trip' | 'off-duty';
-export type TripStatus = 'assigned' | 'in-transit' | 'delivered';
+export type TripStatus = 'created' | 'in-progress' | 'delivered' | 'approved' | 'invoiced' | 'cancelled';
 export type InvoiceStatus = 'paid' | 'pending' | 'overdue';
 export type PaymentReliability = 'good' | 'moderate' | 'poor';
 
@@ -82,24 +82,30 @@ export interface Client {
 export interface Trip {
   id: string;
   fleetId: string;
-  clientId: string;
-  clientName: string;
-  truckId: string;
-  truckPlate: string;
-  driverId: string;
-  driverName: string;
+  clientId: string | null; // nullable for unplanned trips initially
+  clientName: string | null;
+  truckId: string | null; // nullable for unassigned trips
+  truckPlate: string | null;
+  driverId: string | null; // nullable for unassigned trips
+  driverName: string | null;
   originCity: string;
   destinationCity: string;
+  cargoDescription: string | null; // nullable for unplanned trips
   status: TripStatus;
-  revenue: number;
+  revenue: number | null; // nullable until manager approves
   expenses: TripExpenses;
   createdAt: string;
   startedAt: string | null;
   completedAt: string | null;
+  deliveredAt: string | null; // when POD was uploaded
   estimatedArrival: string | null;
   deliveryDocuments: Document[];
   documentsConfirmed: boolean;
+  approvedByManager: boolean; // true after manager approves
+  approvedAt: string | null;
   invoiced: boolean;
+  isPlanned: boolean; // true = Flow A (planned), false = Flow B (POD-first)
+  driverEnteredDestination: string | null; // free-text if driver doesn't know client
 }
 
 export interface TripExpenses {
@@ -107,6 +113,7 @@ export interface TripExpenses {
   tolls: number;
   driverFee: number;
   other: number;
+  otherReason?: string;
 }
 
 export interface Invoice {
@@ -158,4 +165,23 @@ export interface Warning {
   severity: 'info' | 'warning' | 'error';
   relatedId: string;
   relatedType: 'client' | 'driver' | 'truck';
+}
+
+export interface TripTemplate {
+  id: string;
+  fleetId: string;
+  name: string; // e.g., "Weekly Istanbul Delivery to Client-A"
+  clientId: string;
+  clientName: string;
+  originCity: string;
+  destinationCity: string;
+  recurrence: 'daily' | 'weekly' | 'monthly' | 'custom';
+  daysOfWeek?: string[]; // ['MON', 'WED', 'FRI']
+  dayOfMonth?: number;
+  preferredTruckId?: string | null;
+  preferredDriverId?: string | null;
+  typicalCargoDescription?: string;
+  isActive: boolean;
+  createdAt: string;
+  lastTriggeredAt: string | null;
 }

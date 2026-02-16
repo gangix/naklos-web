@@ -1,4 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import RoleSwitcher from '../common/RoleSwitcher';
 
 const Layout = () => {
   const location = useLocation();
@@ -23,6 +24,7 @@ const Layout = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <RoleSwitcher />
       {/* Main content */}
       <main className="flex-1 overflow-y-auto pb-20">
         <Outlet />

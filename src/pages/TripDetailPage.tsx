@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
-import { TRIPS, EXPENSES, DOCUMENTS, INVOICES } from '../constants/text';
+import { TRIPS, EXPENSES, DOCUMENTS } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import FileUpload from '../components/common/FileUpload';
+import { mockDrivers, mockTrucks, mockClients } from '../data/mock';
 import type { Document } from '../types';
 
 const TripDetailPage = () => {
@@ -13,14 +14,49 @@ const TripDetailPage = () => {
 
   const trip = trips.find((t) => t.id === tripId);
   const [documents, setDocuments] = useState<Document[]>(trip?.deliveryDocuments || []);
-  const [documentsConfirmed, setDocumentsConfirmed] = useState<boolean>(trip?.documentsConfirmed || false);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+
+  // Edit mode state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    clientId: trip?.clientId || null,
+    clientName: trip?.clientName || '',
+    driverId: trip?.driverId || null,
+    driverName: trip?.driverName || '',
+    truckId: trip?.truckId || null,
+    truckPlate: trip?.truckPlate || '',
+    cargoDescription: trip?.cargoDescription || '',
+    revenue: trip?.revenue || 0,
+    expenses: {
+      fuel: trip?.expenses.fuel || 0,
+      tolls: trip?.expenses.tolls || 0,
+      driverFee: trip?.expenses.driverFee || 0,
+      other: trip?.expenses.other || 0,
+      otherReason: trip?.expenses.otherReason || '',
+    },
+  });
 
   // Sync with context when trip changes
   useEffect(() => {
     if (trip) {
       setDocuments(trip.deliveryDocuments);
-      setDocumentsConfirmed(trip.documentsConfirmed);
+      setEditForm({
+        clientId: trip.clientId || null,
+        clientName: trip.clientName || '',
+        driverId: trip.driverId || null,
+        driverName: trip.driverName || '',
+        truckId: trip.truckId || null,
+        truckPlate: trip.truckPlate || '',
+        cargoDescription: trip.cargoDescription || '',
+        revenue: trip.revenue || 0,
+        expenses: {
+          fuel: trip.expenses.fuel || 0,
+          tolls: trip.expenses.tolls || 0,
+          driverFee: trip.expenses.driverFee || 0,
+          other: trip.expenses.other || 0,
+          otherReason: trip.expenses.otherReason || '',
+        },
+      });
     }
   }, [trip]);
 
@@ -37,12 +73,16 @@ const TripDetailPage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'assigned':
-        return 'bg-yellow-100 text-yellow-700';
-      case 'in-transit':
+      case 'created':
+        return 'bg-gray-100 text-gray-700';
+      case 'in-progress':
         return 'bg-blue-100 text-blue-700';
       case 'delivered':
-        return 'bg-green-100 text-green-700';
+        return 'bg-orange-100 text-orange-700';
+      case 'approved':
+        return 'bg-emerald-100 text-emerald-700';
+      case 'invoiced':
+        return 'bg-purple-100 text-purple-700';
       default:
         return 'bg-gray-100 text-gray-700';
     }
@@ -50,24 +90,27 @@ const TripDetailPage = () => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'assigned':
-        return TRIPS.assigned;
-      case 'in-transit':
-        return TRIPS.inTransit;
+      case 'created':
+        return 'Oluşturuldu';
+      case 'in-progress':
+        return 'Devam Ediyor';
       case 'delivered':
-        return TRIPS.delivered;
+        return 'Onay Bekliyor';
+      case 'approved':
+        return 'Onaylandı';
+      case 'invoiced':
+        return 'Faturalandı';
       default:
         return status;
     }
   };
 
   const totalExpenses =
-    trip.expenses.fuel +
-    trip.expenses.tolls +
-    trip.expenses.driverFee +
-    trip.expenses.other;
+    editForm.expenses.fuel +
+    editForm.expenses.tolls +
+    editForm.expenses.other;
 
-  const netProfit = trip.revenue - totalExpenses;
+  const netProfit = (editForm.revenue || 0) - totalExpenses;
 
   const handleFileSelect = (document: Document) => {
     if (documents.length >= 3) {
@@ -77,21 +120,125 @@ const TripDetailPage = () => {
     setDocuments([...documents, document]);
   };
 
-  const handleConfirmDocuments = () => {
-    if (!trip || documents.length === 0) return;
+  const handleSave = () => {
+    if (!trip) return;
+
+    // Find selected driver and truck details
+    const selectedDriver = mockDrivers.find((d) => d.id === editForm.driverId);
+    const selectedTruck = mockTrucks.find((t) => t.id === editForm.truckId);
+    const selectedClient = mockClients.find((c) => c.id === editForm.clientId);
+
+    const updates = {
+      clientId: editForm.clientId,
+      clientName: selectedClient?.companyName || editForm.clientName,
+      driverId: editForm.driverId,
+      driverName: selectedDriver ? `${selectedDriver.firstName} ${selectedDriver.lastName}` : editForm.driverName,
+      truckId: editForm.truckId,
+      truckPlate: selectedTruck?.plateNumber || editForm.truckPlate,
+      cargoDescription: editForm.cargoDescription,
+      revenue: editForm.revenue,
+      expenses: editForm.expenses,
+    };
+
+    updateTrip(trip.id, updates);
+
+    setIsEditing(false);
+    alert('✓ Sefer bilgileri güncellendi');
+  };
+
+  const handleCancel = () => {
+    // Reset form to original trip data
+    if (trip) {
+      setEditForm({
+        clientId: trip.clientId || null,
+        clientName: trip.clientName || '',
+        driverId: trip.driverId || null,
+        driverName: trip.driverName || '',
+        truckId: trip.truckId || null,
+        truckPlate: trip.truckPlate || '',
+        cargoDescription: trip.cargoDescription || '',
+        revenue: trip.revenue || 0,
+        expenses: {
+          fuel: trip.expenses.fuel || 0,
+          tolls: trip.expenses.tolls || 0,
+          driverFee: trip.expenses.driverFee || 0,
+          other: trip.expenses.other || 0,
+          otherReason: trip.expenses.otherReason || '',
+        },
+      });
+    }
+    setIsEditing(false);
+  };
+
+  const handleApprove = () => {
+    if (!trip) return;
+
+    // Validation: Check required fields
+    const missingFields: string[] = [];
+    if (!editForm.clientId) missingFields.push('Müşteri');
+    if (!editForm.driverId) missingFields.push('Sürücü');
+    if (!editForm.truckId) missingFields.push('Araç');
+    if (!editForm.cargoDescription) missingFields.push('Kargo Tanımı');
+    if (!editForm.revenue || editForm.revenue <= 0) missingFields.push('Gelir');
+
+    if (missingFields.length > 0) {
+      alert(
+        `⚠️ Onaylamadan önce aşağıdaki bilgileri doldurmanız gerekiyor:\n\n${missingFields.join('\n')}\n\nLütfen "Düzenle" butonuna basıp eksik bilgileri tamamlayın.`
+      );
+      return;
+    }
+
+    if (documents.length === 0) {
+      alert('⚠️ Onaylamadan önce teslimat belgesi yüklemeniz gerekiyor.');
+      return;
+    }
 
     const confirmed = window.confirm(
-      `${documents.length} adet teslimat belgesini onaylıyor musunuz?\n\nOnayladıktan sonra bu sefer fatura oluşturma için hazır olacak.`
+      `Bu seferi onaylamak istediğinizden emin misiniz?\n\nMüşteri: ${editForm.clientName}\nGelir: ${formatCurrency(editForm.revenue || 0)}\n\nOnaylandıktan sonra "Fatura Hazır" sekmesine taşınacak.`
     );
 
     if (confirmed) {
-      // Update the trip in the global context
       updateTrip(trip.id, {
+        status: 'approved',
+        approvedByManager: true,
+        approvedAt: new Date().toISOString(),
         deliveryDocuments: documents,
-        documentsConfirmed: true,
       });
-      setDocumentsConfirmed(true);
-      alert('✓ Belgeler onaylandı! Seferler sayfasında "Fatura Hazır" sekmesinde görünecek.');
+      alert('✓ Sefer onaylandı! Artık faturalandırabilirsiniz.');
+      navigate('/manager/trips');
+    }
+  };
+
+  const handleClientChange = (clientId: string) => {
+    const client = mockClients.find((c) => c.id === clientId);
+    if (client) {
+      setEditForm({
+        ...editForm,
+        clientId: client.id,
+        clientName: client.companyName,
+      });
+    }
+  };
+
+  const handleDriverChange = (driverId: string) => {
+    const driver = mockDrivers.find((d) => d.id === driverId);
+    if (driver) {
+      setEditForm({
+        ...editForm,
+        driverId: driver.id,
+        driverName: `${driver.firstName} ${driver.lastName}`,
+      });
+    }
+  };
+
+  const handleTruckChange = (truckId: string) => {
+    const truck = mockTrucks.find((t) => t.id === truckId);
+    if (truck) {
+      setEditForm({
+        ...editForm,
+        truckId: truck.id,
+        truckPlate: truck.plateNumber,
+      });
     }
   };
 
@@ -103,9 +250,13 @@ const TripDetailPage = () => {
     setSelectedDocument(null);
   };
 
+  const canApprove =
+    trip.status === 'delivered' &&
+    documents.length > 0;
+
   return (
     <div className="p-4 pb-20">
-      {/* Header with back button */}
+      {/* Header with back button and edit/approve actions */}
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate(-1)}
@@ -121,53 +272,241 @@ const TripDetailPage = () => {
             {getStatusLabel(trip.status)}
           </span>
         </div>
+        {!isEditing && trip.status !== 'invoiced' && (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          >
+            ✏️ Düzenle
+          </button>
+        )}
       </div>
+
+      {/* Edit mode save/cancel buttons */}
+      {isEditing && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 flex gap-2">
+          <button
+            onClick={handleSave}
+            className="flex-1 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+          >
+            ✓ Kaydet
+          </button>
+          <button
+            onClick={handleCancel}
+            className="flex-1 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+          >
+            ✕ İptal
+          </button>
+        </div>
+      )}
 
       {/* Trip info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{TRIPS.tripInfo}</h2>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{TRIPS.client}</span>
-            <span className="text-sm font-medium text-gray-900">{trip.clientName}</span>
+        <div className="space-y-3">
+          {/* Client */}
+          <div>
+            <label className="text-sm text-gray-600 block mb-1">{TRIPS.client}</label>
+            {isEditing ? (
+              <select
+                value={editForm.clientId || ''}
+                onChange={(e) => handleClientChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Müşteri Seçin</option>
+                {mockClients.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.companyName}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <span className="text-sm font-medium text-gray-900">{editForm.clientName || 'Belirtilmemiş'}</span>
+            )}
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{TRIPS.truck}</span>
-            <span className="text-sm font-medium text-gray-900">{trip.truckPlate}</span>
+
+          {/* Truck */}
+          <div>
+            <label className="text-sm text-gray-600 block mb-1">{TRIPS.truck}</label>
+            {isEditing ? (
+              <select
+                value={editForm.truckId || ''}
+                onChange={(e) => handleTruckChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Araç Seçin</option>
+                {mockTrucks
+                  .filter((truck) => truck.status === 'available' || truck.id === editForm.truckId)
+                  .map((truck) => (
+                    <option key={truck.id} value={truck.id}>
+                      {truck.plateNumber} - {truck.type}
+                    </option>
+                  ))}
+              </select>
+            ) : (
+              <span className="text-sm font-medium text-gray-900">{editForm.truckPlate || 'Belirtilmemiş'}</span>
+            )}
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{TRIPS.driver}</span>
-            <span className="text-sm font-medium text-gray-900">{trip.driverName}</span>
+
+          {/* Driver */}
+          <div>
+            <label className="text-sm text-gray-600 block mb-1">{TRIPS.driver}</label>
+            {isEditing ? (
+              <select
+                value={editForm.driverId || ''}
+                onChange={(e) => handleDriverChange(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Sürücü Seçin</option>
+                {mockDrivers
+                  .filter((driver) => driver.status === 'available' || driver.id === editForm.driverId)
+                  .map((driver) => (
+                    <option key={driver.id} value={driver.id}>
+                      {driver.firstName} {driver.lastName} - {driver.phone}
+                    </option>
+                  ))}
+              </select>
+            ) : (
+              <span className="text-sm font-medium text-gray-900">{editForm.driverName || 'Belirtilmemiş'}</span>
+            )}
           </div>
+
+          {/* Cargo Description */}
+          <div>
+            <label className="text-sm text-gray-600 block mb-1">Kargo Tanımı</label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={editForm.cargoDescription || ''}
+                onChange={(e) => setEditForm({ ...editForm, cargoDescription: e.target.value })}
+                placeholder="Örn: İnşaat Malzemesi, 15 ton"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            ) : (
+              <span className="text-sm font-medium text-gray-900">{editForm.cargoDescription || 'Belirtilmemiş'}</span>
+            )}
+          </div>
+
+          {/* Driver Entered Destination (if POD-first trip) */}
+          {trip.driverEnteredDestination && (
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+              <p className="text-xs text-orange-700 mb-1">Sürücünün Girdiği Hedef:</p>
+              <p className="text-sm font-medium text-orange-900">{trip.driverEnteredDestination}</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Financial summary */}
+      {/* Financial summary (Mali Bilgiler) */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{TRIPS.financial}</h2>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">{TRIPS.revenue}</span>
-            <span className="text-sm font-bold text-green-600">{formatCurrency(trip.revenue)}</span>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Mali Bilgiler</h2>
+        <div className="space-y-3">
+          {/* Revenue */}
+          <div className="pb-2 border-b border-gray-100">
+            <label className="text-sm text-gray-600 block mb-1">{TRIPS.revenue}</label>
+            {isEditing ? (
+              <input
+                type="number"
+                value={editForm.revenue || 0}
+                onChange={(e) => setEditForm({ ...editForm, revenue: parseFloat(e.target.value) || 0 })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-bold text-green-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            ) : (
+              <span className="text-sm font-bold text-green-600">{formatCurrency(editForm.revenue || 0)}</span>
+            )}
           </div>
-          <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-gray-600 pl-3">{EXPENSES.fuel}</span>
-            <span className="text-sm text-gray-600">{formatCurrency(trip.expenses.fuel)}</span>
-          </div>
-          <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-gray-600 pl-3">{EXPENSES.tolls}</span>
-            <span className="text-sm text-gray-600">{formatCurrency(trip.expenses.tolls)}</span>
-          </div>
-          <div className="flex items-center justify-between py-1">
-            <span className="text-sm text-gray-600 pl-3">{EXPENSES.driverFee}</span>
-            <span className="text-sm text-gray-600">{formatCurrency(trip.expenses.driverFee)}</span>
-          </div>
-          {trip.expenses.other > 0 && (
-            <div className="flex items-center justify-between py-1">
-              <span className="text-sm text-gray-600 pl-3">{EXPENSES.other}</span>
-              <span className="text-sm text-gray-600">{formatCurrency(trip.expenses.other)}</span>
+
+          {/* Expenses */}
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-2">Giderler</p>
+
+            <div className="space-y-2 pl-3">
+              {/* Fuel */}
+              <div className="flex items-center justify-between">
+                <label className="text-sm text-gray-600">{EXPENSES.fuel}</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    value={editForm.expenses.fuel}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        expenses: { ...editForm.expenses, fuel: parseFloat(e.target.value) || 0 },
+                      })
+                    }
+                    className="w-32 px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-600">{formatCurrency(editForm.expenses.fuel)}</span>
+                )}
+              </div>
+
+              {/* Tolls */}
+              <div className="flex items-center justify-between">
+                <label className="text-sm text-gray-600">{EXPENSES.tolls}</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    value={editForm.expenses.tolls}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        expenses: { ...editForm.expenses, tolls: parseFloat(e.target.value) || 0 },
+                      })
+                    }
+                    className="w-32 px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-600">{formatCurrency(editForm.expenses.tolls)}</span>
+                )}
+              </div>
+
+              {/* Other */}
+              <div className="flex items-center justify-between">
+                <label className="text-sm text-gray-600">{EXPENSES.other}</label>
+                {isEditing ? (
+                  <input
+                    type="number"
+                    value={editForm.expenses.other}
+                    onChange={(e) =>
+                      setEditForm({
+                        ...editForm,
+                        expenses: { ...editForm.expenses, other: parseFloat(e.target.value) || 0 },
+                      })
+                    }
+                    className="w-32 px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                  />
+                ) : (
+                  <span className="text-sm text-gray-600">{formatCurrency(editForm.expenses.other)}</span>
+                )}
+              </div>
+
+              {/* Other Reason - only show if other expense > 0 */}
+              {(isEditing && editForm.expenses.other > 0) || (!isEditing && editForm.expenses.other > 0 && editForm.expenses.otherReason) ? (
+                <div className="mt-2">
+                  <label className="text-xs text-gray-600 block mb-1">Açıklama:</label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editForm.expenses.otherReason || ''}
+                      onChange={(e) =>
+                        setEditForm({
+                          ...editForm,
+                          expenses: { ...editForm.expenses, otherReason: e.target.value },
+                        })
+                      }
+                      placeholder="Diğer gider açıklaması"
+                      className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                    />
+                  ) : (
+                    <span className="text-sm text-gray-700">{editForm.expenses.otherReason}</span>
+                  )}
+                </div>
+              ) : null}
             </div>
-          )}
+          </div>
+
+          {/* Net Profit */}
           <div className="flex items-center justify-between py-2 border-t border-gray-100">
             <span className="text-sm font-medium text-gray-900">{TRIPS.netProfit}</span>
             <span className={`text-sm font-bold ${netProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -185,28 +524,29 @@ const TripDetailPage = () => {
             <p className="text-xs text-gray-600 mb-1">{TRIPS.created}</p>
             <p className="text-sm font-medium text-gray-900">{formatDate(trip.createdAt)}</p>
           </div>
-          {trip.startedAt && (
+          {trip.deliveredAt && (
             <div>
-              <p className="text-xs text-gray-600 mb-1">{TRIPS.started}</p>
-              <p className="text-sm font-medium text-gray-900">{formatDate(trip.startedAt)}</p>
+              <p className="text-xs text-gray-600 mb-1">Teslim Edildi</p>
+              <p className="text-sm font-medium text-gray-900">{formatDate(trip.deliveredAt)}</p>
             </div>
           )}
-          {trip.completedAt ? (
+          {trip.approvedAt && (
             <div>
-              <p className="text-xs text-gray-600 mb-1">{TRIPS.completedAt}</p>
-              <p className="text-sm font-medium text-gray-900">{formatDate(trip.completedAt)}</p>
+              <p className="text-xs text-gray-600 mb-1">Onaylandı</p>
+              <p className="text-sm font-medium text-gray-900">{formatDate(trip.approvedAt)}</p>
             </div>
-          ) : trip.estimatedArrival ? (
+          )}
+          {!trip.deliveredAt && trip.estimatedArrival && (
             <div>
               <p className="text-xs text-gray-600 mb-1">{TRIPS.estimated}</p>
               <p className="text-sm font-medium text-gray-900">{formatDate(trip.estimatedArrival)}</p>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
 
       {/* Delivery documents section */}
-      {trip.status === 'delivered' && (
+      {(trip.status === 'in-progress' || trip.status === 'delivered' || trip.status === 'approved') && (
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{DOCUMENTS.deliveryConfirmation}</h2>
 
@@ -235,8 +575,8 @@ const TripDetailPage = () => {
             </p>
           )}
 
-          {/* Upload button - only show if less than 3 documents */}
-          {documents.length < 3 && (
+          {/* Upload button - only show if less than 3 documents and not approved yet */}
+          {documents.length < 3 && trip.status !== 'approved' && (
             <FileUpload onFileSelect={handleFileSelect} />
           )}
 
@@ -248,59 +588,52 @@ const TripDetailPage = () => {
         </div>
       )}
 
-      {/* Document Confirmation & Invoice Section */}
-      {trip?.status === 'delivered' && (
-        <div className="bg-white rounded-lg p-4 shadow-sm">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Onayı ve Fatura</h2>
+      {/* Approve Button for pending trips */}
+      {canApprove && (
+        <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-4 mb-4">
+          <h2 className="text-lg font-bold text-orange-900 mb-2">Onay Bekliyor</h2>
+          <p className="text-sm text-orange-700 mb-3">
+            Bu sefer teslimat belgeleriyle birlikte onayınızı bekliyor. Detayları kontrol edip onaylayın.
+          </p>
+          <button
+            onClick={handleApprove}
+            className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 active:bg-green-800 transition-colors flex items-center justify-center gap-2"
+          >
+            <span className="text-lg">✓</span>
+            <span>Onayla ve Faturalandırmaya Hazırla</span>
+          </button>
+        </div>
+      )}
 
-          {existingInvoice ? (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-              <p className="text-sm text-green-800 mb-2">
-                ✓ Bu sefer için fatura oluşturulmuş
-              </p>
-              <button
-                onClick={() => navigate(`/invoices/${existingInvoice.id}`)}
-                className="text-sm text-green-700 font-medium underline"
-              >
-                Faturayı Görüntüle →
-              </button>
-            </div>
-          ) : documents.length === 0 ? (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-              <p className="text-sm text-yellow-800">
-                ⚠️ Fatura oluşturmak için önce teslimat belgesi yüklemeniz gerekiyor
-              </p>
-            </div>
-          ) : !documentsConfirmed ? (
-            <div>
-              <p className="text-sm text-gray-600 mb-3">
-                {documents.length} adet teslimat belgesi yüklendi. Belgeleri kontrol edip onaylayın.
-              </p>
-              <button
-                onClick={handleConfirmDocuments}
-                className="w-full py-3 px-4 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center justify-center gap-2"
-              >
-                <span className="text-lg">✓</span>
-                <span>{DOCUMENTS.confirmDocuments}</span>
-              </button>
-            </div>
-          ) : (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-              <p className="text-sm text-green-800 mb-3">
-                ✓ {DOCUMENTS.documentsConfirmed}
-              </p>
-              <p className="text-sm text-gray-700 mb-3">
-                {DOCUMENTS.readyForInvoicing}
-              </p>
-              <button
-                onClick={() => navigate('/invoices/create')}
-                className="w-full py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors flex items-center justify-center gap-2"
-              >
-                <span className="text-lg">📄</span>
-                <span>{INVOICES.createMultiTripInvoice}</span>
-              </button>
-            </div>
-          )}
+      {/* Invoice section for approved trips */}
+      {trip.status === 'approved' && !existingInvoice && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+          <h2 className="text-lg font-bold text-green-900 mb-2">✓ Onaylandı</h2>
+          <p className="text-sm text-green-700 mb-3">
+            Bu sefer onaylandı ve faturalandırmaya hazır.
+          </p>
+          <button
+            onClick={() => navigate('/manager/trips')}
+            className="w-full py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+          >
+            Seferler Sayfasına Dön
+          </button>
+        </div>
+      )}
+
+      {/* Invoice exists */}
+      {existingInvoice && (
+        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <h2 className="text-lg font-bold text-purple-900 mb-2">Faturalandı</h2>
+          <p className="text-sm text-purple-700 mb-3">
+            Bu sefer için fatura oluşturulmuş.
+          </p>
+          <button
+            onClick={() => navigate(`/invoices/${existingInvoice.id}`)}
+            className="text-sm text-purple-700 font-medium underline"
+          >
+            Faturayı Görüntüle →
+          </button>
         </div>
       )}
 

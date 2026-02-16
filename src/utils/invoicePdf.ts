@@ -89,8 +89,8 @@ export function generateInvoicePDF(
   relatedTrips.forEach((trip) => {
     const route = `${trip.originCity} → ${trip.destinationCity}`;
     doc.text(route, 25, yPosition);
-    doc.text(trip.truckPlate, 100, yPosition);
-    doc.text(`₺${trip.revenue.toLocaleString('tr-TR')}`, 150, yPosition);
+    doc.text(trip.truckPlate || 'N/A', 100, yPosition);
+    doc.text(`₺${(trip.revenue || 0).toLocaleString('tr-TR')}`, 150, yPosition);
 
     // Add delivery confirmation indicator if exists
     if (trip.deliveryDocuments && trip.deliveryDocuments.length > 0) {
@@ -160,7 +160,7 @@ Sayın ${invoice.clientName},
 Aşağıdaki seferler için faturanızı ektedir:
 
 ${relatedTrips.map((trip, index) =>
-  `${index + 1}. ${trip.originCity} → ${trip.destinationCity} - ₺${trip.revenue.toLocaleString('tr-TR')}`
+  `${index + 1}. ${trip.originCity} → ${trip.destinationCity} - ₺${(trip.revenue || 0).toLocaleString('tr-TR')}`
 ).join('\n')}
 
 TOPLAM TUTAR: ₺${invoice.amount.toLocaleString('tr-TR')}
