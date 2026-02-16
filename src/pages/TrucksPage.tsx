@@ -124,7 +124,7 @@ const TrucksPage = () => {
           return (
             <Link
               key={truck.id}
-              to={`/trucks/${truck.id}`}
+              to={`/manager/trucks/${truck.id}`}
               className={`block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
                 hasWarning ? 'border-2 border-red-500' : 'border border-gray-200'
               }`}

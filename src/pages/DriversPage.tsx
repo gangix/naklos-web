@@ -125,7 +125,7 @@ const DriversPage = () => {
           return (
             <Link
               key={driver.id}
-              to={`/drivers/${driver.id}`}
+              to={`/manager/drivers/${driver.id}`}
               className={`block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
                 hasWarning ? 'border-2 border-red-500' : 'border border-gray-200'
               }`}
