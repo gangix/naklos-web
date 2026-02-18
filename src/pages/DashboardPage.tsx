@@ -1,15 +1,109 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockFleet, mockTrucks, mockDrivers } from '../data/mock';
+import { useTrucks, useDrivers } from '../hooks/useApiData';
+import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
-import { calculateWarnings } from '../utils/warnings';
 import { getTurkishMonthName, getPreviousMonth, getCurrentMonth, getMonthDateRange } from '../utils/dateHelpers';
 import { getBadgeSize } from '../utils/badgeHelpers';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const { fleet, fleetId } = useFleet();
+  const { data: trucks, loading: trucksLoading } = useTrucks();
+  const { data: drivers, loading: driversLoading } = useDrivers();
   const { trips, documentSubmissions, truckAssignmentRequests } = useData();
-  const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
+
+  // Calculate expiry warnings for trucks
+  const warnings = useMemo(() => {
+    const today = new Date();
+    const warningsList: any[] = [];
+
+    trucks.forEach((truck) => {
+      // Check compulsory insurance
+      if (truck.compulsoryInsuranceExpiry) {
+        const expiryDate = new Date(truck.compulsoryInsuranceExpiry);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Zorunlu sigorta süresi dolmuş (${truck.plateNumber})`,
+            type: 'compulsory-insurance'
+          });
+        } else if (daysRemaining <= 7) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Zorunlu sigorta ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'compulsory-insurance'
+          });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'warning',
+            message: `Zorunlu sigorta ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'compulsory-insurance'
+          });
+        }
+      }
+
+      // Check comprehensive insurance
+      if (truck.comprehensiveInsuranceExpiry) {
+        const expiryDate = new Date(truck.comprehensiveInsuranceExpiry);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Kasko süresi dolmuş (${truck.plateNumber})`,
+            type: 'comprehensive-insurance'
+          });
+        } else if (daysRemaining <= 7) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'comprehensive-insurance'
+          });
+        }
+      }
+
+      // Check inspection
+      if (truck.inspectionExpiry) {
+        const expiryDate = new Date(truck.inspectionExpiry);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Muayene süresi dolmuş (${truck.plateNumber})`,
+            type: 'inspection'
+          });
+        } else if (daysRemaining <= 7) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'inspection'
+          });
+        }
+      }
+    });
+
+    return warningsList;
+  }, [trucks]);
+
+  const loading = trucksLoading || driversLoading;
 
   // Calculate statistics
   const stats = useMemo(() => {
@@ -69,8 +163,8 @@ const DashboardPage = () => {
     const totalTrips = trips.filter(
       (trip) => trip.status === 'in-progress' || trip.status === 'created'
     ).length;
-    const totalTrucks = mockTrucks.length;
-    const totalDrivers = mockDrivers.length;
+    const totalTrucks = trucks.length;
+    const totalDrivers = drivers.length;
 
     return {
       pendingApprovalCount: pendingApprovalTrips.length,
@@ -91,6 +185,20 @@ const DashboardPage = () => {
   const currentMonthName = getTurkishMonthName(new Date().getMonth());
   const prevMonthName = getTurkishMonthName(getPreviousMonth().month);
 
+  // Show loading state first (before checking hasData)
+  if (loading || !fleet) {
+    return (
+      <div className="max-w-4xl">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Empty state check
   if (!stats.hasData) {
     return (
@@ -98,7 +206,7 @@ const DashboardPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Ana Sayfa</h1>
-          <p className="text-gray-600 mt-1">{mockFleet.name}</p>
+          <p className="text-gray-600 mt-1">{fleet.name}</p>
         </div>
 
         {/* Empty State / Onboarding */}
@@ -168,7 +276,7 @@ const DashboardPage = () => {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Ana Sayfa</h1>
-        <p className="text-gray-600 mt-1">{mockFleet.name}</p>
+        <p className="text-gray-600 mt-1">{fleet.name}</p>
       </div>
 
       {/* Main Sections with Warning Badges */}

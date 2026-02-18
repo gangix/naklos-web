@@ -1,15 +1,16 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { DRIVERS } from '../constants/text';
-import { mockDrivers, mockTrucks } from '../data/mock';
+import { useDrivers } from '../hooks/useApiData';
 import { useData } from '../contexts/DataContext';
-import { calculateWarnings } from '../utils/warnings';
 import { formatDate } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import TruckAssignmentModal from '../components/common/TruckAssignmentModal';
+import AddDriverModal from '../components/common/AddDriverModal';
 import type { DriverStatus, DocumentSubmission, TruckAssignmentRequest } from '../types';
 
 const DriversPage = () => {
+  const { data: drivers, loading: driversLoading, refresh } = useDrivers();
   const { documentSubmissions, truckAssignmentRequests } = useData();
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
@@ -18,8 +19,10 @@ const DriversPage = () => {
   const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<TruckAssignmentRequest | null>(null);
+  const [addDriverModalOpen, setAddDriverModalOpen] = useState(false);
 
-  const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
+  // For now, no warnings calculation
+  const warnings: any[] = [];
 
   // Handle query param for auto-tab selection
   useEffect(() => {
@@ -79,10 +82,10 @@ const DriversPage = () => {
 
   // Filter and sort drivers (warnings to the top)
   const filteredDrivers = useMemo(() => {
-    let drivers = filter === 'all' ? mockDrivers : mockDrivers.filter((driver) => driver.status === filter);
+    let filtered = filter === 'all' ? drivers : drivers.filter((driver) => driver.status === filter);
 
     // Sort drivers with warnings to the top
-    return drivers.sort((a, b) => {
+    return filtered.sort((a, b) => {
       const aHasWarning = hasUrgentWarning(a.id);
       const bHasWarning = hasUrgentWarning(b.id);
 
@@ -90,7 +93,7 @@ const DriversPage = () => {
       if (!aHasWarning && bHasWarning) return 1;
       return 0;
     });
-  }, [filter, warnings]);
+  }, [filter, warnings, drivers]);
 
   const getStatusColor = (status: DriverStatus) => {
     switch (status) {
@@ -153,9 +156,32 @@ const DriversPage = () => {
 
   const totalPending = pendingDocSubmissions.length + pendingTruckRequests.length;
 
+  // Show loading state
+  if (driversLoading) {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{DRIVERS.title}</h1>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">{DRIVERS.title}</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-900">{DRIVERS.title}</h1>
+        <button
+          onClick={() => setAddDriverModalOpen(true)}
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+        >
+          + Sürücü Ekle
+        </button>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4 border-b border-gray-200">
@@ -167,7 +193,7 @@ const DriversPage = () => {
               : 'border-transparent text-gray-600 hover:text-gray-900'
           }`}
         >
-          Sürücüler ({mockDrivers.length})
+          Sürücüler ({drivers.length})
         </button>
         {(completedDocSubmissions.length > 0 || completedTruckRequests.length > 0) && (
           <button
@@ -208,7 +234,7 @@ const DriversPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {DRIVERS.all} ({mockDrivers.length})
+              {DRIVERS.all} ({drivers.length})
             </button>
             <button
               onClick={() => setFilter('available')}
@@ -218,7 +244,7 @@ const DriversPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {DRIVERS.available} ({mockDrivers.filter((d) => d.status === 'available').length})
+              {DRIVERS.available} ({drivers.filter((d) => d.status === 'available').length})
             </button>
             <button
               onClick={() => setFilter('on-trip')}
@@ -228,7 +254,7 @@ const DriversPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {DRIVERS.onTrip} ({mockDrivers.filter((d) => d.status === 'on-trip').length})
+              {DRIVERS.onTrip} ({drivers.filter((d) => d.status === 'on-trip').length})
             </button>
             <button
               onClick={() => setFilter('off-duty')}
@@ -238,7 +264,7 @@ const DriversPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {DRIVERS.offDuty} ({mockDrivers.filter((d) => d.status === 'off-duty').length})
+              {DRIVERS.offDuty} ({drivers.filter((d) => d.status === 'off-duty').length})
             </button>
           </div>
 
@@ -485,6 +511,15 @@ const DriversPage = () => {
           request={selectedRequest}
         />
       )}
+
+      {/* Add Driver Modal */}
+      <AddDriverModal
+        isOpen={addDriverModalOpen}
+        onClose={() => setAddDriverModalOpen(false)}
+        onSuccess={() => {
+          refresh();
+        }}
+      />
     </div>
   );
 };

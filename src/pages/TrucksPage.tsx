@@ -1,22 +1,112 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { TRUCKS } from '../constants/text';
-import { mockTrucks, mockDrivers } from '../data/mock';
+import { useTrucks } from '../hooks/useApiData';
 import { useData } from '../contexts/DataContext';
-import { calculateWarnings } from '../utils/warnings';
 import { formatDate } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
+import AddTruckModal from '../components/common/AddTruckModal';
 import type { TruckStatus, DocumentSubmission } from '../types';
 
 const TrucksPage = () => {
+  const { data: trucks, loading: trucksLoading, refresh } = useTrucks();
   const { documentSubmissions } = useData();
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
   const [filter, setFilter] = useState<TruckStatus | 'all'>('all');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
+  const [addTruckModalOpen, setAddTruckModalOpen] = useState(false);
 
-  const warnings = useMemo(() => calculateWarnings(mockTrucks, mockDrivers), []);
+  // Calculate expiry warnings for trucks
+  const warnings = useMemo(() => {
+    const today = new Date();
+    const warningsList: any[] = [];
+
+    trucks.forEach((truck) => {
+      // Check compulsory insurance
+      if (truck.compulsoryInsuranceExpiry) {
+        const expiryDate = new Date(truck.compulsoryInsuranceExpiry);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Zorunlu sigorta süresi dolmuş (${truck.plateNumber})`,
+            type: 'compulsory-insurance'
+          });
+        } else if (daysRemaining <= 7) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Zorunlu sigorta ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'compulsory-insurance'
+          });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'warning',
+            message: `Zorunlu sigorta ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'compulsory-insurance'
+          });
+        }
+      }
+
+      // Check comprehensive insurance
+      if (truck.comprehensiveInsuranceExpiry) {
+        const expiryDate = new Date(truck.comprehensiveInsuranceExpiry);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Kasko süresi dolmuş (${truck.plateNumber})`,
+            type: 'comprehensive-insurance'
+          });
+        } else if (daysRemaining <= 7) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'comprehensive-insurance'
+          });
+        }
+      }
+
+      // Check inspection
+      if (truck.inspectionExpiry) {
+        const expiryDate = new Date(truck.inspectionExpiry);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Muayene süresi dolmuş (${truck.plateNumber})`,
+            type: 'inspection'
+          });
+        } else if (daysRemaining <= 7) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'inspection'
+          });
+        }
+      }
+    });
+
+    return warningsList;
+  }, [trucks]);
 
   // Handle query param for auto-tab selection
   useEffect(() => {
@@ -64,10 +154,10 @@ const TrucksPage = () => {
 
   // Filter and sort trucks (warnings to the top)
   const filteredTrucks = useMemo(() => {
-    let trucks = filter === 'all' ? mockTrucks : mockTrucks.filter((truck) => truck.status === filter);
+    let filtered = filter === 'all' ? trucks : trucks.filter((truck) => truck.status === filter);
 
     // Sort trucks with warnings to the top
-    return trucks.sort((a, b) => {
+    return filtered.sort((a, b) => {
       const aHasWarning = hasUrgentWarning(a.id);
       const bHasWarning = hasUrgentWarning(b.id);
 
@@ -75,7 +165,7 @@ const TrucksPage = () => {
       if (!aHasWarning && bHasWarning) return 1;
       return 0;
     });
-  }, [filter, warnings]);
+  }, [filter, warnings, trucks]);
 
   const getStatusColor = (status: TruckStatus) => {
     switch (status) {
@@ -144,9 +234,32 @@ const TrucksPage = () => {
     return { insurance, inspection };
   }, [pendingSubmissions]);
 
+  // Show loading state
+  if (trucksLoading) {
+    return (
+      <div className="p-4">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRUCKS.title}</h1>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRUCKS.title}</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-900">{TRUCKS.title}</h1>
+        <button
+          onClick={() => setAddTruckModalOpen(true)}
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+        >
+          + Araç Ekle
+        </button>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4 border-b border-gray-200">
@@ -158,7 +271,7 @@ const TrucksPage = () => {
               : 'border-transparent text-gray-600 hover:text-gray-900'
           }`}
         >
-          Araçlar ({mockTrucks.length})
+          Araçlar ({trucks.length})
         </button>
         {completedSubmissions.length > 0 && (
           <button
@@ -199,7 +312,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.all} ({mockTrucks.length})
+              {TRUCKS.all} ({trucks.length})
             </button>
             <button
               onClick={() => setFilter('available')}
@@ -209,7 +322,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.available} ({mockTrucks.filter((t) => t.status === 'available').length})
+              {TRUCKS.available} ({trucks.filter((t) => t.status === 'available').length})
             </button>
             <button
               onClick={() => setFilter('in-transit')}
@@ -219,7 +332,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.inTransit} ({mockTrucks.filter((t) => t.status === 'in-transit').length})
+              {TRUCKS.inTransit} ({trucks.filter((t) => t.status === 'in-transit').length})
             </button>
             <button
               onClick={() => setFilter('maintenance')}
@@ -229,7 +342,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.maintenance} ({mockTrucks.filter((t) => t.status === 'maintenance').length})
+              {TRUCKS.maintenance} ({trucks.filter((t) => t.status === 'maintenance').length})
             </button>
           </div>
 
@@ -276,16 +389,16 @@ const TrucksPage = () => {
                   {/* Document warnings */}
                   {getTruckWarnings(truck.id).length > 0 && (
                     <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
-                      {getTruckWarnings(truck.id).map((warning) => (
+                      {getTruckWarnings(truck.id).map((warning, index) => (
                         <div
-                          key={warning.id}
+                          key={`${truck.id}-${warning.type}-${index}`}
                           className={`text-xs px-2 py-1 rounded ${
                             warning.severity === 'error'
                               ? 'bg-red-50 text-red-700'
                               : 'bg-yellow-50 text-yellow-700'
                           }`}
                         >
-                          {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message.split(' - ')[1]}
+                          {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message}
                         </div>
                       ))}
                     </div>
@@ -440,6 +553,15 @@ const TrucksPage = () => {
           submission={selectedSubmission}
         />
       )}
+
+      {/* Add Truck Modal */}
+      <AddTruckModal
+        isOpen={addTruckModalOpen}
+        onClose={() => setAddTruckModalOpen(false)}
+        onSuccess={() => {
+          refresh();
+        }}
+      />
     </div>
   );
 };
