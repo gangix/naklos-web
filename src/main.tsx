@@ -4,13 +4,16 @@ import './index.css'
 import App from './App.tsx'
 import { DataProvider } from './contexts/DataContext.tsx'
 import { AuthProvider } from './contexts/AuthContext.tsx'
+import { FleetProvider } from './contexts/FleetContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <DataProvider>
-        <App />
-      </DataProvider>
+      <FleetProvider>
+        <DataProvider>
+          <App />
+        </DataProvider>
+      </FleetProvider>
     </AuthProvider>
   </StrictMode>,
 )

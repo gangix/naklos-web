@@ -25,7 +25,7 @@ const TripsPage = () => {
     return trips.filter(
       (trip) =>
         trip.isPlanned &&
-        (trip.status === 'created' || trip.status === 'in-progress')
+        (trip.status === 'CREATED' || trip.status === 'IN_PROGRESS')
     );
   }, [trips]);
 
@@ -33,7 +33,7 @@ const TripsPage = () => {
   const pendingTrips = useMemo(() => {
     return trips.filter(
       (trip) =>
-        trip.status === 'delivered' &&
+        trip.status === 'DELIVERED' &&
         trip.deliveryDocuments.length > 0
     );
   }, [trips]);
@@ -41,7 +41,7 @@ const TripsPage = () => {
   // Ready to invoice: approved trips not yet invoiced
   const readyTrips = useMemo(() => {
     return trips.filter(
-      (trip) => trip.status === 'approved' && trip.approvedByManager && !trip.invoiced
+      (trip) => trip.status === 'APPROVED' && trip.approvedByManager && !trip.invoiced
     );
   }, [trips]);
 
@@ -61,7 +61,7 @@ const TripsPage = () => {
   }, [selectedTrips]);
 
   const totalAmount = useMemo(() => {
-    return selectedTrips.reduce((sum, trip) => sum + (trip.revenue || 0), 0);
+    return selectedTrips.reduce((sum, trip) => sum + (trip.revenue?.amount || 0), 0);
   }, [selectedTrips]);
 
   const handleToggleTrip = (tripId: string, clientId: string | null) => {
@@ -132,15 +132,15 @@ const TripsPage = () => {
 
   const getStatusColor = (status: TripStatus) => {
     switch (status) {
-      case 'created':
+      case 'CREATED':
         return 'bg-gray-100 text-gray-700';
-      case 'in-progress':
+      case 'IN_PROGRESS':
         return 'bg-blue-100 text-blue-700';
-      case 'delivered':
+      case 'DELIVERED':
         return 'bg-orange-100 text-orange-700';
-      case 'approved':
+      case 'APPROVED':
         return 'bg-emerald-100 text-emerald-700';
-      case 'invoiced':
+      case 'INVOICED':
         return 'bg-purple-100 text-purple-700';
       default:
         return 'bg-gray-100 text-gray-700';
@@ -149,15 +149,15 @@ const TripsPage = () => {
 
   const getStatusLabel = (status: TripStatus) => {
     switch (status) {
-      case 'created':
+      case 'CREATED':
         return 'Oluşturuldu';
-      case 'in-progress':
+      case 'IN_PROGRESS':
         return 'Devam Ediyor';
-      case 'delivered':
+      case 'DELIVERED':
         return 'Onay Bekliyor';
-      case 'approved':
+      case 'APPROVED':
         return 'Onaylandı';
-      case 'invoiced':
+      case 'INVOICED':
         return 'Faturalandı';
       default:
         return status;
@@ -170,10 +170,10 @@ const TripsPage = () => {
     const hasTruck = !!trip.truckPlate;
     const hasDriver = !!trip.driverName;
     const hasClient = !!trip.clientName;
-    const hasRevenue = !!trip.revenue;
+    const hasRevenue = !!(trip.revenue && trip.revenue.amount > 0);
 
     // Unassigned trip (created, missing truck/driver)
-    if (trip.status === 'created' && (!hasTruck || !hasDriver)) {
+    if (trip.status === 'CREATED' && (!hasTruck || !hasDriver)) {
       return {
         bgColor: 'bg-amber-50',
         borderColor: 'border-l-4 border-amber-400',
@@ -183,7 +183,7 @@ const TripsPage = () => {
     }
 
     // Assigned but in progress
-    if (trip.status === 'in-progress') {
+    if (trip.status === 'IN_PROGRESS') {
       return {
         bgColor: 'bg-blue-50',
         borderColor: 'border-l-4 border-blue-400',
@@ -193,7 +193,7 @@ const TripsPage = () => {
     }
 
     // Missing client or revenue info
-    if (trip.status === 'created' && (!hasClient || !hasRevenue)) {
+    if (trip.status === 'CREATED' && (!hasClient || !hasRevenue)) {
       return {
         bgColor: 'bg-orange-50',
         borderColor: 'border-l-4 border-orange-400',
@@ -203,7 +203,7 @@ const TripsPage = () => {
     }
 
     // Planned trip with all info (created status, ready to start)
-    if (trip.status === 'created') {
+    if (trip.status === 'CREATED') {
       return {
         bgColor: 'bg-white',
         borderColor: 'border-l-4 border-green-400',
@@ -227,7 +227,7 @@ const TripsPage = () => {
     if (!trip.truckPlate) missing.push('Araç');
     if (!trip.driverName) missing.push('Sürücü');
     if (!trip.clientName) missing.push('Müşteri');
-    if (!trip.revenue) missing.push('Ücret');
+    if (!trip.revenue || !trip.revenue.amount) missing.push('Ücret');
     return missing;
   };
 
@@ -243,7 +243,17 @@ const TripsPage = () => {
 
   return (
     <div className="p-4 pb-24">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRIPS.title || 'Seferler'}</h1>
+      {/* Header with Create Button */}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-900">{TRIPS.title || 'Seferler'}</h1>
+        <button
+          onClick={() => navigate('/manager/trips/create')}
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 flex items-center gap-2"
+        >
+          <span className="text-xl">+</span>
+          Yeni Sefer
+        </button>
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4 border-b border-gray-200 overflow-x-auto">
@@ -331,9 +341,9 @@ const TripsPage = () => {
 
                   <div className="flex items-center justify-between text-sm text-gray-600 pt-2 border-t border-gray-100">
                     <span>{trip.truckPlate || 'Araç atanmadı'}</span>
-                    {trip.revenue && (
+                    {trip.revenue?.amount && (
                       <span className="font-bold text-green-600">
-                        {formatCurrency(trip.revenue)}
+                        {formatCurrency(trip.revenue.amount)}
                       </span>
                     )}
                   </div>
@@ -502,7 +512,7 @@ const TripsPage = () => {
                             </p>
                           </div>
                           <span className="font-bold text-green-600 text-lg">
-                            {formatCurrency(trip.revenue || 0)}
+                            {formatCurrency(trip.revenue?.amount || 0)}
                           </span>
                         </div>
 

@@ -1,25 +1,84 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockTrucks } from '../data/mock';
+import { truckApi, driverApi } from '../services/api';
+import { useFleet } from '../contexts/FleetContext';
 import { TRUCKS } from '../constants/text';
 import { formatCurrency } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
-import DocumentUploadModal from '../components/common/DocumentUploadModal';
-import type { DocumentCategory } from '../types';
+import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
+import type { DocumentCategory, Truck, Driver } from '../types';
 
 const TruckDetailPage = () => {
   const { truckId } = useParams<{ truckId: string }>();
   const navigate = useNavigate();
+  const { fleetId } = useFleet();
+  const [truck, setTruck] = useState<Truck | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
+  const [showDriverSelect, setShowDriverSelect] = useState(false);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [assigningDriver, setAssigningDriver] = useState(false);
 
-  const truck = mockTrucks.find((t) => t.id === truckId);
+  useEffect(() => {
+    if (!truckId) return;
 
-  if (!truck) {
+    const fetchTruck = async () => {
+      try {
+        setLoading(true);
+        const data = await truckApi.getById(truckId);
+        setTruck(data);
+      } catch (err) {
+        console.error('Error fetching truck:', err);
+        setError(err instanceof Error ? err.message : 'Araç yüklenirken hata oluştu');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTruck();
+  }, [truckId]);
+
+  useEffect(() => {
+    if (!fleetId) return;
+
+    const fetchDrivers = async () => {
+      try {
+        const data = await driverApi.getByFleet(fleetId);
+        setDrivers(data);
+      } catch (err) {
+        console.error('Error fetching drivers:', err);
+      }
+    };
+
+    fetchDrivers();
+  }, [fleetId]);
+
+  if (loading) {
     return (
       <div className="p-4">
-        <p className="text-center text-gray-600">Araç bulunamadı</p>
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !truck) {
+    return (
+      <div className="p-4">
+        <p className="text-center text-red-600">{error || 'Araç bulunamadı'}</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
+        >
+          Geri Dön
+        </button>
       </div>
     );
   }
@@ -50,10 +109,63 @@ const TruckDetailPage = () => {
     }
   };
 
+  const handleAssignDriver = async (driverId: string) => {
+    if (!truckId) return;
+
+    try {
+      setAssigningDriver(true);
+      const updatedTruck = await truckApi.assignDriver(truckId, driverId);
+      setTruck(updatedTruck);
+      setShowDriverSelect(false);
+    } catch (err) {
+      console.error('Error assigning driver:', err);
+      alert('Sürücü atanırken hata oluştu');
+    } finally {
+      setAssigningDriver(false);
+    }
+  };
+
+  const handleUnassignDriver = async () => {
+    if (!truckId) return;
+
+    if (!confirm('Sürücüyü kaldırmak istediğinizden emin misiniz?')) return;
+
+    try {
+      setAssigningDriver(true);
+      const updatedTruck = await truckApi.unassignDriver(truckId);
+      setTruck(updatedTruck);
+    } catch (err) {
+      console.error('Error unassigning driver:', err);
+      alert('Sürücü kaldırılırken hata oluştu');
+    } finally {
+      setAssigningDriver(false);
+    }
+  };
+
   const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string | null) => {
     setUploadCategory(category);
     setUploadCurrentExpiry(currentExpiry);
     setUploadModalOpen(true);
+  };
+
+  const handleDocumentSave = async (category: DocumentCategory, expiryDate: string) => {
+    if (!truckId) return;
+
+    const updateData: any = {};
+
+    if (category === 'compulsory-insurance') {
+      updateData.compulsoryInsuranceExpiry = expiryDate;
+    } else if (category === 'comprehensive-insurance') {
+      updateData.comprehensiveInsuranceExpiry = expiryDate;
+    } else if (category === 'inspection') {
+      updateData.inspectionExpiry = expiryDate;
+    }
+
+    await truckApi.updateDocuments(truckId, updateData);
+
+    // Refresh truck data
+    const updatedTruck = await truckApi.getById(truckId);
+    setTruck(updatedTruck);
   };
 
   return (
@@ -84,9 +196,59 @@ const TruckDetailPage = () => {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">{TRUCKS.driver}</span>
-            <span className="text-sm font-medium text-gray-900">
-              {truck.assignedDriverName || 'Atanmadı'}
-            </span>
+            <div className="flex items-center gap-2">
+              {truck.currentDriverId ? (
+                <>
+                  <span className="text-sm font-medium text-gray-900">
+                    {truck.assignedDriverName}
+                  </span>
+                  <button
+                    onClick={handleUnassignDriver}
+                    disabled={assigningDriver}
+                    className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
+                  >
+                    Kaldır
+                  </button>
+                </>
+              ) : (
+                <>
+                  {!showDriverSelect ? (
+                    <button
+                      onClick={() => setShowDriverSelect(true)}
+                      className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                    >
+                      + Sürücü Ata
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            handleAssignDriver(e.target.value);
+                          }
+                        }}
+                        disabled={assigningDriver}
+                        className="text-sm border border-gray-300 rounded px-2 py-1 disabled:opacity-50"
+                        defaultValue=""
+                      >
+                        <option value="">Sürücü seçin</option>
+                        {drivers.map((driver) => (
+                          <option key={driver.id} value={driver.id}>
+                            {driver.firstName} {driver.lastName}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => setShowDriverSelect(false)}
+                        className="text-xs text-gray-600 hover:text-gray-700"
+                      >
+                        İptal
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -176,27 +338,26 @@ const TruckDetailPage = () => {
           </div>
           <div className="flex items-center justify-between py-2 border-b border-gray-100">
             <span className="text-sm text-gray-600">{TRUCKS.tripCount}</span>
-            <span className="text-sm font-bold text-gray-900">{truck.tripCount}</span>
+            <span className="text-sm font-bold text-gray-900">{truck.tripCount || 0}</span>
           </div>
           <div className="flex items-center justify-between py-2">
             <span className="text-sm text-gray-600">{TRUCKS.utilization}</span>
-            <span className="text-sm font-bold text-gray-900">{truck.utilizationRate}%</span>
+            <span className="text-sm font-bold text-gray-900">{truck.utilizationRate || 0}%</span>
           </div>
         </div>
       </div>
 
-      {/* Document Upload Modal */}
+      {/* Document Update Modal */}
       {uploadModalOpen && uploadCategory && (
-        <DocumentUploadModal
+        <SimpleDocumentUpdateModal
           isOpen={uploadModalOpen}
           onClose={() => setUploadModalOpen(false)}
           category={uploadCategory}
           relatedType="truck"
           relatedId={truck.id}
           relatedName={truck.plateNumber}
-          submittedByName="Fleet Manager"
           currentExpiryDate={uploadCurrentExpiry}
-          previousImageUrl={null}
+          onUpdate={handleDocumentSave}
         />
       )}
     </div>

@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../contexts/DataContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFleet } from '../../contexts/FleetContext';
+import { tripApi } from '../../services/api';
 import FileUpload from '../../components/common/FileUpload';
 import type { Document } from '../../types';
 
 const DriverTripCreatePage = () => {
   const navigate = useNavigate();
+  const { fleetId } = useFleet();
   const { addTrip } = useData();
   const { user } = useAuth();
 
@@ -22,7 +25,7 @@ const DriverTripCreatePage = () => {
     setDocuments([...documents, document]);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (documents.length === 0) {
       alert('⚠️ Lütfen en az 1 teslimat belgesi yükleyin');
       return;
@@ -33,48 +36,57 @@ const DriverTripCreatePage = () => {
       return;
     }
 
-    // Create new trip with POD (goes directly to 'delivered' status)
-    const newTrip = {
-      id: `trip-driver-${Date.now()}`,
-      fleetId: 'fleet-1',
-      driverId: user?.driverId || null,
-      driverName: user?.name || null,
-      driverEnteredDestination: destination,
-      originCity: 'Bilinmiyor', // Driver may not know
-      destinationCity: destination.split('-')[0].trim() || destination,
-      clientId: null, // Manager will fill
-      clientName: null,
-      truckId: null, // Manager will fill
-      truckPlate: null,
-      cargoDescription: null, // Manager will fill
-      revenue: null,
-      status: 'delivered' as const, // Goes directly to delivered (pending approval)
-      isPlanned: false, // POD-first workflow
-      deliveryDocuments: documents,
-      deliveredAt: new Date().toISOString(),
-      approvedByManager: false,
-      approvedAt: null,
-      createdAt: new Date().toISOString(),
-      startedAt: null,
-      completedAt: null,
-      estimatedArrival: null,
-      expenses: {
-        fuel: 0,
-        tolls: 0,
-        other: 0,
-        otherReason: '',
-      },
-      documentsConfirmed: false,
-      invoiced: false,
-    };
+    if (!fleetId) {
+      alert('⚠️ Filo bilgisi bulunamadı');
+      return;
+    }
 
-    // Add trip to context
-    addTrip(newTrip);
+    if (!user?.driverId) {
+      alert('⚠️ Sürücü bilgisi bulunamadı.\n\nLütfen "Diğer" sekmesinden bir sürücü olarak giriş yapın.');
+      return;
+    }
 
-    alert(
-      `✓ Teslimat belgesi yüklendi!\n\nHedef: ${destination}\n${documents.length} belge\n\nYöneticiniz inceleyecek ve onaylayacak.`
-    );
-    navigate('/driver');
+    // Validate driverId is a valid UUID
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(user.driverId)) {
+      alert('⚠️ Geçersiz sürücü ID.\n\nLütfen "Diğer" sekmesinden sistemdeki bir sürücü olarak giriş yapın.');
+      return;
+    }
+
+    try {
+      // Convert documents to the format expected by backend
+      const podDocuments = documents.map(doc => ({
+        name: doc.name,
+        mimeType: doc.type,
+        dataUrl: doc.dataUrl, // Base64 encoded
+        sizeBytes: doc.size || 0,
+      }));
+
+      // Call backend API to create POD-first trip
+      // Backend DTO: CreatePodFirstTripRequest(driverId, driverName, truckId, truckPlate, originCity, driverEnteredDestination, podDocuments)
+      const tripData = {
+        driverId: user.driverId,
+        driverName: user.name,
+        truckId: null,
+        truckPlate: null,
+        originCity: null,
+        driverEnteredDestination: destination,
+        podDocuments: podDocuments,
+      };
+
+      const newTrip = await tripApi.createPodFirst(tripData, fleetId);
+
+      // Add to local state
+      addTrip(newTrip);
+
+      alert(
+        `✓ Teslimat belgesi yüklendi!\n\nHedef: ${destination}\n${documents.length} belge\n\nYöneticiniz inceleyecek ve onaylayacak.`
+      );
+      navigate('/driver');
+    } catch (error: any) {
+      console.error('Error creating POD-first trip:', error);
+      alert('❌ Hata: ' + (error.message || 'Teslimat belgesi yüklenirken hata oluştu'));
+    }
   };
 
   const handleDocumentClick = (doc: Document) => {

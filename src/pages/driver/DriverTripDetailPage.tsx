@@ -2,14 +2,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useData } from '../../contexts/DataContext';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFleet } from '../../contexts/FleetContext';
+import { tripApi, truckApi } from '../../services/api';
 import { formatCurrency, formatDate } from '../../utils/format';
 import FileUpload from '../../components/common/FileUpload';
-import { mockTrucks } from '../../data/mock';
 import type { Document } from '../../types';
 
 const DriverTripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const navigate = useNavigate();
+  const { fleetId } = useFleet();
   const { trips, updateTrip } = useData();
   const { user } = useAuth();
 
@@ -18,6 +20,30 @@ const DriverTripDetailPage = () => {
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [showTruckSelection, setShowTruckSelection] = useState(false);
   const [selectedTruckId, setSelectedTruckId] = useState<string>('');
+
+  // Real data from APIs
+  const [trucks, setTrucks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load trucks from API
+  useEffect(() => {
+    if (fleetId) {
+      loadTrucks();
+    }
+  }, [fleetId]);
+
+  const loadTrucks = async () => {
+    if (!fleetId) return;
+    try {
+      setLoading(true);
+      const trucksData = await truckApi.getAvailable(fleetId);
+      setTrucks(trucksData);
+    } catch (error) {
+      console.error('Error loading trucks:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Sync with context when trip changes
   useEffect(() => {
@@ -74,46 +100,71 @@ const DriverTripDetailPage = () => {
   };
 
   const totalExpenses =
-    trip.expenses.fuel +
-    trip.expenses.tolls +
-    trip.expenses.other;
+    (trip.expenses?.fuel?.amount || 0) +
+    (trip.expenses?.tolls?.amount || 0) +
+    (trip.expenses?.other?.amount || 0);
 
-  const handleAssignToSelf = () => {
+  const handleAssignToSelf = async () => {
     if (!selectedTruckId) {
       alert('⚠️ Lütfen bir araç seçin');
       return;
     }
 
-    const selectedTruck = mockTrucks.find((t) => t.id === selectedTruckId);
+    const selectedTruck = trucks.find((t) => t.id === selectedTruckId);
     if (!selectedTruck) return;
 
-    updateTrip(trip.id, {
-      driverId: user?.driverId || null,
-      driverName: user?.name || null,
-      truckId: selectedTruck.id,
-      truckPlate: selectedTruck.plateNumber,
-      status: 'in-progress',
-    });
+    try {
+      // Call backend API to assign driver and truck
+      await tripApi.assignDriverAndTruck(trip.id, {
+        driverId: user?.driverId || '',
+        truckId: selectedTruck.id,
+      });
 
-    setShowTruckSelection(false);
-    alert('✓ Sefer size atandı!');
+      // Mark trip as in progress
+      await tripApi.markInProgress(trip.id);
+
+      // Update local state
+      await updateTrip(trip.id, {
+        driverId: user?.driverId || null,
+        driverName: user?.name || null,
+        truckId: selectedTruck.id,
+        truckPlate: selectedTruck.plateNumber,
+        status: 'in-progress',
+      });
+
+      setShowTruckSelection(false);
+      alert('✓ Sefer size atandı!');
+    } catch (error: any) {
+      console.error('Error assigning trip:', error);
+      alert('❌ Hata: ' + (error.message || 'Sefer atanırken hata oluştu'));
+    }
   };
 
-  const handleUnassign = () => {
+  const handleUnassign = async () => {
     const confirmed = window.confirm(
       'Bu seferden ayrılmak istediğinizden emin misiniz?\n\nSefer yeniden müsait seferler listesine eklenecek.'
     );
 
     if (confirmed) {
-      updateTrip(trip.id, {
-        driverId: null,
-        driverName: null,
-        truckId: null,
-        truckPlate: null,
-        status: 'created',
-      });
-      alert('✓ Seferden ayrıldınız');
-      navigate('/driver/trips');
+      try {
+        // Cancel the trip on backend
+        await tripApi.cancelTrip(trip.id, 'Driver unassigned from trip');
+
+        // Update local state
+        await updateTrip(trip.id, {
+          driverId: null,
+          driverName: null,
+          truckId: null,
+          truckPlate: null,
+          status: 'created',
+        });
+
+        alert('✓ Seferden ayrıldınız');
+        navigate('/driver/trips');
+      } catch (error: any) {
+        console.error('Error unassigning from trip:', error);
+        alert('❌ Hata: ' + (error.message || 'Seferden ayrılırken hata oluştu'));
+      }
     }
   };
 
@@ -125,7 +176,7 @@ const DriverTripDetailPage = () => {
     setDocuments([...documents, document]);
   };
 
-  const handleUploadPOD = () => {
+  const handleUploadPOD = async () => {
     if (documents.length === 0) {
       alert('⚠️ Lütfen en az 1 teslimat belgesi yükleyin');
       return;
@@ -136,13 +187,26 @@ const DriverTripDetailPage = () => {
     );
 
     if (confirmed) {
-      updateTrip(trip.id, {
-        status: 'delivered',
-        deliveredAt: new Date().toISOString(),
-        deliveryDocuments: documents,
-      });
-      alert('✓ Teslimat belgeleri gönderildi!');
-      navigate('/driver');
+      try {
+        // Call backend API to mark as delivered
+        await tripApi.markDelivered(trip.id, {
+          deliveryLocation: trip.destinationCity,
+          deliveryNotes: 'POD documents uploaded by driver',
+        });
+
+        // Update local state
+        await updateTrip(trip.id, {
+          status: 'delivered',
+          deliveredAt: new Date().toISOString(),
+          deliveryDocuments: documents,
+        });
+
+        alert('✓ Teslimat belgeleri gönderildi!');
+        navigate('/driver');
+      } catch (error: any) {
+        console.error('Error uploading POD:', error);
+        alert('❌ Hata: ' + (error.message || 'Teslimat belgeleri yüklenirken hata oluştu'));
+      }
     }
   };
 
@@ -198,9 +262,10 @@ const DriverTripDetailPage = () => {
                   value={selectedTruckId}
                   onChange={(e) => setSelectedTruckId(e.target.value)}
                   className="w-full px-3 py-2 border border-blue-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={loading}
                 >
                   <option value="">Araç seçin...</option>
-                  {mockTrucks
+                  {trucks
                     .filter((truck) => truck.status === 'available')
                     .map((truck) => (
                       <option key={truck.id} value={truck.id}>
@@ -293,23 +358,23 @@ const DriverTripDetailPage = () => {
           {/* Fuel */}
           <div className="flex items-center justify-between">
             <label className="text-sm text-gray-600">Yakıt</label>
-            <span className="text-sm text-gray-900">{formatCurrency(trip.expenses.fuel)}</span>
+            <span className="text-sm text-gray-900">{formatCurrency(trip.expenses?.fuel?.amount || 0)}</span>
           </div>
 
           {/* Tolls */}
           <div className="flex items-center justify-between">
             <label className="text-sm text-gray-600">Geçiş Ücretleri</label>
-            <span className="text-sm text-gray-900">{formatCurrency(trip.expenses.tolls)}</span>
+            <span className="text-sm text-gray-900">{formatCurrency(trip.expenses?.tolls?.amount || 0)}</span>
           </div>
 
           {/* Other */}
           <div className="flex items-center justify-between">
             <label className="text-sm text-gray-600">Diğer</label>
-            <span className="text-sm text-gray-900">{formatCurrency(trip.expenses.other)}</span>
+            <span className="text-sm text-gray-900">{formatCurrency(trip.expenses?.other?.amount || 0)}</span>
           </div>
 
           {/* Other Reason */}
-          {trip.expenses.other > 0 && trip.expenses.otherReason && (
+          {(trip.expenses?.other?.amount || 0) > 0 && trip.expenses?.otherReason && (
             <div className="mt-2 pl-3">
               <label className="text-xs text-gray-600 block mb-1">Açıklama:</label>
               <span className="text-sm text-gray-700">{trip.expenses.otherReason}</span>

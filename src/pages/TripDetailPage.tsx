@@ -1,24 +1,34 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useData } from '../contexts/DataContext';
+import { useFleet } from '../contexts/FleetContext';
+import { tripApi, clientApi, driverApi, truckApi } from '../services/api';
 import { TRIPS, EXPENSES, DOCUMENTS } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import FileUpload from '../components/common/FileUpload';
-import { mockDrivers, mockTrucks, mockClients } from '../data/mock';
 import type { Document } from '../types';
 
 const TripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const navigate = useNavigate();
+  const { fleetId } = useFleet();
   const { trips, invoices, updateTrip } = useData();
 
   const trip = trips.find((t) => t.id === tripId);
   const [documents, setDocuments] = useState<Document[]>(trip?.deliveryDocuments || []);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
+  // Real data from APIs
+  const [clients, setClients] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [trucks, setTrucks] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // Edit mode state
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
+    originCity: trip?.originCity || '',
+    destinationCity: trip?.destinationCity || '',
     clientId: trip?.clientId || null,
     clientName: trip?.clientName || '',
     driverId: trip?.driverId || null,
@@ -26,20 +36,48 @@ const TripDetailPage = () => {
     truckId: trip?.truckId || null,
     truckPlate: trip?.truckPlate || '',
     cargoDescription: trip?.cargoDescription || '',
-    revenue: trip?.revenue || 0,
+    revenue: trip?.revenue?.amount || 0,
     expenses: {
-      fuel: trip?.expenses.fuel || 0,
-      tolls: trip?.expenses.tolls || 0,
-      other: trip?.expenses.other || 0,
-      otherReason: trip?.expenses.otherReason || '',
+      fuel: trip?.expenses?.fuel?.amount || 0,
+      tolls: trip?.expenses?.tolls?.amount || 0,
+      other: trip?.expenses?.other?.amount || 0,
+      otherReason: trip?.expenses?.otherReason || '',
     },
   });
+
+  // Load data from APIs
+  useEffect(() => {
+    if (fleetId) {
+      loadData();
+    }
+  }, [fleetId]);
+
+  const loadData = async () => {
+    if (!fleetId) return;
+    try {
+      setLoading(true);
+      const [clientsData, driversData, trucksData] = await Promise.all([
+        clientApi.getByFleet(fleetId),
+        driverApi.getByFleet(fleetId),
+        truckApi.getByFleet(fleetId),
+      ]);
+      setClients(clientsData);
+      setDrivers(driversData);
+      setTrucks(trucksData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Sync with context when trip changes
   useEffect(() => {
     if (trip) {
       setDocuments(trip.deliveryDocuments);
       setEditForm({
+        originCity: trip.originCity || '',
+        destinationCity: trip.destinationCity || '',
         clientId: trip.clientId || null,
         clientName: trip.clientName || '',
         driverId: trip.driverId || null,
@@ -47,12 +85,12 @@ const TripDetailPage = () => {
         truckId: trip.truckId || null,
         truckPlate: trip.truckPlate || '',
         cargoDescription: trip.cargoDescription || '',
-        revenue: trip.revenue || 0,
+        revenue: trip.revenue?.amount || 0,
         expenses: {
-          fuel: trip.expenses.fuel || 0,
-          tolls: trip.expenses.tolls || 0,
-          other: trip.expenses.other || 0,
-          otherReason: trip.expenses.otherReason || '',
+          fuel: trip.expenses?.fuel?.amount || 0,
+          tolls: trip.expenses?.tolls?.amount || 0,
+          other: trip.expenses?.other?.amount || 0,
+          otherReason: trip.expenses?.otherReason || '',
         },
       });
     }
@@ -71,15 +109,15 @@ const TripDetailPage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'created':
+      case 'CREATED':
         return 'bg-gray-100 text-gray-700';
-      case 'in-progress':
+      case 'IN_PROGRESS':
         return 'bg-blue-100 text-blue-700';
-      case 'delivered':
+      case 'DELIVERED':
         return 'bg-orange-100 text-orange-700';
-      case 'approved':
+      case 'APPROVED':
         return 'bg-emerald-100 text-emerald-700';
-      case 'invoiced':
+      case 'INVOICED':
         return 'bg-purple-100 text-purple-700';
       default:
         return 'bg-gray-100 text-gray-700';
@@ -88,15 +126,15 @@ const TripDetailPage = () => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'created':
+      case 'CREATED':
         return 'Oluşturuldu';
-      case 'in-progress':
+      case 'IN_PROGRESS':
         return 'Devam Ediyor';
-      case 'delivered':
+      case 'DELIVERED':
         return 'Onay Bekliyor';
-      case 'approved':
+      case 'APPROVED':
         return 'Onaylandı';
-      case 'invoiced':
+      case 'INVOICED':
         return 'Faturalandı';
       default:
         return status;
@@ -108,7 +146,7 @@ const TripDetailPage = () => {
     editForm.expenses.tolls +
     editForm.expenses.other;
 
-  const netProfit = (editForm.revenue || 0) - totalExpenses;
+  const netProfit = trip?.netProfit?.amount || ((editForm.revenue || 0) - totalExpenses);
 
   const handleFileSelect = (document: Document) => {
     if (documents.length >= 3) {
@@ -118,36 +156,66 @@ const TripDetailPage = () => {
     setDocuments([...documents, document]);
   };
 
-  const handleSave = () => {
-    if (!trip) return;
+  const handleSave = async () => {
+    if (!trip || !fleetId) return;
 
     // Find selected driver and truck details
-    const selectedDriver = mockDrivers.find((d) => d.id === editForm.driverId);
-    const selectedTruck = mockTrucks.find((t) => t.id === editForm.truckId);
-    const selectedClient = mockClients.find((c) => c.id === editForm.clientId);
+    const selectedDriver = drivers.find((d) => d.id === editForm.driverId);
+    const selectedTruck = trucks.find((t) => t.id === editForm.truckId);
+    const selectedClient = clients.find((c) => c.id === editForm.clientId);
 
-    const updates = {
-      clientId: editForm.clientId,
-      clientName: selectedClient?.companyName || editForm.clientName,
-      driverId: editForm.driverId,
-      driverName: selectedDriver ? `${selectedDriver.firstName} ${selectedDriver.lastName}` : editForm.driverName,
-      truckId: editForm.truckId,
-      truckPlate: selectedTruck?.plateNumber || editForm.truckPlate,
-      cargoDescription: editForm.cargoDescription,
-      revenue: editForm.revenue,
-      expenses: editForm.expenses,
-    };
+    try {
+      // Call backend APIs for updates
+      if (editForm.driverId && editForm.truckId && trip.status === 'CREATED') {
+        // Assign driver and truck if trip is still in created status
+        await tripApi.assignDriverAndTruck(trip.id, {
+          driverId: editForm.driverId,
+          truckId: editForm.truckId,
+        });
+      }
 
-    updateTrip(trip.id, updates);
+      // Update expenses (always send all required fields with currency)
+      await tripApi.updateExpenses(trip.id, {
+        fuelAmount: editForm.expenses.fuel,
+        fuelCurrency: 'TRY',
+        tollsAmount: editForm.expenses.tolls,
+        tollsCurrency: 'TRY',
+        otherAmount: editForm.expenses.other,
+        otherCurrency: 'TRY',
+        otherReason: editForm.expenses.otherReason || undefined,
+      });
 
-    setIsEditing(false);
-    alert('✓ Sefer bilgileri güncellendi');
+      // Update local state
+      const updates = {
+        originCity: editForm.originCity,
+        destinationCity: editForm.destinationCity,
+        clientId: editForm.clientId,
+        clientName: selectedClient?.companyName || editForm.clientName,
+        driverId: editForm.driverId,
+        driverName: selectedDriver ? `${selectedDriver.firstName} ${selectedDriver.lastName}` : editForm.driverName,
+        truckId: editForm.truckId,
+        truckPlate: selectedTruck?.plateNumber || editForm.truckPlate,
+        cargoDescription: editForm.cargoDescription,
+        revenue: editForm.revenue,
+        expenses: editForm.expenses,
+      };
+
+      await updateTrip(trip.id, updates);
+
+      setIsEditing(false);
+      alert('✓ Sefer bilgileri güncellendi');
+    } catch (error: any) {
+      console.error('Error saving trip:', error);
+      alert('❌ Hata: ' + (error.message || 'Sefer güncellenirken hata oluştu'));
+    }
   };
 
   const handleCancel = () => {
     // Reset form to original trip data
     if (trip) {
       setEditForm({
+        originCity: trip.originCity || '',
+        destinationCity: trip.destinationCity || '',
         clientId: trip.clientId || null,
         clientName: trip.clientName || '',
         driverId: trip.driverId || null,
@@ -155,19 +223,19 @@ const TripDetailPage = () => {
         truckId: trip.truckId || null,
         truckPlate: trip.truckPlate || '',
         cargoDescription: trip.cargoDescription || '',
-        revenue: trip.revenue || 0,
+        revenue: trip.revenue?.amount || 0,
         expenses: {
-          fuel: trip.expenses.fuel || 0,
-          tolls: trip.expenses.tolls || 0,
-          other: trip.expenses.other || 0,
-          otherReason: trip.expenses.otherReason || '',
+          fuel: trip.expenses?.fuel?.amount || 0,
+          tolls: trip.expenses?.tolls?.amount || 0,
+          other: trip.expenses?.other?.amount || 0,
+          otherReason: trip.expenses?.otherReason || '',
         },
       });
     }
     setIsEditing(false);
   };
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
     if (!trip) return;
 
     // Validation: Check required fields
@@ -195,19 +263,35 @@ const TripDetailPage = () => {
     );
 
     if (confirmed) {
-      updateTrip(trip.id, {
-        status: 'approved',
-        approvedByManager: true,
-        approvedAt: new Date().toISOString(),
-        deliveryDocuments: documents,
-      });
-      alert('✓ Sefer onaylandı! Artık faturalandırabilirsiniz.');
-      navigate('/manager/trips');
+      try {
+        // Call the backend API to approve the trip
+        await tripApi.approveTrip(trip.id, {
+          clientId: editForm.clientId!,
+          clientName: editForm.clientName,
+          cargoDescription: editForm.cargoDescription || undefined,
+          revenueAmount: editForm.revenue || 0,
+          revenueCurrency: 'TRY',
+        });
+
+        // Update local state
+        await updateTrip(trip.id, {
+          status: 'APPROVED',
+          approvedByManager: true,
+          approvedAt: new Date().toISOString(),
+          deliveryDocuments: documents,
+        });
+
+        alert('✓ Sefer onaylandı! Artık faturalandırabilirsiniz.');
+        navigate('/manager/trips');
+      } catch (error: any) {
+        console.error('Error approving trip:', error);
+        alert('❌ Hata: ' + (error.message || 'Sefer onaylanırken hata oluştu'));
+      }
     }
   };
 
   const handleClientChange = (clientId: string) => {
-    const client = mockClients.find((c) => c.id === clientId);
+    const client = clients.find((c) => c.id === clientId);
     if (client) {
       setEditForm({
         ...editForm,
@@ -218,7 +302,7 @@ const TripDetailPage = () => {
   };
 
   const handleDriverChange = (driverId: string) => {
-    const driver = mockDrivers.find((d) => d.id === driverId);
+    const driver = drivers.find((d) => d.id === driverId);
     if (driver) {
       setEditForm({
         ...editForm,
@@ -229,7 +313,7 @@ const TripDetailPage = () => {
   };
 
   const handleTruckChange = (truckId: string) => {
-    const truck = mockTrucks.find((t) => t.id === truckId);
+    const truck = trucks.find((t) => t.id === truckId);
     if (truck) {
       setEditForm({
         ...editForm,
@@ -248,7 +332,7 @@ const TripDetailPage = () => {
   };
 
   const canApprove =
-    trip.status === 'delivered' &&
+    trip.status === 'DELIVERED' &&
     documents.length > 0;
 
   return (
@@ -269,7 +353,7 @@ const TripDetailPage = () => {
             {getStatusLabel(trip.status)}
           </span>
         </div>
-        {!isEditing && trip.status !== 'invoiced' && (
+        {!isEditing && trip.status !== 'INVOICED' && (
           <button
             onClick={() => setIsEditing(true)}
             className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition-colors"
@@ -301,6 +385,42 @@ const TripDetailPage = () => {
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{TRIPS.tripInfo}</h2>
         <div className="space-y-3">
+          {/* Route */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 mb-3">
+            <div className="grid grid-cols-2 gap-3">
+              {/* Origin */}
+              <div>
+                <label className="text-xs text-gray-500 block mb-1">Nereden (Başlangıç)</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editForm.originCity}
+                    onChange={(e) => setEditForm({ ...editForm, originCity: e.target.value })}
+                    placeholder="Örn: İstanbul"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                ) : (
+                  <span className="text-sm font-semibold text-gray-900">{editForm.originCity || 'Belirtilmemiş'}</span>
+                )}
+              </div>
+              {/* Destination */}
+              <div>
+                <label className="text-xs text-gray-500 block mb-1">Nereye (Varış)</label>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={editForm.destinationCity}
+                    onChange={(e) => setEditForm({ ...editForm, destinationCity: e.target.value })}
+                    placeholder="Örn: Ankara"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                ) : (
+                  <span className="text-sm font-semibold text-gray-900">{editForm.destinationCity}</span>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Client */}
           <div>
             <label className="text-sm text-gray-600 block mb-1">{TRIPS.client}</label>
@@ -309,9 +429,10 @@ const TripDetailPage = () => {
                 value={editForm.clientId || ''}
                 onChange={(e) => handleClientChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={loading}
               >
                 <option value="">Müşteri Seçin</option>
-                {mockClients.map((client) => (
+                {clients.map((client) => (
                   <option key={client.id} value={client.id}>
                     {client.companyName}
                   </option>
@@ -330,10 +451,11 @@ const TripDetailPage = () => {
                 value={editForm.truckId || ''}
                 onChange={(e) => handleTruckChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={loading}
               >
                 <option value="">Araç Seçin</option>
-                {mockTrucks
-                  .filter((truck) => truck.status === 'available' || truck.id === editForm.truckId)
+                {trucks
+                  .filter((truck) => truck.status === 'AVAILABLE' || truck.id === editForm.truckId)
                   .map((truck) => (
                     <option key={truck.id} value={truck.id}>
                       {truck.plateNumber} - {truck.type}
@@ -353,10 +475,11 @@ const TripDetailPage = () => {
                 value={editForm.driverId || ''}
                 onChange={(e) => handleDriverChange(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                disabled={loading}
               >
                 <option value="">Sürücü Seçin</option>
-                {mockDrivers
-                  .filter((driver) => driver.status === 'available' || driver.id === editForm.driverId)
+                {drivers
+                  .filter((driver) => driver.status === 'AVAILABLE' || driver.id === editForm.driverId)
                   .map((driver) => (
                     <option key={driver.id} value={driver.id}>
                       {driver.firstName} {driver.lastName} - {driver.phone}

@@ -1,19 +1,20 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import { tripApi } from '../services/api';
+import { useFleet } from './FleetContext';
 import type { Trip, Invoice, DocumentSubmission, TruckAssignmentRequest } from '../types';
-import {
-  mockTrips as initialTrips,
-  mockInvoices as initialInvoices,
-  mockDocumentSubmissions as initialDocSubmissions,
-  mockTruckAssignmentRequests as initialTruckRequests
-} from '../data/mock';
+// Using real API - no mock data
+const initialTrips: any[] = [];
+const initialInvoices: any[] = [];
+const initialDocSubmissions: any[] = [];
+const initialTruckRequests: any[] = [];
 
 interface DataContextType {
   trips: Trip[];
   invoices: Invoice[];
   documentSubmissions: DocumentSubmission[];
   truckAssignmentRequests: TruckAssignmentRequest[];
-  updateTrip: (tripId: string, updates: Partial<Trip>) => void;
+  updateTrip: (tripId: string, updates: Partial<Trip>) => Promise<void>;
   addTrip: (trip: Trip) => void;
   addInvoice: (invoice: Invoice) => void;
   submitDocument: (submission: Omit<DocumentSubmission, 'id' | 'submittedAt' | 'status' | 'reviewedAt' | 'reviewedBy'>) => void;
@@ -27,17 +28,40 @@ interface DataContextType {
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
+  const { fleetId } = useFleet();
   const [trips, setTrips] = useState<Trip[]>(initialTrips);
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [documentSubmissions, setDocumentSubmissions] = useState<DocumentSubmission[]>(initialDocSubmissions);
   const [truckAssignmentRequests, setTruckAssignmentRequests] = useState<TruckAssignmentRequest[]>(initialTruckRequests);
 
-  const updateTrip = (tripId: string, updates: Partial<Trip>) => {
+  // Load trips from backend when fleet is available
+  useEffect(() => {
+    if (fleetId) {
+      loadTrips();
+    }
+  }, [fleetId]);
+
+  const loadTrips = async () => {
+    if (!fleetId) return;
+    try {
+      const data = await tripApi.getByFleet(fleetId);
+      setTrips(data);
+    } catch (error) {
+      console.error('Error loading trips:', error);
+    }
+  };
+
+  const updateTrip = async (tripId: string, updates: Partial<Trip>) => {
+    // Optimistic update - update local state immediately
     setTrips((prev) =>
       prev.map((trip) =>
         trip.id === tripId ? { ...trip, ...updates } : trip
       )
     );
+
+    // TODO: Call backend API for specific update operations
+    // For now, just reload trips to ensure consistency
+    await loadTrips();
   };
 
   const addTrip = (trip: Trip) => {

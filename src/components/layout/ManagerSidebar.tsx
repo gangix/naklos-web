@@ -7,7 +7,7 @@ const ManagerSidebar = () => {
 
   // Calculate pending approval counts per context
   const tripsPendingCount = trips.filter(
-    (trip) => trip.status === 'delivered' && trip.deliveryDocuments.length > 0
+    (trip) => trip.status === 'DELIVERED' && trip.deliveryDocuments.length > 0
   ).length;
 
   const trucksPendingCount = documentSubmissions.filter(

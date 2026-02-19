@@ -24,7 +24,7 @@ const TrucksPage = () => {
     const warningsList: any[] = [];
 
     trucks.forEach((truck) => {
-      // Check compulsory insurance
+      // Check compulsory insurance (MANDATORY)
       if (truck.compulsoryInsuranceExpiry) {
         const expiryDate = new Date(truck.compulsoryInsuranceExpiry);
         const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -54,9 +54,18 @@ const TrucksPage = () => {
             type: 'compulsory-insurance'
           });
         }
+      } else {
+        // Missing compulsory insurance (MANDATORY)
+        warningsList.push({
+          relatedId: truck.id,
+          relatedType: 'truck',
+          severity: 'error',
+          message: `Zorunlu sigorta belgesi eksik (${truck.plateNumber})`,
+          type: 'compulsory-insurance'
+        });
       }
 
-      // Check comprehensive insurance
+      // Check comprehensive insurance (optional but recommended)
       if (truck.comprehensiveInsuranceExpiry) {
         const expiryDate = new Date(truck.comprehensiveInsuranceExpiry);
         const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -77,10 +86,18 @@ const TrucksPage = () => {
             message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
             type: 'comprehensive-insurance'
           });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'warning',
+            message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'comprehensive-insurance'
+          });
         }
       }
 
-      // Check inspection
+      // Check inspection (MANDATORY)
       if (truck.inspectionExpiry) {
         const expiryDate = new Date(truck.inspectionExpiry);
         const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -101,7 +118,24 @@ const TrucksPage = () => {
             message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
             type: 'inspection'
           });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'warning',
+            message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'inspection'
+          });
         }
+      } else {
+        // Missing inspection (MANDATORY)
+        warningsList.push({
+          relatedId: truck.id,
+          relatedType: 'truck',
+          severity: 'error',
+          message: `Muayene belgesi eksik (${truck.plateNumber})`,
+          type: 'inspection'
+        });
       }
     });
 

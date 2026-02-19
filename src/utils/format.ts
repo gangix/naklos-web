@@ -1,6 +1,9 @@
 import { COMMON } from '../constants/text';
 
-export const formatCurrency = (amount: number): string => {
+export const formatCurrency = (amount: number | null | undefined): string => {
+  if (amount === null || amount === undefined) {
+    return `${COMMON.currency}0`;
+  }
   return `${COMMON.currency}${amount.toLocaleString('tr-TR')}`;
 };
 

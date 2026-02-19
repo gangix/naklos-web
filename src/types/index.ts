@@ -4,7 +4,7 @@
 
 export type TruckStatus = 'available' | 'in-transit' | 'maintenance';
 export type DriverStatus = 'available' | 'on-trip' | 'off-duty';
-export type TripStatus = 'created' | 'in-progress' | 'delivered' | 'approved' | 'invoiced' | 'cancelled';
+export type TripStatus = 'CREATED' | 'IN_PROGRESS' | 'DELIVERED' | 'APPROVED' | 'INVOICED' | 'CANCELLED';
 export type InvoiceStatus = 'paid' | 'pending' | 'overdue';
 export type PaymentReliability = 'good' | 'moderate' | 'poor';
 
@@ -92,8 +92,9 @@ export interface Trip {
   destinationCity: string;
   cargoDescription: string | null; // nullable for unplanned trips
   status: TripStatus;
-  revenue: number | null; // nullable until manager approves
+  revenue: Money | null; // nullable until manager approves
   expenses: TripExpenses;
+  netProfit: Money | null; // calculated by backend
   createdAt: string;
   startedAt: string | null;
   completedAt: string | null;
@@ -108,11 +109,17 @@ export interface Trip {
   driverEnteredDestination: string | null; // free-text if driver doesn't know client
 }
 
+export interface Money {
+  amount: number;
+  currency: string;
+}
+
 export interface TripExpenses {
-  fuel: number;
-  tolls: number;
-  other: number;
+  fuel: Money;
+  tolls: Money;
+  other: Money;
   otherReason?: string;
+  total: Money;
 }
 
 export interface Invoice {
@@ -150,6 +157,7 @@ export interface Document {
 }
 
 export interface ProfessionalCertificate {
+  id: string;
   type: 'SRC' | 'CPC';
   number: string;
   issueDate: string;

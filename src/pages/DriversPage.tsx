@@ -21,8 +21,89 @@ const DriversPage = () => {
   const [selectedRequest, setSelectedRequest] = useState<TruckAssignmentRequest | null>(null);
   const [addDriverModalOpen, setAddDriverModalOpen] = useState(false);
 
-  // For now, no warnings calculation
-  const warnings: any[] = [];
+  // Calculate warnings for drivers based on document expiry dates
+  const warnings = useMemo(() => {
+    if (!drivers) return [];
+
+    const today = new Date();
+    const warningsList: any[] = [];
+
+    drivers.forEach((driver) => {
+      // Check driver license expiry
+      if (driver.licenseExpiryDate) {
+        const expiryDate = new Date(driver.licenseExpiryDate);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: driver.id,
+            relatedType: 'driver',
+            severity: 'error',
+            message: `Ehliyet süresi dolmuş (${driver.firstName} ${driver.lastName})`,
+            type: 'license'
+          });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: driver.id,
+            relatedType: 'driver',
+            severity: daysRemaining <= 7 ? 'error' : 'warning',
+            message: `Ehliyet ${daysRemaining} gün içinde sona erecek (${driver.firstName} ${driver.lastName})`,
+            type: 'license'
+          });
+        }
+      } else {
+        // Missing license document
+        warningsList.push({
+          relatedId: driver.id,
+          relatedType: 'driver',
+          severity: 'error',
+          message: `Ehliyet belgesi eksik (${driver.firstName} ${driver.lastName})`,
+          type: 'license'
+        });
+      }
+
+      // Check for missing SRC certificate (MANDATORY for professional drivers)
+      const hasSRC = driver.certificates?.some(cert => cert.type === 'SRC');
+      if (!hasSRC) {
+        warningsList.push({
+          relatedId: driver.id,
+          relatedType: 'driver',
+          severity: 'error',
+          message: `SRC Belgesi eksik (${driver.firstName} ${driver.lastName})`,
+          type: 'src'
+        });
+      }
+
+      // Check professional certificates (SRC, CPC) expiry dates
+      if (driver.certificates && driver.certificates.length > 0) {
+        driver.certificates.forEach((cert) => {
+          const expiryDate = new Date(cert.expiryDate);
+          const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          const certName = cert.type === 'SRC' ? 'SRC Belgesi' : 'CPC Belgesi';
+
+          if (daysRemaining < 0) {
+            warningsList.push({
+              relatedId: driver.id,
+              relatedType: 'driver',
+              severity: 'error',
+              message: `${certName} süresi dolmuş (${driver.firstName} ${driver.lastName})`,
+              type: cert.type.toLowerCase()
+            });
+          } else if (daysRemaining <= 30) {
+            warningsList.push({
+              relatedId: driver.id,
+              relatedType: 'driver',
+              severity: daysRemaining <= 7 ? 'error' : 'warning',
+              message: `${certName} ${daysRemaining} gün içinde sona erecek (${driver.firstName} ${driver.lastName})`,
+              type: cert.type.toLowerCase()
+            });
+          }
+        });
+      }
+    });
+
+    return warningsList;
+  }, [drivers]);
 
   // Handle query param for auto-tab selection
   useEffect(() => {
@@ -310,16 +391,16 @@ const DriversPage = () => {
                   {/* License & Certificate warnings */}
                   {getDriverWarnings(driver.id).length > 0 && (
                     <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
-                      {getDriverWarnings(driver.id).map((warning) => (
+                      {getDriverWarnings(driver.id).map((warning, index) => (
                         <div
-                          key={warning.id}
+                          key={`${warning.relatedId}-${warning.type}-${index}`}
                           className={`text-xs px-2 py-1 rounded ${
                             warning.severity === 'error'
                               ? 'bg-red-50 text-red-700'
                               : 'bg-yellow-50 text-yellow-700'
                           }`}
                         >
-                          {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message.split(' - ')[1]}
+                          {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message}
                         </div>
                       ))}
                     </div>

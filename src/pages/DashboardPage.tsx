@@ -13,13 +13,13 @@ const DashboardPage = () => {
   const { data: drivers, loading: driversLoading } = useDrivers();
   const { trips, documentSubmissions, truckAssignmentRequests } = useData();
 
-  // Calculate expiry warnings for trucks
+  // Calculate expiry warnings for trucks and drivers
   const warnings = useMemo(() => {
     const today = new Date();
     const warningsList: any[] = [];
 
     trucks.forEach((truck) => {
-      // Check compulsory insurance
+      // Check compulsory insurance (MANDATORY)
       if (truck.compulsoryInsuranceExpiry) {
         const expiryDate = new Date(truck.compulsoryInsuranceExpiry);
         const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -49,9 +49,18 @@ const DashboardPage = () => {
             type: 'compulsory-insurance'
           });
         }
+      } else {
+        // Missing compulsory insurance (MANDATORY)
+        warningsList.push({
+          relatedId: truck.id,
+          relatedType: 'truck',
+          severity: 'error',
+          message: `Zorunlu sigorta belgesi eksik (${truck.plateNumber})`,
+          type: 'compulsory-insurance'
+        });
       }
 
-      // Check comprehensive insurance
+      // Check comprehensive insurance (optional but recommended)
       if (truck.comprehensiveInsuranceExpiry) {
         const expiryDate = new Date(truck.comprehensiveInsuranceExpiry);
         const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -72,10 +81,18 @@ const DashboardPage = () => {
             message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
             type: 'comprehensive-insurance'
           });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'warning',
+            message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'comprehensive-insurance'
+          });
         }
       }
 
-      // Check inspection
+      // Check inspection (MANDATORY)
       if (truck.inspectionExpiry) {
         const expiryDate = new Date(truck.inspectionExpiry);
         const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
@@ -96,12 +113,104 @@ const DashboardPage = () => {
             message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
             type: 'inspection'
           });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'warning',
+            message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
+            type: 'inspection'
+          });
         }
+      } else {
+        // Missing inspection (MANDATORY)
+        warningsList.push({
+          relatedId: truck.id,
+          relatedType: 'truck',
+          severity: 'error',
+          message: `Muayene belgesi eksik (${truck.plateNumber})`,
+          type: 'inspection'
+        });
+      }
+    });
+
+    // Check driver documents
+    drivers.forEach((driver) => {
+      // Check driver license expiry
+      if (driver.licenseExpiryDate) {
+        const expiryDate = new Date(driver.licenseExpiryDate);
+        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          warningsList.push({
+            relatedId: driver.id,
+            relatedType: 'driver',
+            severity: 'error',
+            message: `Ehliyet süresi dolmuş (${driver.firstName} ${driver.lastName})`,
+            type: 'license'
+          });
+        } else if (daysRemaining <= 30) {
+          warningsList.push({
+            relatedId: driver.id,
+            relatedType: 'driver',
+            severity: daysRemaining <= 7 ? 'error' : 'warning',
+            message: `Ehliyet ${daysRemaining} gün içinde sona erecek (${driver.firstName} ${driver.lastName})`,
+            type: 'license'
+          });
+        }
+      } else {
+        // Missing license document
+        warningsList.push({
+          relatedId: driver.id,
+          relatedType: 'driver',
+          severity: 'error',
+          message: `Ehliyet belgesi eksik (${driver.firstName} ${driver.lastName})`,
+          type: 'license'
+        });
+      }
+
+      // Check for missing SRC certificate (MANDATORY for professional drivers)
+      const hasSRC = driver.certificates?.some(cert => cert.type === 'SRC');
+      if (!hasSRC) {
+        warningsList.push({
+          relatedId: driver.id,
+          relatedType: 'driver',
+          severity: 'error',
+          message: `SRC Belgesi eksik (${driver.firstName} ${driver.lastName})`,
+          type: 'src'
+        });
+      }
+
+      // Check professional certificates (SRC, CPC) expiry dates
+      if (driver.certificates && driver.certificates.length > 0) {
+        driver.certificates.forEach((cert) => {
+          const expiryDate = new Date(cert.expiryDate);
+          const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          const certName = cert.type === 'SRC' ? 'SRC Belgesi' : 'CPC Belgesi';
+
+          if (daysRemaining < 0) {
+            warningsList.push({
+              relatedId: driver.id,
+              relatedType: 'driver',
+              severity: 'error',
+              message: `${certName} süresi dolmuş (${driver.firstName} ${driver.lastName})`,
+              type: cert.type.toLowerCase()
+            });
+          } else if (daysRemaining <= 30) {
+            warningsList.push({
+              relatedId: driver.id,
+              relatedType: 'driver',
+              severity: daysRemaining <= 7 ? 'error' : 'warning',
+              message: `${certName} ${daysRemaining} gün içinde sona erecek (${driver.firstName} ${driver.lastName})`,
+              type: cert.type.toLowerCase()
+            });
+          }
+        });
       }
     });
 
     return warningsList;
-  }, [trucks]);
+  }, [trucks, drivers]);
 
   const loading = trucksLoading || driversLoading;
 

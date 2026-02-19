@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
-import { mockDrivers } from '../../data/mock';
+import { useFleet } from '../../contexts/FleetContext';
+import { driverApi } from '../../services/api';
 import { PROFILE, DRIVERS, COMMON } from '../../constants/text';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
@@ -9,15 +10,174 @@ import { formatDate } from '../../utils/format';
 import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
-  const { user } = useAuth();
+  const { user, loginAsDriver, loginAsManager } = useAuth();
+  const { fleetId } = useFleet();
   const { documentSubmissions } = useData();
   const [isEditing, setIsEditing] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
 
-  // Find current driver
-  const driver = mockDrivers.find((d) => d.id === user?.driverId);
+  // Real data from API
+  const [allDrivers, setAllDrivers] = useState<any[]>([]);
+  const [driver, setDriver] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [showDriverList, setShowDriverList] = useState(false);
+
+  // Edit form state - MUST be declared before any conditional returns
+  const [editForm, setEditForm] = useState({
+    phone: '',
+    email: '',
+    emergencyName: '',
+    emergencyPhone: '',
+    emergencyRelationship: '',
+  });
+
+  // Load all drivers for developer login
+  useEffect(() => {
+    if (fleetId) {
+      loadDrivers();
+    }
+  }, [fleetId]);
+
+  // Load current driver details
+  useEffect(() => {
+    if (user?.driverId && fleetId) {
+      loadCurrentDriver();
+    } else {
+      // Not logged in as driver, stop loading
+      setLoading(false);
+    }
+  }, [user?.driverId, fleetId]);
+
+  // Update editForm when driver loads
+  useEffect(() => {
+    if (driver) {
+      setEditForm({
+        phone: driver.phone || '',
+        email: driver.email || '',
+        emergencyName: driver.emergencyContact?.name || '',
+        emergencyPhone: driver.emergencyContact?.phone || '',
+        emergencyRelationship: driver.emergencyContact?.relationship || '',
+      });
+    }
+  }, [driver]);
+
+  const loadDrivers = async () => {
+    if (!fleetId) return;
+    try {
+      const data = await driverApi.getByFleet(fleetId);
+      setAllDrivers(data);
+    } catch (error) {
+      console.error('Error loading drivers:', error);
+    }
+  };
+
+  const loadCurrentDriver = async () => {
+    if (!user?.driverId) {
+      setLoading(false);
+      return;
+    }
+
+    // Validate UUID format before API call
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(user.driverId)) {
+      console.warn('Invalid driver UUID in localStorage, clearing...');
+      // Clear invalid localStorage data
+      localStorage.removeItem('dev-auth-user');
+      loginAsManager();
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const data = await driverApi.getById(user.driverId);
+      setDriver(data);
+    } catch (error) {
+      console.error('Error loading driver:', error);
+      // If driver not found, clear and reset to manager
+      localStorage.removeItem('dev-auth-user');
+      loginAsManager();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDriverSelect = (selectedDriver: any) => {
+    loginAsDriver(selectedDriver.id, `${selectedDriver.firstName} ${selectedDriver.lastName}`);
+    setShowDriverList(false);
+    alert(`✓ ${selectedDriver.firstName} ${selectedDriver.lastName} olarak giriş yaptınız`);
+  };
+
+  const handleManagerLogin = () => {
+    loginAsManager();
+    setShowDriverList(false);
+    alert('✓ Fleet Manager olarak giriş yaptınız');
+  };
+
+  if (loading) {
+    return (
+      <div className="p-4">
+        <p className="text-center text-gray-600">Yükleniyor...</p>
+      </div>
+    );
+  }
+
+  if (!driver && !user?.driverId) {
+    return (
+      <div className="p-4 pb-20">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+          <h2 className="font-bold text-yellow-900 mb-2">⚠️ Sürücü Girişi Gerekli</h2>
+          <p className="text-sm text-yellow-700 mb-3">
+            Profil sayfasını görüntülemek için bir sürücü olarak giriş yapmalısınız.
+          </p>
+          <button
+            onClick={() => setShowDriverList(true)}
+            className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+          >
+            Sürücü Olarak Giriş Yap
+          </button>
+        </div>
+
+        {/* Developer Login Panel */}
+        {showDriverList && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+              <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>
+              <p className="text-xs text-gray-600 mt-1">Test için herhangi bir sürücü olarak giriş yapın</p>
+            </div>
+
+            <div className="p-4 space-y-2 max-h-96 overflow-y-auto">
+              {allDrivers.length === 0 ? (
+                <div className="text-center py-4 text-gray-600">
+                  Sürücü bulunamadı. Önce sürücü ekleyin.
+                </div>
+              ) : (
+                allDrivers.map((d) => (
+                  <button
+                    key={d.id}
+                    onClick={() => handleDriverSelect(d)}
+                    className="w-full p-3 rounded-lg text-left transition-colors bg-gray-50 hover:bg-gray-100 border border-gray-200"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {d.firstName} {d.lastName}
+                        </p>
+                        <p className="text-xs text-gray-600">{d.phone}</p>
+                        <p className="text-xs text-gray-500 font-mono mt-1">ID: {d.id.substring(0, 8)}...</p>
+                      </div>
+                    </div>
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (!driver) {
     return (
@@ -49,14 +209,6 @@ const DriverProfilePage = () => {
     return <ExpiryBadge label="" date={expiryDate} />;
   };
 
-  const [editForm, setEditForm] = useState({
-    phone: driver.phone,
-    email: driver.email || '',
-    emergencyName: driver.emergencyContact?.name || '',
-    emergencyPhone: driver.emergencyContact?.phone || '',
-    emergencyRelationship: driver.emergencyContact?.relationship || '',
-  });
-
   const handleSave = () => {
     // TODO: Update driver info via DataContext
     alert('Bilgiler kaydedildi');
@@ -71,13 +223,87 @@ const DriverProfilePage = () => {
 
   return (
     <div className="p-4 pb-20">
-      {/* Header */}
+      {/* Header with User Switcher */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">{PROFILE.title}</h1>
-        <p className="text-sm text-gray-600 mt-1">
-          {driver.firstName} {driver.lastName}
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{PROFILE.title}</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              {driver.firstName} {driver.lastName}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowDriverList(!showDriverList)}
+            className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {showDriverList ? 'Kapat' : '🔧 Kullanıcı Değiştir'}
+          </button>
+        </div>
       </div>
+
+      {/* Developer Login Panel */}
+      {showDriverList && (
+        <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+            <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>
+            <p className="text-xs text-gray-600 mt-1">Test için herhangi bir kullanıcı olarak giriş yapın</p>
+          </div>
+
+          <div className="p-4 space-y-2 max-h-96 overflow-y-auto">
+            {/* Manager Option */}
+            <button
+              onClick={handleManagerLogin}
+              className={`w-full p-3 rounded-lg text-left transition-colors ${
+                user?.role === 'fleet-manager'
+                  ? 'bg-blue-100 border-2 border-blue-600'
+                  : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-gray-900">Fleet Manager</p>
+                  <p className="text-xs text-gray-600">Yönetici Hesabı</p>
+                </div>
+                {user?.role === 'fleet-manager' && (
+                  <span className="text-blue-600 font-bold">✓</span>
+                )}
+              </div>
+            </button>
+
+            {/* Drivers List */}
+            {allDrivers.length === 0 ? (
+              <div className="text-center py-4 text-gray-600">
+                Sürücü bulunamadı.
+              </div>
+            ) : (
+              allDrivers.map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => handleDriverSelect(d)}
+                  className={`w-full p-3 rounded-lg text-left transition-colors ${
+                    user?.driverId === d.id
+                      ? 'bg-green-100 border-2 border-green-600'
+                      : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {d.firstName} {d.lastName}
+                      </p>
+                      <p className="text-xs text-gray-600">{d.phone}</p>
+                      <p className="text-xs text-gray-500 font-mono mt-1">ID: {d.id.substring(0, 8)}...</p>
+                    </div>
+                    {user?.driverId === d.id && (
+                      <span className="text-green-600 font-bold">✓</span>
+                    )}
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Personal Info Card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">

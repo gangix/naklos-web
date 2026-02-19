@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useFleet } from './contexts/FleetContext';
 import ManagerLayout from './components/layout/ManagerLayout';
 import DriverLayout from './components/layout/DriverLayout';
 import DashboardPage from './pages/DashboardPage';
 import TrucksPage from './pages/TrucksPage';
 import TruckDetailPage from './pages/TruckDetailPage';
 import TripsPage from './pages/TripsPage';
+import TripCreatePage from './pages/TripCreatePage';
 import TripDetailPage from './pages/TripDetailPage';
 import DriversPage from './pages/DriversPage';
 import DriverDetailPage from './pages/DriverDetailPage';
@@ -13,6 +15,7 @@ import InvoiceDetailPage from './pages/InvoiceDetailPage';
 import InvoiceCreatePage from './pages/InvoiceCreatePage';
 import ClientsPage from './pages/ClientsPage';
 import MorePage from './pages/MorePage';
+import FleetSetupPage from './pages/FleetSetupPage';
 
 // Driver pages
 import DriverDashboardPage from './pages/driver/DriverDashboardPage';
@@ -23,6 +26,16 @@ import DriverProfilePage from './pages/driver/DriverProfilePage';
 import DriverTruckPage from './pages/driver/DriverTruckPage';
 
 function App() {
+  const { fleetId } = useFleet();
+
+  // Show setup page if no fleet is configured
+  if (!fleetId) {
+    return (
+      <BrowserRouter basename="/naklos-web">
+        <FleetSetupPage />
+      </BrowserRouter>
+    );
+  }
   return (
     <BrowserRouter basename="/naklos-web">
       <Routes>
@@ -36,6 +49,7 @@ function App() {
           <Route path="trucks" element={<TrucksPage />} />
           <Route path="trucks/:truckId" element={<TruckDetailPage />} />
           <Route path="trips" element={<TripsPage />} />
+          <Route path="trips/create" element={<TripCreatePage />} />
           <Route path="trips/:tripId" element={<TripDetailPage />} />
           <Route path="drivers" element={<DriversPage />} />
           <Route path="drivers/:driverId" element={<DriverDetailPage />} />
