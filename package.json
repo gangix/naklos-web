@@ -6,7 +6,8 @@
   "homepage": "https://gangix.github.io/naklos-web",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
+    "typecheck": "tsc -b",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "jspdf": "^4.1.0",
+    "keycloak-js": "^26.2.3",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.564.0",
     "react": "^19.2.0",

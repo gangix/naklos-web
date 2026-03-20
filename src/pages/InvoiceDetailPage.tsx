@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { mockInvoices, mockTrips, mockFleet, mockClients } from '../data/mock';
+import { useData } from '../contexts/DataContext';
+import { useFleet } from '../contexts/FleetContext';
 import { INVOICES } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import { downloadInvoicePDF, generateInvoiceEmailLink } from '../utils/invoicePdf';
@@ -7,8 +8,10 @@ import { downloadInvoicePDF, generateInvoiceEmailLink } from '../utils/invoicePd
 const InvoiceDetailPage = () => {
   const { invoiceId } = useParams<{ invoiceId: string }>();
   const navigate = useNavigate();
+  const { invoices, trips } = useData();
+  const { fleet } = useFleet();
 
-  const invoice = mockInvoices.find((inv) => inv.id === invoiceId);
+  const invoice = invoices.find((inv) => inv.id === invoiceId);
 
   if (!invoice) {
     return (
@@ -18,28 +21,21 @@ const InvoiceDetailPage = () => {
     );
   }
 
-  // Get related trips
-  const relatedTrips = mockTrips.filter((trip) => invoice.tripIds.includes(trip.id));
-
-  // Get client info for email
-  const client = mockClients.find((c) => c.id === invoice.clientId);
+  // Get related trips from real data
+  const relatedTrips = trips.filter((trip: any) => invoice.tripIds.includes(trip.id));
 
   // Handle PDF download
   const handleDownloadPDF = () => {
     downloadInvoicePDF(invoice, relatedTrips, {
-      name: mockFleet.name,
-      phone: mockFleet.phone,
-      email: mockFleet.email,
+      name: fleet?.name ?? '',
+      phone: (fleet as any)?.phone ?? '',
+      email: (fleet as any)?.email ?? '',
     });
   };
 
-  // Handle email
+  // Handle email - use invoice clientName since we don't have client email in context
   const handleSendEmail = () => {
-    if (!client?.email) {
-      alert('Müşteri e-posta adresi bulunamadı');
-      return;
-    }
-    const emailLink = generateInvoiceEmailLink(invoice, relatedTrips, client.email);
+    const emailLink = generateInvoiceEmailLink(invoice, relatedTrips, '');
     window.location.href = emailLink;
   };
 

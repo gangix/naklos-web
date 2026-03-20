@@ -1,34 +1,35 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockTrips } from '../data/mock';
+import { useData } from '../contexts/DataContext';
+import { useFleet } from '../contexts/FleetContext';
+import { invoiceApi } from '../services/api';
 import { INVOICES } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import type { Trip } from '../types';
 
 const InvoiceCreatePage = () => {
   const navigate = useNavigate();
+  const { trips, addInvoice } = useData();
+  const { fleetId } = useFleet();
   const [selectedTripIds, setSelectedTripIds] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Get trips that are ready for invoicing:
-  // - status: approved
-  // - approvedByManager: true
-  // - invoiced: false
-  // - has clientId and revenue (not nullable)
+  // Get trips that are ready for invoicing from real data
   const availableTrips = useMemo(() => {
-    return mockTrips.filter(
-      (trip) =>
-        trip.status === 'approved' &&
+    return trips.filter(
+      (trip: any) =>
+        trip.status === 'APPROVED' &&
         trip.approvedByManager === true &&
         trip.invoiced === false &&
         trip.clientId !== null &&
         trip.revenue !== null
     );
-  }, []);
+  }, [trips]);
 
   // Group trips by client
   const tripsByClient = useMemo(() => {
     const grouped: Record<string, Trip[]> = {};
-    availableTrips.forEach((trip) => {
+    availableTrips.forEach((trip: any) => {
       if (trip.clientId && !grouped[trip.clientId]) {
         grouped[trip.clientId] = [];
       }
@@ -41,35 +42,38 @@ const InvoiceCreatePage = () => {
 
   // Calculate selected trips summary
   const selectedTrips = useMemo(() => {
-    return mockTrips.filter((trip) => selectedTripIds.includes(trip.id));
-  }, [selectedTripIds]);
+    return availableTrips.filter((trip: any) => selectedTripIds.includes(trip.id));
+  }, [selectedTripIds, availableTrips]);
 
   const selectedClient = useMemo(() => {
     if (selectedTrips.length === 0) return null;
-    return selectedTrips[0].clientName;
+    return (selectedTrips[0] as any).clientName;
+  }, [selectedTrips]);
+
+  const selectedClientId = useMemo(() => {
+    if (selectedTrips.length === 0) return null;
+    return (selectedTrips[0] as any).clientId;
   }, [selectedTrips]);
 
   const totalAmount = useMemo(() => {
-    return selectedTrips.reduce((sum, trip) => sum + (trip.revenue || 0), 0);
+    return selectedTrips.reduce((sum, trip: any) => sum + (trip.revenue?.amount ?? trip.revenue ?? 0), 0);
   }, [selectedTrips]);
 
   const handleToggleTrip = (tripId: string, clientId: string | null) => {
     if (!clientId) return;
 
     setSelectedTripIds((prev) => {
-      // If this is the first selection, just add it
       if (prev.length === 0) {
         return [tripId];
       }
 
-      // Check if we're trying to select a trip from a different client
-      const firstSelectedTrip = mockTrips.find((t) => t.id === prev[0]);
-      if (firstSelectedTrip && firstSelectedTrip.clientId !== clientId) {
+      // Check if selecting a trip from a different client
+      const firstSelectedTrip = availableTrips.find((t: any) => t.id === prev[0]);
+      if (firstSelectedTrip && (firstSelectedTrip as any).clientId !== clientId) {
         alert('Farklı müşterilere ait seferleri aynı faturada birleştiremezsiniz!');
         return prev;
       }
 
-      // Toggle selection
       if (prev.includes(tripId)) {
         return prev.filter((id) => id !== tripId);
       } else {
@@ -78,23 +82,42 @@ const InvoiceCreatePage = () => {
     });
   };
 
-  const handleGenerateInvoice = () => {
+  const handleGenerateInvoice = async () => {
     if (selectedTrips.length === 0) {
       alert('Lütfen en az bir sefer seçin');
       return;
     }
+    if (!fleetId || !selectedClientId || !selectedClient) return;
 
     const confirmed = window.confirm(
       `${selectedClient} için ${selectedTrips.length} sefer içeren fatura oluşturulsun mu?\n\nToplam Tutar: ${formatCurrency(totalAmount)}`
     );
 
-    if (confirmed) {
-      alert('✓ Fatura oluşturuldu! Ödemeler sayfasından görüntüleyebilirsiniz.');
-      // In a real app, this would:
-      // 1. Create the invoice via API
-      // 2. Mark the selected trips as invoiced
-      // 3. Navigate to the new invoice detail page
+    if (!confirmed) return;
+
+    // Due date: 30 days from today
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 30);
+    const dueDateStr = dueDate.toISOString().split('T')[0];
+
+    setIsSubmitting(true);
+    try {
+      const invoice = await invoiceApi.create(
+        {
+          clientId: selectedClientId,
+          clientName: selectedClient,
+          tripIds: selectedTripIds,
+          dueDate: dueDateStr,
+        },
+        fleetId
+      );
+      addInvoice(invoice as any);
       navigate('/manager/invoices');
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      alert('Fatura oluşturulurken hata oluştu. Lütfen tekrar deneyin.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -138,10 +161,11 @@ const InvoiceCreatePage = () => {
           </div>
           <button
             onClick={handleGenerateInvoice}
-            className="w-full mt-3 py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors flex items-center justify-center gap-2"
+            disabled={isSubmitting}
+            className="w-full mt-3 py-3 px-4 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 active:bg-primary-800 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <span className="text-lg">📄</span>
-            <span>Fatura Oluştur</span>
+            <span>{isSubmitting ? 'Oluşturuluyor...' : 'Fatura Oluştur'}</span>
           </button>
         </div>
       )}
