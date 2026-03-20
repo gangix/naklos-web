@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useFleet } from './contexts/FleetContext';
+import { useAuth } from './contexts/AuthContext';
 import ManagerLayout from './components/layout/ManagerLayout';
 import DriverLayout from './components/layout/DriverLayout';
 import DashboardPage from './pages/DashboardPage';
@@ -25,22 +26,29 @@ import DriverTripDetailPage from './pages/driver/DriverTripDetailPage';
 import DriverProfilePage from './pages/driver/DriverProfilePage';
 import DriverTruckPage from './pages/driver/DriverTruckPage';
 
+const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
+
 function App() {
   const { fleetId } = useFleet();
+  const { isDriver, isFleetManager } = useAuth();
 
-  // Show setup page if no fleet is configured
-  if (!fleetId) {
+  // Show setup page if no fleet is configured (manager only)
+  if (!fleetId && isFleetManager) {
     return (
-      <BrowserRouter basename="/naklos-web">
+      <BrowserRouter basename={BASE}>
         <FleetSetupPage />
       </BrowserRouter>
     );
   }
+
+  // Default root redirect based on role
+  const homeRoute = isDriver ? '/driver' : '/manager/dashboard';
+
   return (
-    <BrowserRouter basename="/naklos-web">
+    <BrowserRouter basename={BASE}>
       <Routes>
         {/* Root redirect */}
-        <Route path="/" element={<Navigate to="/manager/dashboard" replace />} />
+        <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
         {/* Fleet Manager Routes */}
         <Route path="/manager" element={<ManagerLayout />}>

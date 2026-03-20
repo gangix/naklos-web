@@ -37,7 +37,7 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
     if (!fleetId) return;
 
     setIsLoading(true);
-    fetch(`http://localhost:8080/api/fleets/${fleetId}`)
+    fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api'}/fleets/${fleetId}`)
       .then(res => res.json())
       .then(data => {
         setFleet(data);

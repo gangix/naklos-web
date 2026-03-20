@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import keycloak from '../auth/keycloak';
 
 export type UserRole = 'driver' | 'fleet-manager';
 
@@ -7,7 +7,7 @@ interface User {
   id: string;
   name: string;
   role: UserRole;
-  driverId?: string; // If role is driver, this is their driver ID
+  driverId?: string;
 }
 
 interface AuthContextType {
@@ -17,83 +17,68 @@ interface AuthContextType {
   loginAsManager: () => void;
   isDriver: boolean;
   isFleetManager: boolean;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  // Load saved user from localStorage or default to manager
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('dev-auth-user');
-    if (saved) {
-      try {
-        const parsedUser = JSON.parse(saved);
+  const [initialized, setInitialized] = useState(false);
+  const [user, setUserState] = useState<User | null>(null);
 
-        // Validate driver UUID if present
-        if (parsedUser.driverId) {
-          const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-          if (!uuidRegex.test(parsedUser.driverId)) {
-            console.warn('Invalid driver UUID in localStorage, clearing...');
-            localStorage.removeItem('dev-auth-user');
-            // Return default manager
-            return {
-              id: 'user-1',
-              name: 'Fleet Manager',
-              role: 'fleet-manager',
-            };
-          }
-        }
-
-        return parsedUser;
-      } catch (e) {
-        console.error('Failed to parse saved user:', e);
-      }
-    }
-    return {
-      id: 'user-1',
-      name: 'Fleet Manager',
-      role: 'fleet-manager',
-    };
-  });
-
-  // Save user to localStorage whenever it changes
   useEffect(() => {
-    if (user) {
-      localStorage.setItem('dev-auth-user', JSON.stringify(user));
-    }
-  }, [user]);
+    keycloak
+      .init({ onLoad: 'login-required', checkLoginIframe: false, pkceMethod: 'S256' })
+      .then((authenticated) => {
+        if (authenticated) {
+          const token = keycloak.tokenParsed as any;
+          const roles: string[] = token?.realm_access?.roles ?? [];
+          const isDriver = roles.includes('DRIVER');
 
-  const loginAsDriver = (driverId: string, driverName: string) => {
-    setUser({
-      id: driverId,
-      name: driverName,
-      role: 'driver',
-      driverId: driverId,
-    });
+          setUserState({
+            id: token?.sub ?? '',
+            name: token?.name ?? token?.preferred_username ?? '',
+            role: isDriver ? 'driver' : 'fleet-manager',
+            driverId: isDriver ? (token?.driver_id ?? token?.sub) : undefined,
+          });
+        }
+        setInitialized(true);
+
+        // Refresh token before it expires
+        setInterval(() => {
+          keycloak.updateToken(60).catch(() => keycloak.logout());
+        }, 30000);
+      })
+      .catch(() => setInitialized(true));
+  }, []);
+
+  if (!initialized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 text-sm">Giriş yapılıyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const value: AuthContextType = {
+    user,
+    setUser: setUserState,
+    // These are kept for dev-tool compatibility but do nothing in production
+    loginAsDriver: () => {},
+    loginAsManager: () => {},
+    isDriver: user?.role === 'driver',
+    isFleetManager: user?.role === 'fleet-manager',
+    logout: () => keycloak.logout({ redirectUri: window.location.origin }),
   };
 
-  const loginAsManager = () => {
-    setUser({
-      id: 'user-1',
-      name: 'Fleet Manager',
-      role: 'fleet-manager',
-    });
-  };
-
-  const isDriver = user?.role === 'driver';
-  const isFleetManager = user?.role === 'fleet-manager';
-
-  return (
-    <AuthContext.Provider value={{ user, setUser, loginAsDriver, loginAsManager, isDriver, isFleetManager }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within AuthProvider');
   return context;
 };
