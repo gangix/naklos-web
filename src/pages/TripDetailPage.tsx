@@ -156,54 +156,57 @@ const TripDetailPage = () => {
     setDocuments([...documents, document]);
   };
 
-  const handleSave = async () => {
+  const saveData = async () => {
     if (!trip || !fleetId) return;
 
-    // Find selected driver and truck details
     const selectedDriver = drivers.find((d) => d.id === editForm.driverId);
     const selectedTruck = trucks.find((t) => t.id === editForm.truckId);
     const selectedClient = clients.find((c) => c.id === editForm.clientId);
 
-    try {
-      // Call backend APIs for updates
-      if (editForm.driverId && editForm.truckId && trip.status === 'CREATED') {
-        // Assign driver and truck if trip is still in created status
-        await tripApi.assignDriverAndTruck(trip.id, {
-          driverId: editForm.driverId,
-          truckId: editForm.truckId,
-        });
-      }
-
-      // Update expenses (always send all required fields with currency)
-      await tripApi.updateExpenses(trip.id, {
-        fuelAmount: editForm.expenses.fuel,
-        fuelCurrency: 'TRY',
-        tollsAmount: editForm.expenses.tolls,
-        tollsCurrency: 'TRY',
-        otherAmount: editForm.expenses.other,
-        otherCurrency: 'TRY',
-        otherReason: editForm.expenses.otherReason || undefined,
-      });
-
-      // Update local state
-      const updates = {
-        originCity: editForm.originCity,
-        destinationCity: editForm.destinationCity,
-        clientId: editForm.clientId,
-        clientName: selectedClient?.companyName || editForm.clientName,
+    if (editForm.driverId && editForm.truckId && trip.status === 'CREATED') {
+      await tripApi.assignDriverAndTruck(trip.id, {
         driverId: editForm.driverId,
-        driverName: selectedDriver ? `${selectedDriver.firstName} ${selectedDriver.lastName}` : editForm.driverName,
         truckId: editForm.truckId,
-        truckPlate: selectedTruck?.plateNumber || editForm.truckPlate,
-        cargoDescription: editForm.cargoDescription,
-        revenue: editForm.revenue,
-        expenses: editForm.expenses,
-      };
+      });
+    }
 
-      await updateTrip(trip.id, updates);
+    await tripApi.updateDetails(trip.id, {
+      originCity: editForm.originCity || undefined,
+      destinationCity: editForm.destinationCity || undefined,
+      cargoDescription: editForm.cargoDescription || undefined,
+      revenueAmount: editForm.revenue || undefined,
+      revenueCurrency: 'TRY',
+    });
 
+    await tripApi.updateExpenses(trip.id, {
+      fuelAmount: editForm.expenses.fuel,
+      fuelCurrency: 'TRY',
+      tollsAmount: editForm.expenses.tolls,
+      tollsCurrency: 'TRY',
+      otherAmount: editForm.expenses.other,
+      otherCurrency: 'TRY',
+      otherReason: editForm.expenses.otherReason || undefined,
+    });
+
+    await updateTrip(trip.id, {
+      originCity: editForm.originCity,
+      destinationCity: editForm.destinationCity,
+      clientId: editForm.clientId,
+      clientName: selectedClient?.companyName || editForm.clientName,
+      driverId: editForm.driverId,
+      driverName: selectedDriver ? `${selectedDriver.firstName} ${selectedDriver.lastName}` : editForm.driverName,
+      truckId: editForm.truckId,
+      truckPlate: selectedTruck?.plateNumber || editForm.truckPlate,
+      cargoDescription: editForm.cargoDescription,
+      revenue: editForm.revenue,
+      expenses: editForm.expenses,
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      await saveData();
       setIsEditing(false);
-      alert('✓ Sefer bilgileri güncellendi');
     } catch (error: any) {
       console.error('Error saving trip:', error);
       alert('❌ Hata: ' + (error.message || 'Sefer güncellenirken hata oluştu'));
@@ -238,7 +241,6 @@ const TripDetailPage = () => {
   const handleApprove = async () => {
     if (!trip) return;
 
-    // Validation: Check required fields
     const missingFields: string[] = [];
     if (!editForm.clientId) missingFields.push('Müşteri');
     if (!editForm.driverId) missingFields.push('Sürücü');
@@ -247,9 +249,7 @@ const TripDetailPage = () => {
     if (!editForm.revenue || editForm.revenue <= 0) missingFields.push('Gelir');
 
     if (missingFields.length > 0) {
-      alert(
-        `⚠️ Onaylamadan önce aşağıdaki bilgileri doldurmanız gerekiyor:\n\n${missingFields.join('\n')}\n\nLütfen "Düzenle" butonuna basıp eksik bilgileri tamamlayın.`
-      );
+      alert(`⚠️ Onaylamadan önce şu alanları doldurun:\n\n${missingFields.join('\n')}`);
       return;
     }
 
@@ -262,31 +262,32 @@ const TripDetailPage = () => {
       `Bu seferi onaylamak istediğinizden emin misiniz?\n\nMüşteri: ${editForm.clientName}\nGelir: ${formatCurrency(editForm.revenue || 0)}\n\nOnaylandıktan sonra "Fatura Hazır" sekmesine taşınacak.`
     );
 
-    if (confirmed) {
-      try {
-        // Call the backend API to approve the trip
-        await tripApi.approveTrip(trip.id, {
-          clientId: editForm.clientId!,
-          clientName: editForm.clientName,
-          cargoDescription: editForm.cargoDescription || undefined,
-          revenueAmount: editForm.revenue || 0,
-          revenueCurrency: 'TRY',
-        });
+    if (!confirmed) return;
 
-        // Update local state
-        await updateTrip(trip.id, {
-          status: 'APPROVED',
-          approvedByManager: true,
-          approvedAt: new Date().toISOString(),
-          deliveryDocuments: documents,
-        });
+    try {
+      // Save any unsaved edits first
+      await saveData();
 
-        alert('✓ Sefer onaylandı! Artık faturalandırabilirsiniz.');
-        navigate('/manager/trips');
-      } catch (error: any) {
-        console.error('Error approving trip:', error);
-        alert('❌ Hata: ' + (error.message || 'Sefer onaylanırken hata oluştu'));
-      }
+      await tripApi.approveTrip(trip.id, {
+        clientId: editForm.clientId!,
+        clientName: editForm.clientName,
+        cargoDescription: editForm.cargoDescription || undefined,
+        revenueAmount: editForm.revenue || 0,
+        revenueCurrency: 'TRY',
+      });
+
+      await updateTrip(trip.id, {
+        status: 'APPROVED',
+        approvedByManager: true,
+        approvedAt: new Date().toISOString(),
+        deliveryDocuments: documents,
+      });
+
+      alert('✓ Sefer onaylandı! Artık faturalandırabilirsiniz.');
+      navigate('/manager/trips');
+    } catch (error: any) {
+      console.error('Error approving trip:', error);
+      alert('❌ Hata: ' + (error.message || 'Sefer onaylanırken hata oluştu'));
     }
   };
 
@@ -337,7 +338,7 @@ const TripDetailPage = () => {
 
   return (
     <div className="p-4 pb-20">
-      {/* Header with back button and edit/approve actions */}
+      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate(-1)}
@@ -353,33 +354,7 @@ const TripDetailPage = () => {
             {getStatusLabel(trip.status)}
           </span>
         </div>
-        {!isEditing && trip.status !== 'INVOICED' && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg font-medium hover:bg-blue-700 transition-colors"
-          >
-            ✏️ Düzenle
-          </button>
-        )}
       </div>
-
-      {/* Edit mode save/cancel buttons */}
-      {isEditing && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 flex gap-2">
-          <button
-            onClick={handleSave}
-            className="flex-1 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-          >
-            ✓ Kaydet
-          </button>
-          <button
-            onClick={handleCancel}
-            className="flex-1 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
-          >
-            ✕ İptal
-          </button>
-        </div>
-      )}
 
       {/* Trip info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
@@ -708,22 +683,8 @@ const TripDetailPage = () => {
         </div>
       )}
 
-      {/* Approve Button for pending trips */}
-      {canApprove && (
-        <div className="bg-orange-50 border-2 border-orange-300 rounded-lg p-4 mb-4">
-          <h2 className="text-lg font-bold text-orange-900 mb-2">Onay Bekliyor</h2>
-          <p className="text-sm text-orange-700 mb-3">
-            Bu sefer teslimat belgeleriyle birlikte onayınızı bekliyor. Detayları kontrol edip onaylayın.
-          </p>
-          <button
-            onClick={handleApprove}
-            className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 active:bg-green-800 transition-colors flex items-center justify-center gap-2"
-          >
-            <span className="text-lg">✓</span>
-            <span>Onayla ve Faturalandırmaya Hazırla</span>
-          </button>
-        </div>
-      )}
+      {/* Spacer so sticky bar doesn't overlap content */}
+      <div className="h-16" />
 
       {/* Invoice section for approved trips */}
       {trip.status === 'approved' && !existingInvoice && (
@@ -754,6 +715,54 @@ const TripDetailPage = () => {
           >
             Faturayı Görüntüle →
           </button>
+        </div>
+      )}
+
+      {/* Sticky bottom action bar */}
+      {trip.status !== 'INVOICED' && (
+        <div className="fixed bottom-0 left-0 right-0 lg:left-50 xl:left-60 bg-white border-t border-gray-200 px-4 py-3 flex gap-2 z-40 shadow-lg">
+          {isEditing ? (
+            <>
+              <button
+                onClick={handleCancel}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              >
+                İptal
+              </button>
+              {canApprove ? (
+                <button
+                  onClick={handleApprove}
+                  className="flex-[2] py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                >
+                  ✓ Kaydet & Onayla
+                </button>
+              ) : (
+                <button
+                  onClick={handleSave}
+                  className="flex-[2] py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                >
+                  Kaydet
+                </button>
+              )}
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setIsEditing(true)}
+                className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              >
+                ✏️ Düzenle
+              </button>
+              {canApprove && (
+                <button
+                  onClick={handleApprove}
+                  className="flex-[2] py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                >
+                  ✓ Onayla
+                </button>
+              )}
+            </>
+          )}
         </div>
       )}
 

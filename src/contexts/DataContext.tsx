@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { tripApi } from '../services/api';
+import { tripApi, invoiceApi } from '../services/api';
 import { useFleet } from './FleetContext';
 import type { Trip, Invoice, DocumentSubmission, TruckAssignmentRequest } from '../types';
 // Using real API - no mock data
@@ -34,10 +34,11 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [documentSubmissions, setDocumentSubmissions] = useState<DocumentSubmission[]>(initialDocSubmissions);
   const [truckAssignmentRequests, setTruckAssignmentRequests] = useState<TruckAssignmentRequest[]>(initialTruckRequests);
 
-  // Load trips from backend when fleet is available
+  // Load trips and invoices from backend when fleet is available
   useEffect(() => {
     if (fleetId) {
       loadTrips();
+      loadInvoices();
     }
   }, [fleetId]);
 
@@ -51,6 +52,28 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const loadInvoices = async () => {
+    if (!fleetId) return;
+    try {
+      const data: any[] = await invoiceApi.getByFleet(fleetId);
+      // Map backend response to frontend Invoice shape
+      setInvoices(data.map((inv: any) => ({
+        id: inv.id,
+        fleetId: inv.fleetId,
+        clientId: inv.clientId,
+        clientName: inv.clientName,
+        tripIds: inv.tripIds,
+        amount: inv.amount?.amount ?? 0,
+        status: inv.status?.toLowerCase() as any,
+        issueDate: inv.issueDate,
+        dueDate: inv.dueDate,
+        paidDate: inv.paidDate ?? null,
+      })));
+    } catch (error) {
+      console.error('Error loading invoices:', error);
+    }
+  };
+
   const updateTrip = async (tripId: string, updates: Partial<Trip>) => {
     // Optimistic update - update local state immediately
     setTrips((prev) =>
@@ -58,10 +81,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         trip.id === tripId ? { ...trip, ...updates } : trip
       )
     );
-
-    // TODO: Call backend API for specific update operations
-    // For now, just reload trips to ensure consistency
-    await loadTrips();
   };
 
   const addTrip = (trip: Trip) => {
