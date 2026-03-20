@@ -1,20 +1,20 @@
-/**
- * API service for communicating with the Naklos backend.
- * Base URL points to local development backend.
- */
+import keycloak from '../auth/keycloak';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
 
-// Helper function for API calls
 async function apiCall<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
+  if (options?.headers) {
+    Object.assign(headers, options.headers);
+  }
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options?.headers,
-    },
+    ...options,
+    headers,
     ...options,
   });
 
@@ -81,6 +81,19 @@ export const tripApi = {
   cancelTrip: (tripId: string, reason?: string) =>
     apiCall(`/trips/${tripId}${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`, {
       method: 'DELETE',
+    }),
+
+  // Detail Updates
+  updateDetails: (tripId: string, data: {
+    originCity?: string;
+    destinationCity?: string;
+    cargoDescription?: string;
+    revenueAmount?: number;
+    revenueCurrency?: string;
+  }) =>
+    apiCall(`/trips/${tripId}/details`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
     }),
 
   // Expense Management
@@ -250,5 +263,49 @@ export const truckApi = {
   unassignDriver: (truckId: string) =>
     apiCall(`/trucks/${truckId}/unassign-driver`, {
       method: 'POST',
+    }),
+};
+
+// Trip Template API
+export const tripTemplateApi = {
+  getByFleet: (fleetId: string) =>
+    apiCall(`/trip-templates?fleetId=${fleetId}`),
+  create: (fleetId: string, data: {
+    name: string;
+    originCity: string;
+    destinationCity: string;
+    clientId?: string;
+    clientName?: string;
+    cargoDescription?: string;
+    typicalRevenueAmount?: number;
+    typicalRevenueCurrency?: string;
+    preferredTruckId?: string;
+    preferredTruckPlate?: string;
+    preferredDriverId?: string;
+    preferredDriverName?: string;
+  }) =>
+    apiCall(`/trip-templates?fleetId=${fleetId}`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    apiCall(`/trip-templates/${id}`, { method: 'DELETE' }),
+};
+
+// Invoice API
+export const invoiceApi = {
+  create: (data: { clientId: string; clientName: string; tripIds: string[]; dueDate: string }, fleetId: string) =>
+    apiCall('/invoices?fleetId=' + fleetId, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getByFleet: (fleetId: string) =>
+    apiCall(`/invoices?fleetId=${fleetId}`),
+  getById: (id: string) =>
+    apiCall(`/invoices/${id}`),
+  markAsPaid: (id: string, paymentDate: string) =>
+    apiCall(`/invoices/${id}/pay`, {
+      method: 'PUT',
+      body: JSON.stringify({ paymentDate }),
     }),
 };

@@ -77,7 +77,7 @@ const DriverTripCreatePage = () => {
       const newTrip = await tripApi.createPodFirst(tripData, fleetId);
 
       // Add to local state
-      addTrip(newTrip);
+      addTrip(newTrip as any);
 
       alert(
         `✓ Teslimat belgesi yüklendi!\n\nHedef: ${destination}\n${documents.length} belge\n\nYöneticiniz inceleyecek ve onaylayacak.`
