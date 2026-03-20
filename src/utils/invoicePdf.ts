@@ -90,7 +90,7 @@ export function generateInvoicePDF(
     const route = `${trip.originCity} → ${trip.destinationCity}`;
     doc.text(route, 25, yPosition);
     doc.text(trip.truckPlate || 'N/A', 100, yPosition);
-    doc.text(`₺${(trip.revenue || 0).toLocaleString('tr-TR')}`, 150, yPosition);
+    doc.text(`₺${(trip.revenue?.amount || 0).toLocaleString('tr-TR')}`, 150, yPosition);
 
     // Add delivery confirmation indicator if exists
     if (trip.deliveryDocuments && trip.deliveryDocuments.length > 0) {
