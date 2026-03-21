@@ -1,9 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, FileText, Building2 } from 'lucide-react';
+import { Home, Truck, Users, FileText, Building2, LogOut } from 'lucide-react';
 import { useData } from '../../contexts/DataContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ManagerSidebar = () => {
   const { documentSubmissions, truckAssignmentRequests, trips } = useData();
+  const { logout } = useAuth();
 
   // Calculate pending approval counts per context
   const tripsPendingCount = trips.filter(
@@ -76,6 +78,13 @@ const ManagerSidebar = () => {
             <p className="text-sm font-medium">Fleet Manager</p>
             <p className="text-xs text-slate-400">Yönetici</p>
           </div>
+          <button
+            onClick={logout}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"
+            title="Çıkış Yap"
+          >
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </div>

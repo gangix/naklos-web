@@ -10,7 +10,7 @@ import { formatDate } from '../../utils/format';
 import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
-  const { user, loginAsDriver, loginAsManager } = useAuth();
+  const { user, loginAsDriver, loginAsManager, logout } = useAuth();
   const { fleetId } = useFleet();
   const { documentSubmissions } = useData();
   const [isEditing, setIsEditing] = useState(false);
@@ -232,12 +232,20 @@ const DriverProfilePage = () => {
               {driver.firstName} {driver.lastName}
             </p>
           </div>
-          <button
-            onClick={() => setShowDriverList(!showDriverList)}
-            className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            {showDriverList ? 'Kapat' : '🔧 Kullanıcı Değiştir'}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowDriverList(!showDriverList)}
+              className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              {showDriverList ? 'Kapat' : '🔧 Kullanıcı Değiştir'}
+            </button>
+            <button
+              onClick={logout}
+              className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Çıkış
+            </button>
+          </div>
         </div>
       </div>
 

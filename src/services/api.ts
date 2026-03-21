@@ -15,7 +15,6 @@ async function apiCall<T>(
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
     headers,
-    ...options,
   });
 
   if (!response.ok) {
@@ -178,8 +177,12 @@ export const driverApi = {
       formData.append('expiryDate', expiryDate);
     }
 
+    const headers: Record<string, string> = {};
+    if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
+
     const response = await fetch(`${API_BASE_URL}/drivers/${driverId}/documents/upload`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
@@ -230,8 +233,12 @@ export const truckApi = {
       formData.append('expiryDate', expiryDate);
     }
 
+    const headers: Record<string, string> = {};
+    if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
+
     const response = await fetch(`${API_BASE_URL}/trucks/${truckId}/documents/upload`, {
       method: 'POST',
+      headers,
       body: formData,
     });
 
