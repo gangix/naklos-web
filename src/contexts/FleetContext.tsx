@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
+import keycloak from '../auth/keycloak';
 
 interface Fleet {
   id: string;
@@ -37,7 +38,9 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
     if (!fleetId) return;
 
     setIsLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api'}/fleets/${fleetId}`)
+    fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api'}/fleets/${fleetId}`, {
+        headers: keycloak.token ? { Authorization: `Bearer ${keycloak.token}` } : {},
+      })
       .then(res => res.json())
       .then(data => {
         setFleet(data);
