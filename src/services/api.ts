@@ -140,6 +140,7 @@ export const clientApi = {
 
 // Driver API
 export const driverApi = {
+  getMe: () => apiCall<any>('/drivers/me'),
   register: (data: any) =>
     apiCall('/drivers', {
       method: 'POST',

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import keycloak from '../auth/keycloak';
+import { driverApi } from '../services/api';
 
 export type UserRole = 'driver' | 'fleet-manager';
 
@@ -38,14 +39,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const hasDriverRole = roles.includes('fleet_driver');
           const hasManagerRole = roles.includes('fleet_manager') || roles.includes('fleet_admin');
 
-          // Default to driver view if user has driver role, otherwise manager
+          // Default to driver view if user has driver role only, otherwise manager
           const primaryRole: UserRole = hasDriverRole && !hasManagerRole ? 'driver' : hasManagerRole ? 'fleet-manager' : 'driver';
+
+          // Resolve real driver entity ID from backend if user has driver role
+          let driverId: string | undefined;
+          if (hasDriverRole) {
+            try {
+              const driverProfile = await driverApi.getMe();
+              driverId = driverProfile.id;
+            } catch {
+              // Driver not linked yet - driverId stays undefined
+              console.warn('No driver profile linked to this Keycloak account');
+            }
+          }
 
           setUserState({
             id: token?.sub ?? '',
             name: token?.name ?? token?.preferred_username ?? '',
             role: primaryRole,
-            driverId: hasDriverRole ? (token?.driver_id ?? token?.sub) : undefined,
+            driverId,
             keycloakRoles: roles,
           });
         }
