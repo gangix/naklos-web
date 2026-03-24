@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     keycloak
       .init({ onLoad: 'login-required', checkLoginIframe: false, pkceMethod: 'S256' })
-      .then((authenticated) => {
+      .then(async (authenticated) => {
         if (authenticated) {
           const token = keycloak.tokenParsed as any;
           const roles: string[] = token?.realm_access?.roles ?? [];
