@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import keycloak from '../auth/keycloak';
+import { useAuth } from './AuthContext';
 
 interface Fleet {
   id: string;
@@ -21,6 +22,7 @@ interface FleetContextType {
 const FleetContext = createContext<FleetContextType | undefined>(undefined);
 
 export const FleetProvider = ({ children }: { children: ReactNode }) => {
+  const { isFleetManager } = useAuth();
   // For testing: Use a default fleet ID or get from localStorage
   const [fleetId, setFleetIdState] = useState<string | null>(
     localStorage.getItem('naklos_fleet_id') || null
@@ -33,9 +35,9 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('naklos_fleet_id', id);
   };
 
-  // Fetch fleet details when fleetId changes
+  // Fetch fleet details when fleetId changes - only managers need full fleet details
   useEffect(() => {
-    if (!fleetId) return;
+    if (!fleetId || !isFleetManager) return;
 
     setIsLoading(true);
     fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api'}/fleets/${fleetId}`, {
@@ -50,7 +52,7 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
         console.error('Failed to fetch fleet:', err);
         setIsLoading(false);
       });
-  }, [fleetId]);
+  }, [fleetId, isFleetManager]);
 
   return (
     <FleetContext.Provider value={{ fleetId, fleet, setFleetId, isLoading }}>

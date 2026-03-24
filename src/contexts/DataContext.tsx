@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { tripApi, invoiceApi } from '../services/api';
 import { useFleet } from './FleetContext';
+import { useAuth } from './AuthContext';
 import type { Trip, Invoice, DocumentSubmission, TruckAssignmentRequest } from '../types';
 // Using real API - no mock data
 const initialTrips: any[] = [];
@@ -29,18 +30,19 @@ const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const { fleetId } = useFleet();
+  const { isFleetManager } = useAuth();
   const [trips, setTrips] = useState<Trip[]>(initialTrips);
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [documentSubmissions, setDocumentSubmissions] = useState<DocumentSubmission[]>(initialDocSubmissions);
   const [truckAssignmentRequests, setTruckAssignmentRequests] = useState<TruckAssignmentRequest[]>(initialTruckRequests);
 
-  // Load trips and invoices from backend when fleet is available
+  // Load trips and invoices from backend - only for managers (drivers use their own endpoints)
   useEffect(() => {
-    if (fleetId) {
+    if (fleetId && isFleetManager) {
       loadTrips();
       loadInvoices();
     }
-  }, [fleetId]);
+  }, [fleetId, isFleetManager]);
 
   const loadTrips = async () => {
     if (!fleetId) return;
