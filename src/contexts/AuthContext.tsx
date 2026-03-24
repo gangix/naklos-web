@@ -8,6 +8,7 @@ interface User {
   name: string;
   role: UserRole;
   driverId?: string;
+  keycloakRoles: string[];
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   loginAsManager: () => void;
   isDriver: boolean;
   isFleetManager: boolean;
+  hasBothRoles: boolean;
   logout: () => void;
 }
 
@@ -33,13 +35,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (authenticated) {
           const token = keycloak.tokenParsed as any;
           const roles: string[] = token?.realm_access?.roles ?? [];
-          const isDriver = roles.includes('DRIVER');
+          const hasDriverRole = roles.includes('fleet_driver');
+          const hasManagerRole = roles.includes('fleet_manager') || roles.includes('fleet_admin');
+
+          // Default to driver view if user has driver role, otherwise manager
+          const primaryRole: UserRole = hasDriverRole && !hasManagerRole ? 'driver' : hasManagerRole ? 'fleet-manager' : 'driver';
 
           setUserState({
             id: token?.sub ?? '',
             name: token?.name ?? token?.preferred_username ?? '',
-            role: isDriver ? 'driver' : 'fleet-manager',
-            driverId: isDriver ? (token?.driver_id ?? token?.sub) : undefined,
+            role: primaryRole,
+            driverId: hasDriverRole ? (token?.driver_id ?? token?.sub) : undefined,
+            keycloakRoles: roles,
           });
         }
         setInitialized(true);
@@ -63,6 +70,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
   }
 
+  const keycloakRoles = user?.keycloakRoles ?? [];
+  const hasDriverRole = keycloakRoles.includes('fleet_driver');
+  const hasManagerRole = keycloakRoles.includes('fleet_manager') || keycloakRoles.includes('fleet_admin');
+
   const value: AuthContextType = {
     user,
     setUser: setUserState,
@@ -71,6 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loginAsManager: () => {},
     isDriver: user?.role === 'driver',
     isFleetManager: user?.role === 'fleet-manager',
+    hasBothRoles: hasDriverRole && hasManagerRole,
     logout: () => keycloak.logout({ redirectUri: window.location.origin }),
   };
 

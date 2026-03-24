@@ -50,8 +50,8 @@ function App() {
         {/* Root redirect */}
         <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
-        {/* Fleet Manager Routes */}
-        <Route path="/manager" element={<ManagerLayout />}>
+        {/* Fleet Manager Routes - redirect drivers away */}
+        <Route path="/manager" element={isFleetManager ? <ManagerLayout /> : <Navigate to="/driver" replace />}>
           <Route index element={<Navigate to="/manager/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="trucks" element={<TrucksPage />} />
@@ -68,8 +68,8 @@ function App() {
           <Route path="more" element={<MorePage />} />
         </Route>
 
-        {/* Driver Routes */}
-        <Route path="/driver" element={<DriverLayout />}>
+        {/* Driver Routes - redirect managers away */}
+        <Route path="/driver" element={isDriver ? <DriverLayout /> : <Navigate to="/manager/dashboard" replace />}>
           <Route index element={<DriverDashboardPage />} />
           <Route path="trips" element={<DriverTripsPage />} />
           <Route path="trips/create" element={<DriverTripCreatePage />} />
