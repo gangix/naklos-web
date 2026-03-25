@@ -19,6 +19,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
     email: '',
     licenseNumber: '',
     licenseClass: 'C',
+    temporaryPassword: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -29,8 +30,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
     try {
       await driverApi.register({
         ...formData,
-        fleetId,
-        keycloakUserId: null, // Will be linked later when driver logs in
+        temporaryPassword: formData.temporaryPassword || undefined,
       });
 
       // Reset form and close
@@ -41,6 +41,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
         email: '',
         licenseNumber: '',
         licenseClass: 'C',
+        temporaryPassword: '',
       });
       onSuccess();
       onClose();
@@ -163,6 +164,23 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
                 <option value="D">D (Otobüs)</option>
                 <option value="DE">DE (Otobüs + Römork)</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Geçici Şifre
+              </label>
+              <input
+                type="password"
+                minLength={8}
+                value={formData.temporaryPassword}
+                onChange={(e) => setFormData({ ...formData, temporaryPassword: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="En az 8 karakter"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Sürücü ilk girişte şifresini değiştirecek. Boş bırakılırsa hesap oluşturulmaz.
+              </p>
             </div>
 
             <div className="flex gap-3 pt-4">
