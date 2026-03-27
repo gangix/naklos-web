@@ -208,6 +208,10 @@ export const driverApi = {
     apiCall(`/drivers/documents/${documentId}`, {
       method: 'DELETE',
     }),
+  delete: (id: string) =>
+    apiCall(`/drivers/${id}`, {
+      method: 'DELETE',
+    }),
 };
 
 // Truck API

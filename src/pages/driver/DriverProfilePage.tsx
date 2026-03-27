@@ -40,15 +40,15 @@ const DriverProfilePage = () => {
     }
   }, [fleetId]);
 
-  // Load current driver details
+  // Load current driver details (doesn't need fleetId - uses driver ID directly)
   useEffect(() => {
-    if (user?.driverId && fleetId) {
+    if (user?.driverId) {
       loadCurrentDriver();
     } else {
       // Not logged in as driver, stop loading
       setLoading(false);
     }
-  }, [user?.driverId, fleetId]);
+  }, [user?.driverId]);
 
   // Update editForm when driver loads
   useEffect(() => {
@@ -183,6 +183,12 @@ const DriverProfilePage = () => {
     return (
       <div className="p-4">
         <p className="text-center text-gray-600">Sürücü bilgisi bulunamadı</p>
+        <button
+          onClick={logout}
+          className="mt-4 mx-auto block px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Çıkış Yap
+        </button>
       </div>
     );
   }

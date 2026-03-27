@@ -13,6 +13,7 @@ const DriverDetailPage = () => {
   const [driver, setDriver] = useState<Driver | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
@@ -196,6 +197,25 @@ const DriverDetailPage = () => {
     }
   };
 
+  const handleDeleteDriver = async () => {
+    if (!driverId) return;
+    if (!confirm(`${fullName} adlı sürücüyü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      await driverApi.delete(driverId);
+      alert('Sürücü başarıyla silindi.');
+      navigate('/manager/drivers');
+    } catch (err) {
+      console.error('Error deleting driver:', err);
+      alert(err instanceof Error ? err.message : 'Sürücü silinirken hata oluştu');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="p-4 pb-20">
       {/* Header with back button */}
@@ -206,12 +226,19 @@ const DriverDetailPage = () => {
         >
           ←
         </button>
-        <div>
+        <div className="flex-1">
           <h1 className="text-2xl font-bold text-gray-900">{fullName}</h1>
           <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(driver.status)}`}>
             {getStatusLabel(driver.status)}
           </span>
         </div>
+        <button
+          onClick={handleDeleteDriver}
+          disabled={deleting}
+          className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+        >
+          {deleting ? 'Siliniyor...' : 'Sil'}
+        </button>
       </div>
 
       {/* Contact info card */}
