@@ -34,6 +34,7 @@ export const fleetApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  getMy: () => apiCall<any>('/fleets/my'),
   getById: (id: string) => apiCall(`/fleets/${id}`),
 };
 

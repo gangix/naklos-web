@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import keycloak from '../auth/keycloak';
 import { useAuth } from './AuthContext';
+import { fleetApi } from '../services/api';
 
 interface Fleet {
   id: string;
@@ -23,7 +23,6 @@ const FleetContext = createContext<FleetContextType | undefined>(undefined);
 
 export const FleetProvider = ({ children }: { children: ReactNode }) => {
   const { isFleetManager } = useAuth();
-  // For testing: Use a default fleet ID or get from localStorage
   const [fleetId, setFleetIdState] = useState<string | null>(
     localStorage.getItem('naklos_fleet_id') || null
   );
@@ -35,21 +34,40 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('naklos_fleet_id', id);
   };
 
-  // Fetch fleet details when fleetId changes - only managers need full fleet details
+  // Auto-discover fleet from backend when manager has no fleetId
   useEffect(() => {
-    if (!fleetId || !isFleetManager) return;
+    if (fleetId || !isFleetManager) return;
 
     setIsLoading(true);
-    fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api'}/fleets/${fleetId}`, {
-        headers: keycloak.token ? { Authorization: `Bearer ${keycloak.token}` } : {},
+    fleetApi.getMy()
+      .then((data: Fleet) => {
+        setFleetId(data.id);
+        setFleet(data);
+        setIsLoading(false);
       })
-      .then(res => res.json())
-      .then(data => {
+      .catch(() => {
+        // No fleet found — user will see the fleet setup page
+        setIsLoading(false);
+      });
+  }, [isFleetManager]);
+
+  // Fetch fleet details when fleetId is set
+  useEffect(() => {
+    if (!fleetId || !isFleetManager) return;
+    if (fleet?.id === fleetId) return; // already loaded
+
+    setIsLoading(true);
+    fleetApi.getById(fleetId)
+      .then((data: Fleet) => {
         setFleet(data);
         setIsLoading(false);
       })
       .catch(err => {
         console.error('Failed to fetch fleet:', err);
+        // Clear stale localStorage if fleet no longer exists
+        localStorage.removeItem('naklos_fleet_id');
+        setFleetIdState(null);
+        setFleet(null);
         setIsLoading(false);
       });
   }, [fleetId, isFleetManager]);
