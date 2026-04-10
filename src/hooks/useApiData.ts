@@ -10,8 +10,9 @@ interface UseApiDataResult<T> {
 }
 
 // Generic hook for fetching data from API
+// Fleet is derived from JWT on the backend — we just check fleetId exists locally
 function useApiData<T>(
-  fetchFn: (fleetId: string) => Promise<T[]>,
+  fetchFn: () => Promise<T[]>,
   deps: any[] = []
 ): UseApiDataResult<T> {
   const { fleetId } = useFleet();
@@ -29,7 +30,7 @@ function useApiData<T>(
     try {
       setLoading(true);
       setError(null);
-      const result = await fetchFn(fleetId);
+      const result = await fetchFn();
       setData(result);
     } catch (err) {
       console.error('API Error:', err);

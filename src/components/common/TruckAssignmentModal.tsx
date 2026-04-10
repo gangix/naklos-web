@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useData } from '../../contexts/DataContext';
 import { TRUCK_REQUEST, APPROVALS, COMMON } from '../../constants/text';
-import { mockTrucks } from '../../data/mock';
-import type { TruckAssignmentRequest } from '../../types';
+import { truckApi } from '../../services/api';
+import type { Truck, TruckAssignmentRequest } from '../../types';
 
 interface TruckAssignmentModalProps {
   isOpen: boolean;
@@ -16,13 +16,19 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
   const [selectedTruckId, setSelectedTruckId] = useState(request.preferredTruckId);
   const [rejectionNote, setRejectionNote] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [allTrucks, setAllTrucks] = useState<Truck[]>([]);
+
+  useEffect(() => {
+    if (isOpen) {
+      truckApi.getAvailable().then((data) => setAllTrucks(data as Truck[])).catch(console.error);
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // Get available trucks (no driver assigned)
-  const availableTrucks = mockTrucks.filter((t) => !t.assignedDriverId);
-  const preferredTruck = mockTrucks.find((t) => t.id === request.preferredTruckId);
-  const selectedTruck = mockTrucks.find((t) => t.id === selectedTruckId);
+  const availableTrucks = allTrucks.filter((t) => !t.assignedDriverId);
+  const preferredTruck = allTrucks.find((t) => t.id === request.preferredTruckId);
+  const selectedTruck = allTrucks.find((t) => t.id === selectedTruckId);
 
   const handleApprove = async () => {
     if (!selectedTruckId || !selectedTruck) {

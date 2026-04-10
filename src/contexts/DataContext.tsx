@@ -47,7 +47,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const loadTrips = async () => {
     if (!fleetId) return;
     try {
-      const data = await tripApi.getByFleet(fleetId);
+      const data = await tripApi.getByFleet();
       setTrips(data);
     } catch (error) {
       console.error('Error loading trips:', error);
@@ -57,7 +57,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const loadInvoices = async () => {
     if (!fleetId) return;
     try {
-      const data: any[] = await invoiceApi.getByFleet(fleetId);
+      const data: any[] = await invoiceApi.getByFleet();
       // Map backend response to frontend Invoice shape
       setInvoices(data.map((inv: any) => ({
         id: inv.id,

@@ -38,22 +38,22 @@ export const fleetApi = {
   getById: (id: string) => apiCall(`/fleets/${id}`),
 };
 
-// Trip API
+// Trip API — fleet is derived from JWT on the backend
 export const tripApi = {
   // Trip Creation
-  createPlanned: (data: any, fleetId: string) =>
-    apiCall(`/trips/planned?fleetId=${fleetId}`, {
+  createPlanned: (data: any) =>
+    apiCall('/trips/planned', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  createPodFirst: (data: any, fleetId: string) =>
-    apiCall(`/trips/pod-first?fleetId=${fleetId}`, {
+  createPodFirst: (data: any) =>
+    apiCall('/trips/pod-first', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
   // Trip Lifecycle Management
-  assignDriverAndTruck: (tripId: string, data: { driverId: string; truckId: string }) =>
+  assignDriverAndTruck: (tripId: string, data: { driverId: string; driverName: string; truckId: string; truckPlate: string }) =>
     apiCall(`/trips/${tripId}/assign`, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -113,33 +113,33 @@ export const tripApi = {
 
   // Query Endpoints
   getById: (id: string) => apiCall(`/trips/${id}`),
-  getByFleet: (fleetId: string, status?: string) =>
-    apiCall(`/trips?fleetId=${fleetId}${status ? `&status=${status}` : ''}`),
-  getUnassigned: (fleetId: string) =>
-    apiCall(`/trips/unassigned?fleetId=${fleetId}`),
-  getPendingApproval: (fleetId: string) =>
-    apiCall(`/trips/pending-approval?fleetId=${fleetId}`),
-  getReadyForInvoice: (fleetId: string, clientId?: string) =>
-    apiCall(`/trips/ready-for-invoice?fleetId=${fleetId}${clientId ? `&clientId=${clientId}` : ''}`),
-  getByDriver: (driverId: string, fleetId: string) =>
-    apiCall(`/trips/by-driver/${driverId}?fleetId=${fleetId}`),
-  getByClient: (clientId: string, fleetId: string) =>
-    apiCall(`/trips/by-client/${clientId}?fleetId=${fleetId}`),
+  getByFleet: (status?: string) =>
+    apiCall(`/trips${status ? `?status=${status}` : ''}`),
+  getUnassigned: () =>
+    apiCall('/trips/unassigned'),
+  getPendingApproval: () =>
+    apiCall('/trips/pending-approval'),
+  getReadyForInvoice: (clientId?: string) =>
+    apiCall(`/trips/ready-for-invoice${clientId ? `?clientId=${clientId}` : ''}`),
+  getByDriver: (driverId: string) =>
+    apiCall(`/trips/by-driver/${driverId}`),
+  getByClient: (clientId: string) =>
+    apiCall(`/trips/by-client/${clientId}`),
 };
 
-// Client API
+// Client API — fleet is derived from JWT
 export const clientApi = {
   add: (data: any) =>
     apiCall('/clients', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: (fleetId: string) =>
-    apiCall(`/clients/fleet/${fleetId}`),
+  getByFleet: () =>
+    apiCall('/clients'),
   getById: (id: string) => apiCall(`/clients/${id}`),
 };
 
-// Driver API
+// Driver API — fleet is derived from JWT
 export const driverApi = {
   getMe: () => apiCall<any>('/drivers/me'),
   register: (data: any) =>
@@ -147,10 +147,10 @@ export const driverApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: (fleetId: string) =>
-    apiCall(`/drivers/fleet/${fleetId}`),
-  getAvailable: (fleetId: string) =>
-    apiCall(`/drivers/fleet/${fleetId}/available`),
+  getByFleet: () =>
+    apiCall('/drivers'),
+  getAvailable: () =>
+    apiCall('/drivers?status=AVAILABLE'),
   getById: (id: string) => apiCall(`/drivers/${id}`),
   updateLicense: (id: string, expiryDate: string) =>
     apiCall(`/drivers/${id}/license`, {
@@ -214,17 +214,17 @@ export const driverApi = {
     }),
 };
 
-// Truck API
+// Truck API — fleet is derived from JWT
 export const truckApi = {
   register: (data: any) =>
     apiCall('/trucks', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: (fleetId: string) =>
-    apiCall(`/trucks/fleet/${fleetId}`),
-  getAvailable: (fleetId: string) =>
-    apiCall(`/trucks/fleet/${fleetId}/available`),
+  getByFleet: () =>
+    apiCall('/trucks'),
+  getAvailable: () =>
+    apiCall('/trucks?status=AVAILABLE'),
   getById: (id: string) => apiCall(`/trucks/${id}`),
   updateDocuments: (id: string, data: any) =>
     apiCall(`/trucks/${id}/documents`, {
@@ -279,11 +279,11 @@ export const truckApi = {
     }),
 };
 
-// Trip Template API
+// Trip Template API — fleet is derived from JWT
 export const tripTemplateApi = {
-  getByFleet: (fleetId: string) =>
-    apiCall(`/trip-templates?fleetId=${fleetId}`),
-  create: (fleetId: string, data: {
+  getByFleet: () =>
+    apiCall('/trip-templates'),
+  create: (data: {
     name: string;
     originCity: string;
     destinationCity: string;
@@ -297,7 +297,7 @@ export const tripTemplateApi = {
     preferredDriverId?: string;
     preferredDriverName?: string;
   }) =>
-    apiCall(`/trip-templates?fleetId=${fleetId}`, {
+    apiCall('/trip-templates', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
@@ -305,15 +305,15 @@ export const tripTemplateApi = {
     apiCall(`/trip-templates/${id}`, { method: 'DELETE' }),
 };
 
-// Invoice API
+// Invoice API — fleet is derived from JWT
 export const invoiceApi = {
-  create: (data: { clientId: string; clientName: string; tripIds: string[]; dueDate: string }, fleetId: string) =>
-    apiCall('/invoices?fleetId=' + fleetId, {
+  create: (data: { clientId: string; clientName: string; tripIds: string[]; dueDate: string }) =>
+    apiCall('/invoices', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: (fleetId: string) =>
-    apiCall(`/invoices?fleetId=${fleetId}`),
+  getByFleet: () =>
+    apiCall('/invoices'),
   getById: (id: string) =>
     apiCall(`/invoices/${id}`),
   markAsPaid: (id: string, paymentDate: string) =>

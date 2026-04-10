@@ -41,7 +41,7 @@ const TripsPage = () => {
   // Ready to invoice: approved trips not yet invoiced
   const readyTrips = useMemo(() => {
     return trips.filter(
-      (trip) => trip.status === 'APPROVED' && trip.approvedByManager && !trip.invoiced
+      (trip) => trip.status === 'APPROVED'
     );
   }, [trips]);
 
@@ -102,7 +102,7 @@ const TripsPage = () => {
     if (confirmed) {
       // Mark all selected trips as invoiced
       selectedTripIds.forEach((tripId) => {
-        updateTrip(tripId, { invoiced: true, status: 'invoiced' });
+        updateTrip(tripId, { status: 'INVOICED' as any });
       });
 
       // Create the invoice

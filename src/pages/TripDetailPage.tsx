@@ -57,9 +57,9 @@ const TripDetailPage = () => {
     try {
       setLoading(true);
       const [clientsData, driversData, trucksData] = await Promise.all([
-        clientApi.getByFleet(fleetId),
-        driverApi.getByFleet(fleetId),
-        truckApi.getByFleet(fleetId),
+        clientApi.getByFleet(),
+        driverApi.getByFleet(),
+        truckApi.getByFleet(),
       ]);
       setClients(clientsData);
       setDrivers(driversData);
@@ -278,7 +278,6 @@ const TripDetailPage = () => {
 
       await updateTrip(trip.id, {
         status: 'APPROVED',
-        approvedByManager: true,
         approvedAt: new Date().toISOString(),
         deliveryDocuments: documents,
       });

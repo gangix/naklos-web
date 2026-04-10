@@ -74,7 +74,7 @@ const DriverTripCreatePage = () => {
         podDocuments: podDocuments,
       };
 
-      const newTrip = await tripApi.createPodFirst(tripData, fleetId);
+      const newTrip = await tripApi.createPodFirst(tripData);
 
       // Add to local state
       addTrip(newTrip as any);

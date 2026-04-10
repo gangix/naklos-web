@@ -46,7 +46,7 @@ const TruckDetailPage = () => {
 
     const fetchDrivers = async () => {
       try {
-        const data = await driverApi.getByFleet(fleetId);
+        const data = await driverApi.getByFleet();
         setDrivers(data);
       } catch (err) {
         console.error('Error fetching drivers:', err);

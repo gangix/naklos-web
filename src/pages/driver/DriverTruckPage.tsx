@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useData } from '../../contexts/DataContext';
-import { mockDrivers, mockTrucks } from '../../data/mock';
+import { driverApi, truckApi } from '../../services/api';
 import { TRUCK_REQUEST, TRUCKS, COMMON } from '../../constants/text';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
-import type { DocumentCategory } from '../../types';
+import type { Driver, Truck, DocumentCategory } from '../../types';
 
 const DriverTruckPage = () => {
   const { user } = useAuth();
@@ -14,9 +14,42 @@ const DriverTruckPage = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
+  const [driver, setDriver] = useState<Driver | null>(null);
+  const [assignedTruck, setAssignedTruck] = useState<Truck | null>(null);
+  const [availableTrucks, setAvailableTrucks] = useState<Truck[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Find current driver
-  const driver = mockDrivers.find((d) => d.id === user?.driverId);
+  useEffect(() => {
+    loadData();
+  }, [user?.driverId]);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const driverData = await driverApi.getMe();
+      setDriver(driverData);
+
+      if (driverData.assignedTruckId) {
+        const truck = await truckApi.getById(driverData.assignedTruckId);
+        setAssignedTruck(truck as Truck);
+      }
+
+      const trucks = await truckApi.getAvailable();
+      setAvailableTrucks((trucks as Truck[]).filter((t) => !t.assignedDriverId));
+    } catch (error) {
+      console.error('Error loading truck data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-4 flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
+      </div>
+    );
+  }
 
   if (!driver) {
     return (
@@ -26,16 +59,10 @@ const DriverTruckPage = () => {
     );
   }
 
-  // Find assigned truck
-  const assignedTruck = mockTrucks.find((t) => t.id === driver.assignedTruckId);
-
   // Find pending truck request for this driver
   const pendingRequest = truckAssignmentRequests.find(
     (req) => req.driverId === driver.id && req.status === 'pending'
   );
-
-  // Get available trucks (no driver assigned)
-  const availableTrucks = mockTrucks.filter((t) => !t.assignedDriverId);
 
   const handleTruckRequest = (truckId: string, truckPlate: string) => {
     if (!driver) return;
@@ -97,7 +124,6 @@ const DriverTruckPage = () => {
         <div className="mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.documents}</h2>
 
-          {/* Compulsory Insurance */}
           {assignedTruck.compulsoryInsuranceExpiry && (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
@@ -113,7 +139,6 @@ const DriverTruckPage = () => {
             </div>
           )}
 
-          {/* Comprehensive Insurance */}
           {assignedTruck.comprehensiveInsuranceExpiry && (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
@@ -129,7 +154,6 @@ const DriverTruckPage = () => {
             </div>
           )}
 
-          {/* Inspection */}
           {assignedTruck.inspectionExpiry && (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
@@ -146,14 +170,12 @@ const DriverTruckPage = () => {
           )}
         </div>
 
-        {/* Info note */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <p className="text-sm text-blue-800">
             ℹ️ Araç belgelerini güncelleyebilirsiniz. Yüklediğiniz belgeler yöneticiniz tarafından onaylandıktan sonra geçerli olacak.
           </p>
         </div>
 
-        {/* Document Upload Modal */}
         {uploadModalOpen && uploadCategory && assignedTruck && (
           <DocumentUploadModal
             isOpen={uploadModalOpen}
@@ -200,61 +222,55 @@ const DriverTruckPage = () => {
       <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRUCK_REQUEST.title}</h1>
 
       {!showTruckSelector ? (
-        <>
-          {/* Empty state */}
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="text-6xl mb-4">🚛</div>
-            <p className="text-lg font-medium text-gray-900 mb-2">{TRUCK_REQUEST.noTruckAssigned}</p>
-            <p className="text-sm text-gray-600 text-center mb-6">
-              Müsait araçlardan birini talep edebilirsiniz.
-            </p>
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="text-6xl mb-4">🚛</div>
+          <p className="text-lg font-medium text-gray-900 mb-2">{TRUCK_REQUEST.noTruckAssigned}</p>
+          <p className="text-sm text-gray-600 text-center mb-6">
+            Müsait araçlardan birini talep edebilirsiniz.
+          </p>
+          <button
+            onClick={() => setShowTruckSelector(true)}
+            className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+          >
+            {TRUCK_REQUEST.requestTruck}
+          </button>
+        </div>
+      ) : (
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-gray-900">{TRUCK_REQUEST.availableTrucks}</h2>
             <button
-              onClick={() => setShowTruckSelector(true)}
-              className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+              onClick={() => setShowTruckSelector(false)}
+              className="text-sm text-gray-600"
             >
-              {TRUCK_REQUEST.requestTruck}
+              {COMMON.cancel}
             </button>
           </div>
-        </>
-      ) : (
-        <>
-          {/* Truck Selector */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-900">{TRUCK_REQUEST.availableTrucks}</h2>
-              <button
-                onClick={() => setShowTruckSelector(false)}
-                className="text-sm text-gray-600"
-              >
-                {COMMON.cancel}
-              </button>
-            </div>
 
-            {availableTrucks.length === 0 ? (
-              <div className="bg-gray-50 rounded-lg p-6 text-center">
-                <p className="text-sm text-gray-600">{TRUCK_REQUEST.noAvailable}</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {availableTrucks.map((truck) => (
-                  <button
-                    key={truck.id}
-                    onClick={() => handleTruckRequest(truck.id, truck.plateNumber)}
-                    className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left border-2 border-transparent hover:border-primary-500"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-bold text-gray-900">{truck.plateNumber}</p>
-                        <p className="text-sm text-gray-600 mt-1">{truck.type}</p>
-                      </div>
-                      <span className="text-primary-600 text-xl">→</span>
+          {availableTrucks.length === 0 ? (
+            <div className="bg-gray-50 rounded-lg p-6 text-center">
+              <p className="text-sm text-gray-600">{TRUCK_REQUEST.noAvailable}</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {availableTrucks.map((truck) => (
+                <button
+                  key={truck.id}
+                  onClick={() => handleTruckRequest(truck.id, truck.plateNumber)}
+                  className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left border-2 border-transparent hover:border-primary-500"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-bold text-gray-900">{truck.plateNumber}</p>
+                      <p className="text-sm text-gray-600 mt-1">{truck.type}</p>
                     </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </>
+                    <span className="text-primary-600 text-xl">→</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

@@ -39,10 +39,10 @@ const TripCreatePage = () => {
   const loadData = async () => {
     if (!fleetId) return;
     const [clientsData, trucksData, driversData, templatesData] = await Promise.all([
-      clientApi.getByFleet(fleetId),
-      truckApi.getByFleet(fleetId),
-      driverApi.getByFleet(fleetId),
-      tripTemplateApi.getByFleet(fleetId).catch(() => []),
+      clientApi.getByFleet(),
+      truckApi.getByFleet(),
+      driverApi.getByFleet(),
+      tripTemplateApi.getByFleet().catch(() => []),
     ]);
     setClients(clientsData as any[]);
     setTrucks(trucksData as any[]);
@@ -89,10 +89,10 @@ const TripCreatePage = () => {
         scheduledDeliveryDate: deliveryDate,
         agreedPrice: revenue ? parseFloat(revenue) : null,
         cargoDescription: cargoDescription || null,
-      }, fleetId);
+      });
 
       if (saveAsTemplate && templateName.trim()) {
-        await tripTemplateApi.create(fleetId, {
+        await tripTemplateApi.create({
           name: templateName.trim(),
           originCity,
           destinationCity,

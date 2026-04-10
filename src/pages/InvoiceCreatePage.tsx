@@ -19,8 +19,6 @@ const InvoiceCreatePage = () => {
     return trips.filter(
       (trip: any) =>
         trip.status === 'APPROVED' &&
-        trip.approvedByManager === true &&
-        trip.invoiced === false &&
         trip.clientId !== null &&
         trip.revenue !== null
     );
@@ -102,15 +100,12 @@ const InvoiceCreatePage = () => {
 
     setIsSubmitting(true);
     try {
-      const invoice = await invoiceApi.create(
-        {
-          clientId: selectedClientId,
-          clientName: selectedClient,
-          tripIds: selectedTripIds,
-          dueDate: dueDateStr,
-        },
-        fleetId
-      );
+      const invoice = await invoiceApi.create({
+        clientId: selectedClientId,
+        clientName: selectedClient,
+        tripIds: selectedTripIds,
+        dueDate: dueDateStr,
+      });
       addInvoice(invoice as any);
       navigate('/manager/invoices');
     } catch (error) {

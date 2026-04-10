@@ -66,7 +66,7 @@ const DriverProfilePage = () => {
   const loadDrivers = async () => {
     if (!fleetId) return;
     try {
-      const data = await driverApi.getByFleet(fleetId);
+      const data = await driverApi.getByFleet();
       setAllDrivers(data);
     } catch (error) {
       console.error('Error loading drivers:', error);

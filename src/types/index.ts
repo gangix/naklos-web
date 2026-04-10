@@ -102,9 +102,8 @@ export interface Trip {
   estimatedArrival: string | null;
   deliveryDocuments: Document[];
   documentsConfirmed: boolean;
-  approvedByManager: boolean; // true after manager approves
   approvedAt: string | null;
-  invoiced: boolean;
+  invoiceId: string | null;
   isPlanned: boolean; // true = Flow A (planned), false = Flow B (POD-first)
   driverEnteredDestination: string | null; // free-text if driver doesn't know client
 }

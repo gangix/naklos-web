@@ -22,7 +22,7 @@ const MorePage = () => {
     if (!fleetId) return;
     try {
       setLoading(true);
-      const data = await driverApi.getByFleet(fleetId);
+      const data = await driverApi.getByFleet();
       setDrivers(data);
     } catch (error) {
       console.error('Error loading drivers:', error);
