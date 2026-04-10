@@ -56,14 +56,14 @@ const TripDetailPage = () => {
     if (!fleetId) return;
     try {
       setLoading(true);
-      const [clientsData, driversData, trucksData] = await Promise.all([
-        clientApi.getByFleet(),
-        driverApi.getByFleet(),
-        truckApi.getByFleet(),
+      const [clientsPage, driversPage, trucksPage] = await Promise.all([
+        clientApi.getByFleet(0, 1000),
+        driverApi.getByFleet(0, 1000),
+        truckApi.getByFleet(0, 1000),
       ]);
-      setClients(clientsData);
-      setDrivers(driversData);
-      setTrucks(trucksData);
+      setClients(clientsPage.content);
+      setDrivers(driversPage.content);
+      setTrucks(trucksPage.content);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -210,6 +210,21 @@ const TripDetailPage = () => {
     } catch (error: any) {
       console.error('Error saving trip:', error);
       alert('❌ Hata: ' + (error.message || 'Sefer güncellenirken hata oluştu'));
+    }
+  };
+
+  const handleCancelTrip = async () => {
+    if (!trip) return;
+    const reason = window.prompt('İptal nedeni (isteğe bağlı):');
+    if (reason === null) return; // user clicked Cancel on prompt
+
+    try {
+      await tripApi.cancelTrip(trip.id, reason || undefined);
+      updateTrip(trip.id, { status: 'CANCELLED' as any });
+      alert('Sefer iptal edildi.');
+      navigate('/manager/trips');
+    } catch (error: any) {
+      alert('Hata: ' + (error.message || 'Sefer iptal edilirken hata oluştu'));
     }
   };
 
@@ -746,6 +761,12 @@ const TripDetailPage = () => {
             </>
           ) : (
             <>
+              <button
+                onClick={handleCancelTrip}
+                className="py-3 px-4 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-colors"
+              >
+                İptal Et
+              </button>
               <button
                 onClick={() => setIsEditing(true)}
                 className="flex-1 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"

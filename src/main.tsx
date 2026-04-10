@@ -5,16 +5,19 @@ import App from './App.tsx'
 import { DataProvider } from './contexts/DataContext.tsx'
 import { AuthProvider } from './contexts/AuthContext.tsx'
 import { FleetProvider } from './contexts/FleetContext.tsx'
+import ErrorBoundary from './components/common/ErrorBoundary.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
-      <FleetProvider>
-        <DataProvider>
-          <App />
-        </DataProvider>
-      </FleetProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <FleetProvider>
+          <DataProvider>
+            <App />
+          </DataProvider>
+        </FleetProvider>
+      </AuthProvider>
+    </ErrorBoundary>
   </StrictMode>,
 )
 

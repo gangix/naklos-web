@@ -22,8 +22,8 @@ const MorePage = () => {
     if (!fleetId) return;
     try {
       setLoading(true);
-      const data = await driverApi.getByFleet();
-      setDrivers(data);
+      const page = await driverApi.getByFleet(0, 1000);
+      setDrivers(page.content);
     } catch (error) {
       console.error('Error loading drivers:', error);
     } finally {
@@ -77,17 +77,19 @@ const MorePage = () => {
             <p className="text-sm text-gray-600">Giriş: <span className="font-medium">{user?.name}</span></p>
             <p className="text-xs text-gray-500">Rol: {user?.role === 'driver' ? 'Sürücü' : 'Yönetici'}</p>
           </div>
-          <button
-            onClick={() => setShowDriverList(!showDriverList)}
-            className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            {showDriverList ? 'Kapat' : 'Kullanıcı Değiştir'}
-          </button>
+          {import.meta.env.DEV && (
+            <button
+              onClick={() => setShowDriverList(!showDriverList)}
+              className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              {showDriverList ? 'Kapat' : 'Kullanıcı Değiştir'}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Developer Login Panel */}
-      {showDriverList && (
+      {/* Developer Login Panel — only in development */}
+      {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>

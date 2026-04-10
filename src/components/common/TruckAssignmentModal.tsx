@@ -20,7 +20,7 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
 
   useEffect(() => {
     if (isOpen) {
-      truckApi.getAvailable().then((data) => setAllTrucks(data as Truck[])).catch(console.error);
+      truckApi.getAvailable(0, 1000).then((page) => setAllTrucks(page.content as Truck[])).catch(console.error);
     }
   }, [isOpen]);
 

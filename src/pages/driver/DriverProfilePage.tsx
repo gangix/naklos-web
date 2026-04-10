@@ -66,8 +66,8 @@ const DriverProfilePage = () => {
   const loadDrivers = async () => {
     if (!fleetId) return;
     try {
-      const data = await driverApi.getByFleet();
-      setAllDrivers(data);
+      const page = await driverApi.getByFleet(0, 1000);
+      setAllDrivers(page.content);
     } catch (error) {
       console.error('Error loading drivers:', error);
     }
@@ -140,8 +140,8 @@ const DriverProfilePage = () => {
           </button>
         </div>
 
-        {/* Developer Login Panel */}
-        {showDriverList && (
+        {/* Developer Login Panel — only in development */}
+        {showDriverList && import.meta.env.DEV && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
               <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>
@@ -239,12 +239,14 @@ const DriverProfilePage = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <button
-              onClick={() => setShowDriverList(!showDriverList)}
-              className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              {showDriverList ? 'Kapat' : '🔧 Kullanıcı Değiştir'}
-            </button>
+            {import.meta.env.DEV && (
+              <button
+                onClick={() => setShowDriverList(!showDriverList)}
+                className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                {showDriverList ? 'Kapat' : '🔧 Kullanıcı Değiştir'}
+              </button>
+            )}
             <button
               onClick={logout}
               className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
@@ -255,8 +257,8 @@ const DriverProfilePage = () => {
         </div>
       </div>
 
-      {/* Developer Login Panel */}
-      {showDriverList && (
+      {/* Developer Login Panel — only in development */}
+      {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>

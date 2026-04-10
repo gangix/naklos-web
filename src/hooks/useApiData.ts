@@ -1,24 +1,31 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useFleet } from '../contexts/FleetContext';
-import { truckApi, driverApi, clientApi, tripApi } from '../services/api';
+import { truckApi, driverApi, clientApi, tripApi, type PageResponse } from '../services/api';
 
 interface UseApiDataResult<T> {
   data: T[];
   loading: boolean;
   error: string | null;
   refresh: () => void;
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+  setPage: (page: number) => void;
 }
 
-// Generic hook for fetching data from API
-// Fleet is derived from JWT on the backend — we just check fleetId exists locally
+// Generic hook for fetching paginated data from API
 function useApiData<T>(
-  fetchFn: () => Promise<T[]>,
+  fetchFn: (page: number, size: number) => Promise<PageResponse<T>>,
+  pageSize = 100, // default large page for backward compat
   deps: any[] = []
 ): UseApiDataResult<T> {
   const { fleetId } = useFleet();
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const fetchData = useCallback(async () => {
     if (!fleetId) {
@@ -30,8 +37,10 @@ function useApiData<T>(
     try {
       setLoading(true);
       setError(null);
-      const result = await fetchFn();
-      setData(result);
+      const result = await fetchFn(page, pageSize);
+      setData(result.content);
+      setTotalElements(result.totalElements);
+      setTotalPages(result.totalPages);
     } catch (err) {
       console.error('API Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch data');
@@ -39,38 +48,38 @@ function useApiData<T>(
     } finally {
       setLoading(false);
     }
-  }, [fleetId, ...deps]);
+  }, [fleetId, page, pageSize, ...deps]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  return { data, loading, error, refresh: fetchData };
+  return { data, loading, error, refresh: fetchData, totalElements, totalPages, currentPage: page, setPage };
 }
 
 // Specific hooks for each resource
 export function useTrucks() {
-  return useApiData(truckApi.getByFleet);
+  return useApiData((page, size) => truckApi.getByFleet(page, size));
 }
 
 export function useDrivers() {
-  return useApiData(driverApi.getByFleet);
+  return useApiData((page, size) => driverApi.getByFleet(page, size));
 }
 
 export function useClients() {
-  return useApiData(clientApi.getByFleet);
+  return useApiData((page, size) => clientApi.getByFleet(page, size));
 }
 
-export function useTrips() {
-  return useApiData(tripApi.getByFleet);
+export function useTrips(status?: string) {
+  return useApiData((page, size) => tripApi.getByFleet(status, page, size), 100, [status]);
 }
 
 // Hook for available trucks
 export function useAvailableTrucks() {
-  return useApiData(truckApi.getAvailable);
+  return useApiData((page, size) => truckApi.getAvailable(page, size));
 }
 
 // Hook for available drivers
 export function useAvailableDrivers() {
-  return useApiData(driverApi.getAvailable);
+  return useApiData((page, size) => driverApi.getAvailable(page, size));
 }

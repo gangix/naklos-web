@@ -36,7 +36,8 @@ const DriverTripDetailPage = () => {
     if (!fleetId) return;
     try {
       setLoading(true);
-      const trucksData = await truckApi.getAvailable();
+      const trucksPage = await truckApi.getAvailable(0, 1000);
+      const trucksData = trucksPage.content;
       setTrucks(trucksData);
     } catch (error) {
       console.error('Error loading trucks:', error);

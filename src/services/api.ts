@@ -2,6 +2,14 @@ import keycloak from '../auth/keycloak';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
 
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number; // current page (0-indexed)
+}
+
 async function apiCall<T>(
   endpoint: string,
   options?: RequestInit
@@ -113,8 +121,13 @@ export const tripApi = {
 
   // Query Endpoints
   getById: (id: string) => apiCall(`/trips/${id}`),
-  getByFleet: (status?: string) =>
-    apiCall(`/trips${status ? `?status=${status}` : ''}`),
+  getByFleet: (status?: string, page = 0, size = 20) => {
+    const params = new URLSearchParams();
+    if (status) params.set('status', status);
+    params.set('page', String(page));
+    params.set('size', String(size));
+    return apiCall<PageResponse<any>>(`/trips?${params}`);
+  },
   getUnassigned: () =>
     apiCall('/trips/unassigned'),
   getPendingApproval: () =>
@@ -134,8 +147,8 @@ export const clientApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: () =>
-    apiCall('/clients'),
+  getByFleet: (page = 0, size = 20) =>
+    apiCall<PageResponse<any>>(`/clients?page=${page}&size=${size}`),
   getById: (id: string) => apiCall(`/clients/${id}`),
 };
 
@@ -147,10 +160,10 @@ export const driverApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: () =>
-    apiCall('/drivers'),
-  getAvailable: () =>
-    apiCall('/drivers?status=AVAILABLE'),
+  getByFleet: (page = 0, size = 20) =>
+    apiCall<PageResponse<any>>(`/drivers?page=${page}&size=${size}`),
+  getAvailable: (page = 0, size = 20) =>
+    apiCall<PageResponse<any>>(`/drivers?status=AVAILABLE&page=${page}&size=${size}`),
   getById: (id: string) => apiCall(`/drivers/${id}`),
   updateLicense: (id: string, expiryDate: string) =>
     apiCall(`/drivers/${id}/license`, {
@@ -221,10 +234,10 @@ export const truckApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: () =>
-    apiCall('/trucks'),
-  getAvailable: () =>
-    apiCall('/trucks?status=AVAILABLE'),
+  getByFleet: (page = 0, size = 20) =>
+    apiCall<PageResponse<any>>(`/trucks?page=${page}&size=${size}`),
+  getAvailable: (page = 0, size = 20) =>
+    apiCall<PageResponse<any>>(`/trucks?status=AVAILABLE&page=${page}&size=${size}`),
   getById: (id: string) => apiCall(`/trucks/${id}`),
   updateDocuments: (id: string, data: any) =>
     apiCall(`/trucks/${id}/documents`, {
@@ -312,8 +325,8 @@ export const invoiceApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getByFleet: () =>
-    apiCall('/invoices'),
+  getByFleet: (page = 0, size = 20) =>
+    apiCall<PageResponse<any>>(`/invoices?page=${page}&size=${size}`),
   getById: (id: string) =>
     apiCall(`/invoices/${id}`),
   markAsPaid: (id: string, paymentDate: string) =>

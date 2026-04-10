@@ -34,8 +34,8 @@ const DriverTruckPage = () => {
         setAssignedTruck(truck as Truck);
       }
 
-      const trucks = await truckApi.getAvailable();
-      setAvailableTrucks((trucks as Truck[]).filter((t) => !t.assignedDriverId));
+      const trucksPage = await truckApi.getAvailable(0, 1000);
+      setAvailableTrucks((trucksPage.content as Truck[]).filter((t) => !t.assignedDriverId));
     } catch (error) {
       console.error('Error loading truck data:', error);
     } finally {

@@ -38,15 +38,15 @@ const TripCreatePage = () => {
 
   const loadData = async () => {
     if (!fleetId) return;
-    const [clientsData, trucksData, driversData, templatesData] = await Promise.all([
-      clientApi.getByFleet(),
-      truckApi.getByFleet(),
-      driverApi.getByFleet(),
+    const [clientsPage, trucksPage, driversPage, templatesData] = await Promise.all([
+      clientApi.getByFleet(0, 1000),
+      truckApi.getByFleet(0, 1000),
+      driverApi.getByFleet(0, 1000),
       tripTemplateApi.getByFleet().catch(() => []),
     ]);
-    setClients(clientsData as any[]);
-    setTrucks(trucksData as any[]);
-    setDrivers(driversData as any[]);
+    setClients(clientsPage.content as any[]);
+    setTrucks(trucksPage.content as any[]);
+    setDrivers(driversPage.content as any[]);
     setTemplates(templatesData as any[]);
   };
 
@@ -63,6 +63,7 @@ const TripCreatePage = () => {
 
   const handleDeleteTemplate = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!confirm('Bu şablonu silmek istediğinizden emin misiniz?')) return;
     await tripTemplateApi.delete(id);
     setTemplates((prev) => prev.filter((t) => t.id !== id));
   };
