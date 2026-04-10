@@ -44,6 +44,10 @@ export const fleetApi = {
     }),
   getMy: () => apiCall<any>('/fleets/my'),
   getById: (id: string) => apiCall(`/fleets/${id}`),
+  update: (id: string, data: { name: string; address: any; email: string; phone: string }) =>
+    apiCall(`/fleets/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  changeCurrency: (id: string, currency: string) =>
+    apiCall(`/fleets/${id}/currency`, { method: 'PUT', body: JSON.stringify({ currency }) }),
 };
 
 // Trip API — fleet is derived from JWT on the backend
@@ -150,6 +154,12 @@ export const clientApi = {
   getByFleet: (page = 0, size = 20) =>
     apiCall<PageResponse<any>>(`/clients?page=${page}&size=${size}`),
   getById: (id: string) => apiCall(`/clients/${id}`),
+  update: (id: string, data: { email: string; phone: string; address: any }) =>
+    apiCall(`/clients/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  updatePaymentTerms: (id: string, paymentTerms: string) =>
+    apiCall(`/clients/${id}/payment-terms`, { method: 'PUT', body: JSON.stringify({ paymentTerms }) }),
+  delete: (id: string) =>
+    apiCall(`/clients/${id}`, { method: 'DELETE' }),
 };
 
 // Driver API — fleet is derived from JWT
@@ -165,6 +175,10 @@ export const driverApi = {
   getAvailable: (page = 0, size = 20) =>
     apiCall<PageResponse<any>>(`/drivers?status=AVAILABLE&page=${page}&size=${size}`),
   getById: (id: string) => apiCall(`/drivers/${id}`),
+  update: (id: string, data: { firstName?: string; lastName?: string; phone?: string; email?: string; status?: string }) =>
+    apiCall(`/drivers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  updateEmergencyContact: (id: string, data: { name: string; phone: string; relationship: string }) =>
+    apiCall(`/drivers/${id}/emergency-contact`, { method: 'PUT', body: JSON.stringify(data) }),
   updateLicense: (id: string, expiryDate: string) =>
     apiCall(`/drivers/${id}/license`, {
       method: 'PUT',
@@ -290,6 +304,10 @@ export const truckApi = {
     apiCall(`/trucks/${truckId}/unassign-driver`, {
       method: 'POST',
     }),
+  updateStatus: (id: string, status: string) =>
+    apiCall(`/trucks/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
+  delete: (id: string) =>
+    apiCall(`/trucks/${id}`, { method: 'DELETE' }),
 };
 
 // Trip Template API — fleet is derived from JWT

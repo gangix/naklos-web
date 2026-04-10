@@ -168,6 +168,29 @@ const TruckDetailPage = () => {
     setTruck(updatedTruck);
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    if (!truckId) return;
+    try {
+      const updatedTruck = await truckApi.updateStatus(truckId, newStatus);
+      setTruck(updatedTruck);
+    } catch (err) {
+      console.error('Error updating status:', err);
+      alert('Durum güncellenirken hata oluştu');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!truckId) return;
+    if (!confirm('Bu aracı silmek istediğinizden emin misiniz?')) return;
+    try {
+      await truckApi.delete(truckId);
+      navigate('/manager/trucks');
+    } catch (err) {
+      console.error('Error deleting truck:', err);
+      alert('Araç silinirken hata oluştu');
+    }
+  };
+
   return (
     <div className="p-4 pb-20">
       {/* Header with back button */}
@@ -190,9 +213,15 @@ const TruckDetailPage = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">{TRUCKS.status}</span>
-            <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(truck.status)}`}>
-              {getStatusLabel(truck.status)}
-            </span>
+            <select
+              value={truck.status}
+              onChange={(e) => handleStatusChange(e.target.value)}
+              className={`px-3 py-1 rounded-full text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer ${getStatusColor(truck.status)}`}
+            >
+              <option value="available">Müsait</option>
+              <option value="in-transit">Yolda</option>
+              <option value="maintenance">Bakımda</option>
+            </select>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">{TRUCKS.driver}</span>
@@ -345,6 +374,16 @@ const TruckDetailPage = () => {
             <span className="text-sm font-bold text-gray-900">{truck.utilizationRate || 0}%</span>
           </div>
         </div>
+      </div>
+
+      {/* Delete truck */}
+      <div className="mt-6">
+        <button
+          onClick={handleDelete}
+          className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Aracı Sil
+        </button>
       </div>
 
       {/* Document Update Modal */}

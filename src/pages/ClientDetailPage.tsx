@@ -1,0 +1,494 @@
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { clientApi, tripApi } from '../services/api';
+import { formatCurrency } from '../utils/format';
+import type { Client } from '../types';
+
+type PaymentTerms = 'NET_0' | 'NET_30' | 'NET_60' | 'NET_90';
+
+interface EditForm {
+  email: string;
+  phone: string;
+  address: {
+    street: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    region: string;
+  };
+}
+
+const ClientDetailPage = () => {
+  const { clientId } = useParams<{ clientId: string }>();
+  const navigate = useNavigate();
+
+  const [client, setClient] = useState<Client | null>(null);
+  const [trips, setTrips] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  // Edit state
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [editForm, setEditForm] = useState<EditForm>({
+    email: '',
+    phone: '',
+    address: { street: '', city: '', postalCode: '', country: '', region: '' },
+  });
+
+  // Payment terms state
+  const [updatingTerms, setUpdatingTerms] = useState(false);
+
+  useEffect(() => {
+    if (!clientId) return;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [clientData, tripsData] = await Promise.all([
+          clientApi.getById(clientId),
+          tripApi.getByClient(clientId),
+        ]);
+        setClient(clientData);
+        setTrips(Array.isArray(tripsData) ? tripsData : []);
+      } catch (err) {
+        console.error('Error fetching client:', err);
+        setError(err instanceof Error ? err.message : 'Müşteri yüklenirken hata oluştu');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [clientId]);
+
+  const handleEditOpen = () => {
+    if (!client) return;
+    setEditForm({
+      email: client.email ?? '',
+      phone: client.phone ?? '',
+      address: {
+        street: (client as any).address?.street ?? '',
+        city: (client as any).address?.city ?? client.city ?? '',
+        postalCode: (client as any).address?.postalCode ?? '',
+        country: (client as any).address?.country ?? '',
+        region: (client as any).address?.region ?? '',
+      },
+    });
+    setEditing(true);
+  };
+
+  const handleEditCancel = () => {
+    setEditing(false);
+  };
+
+  const handleEditSave = async () => {
+    if (!clientId) return;
+    try {
+      setSaving(true);
+      const updated = await clientApi.update(clientId, {
+        email: editForm.email,
+        phone: editForm.phone,
+        address: editForm.address,
+      });
+      setClient(updated);
+      setEditing(false);
+    } catch (err) {
+      console.error('Error updating client:', err);
+      alert(err instanceof Error ? err.message : 'Müşteri güncellenirken hata oluştu');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePaymentTermsChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!clientId) return;
+    const terms = e.target.value as PaymentTerms;
+    try {
+      setUpdatingTerms(true);
+      const updated = await clientApi.updatePaymentTerms(clientId, terms);
+      setClient(updated);
+    } catch (err) {
+      console.error('Error updating payment terms:', err);
+      alert(err instanceof Error ? err.message : 'Ödeme vadesi güncellenirken hata oluştu');
+    } finally {
+      setUpdatingTerms(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!clientId || !client) return;
+    if (!confirm(`"${client.companyName}" müşterisini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+      return;
+    }
+    try {
+      setDeleting(true);
+      await clientApi.delete(clientId);
+      alert('Müşteri başarıyla silindi.');
+      navigate('/manager/clients');
+    } catch (err) {
+      console.error('Error deleting client:', err);
+      alert(err instanceof Error ? err.message : 'Müşteri silinirken hata oluştu');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const getReliabilityLabel = (reliability: string) => {
+    switch (reliability) {
+      case 'good':
+        return 'İyi';
+      case 'moderate':
+        return 'Orta';
+      case 'poor':
+        return 'Zayıf';
+      default:
+        return reliability;
+    }
+  };
+
+  const getReliabilityColor = (reliability: string) => {
+    switch (reliability) {
+      case 'good':
+        return 'bg-green-100 text-green-700';
+      case 'moderate':
+        return 'bg-yellow-100 text-yellow-700';
+      case 'poor':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const getTripStatusLabel = (status: string) => {
+    switch (status) {
+      case 'PLANNED':
+        return 'Planlandı';
+      case 'ASSIGNED':
+        return 'Atandı';
+      case 'IN_PROGRESS':
+        return 'Devam Ediyor';
+      case 'DELIVERED':
+        return 'Teslim Edildi';
+      case 'CANCELLED':
+        return 'İptal';
+      default:
+        return status;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="p-4">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4" />
+            <p className="text-gray-600">Yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !client) {
+    return (
+      <div className="p-4">
+        <p className="text-center text-red-600">{error || 'Müşteri bulunamadı'}</p>
+        <button
+          onClick={() => navigate('/manager/clients')}
+          className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
+        >
+          Geri Dön
+        </button>
+      </div>
+    );
+  }
+
+  const invoiceCount = trips.filter((t) => t.invoiceId).length;
+  const clientPaymentTerms: PaymentTerms = (client as any).paymentTerms ?? 'NET_30';
+
+  return (
+    <div className="p-4 pb-20">
+      {/* Header */}
+      <div className="flex items-center gap-3 mb-6">
+        <button
+          onClick={() => navigate('/manager/clients')}
+          className="text-2xl text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          ←
+        </button>
+        <div className="flex-1">
+          <p className="text-xs text-gray-500 mb-0.5">← Müşteriler</p>
+          <h1 className="text-2xl font-bold text-gray-900">{client.companyName}</h1>
+        </div>
+        <button
+          onClick={handleEditOpen}
+          className="px-3 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700 transition-colors"
+        >
+          Düzenle
+        </button>
+        <button
+          onClick={handleDelete}
+          disabled={deleting}
+          className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+        >
+          {deleting ? 'Siliniyor...' : 'Sil'}
+        </button>
+      </div>
+
+      {/* Client Info Card */}
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Müşteri Bilgileri</h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Vergi Kimlik No</span>
+            <span className="text-sm font-medium text-gray-900">{client.taxId || '-'}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">E-posta</span>
+            <span className="text-sm font-medium text-gray-900">{client.email || '-'}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Telefon</span>
+            <span className="text-sm font-medium text-gray-900">{client.phone || '-'}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Şehir</span>
+            <span className="text-sm font-medium text-gray-900">{client.city || '-'}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Ödeme Güvenilirliği</span>
+            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getReliabilityColor(client.paymentReliability)}`}>
+              {getReliabilityLabel(client.paymentReliability)}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Payment Terms Card */}
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Ödeme Vadesi</h2>
+        <select
+          value={clientPaymentTerms}
+          onChange={handlePaymentTermsChange}
+          disabled={updatingTerms}
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
+        >
+          <option value="NET_0">NET 0 - Peşin</option>
+          <option value="NET_30">NET 30 - 30 Gün</option>
+          <option value="NET_60">NET 60 - 60 Gün</option>
+          <option value="NET_90">NET 90 - 90 Gün</option>
+        </select>
+        {updatingTerms && (
+          <p className="text-xs text-gray-500 mt-1">Güncelleniyor...</p>
+        )}
+      </div>
+
+      {/* Financial Stats Card */}
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">Finansal Özet</h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+            <span className="text-sm text-gray-600">Toplam Faturalandırılan</span>
+            <span className="text-sm font-bold text-gray-900">{formatCurrency(client.totalInvoiced)}</span>
+          </div>
+          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+            <span className="text-sm text-gray-600">Toplam Ödenen</span>
+            <span className="text-sm font-bold text-green-600">{formatCurrency(client.totalPaid)}</span>
+          </div>
+          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+            <span className="text-sm text-gray-600">Bakiye</span>
+            <span className="text-sm font-bold text-blue-600">{formatCurrency(client.outstanding)}</span>
+          </div>
+          <div className="flex items-center justify-between py-2 border-b border-gray-100">
+            <span className="text-sm text-gray-600">Vadesi Geçmiş</span>
+            <span className={`text-sm font-bold ${client.overdue > 0 ? 'text-red-600' : 'text-gray-900'}`}>
+              {formatCurrency(client.overdue)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm text-gray-600">Ort. Ödeme Süresi</span>
+            <span className="text-sm font-bold text-gray-900">{client.avgPaymentDays ?? 0} gün</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Related Invoices Count */}
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-900">Faturalar</h2>
+          <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
+            {invoiceCount} fatura
+          </span>
+        </div>
+      </div>
+
+      {/* Related Trips */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-gray-900">Seferler</h2>
+          <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
+            {trips.length} sefer
+          </span>
+        </div>
+
+        {trips.length === 0 ? (
+          <div className="bg-white rounded-lg p-4 shadow-sm">
+            <p className="text-sm text-gray-500 text-center">Henüz sefer bulunmuyor.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {trips.map((trip) => (
+              <div
+                key={trip.id}
+                className="bg-white rounded-lg p-4 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"
+                onClick={() => navigate(`/manager/trips/${trip.id}`)}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      {trip.originCity} → {trip.destinationCity}
+                    </p>
+                    {trip.cargoDescription && (
+                      <p className="text-xs text-gray-500 mt-1">{trip.cargoDescription}</p>
+                    )}
+                  </div>
+                  <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
+                    {getTripStatusLabel(trip.status)}
+                  </span>
+                </div>
+                {trip.revenueAmount != null && (
+                  <p className="text-sm font-bold text-green-600 mt-2">
+                    {formatCurrency(trip.revenueAmount)}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Inline Edit Form */}
+      {editing && (
+        <div className="fixed inset-0 bg-black/50 flex items-end z-50" onClick={handleEditCancel}>
+          <div
+            className="bg-white rounded-t-2xl w-full p-6 max-h-[85vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-bold text-gray-900 mb-4">Müşteri Detayı</h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">E-posta</label>
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="ornek@sirket.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Telefon</label>
+                <input
+                  type="tel"
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="+90 5xx xxx xx xx"
+                />
+              </div>
+
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Adres</p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Sokak / Cadde</label>
+                    <input
+                      type="text"
+                      value={editForm.address.street}
+                      onChange={(e) =>
+                        setEditForm((f) => ({ ...f, address: { ...f.address, street: e.target.value } }))
+                      }
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Örn: Atatürk Cad. No:1"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Şehir</label>
+                    <input
+                      type="text"
+                      value={editForm.address.city}
+                      onChange={(e) =>
+                        setEditForm((f) => ({ ...f, address: { ...f.address, city: e.target.value } }))
+                      }
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Örn: İstanbul"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Posta Kodu</label>
+                    <input
+                      type="text"
+                      value={editForm.address.postalCode}
+                      onChange={(e) =>
+                        setEditForm((f) => ({ ...f, address: { ...f.address, postalCode: e.target.value } }))
+                      }
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Örn: 34000"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Bölge / İlçe</label>
+                    <input
+                      type="text"
+                      value={editForm.address.region}
+                      onChange={(e) =>
+                        setEditForm((f) => ({ ...f, address: { ...f.address, region: e.target.value } }))
+                      }
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Örn: Kadıköy"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1">Ülke</label>
+                    <input
+                      type="text"
+                      value={editForm.address.country}
+                      onChange={(e) =>
+                        setEditForm((f) => ({ ...f, address: { ...f.address, country: e.target.value } }))
+                      }
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="Örn: Türkiye"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleEditSave}
+                disabled={saving}
+                className="flex-1 px-4 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:opacity-50"
+              >
+                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+              </button>
+              <button
+                onClick={handleEditCancel}
+                disabled={saving}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                İptal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ClientDetailPage;

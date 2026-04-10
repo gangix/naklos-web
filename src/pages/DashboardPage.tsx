@@ -1,17 +1,53 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTrucks, useDrivers } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
-import { useData } from '../contexts/DataContext';
+import { tripApi, invoiceApi, truckApi, driverApi } from '../services/api';
+import type { Trip, Invoice } from '../types';
 import { getTurkishMonthName, getPreviousMonth, getCurrentMonth, getMonthDateRange } from '../utils/dateHelpers';
 import { getBadgeSize } from '../utils/badgeHelpers';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { fleet, fleetId } = useFleet();
-  const { data: trucks, loading: trucksLoading } = useTrucks();
-  const { data: drivers, loading: driversLoading } = useDrivers();
-  const { trips, documentSubmissions, truckAssignmentRequests } = useData();
+
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [trucks, setTrucks] = useState<any[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!fleetId) return;
+
+    setLoading(true);
+    Promise.all([
+      tripApi.getByFleet(undefined, 0, 1000),
+      invoiceApi.getByFleet(0, 1000),
+      truckApi.getByFleet(0, 1000),
+      driverApi.getByFleet(0, 1000),
+    ])
+      .then(([tripsPage, invoicesPage, trucksPage, driversPage]) => {
+        setTrips(tripsPage.content as Trip[]);
+        setInvoices(
+          (invoicesPage.content as any[]).map((inv) => ({
+            id: inv.id,
+            fleetId: inv.fleetId,
+            clientId: inv.clientId,
+            clientName: inv.clientName,
+            tripIds: inv.tripIds,
+            amount: inv.amount?.amount ?? 0,
+            status: inv.status?.toLowerCase() as Invoice['status'],
+            issueDate: inv.issueDate,
+            dueDate: inv.dueDate,
+            paidDate: inv.paidDate ?? null,
+          }))
+        );
+        setTrucks(trucksPage.content);
+        setDrivers(driversPage.content);
+      })
+      .catch((err) => console.error('Dashboard data load error:', err))
+      .finally(() => setLoading(false));
+  }, [fleetId]);
 
   // Calculate expiry warnings for trucks and drivers
   const warnings = useMemo(() => {
@@ -212,27 +248,20 @@ const DashboardPage = () => {
     return warningsList;
   }, [trucks, drivers]);
 
-  const loading = trucksLoading || driversLoading;
-
   // Calculate statistics
   const stats = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     // Get current and previous month date ranges
     const currentMonth = getCurrentMonth();
     const prevMonth = getPreviousMonth();
     const currentMonthRange = getMonthDateRange(currentMonth.year, currentMonth.month);
     const prevMonthRange = getMonthDateRange(prevMonth.year, prevMonth.month);
 
-    // Pending approval trips
+    // Pending approval trips (DELIVERED but not yet APPROVED)
     const pendingApprovalTrips = trips.filter(
-      (trip) =>
-        trip.status === 'delivered' &&
-        trip.deliveryDocuments.length > 0
+      (trip) => trip.status === 'DELIVERED'
     );
 
-    // Completed this month
+    // Completed this month (APPROVED or INVOICED, delivered this month)
     const completedThisMonth = trips.filter((trip) => {
       if (!trip.deliveredAt) return false;
       const deliveredDate = new Date(trip.deliveredAt);
@@ -246,6 +275,39 @@ const DashboardPage = () => {
       return deliveredDate >= prevMonthRange.start && deliveredDate <= prevMonthRange.end;
     });
 
+    // KPIs — Monthly revenue: sum revenue of trips delivered this month
+    const monthlyRevenue = completedThisMonth.reduce((sum, trip) => {
+      return sum + (trip.revenue?.amount ?? 0);
+    }, 0);
+
+    // KPIs — Monthly expenses: sum all expenses for trips delivered this month
+    const monthlyExpenses = completedThisMonth.reduce((sum, trip) => {
+      const exp = trip.expenses;
+      if (!exp) return sum;
+      return sum + (exp.fuel?.amount ?? 0) + (exp.tolls?.amount ?? 0) + (exp.other?.amount ?? 0);
+    }, 0);
+
+    // KPIs — Monthly profit
+    const monthlyProfit = monthlyRevenue - monthlyExpenses;
+
+    // KPIs — Invoice-based
+    const outstandingInvoices = invoices.filter((inv) => inv.status === 'pending');
+    const overdueInvoices = invoices.filter((inv) => inv.status === 'overdue');
+    const outstanding = outstandingInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+    const overdue = overdueInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+    const overdueCount = overdueInvoices.length;
+
+    // KPIs — Active trips
+    const activeTrips = trips.filter((trip) => trip.status === 'IN_PROGRESS').length;
+
+    // KPIs — Available trucks and drivers
+    const availableTrucks = trucks.filter(
+      (t) => t.status === 'AVAILABLE' || t.status === 'available'
+    ).length;
+    const availableDrivers = drivers.filter(
+      (d) => d.status === 'AVAILABLE' || d.status === 'available'
+    ).length;
+
     // Truck warnings (critical only)
     const truckWarnings = warnings.filter(
       (w) => w.relatedType === 'truck' && w.severity === 'error'
@@ -256,39 +318,37 @@ const DashboardPage = () => {
       (w) => w.relatedType === 'driver' && w.severity === 'error'
     );
 
-    // Truck document approvals
-    const truckDocApprovalsCount = documentSubmissions.filter(
-      (doc) => doc.status === 'pending' && doc.relatedType === 'truck'
-    ).length;
-
-    // Driver document + truck assignment approvals
-    const driverApprovalsCount =
-      documentSubmissions.filter(
-        (doc) => doc.status === 'pending' && doc.relatedType === 'driver'
-      ).length +
-      truckAssignmentRequests.filter((req) => req.status === 'pending').length;
-
     // Total counts
     const totalTrips = trips.filter(
-      (trip) => trip.status === 'in-progress' || trip.status === 'created'
+      (trip) => trip.status === 'IN_PROGRESS' || trip.status === 'CREATED'
     ).length;
     const totalTrucks = trucks.length;
     const totalDrivers = drivers.length;
 
     return {
+      // KPIs
+      monthlyRevenue,
+      monthlyProfit,
+      outstanding,
+      overdue,
+      overdueCount,
+      activeTrips,
+      availableTrucks,
+      availableDrivers,
+      // Dashboard card stats
       pendingApprovalCount: pendingApprovalTrips.length,
       completedThisMonth: completedThisMonth.length,
       completedLastMonth: completedLastMonth.length,
       truckWarningsCount: truckWarnings.length,
       driverWarningsCount: driverWarnings.length,
-      truckDocApprovalsCount,
-      driverApprovalsCount,
+      truckDocApprovalsCount: 0,
+      driverApprovalsCount: 0,
       totalTrips,
       totalTrucks,
       totalDrivers,
       hasData: totalTrucks > 0 || totalDrivers > 0 || trips.length > 0,
     };
-  }, [trips, warnings, documentSubmissions, truckAssignmentRequests]);
+  }, [trips, invoices, trucks, drivers, warnings]);
 
   // Get current and previous month names
   const currentMonthName = getTurkishMonthName(new Date().getMonth());
@@ -556,8 +616,81 @@ const DashboardPage = () => {
           İstatistikler
         </h2>
 
+        {/* Monthly Financial KPIs */}
         <div className="grid grid-cols-2 gap-4">
-          {/* Current Month Stats */}
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">💰</span>
+              <p className="text-sm font-medium text-blue-900">Aylık Ciro</p>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-bold text-blue-600">
+                {stats.monthlyRevenue.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}
+              </p>
+            </div>
+            <p className="text-xs text-blue-600 mt-1">{currentMonthName} — tamamlanan seferler</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">📈</span>
+              <p className="text-sm font-medium text-green-900">Aylık Kâr</p>
+            </div>
+            <p className={`text-3xl font-bold ${stats.monthlyProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {stats.monthlyProfit.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}
+            </p>
+            <p className="text-xs text-green-600 mt-1">{currentMonthName} — gelir eksi giderler</p>
+          </div>
+        </div>
+
+        {/* Invoice KPIs */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-6 border border-yellow-200">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">🧾</span>
+              <p className="text-sm font-medium text-yellow-900">Bekleyen Tahsilat</p>
+            </div>
+            <p className="text-3xl font-bold text-yellow-700">
+              {stats.outstanding.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}
+            </p>
+            <p className="text-xs text-yellow-600 mt-1">Ödenmemiş fatura tutarı</p>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-6 border border-red-200">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">⚠️</span>
+              <p className="text-sm font-medium text-red-900">Vadesi Geçmiş</p>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-bold text-red-600">
+                {stats.overdue.toLocaleString('tr-TR', { maximumFractionDigits: 0 })}
+              </p>
+              {stats.overdueCount > 0 && (
+                <span className="text-sm text-red-500">({stats.overdueCount} fatura)</span>
+              )}
+            </div>
+            <p className="text-xs text-red-600 mt-1">Vadesi geçmiş fatura tutarı</p>
+          </div>
+        </div>
+
+        {/* Operational KPIs */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm text-center">
+            <p className="text-3xl font-bold text-blue-600">{stats.activeTrips}</p>
+            <p className="text-xs text-gray-500 mt-1">Aktif Sefer</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm text-center">
+            <p className="text-3xl font-bold text-green-600">{stats.availableTrucks}</p>
+            <p className="text-xs text-gray-500 mt-1">Müsait Araç</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm text-center">
+            <p className="text-3xl font-bold text-green-600">{stats.availableDrivers}</p>
+            <p className="text-xs text-gray-500 mt-1">Müsait Sürücü</p>
+          </div>
+        </div>
+
+        {/* Trip completion comparison */}
+        <div className="grid grid-cols-2 gap-4">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">📅</span>
@@ -576,7 +709,6 @@ const DashboardPage = () => {
             <p className="text-xs text-blue-600 mt-1">{currentMonthName}</p>
           </div>
 
-          {/* Previous Month Stats */}
           <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-2xl">📅</span>
@@ -588,22 +720,6 @@ const DashboardPage = () => {
           </div>
         </div>
       </div>
-
-      {/* All Clear State - Show Additional Stats */}
-      {stats.pendingApprovalCount === 0 &&
-       stats.truckWarningsCount === 0 &&
-       stats.driverWarningsCount === 0 && (
-        <div className="mt-8">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
-            Ek İstatistikler
-          </h3>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <p className="text-sm text-gray-600 text-center">
-              Her şey yolunda! Ek istatistikler yakında eklenecek.
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

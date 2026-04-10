@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useFleet } from '../contexts/FleetContext';
-import { driverApi } from '../services/api';
+import { driverApi, fleetApi } from '../services/api';
 
 const MorePage = () => {
   const navigate = useNavigate();
@@ -12,9 +12,18 @@ const MorePage = () => {
   const [loading, setLoading] = useState(true);
   const [showDriverList, setShowDriverList] = useState(false);
 
+  // Fleet settings state
+  const [fleetData, setFleetData] = useState<any>(null);
+  const [fleetName, setFleetName] = useState('');
+  const [fleetEmail, setFleetEmail] = useState('');
+  const [fleetPhone, setFleetPhone] = useState('');
+  const [fleetCurrency, setFleetCurrency] = useState('TRY');
+  const [fleetSaving, setFleetSaving] = useState(false);
+
   useEffect(() => {
     if (fleetId) {
       loadDrivers();
+      loadFleet();
     }
   }, [fleetId]);
 
@@ -28,6 +37,42 @@ const MorePage = () => {
       console.error('Error loading drivers:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadFleet = async () => {
+    try {
+      const data = await fleetApi.getMy();
+      setFleetData(data);
+      setFleetName(data.name || '');
+      setFleetEmail(data.email || '');
+      setFleetPhone(data.phone || '');
+      setFleetCurrency(data.currency || 'TRY');
+    } catch (error) {
+      console.error('Error loading fleet:', error);
+    }
+  };
+
+  const handleFleetSave = async () => {
+    if (!fleetData?.id) return;
+    try {
+      setFleetSaving(true);
+      await fleetApi.update(fleetData.id, {
+        name: fleetName,
+        address: fleetData.address,
+        email: fleetEmail,
+        phone: fleetPhone,
+      });
+      if (fleetCurrency !== fleetData.currency) {
+        await fleetApi.changeCurrency(fleetData.id, fleetCurrency);
+      }
+      await loadFleet();
+      alert('Filo ayarları kaydedildi');
+    } catch (error) {
+      console.error('Error saving fleet:', error);
+      alert('Kayıt sırasında hata oluştu');
+    } finally {
+      setFleetSaving(false);
     }
   };
 
@@ -87,6 +132,64 @@ const MorePage = () => {
           )}
         </div>
       </div>
+
+      {/* Fleet Settings */}
+      {fleetData && (
+        <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+            <h2 className="font-bold text-gray-900">Filo Ayarları</h2>
+          </div>
+          <div className="p-4 space-y-3">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">Filo Adı</label>
+              <input
+                type="text"
+                value={fleetName}
+                onChange={(e) => setFleetName(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">E-posta</label>
+              <input
+                type="email"
+                value={fleetEmail}
+                onChange={(e) => setFleetEmail(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">Telefon</label>
+              <input
+                type="tel"
+                value={fleetPhone}
+                onChange={(e) => setFleetPhone(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">Para Birimi</label>
+              <select
+                value={fleetCurrency}
+                onChange={(e) => setFleetCurrency(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="TRY">TRY</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+                <option value="GBP">GBP</option>
+              </select>
+            </div>
+            <button
+              onClick={handleFleetSave}
+              disabled={fleetSaving}
+              className="w-full py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 text-sm"
+            >
+              {fleetSaving ? 'Kaydediliyor...' : 'Kaydet'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Developer Login Panel — only in development */}
       {showDriverList && import.meta.env.DEV && (
