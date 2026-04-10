@@ -14,6 +14,16 @@ const DriverDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [editingContact, setEditingContact] = useState(false);
+  const [editFirstName, setEditFirstName] = useState('');
+  const [editLastName, setEditLastName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editingEmergency, setEditingEmergency] = useState(false);
+  const [emergencyName, setEmergencyName] = useState('');
+  const [emergencyPhone, setEmergencyPhone] = useState('');
+  const [emergencyRelationship, setEmergencyRelationship] = useState('');
+  const [saving, setSaving] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
@@ -197,6 +207,71 @@ const DriverDetailPage = () => {
     }
   };
 
+  const startEditContact = () => {
+    setEditFirstName(driver!.firstName);
+    setEditLastName(driver!.lastName);
+    setEditPhone(driver!.phone);
+    setEditEmail(driver!.email || '');
+    setEditingContact(true);
+  };
+
+  const handleSaveContact = async () => {
+    if (!driverId) return;
+    try {
+      setSaving(true);
+      await driverApi.update(driverId, {
+        firstName: editFirstName,
+        lastName: editLastName,
+        phone: editPhone,
+        email: editEmail,
+      });
+      const updated = await driverApi.getById(driverId);
+      setDriver(updated);
+      setEditingContact(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const startEditEmergency = () => {
+    setEmergencyName(driver!.emergencyContact?.name || '');
+    setEmergencyPhone(driver!.emergencyContact?.phone || '');
+    setEmergencyRelationship(driver!.emergencyContact?.relationship || '');
+    setEditingEmergency(true);
+  };
+
+  const handleSaveEmergency = async () => {
+    if (!driverId) return;
+    try {
+      setSaving(true);
+      await driverApi.updateEmergencyContact(driverId, {
+        name: emergencyName,
+        phone: emergencyPhone,
+        relationship: emergencyRelationship,
+      });
+      const updated = await driverApi.getById(driverId);
+      setDriver(updated);
+      setEditingEmergency(false);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleStatusChange = async (newStatus: string) => {
+    if (!driverId) return;
+    try {
+      await driverApi.update(driverId, { status: newStatus });
+      const updated = await driverApi.getById(driverId);
+      setDriver(updated);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Durum güncellenirken hata oluştu');
+    }
+  };
+
   const handleDeleteDriver = async () => {
     if (!driverId) return;
     if (!confirm(`${fullName} adlı sürücüyü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
@@ -228,9 +303,15 @@ const DriverDetailPage = () => {
         </button>
         <div className="flex-1">
           <h1 className="text-2xl font-bold text-gray-900">{fullName}</h1>
-          <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(driver.status)}`}>
-            {getStatusLabel(driver.status)}
-          </span>
+          <select
+            value={driver.status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className={`mt-2 px-3 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${getStatusColor(driver.status)}`}
+          >
+            <option value="AVAILABLE">Müsait</option>
+            <option value="ON_TRIP">Yolda</option>
+            <option value="OFF_DUTY">İzinli</option>
+          </select>
         </div>
         <button
           onClick={handleDeleteDriver}
@@ -243,25 +324,103 @@ const DriverDetailPage = () => {
 
       {/* Contact info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{DRIVERS.contactInfo}</h2>
-        <div className="space-y-3">
-          <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.phone}</p>
-            <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
-          </div>
-          {driver.email && (
-            <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.email}</p>
-              <p className="text-sm font-medium text-gray-900">{driver.email}</p>
-            </div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.contactInfo}</h2>
+          {!editingContact && (
+            <button onClick={startEditContact} className="text-sm text-primary-600 font-medium">
+              Düzenle
+            </button>
           )}
         </div>
+        {editingContact ? (
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Ad</label>
+              <input type="text" value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">Soyad</label>
+              <input type="text" value={editLastName} onChange={(e) => setEditLastName(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.phone}</label>
+              <input type="tel" value={editPhone} onChange={(e) => setEditPhone(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.email}</label>
+              <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button onClick={handleSaveContact} disabled={saving}
+                className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
+                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+              </button>
+              <button onClick={() => setEditingContact(false)}
+                className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
+                İptal
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div>
+              <p className="text-xs text-gray-600 mb-1">{DRIVERS.phone}</p>
+              <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
+            </div>
+            {driver.email && (
+              <div>
+                <p className="text-xs text-gray-600 mb-1">{DRIVERS.email}</p>
+                <p className="text-sm font-medium text-gray-900">{driver.email}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Emergency contact card */}
-      {driver.emergencyContact && (
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{DRIVERS.emergencyContact}</h2>
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.emergencyContact}</h2>
+          {!editingEmergency && (
+            <button onClick={startEditEmergency} className="text-sm text-primary-600 font-medium">
+              {driver.emergencyContact ? 'Düzenle' : '+ Ekle'}
+            </button>
+          )}
+        </div>
+        {editingEmergency ? (
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.contactName}</label>
+              <input type="text" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.contactPhone}</label>
+              <input type="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.relationship}</label>
+              <input type="text" value={emergencyRelationship} onChange={(e) => setEmergencyRelationship(e.target.value)}
+                placeholder="Örn: Eş, Kardeş, Anne"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button onClick={handleSaveEmergency} disabled={saving}
+                className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
+                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+              </button>
+              <button onClick={() => setEditingEmergency(false)}
+                className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
+                İptal
+              </button>
+            </div>
+          </div>
+        ) : driver.emergencyContact ? (
           <div className="space-y-3">
             <div>
               <p className="text-xs text-gray-600 mb-1">{DRIVERS.contactName}</p>
@@ -276,8 +435,10 @@ const DriverDetailPage = () => {
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.relationship}</p>
             </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-gray-500">Acil durum kişisi eklenmemiş</p>
+        )}
+      </div>
 
       {/* License info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
