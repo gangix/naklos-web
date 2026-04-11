@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
 import { useFleet } from '../contexts/FleetContext';
+import { useAuth } from '../contexts/AuthContext';
 import { fleetApi } from '../services/api';
 import keycloak from '../auth/keycloak';
 
@@ -8,6 +10,7 @@ const TERMS_VERSION = '2026-04-11';
 
 const FleetSetupPage = () => {
   const { setFleetId } = useFleet();
+  const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -56,9 +59,23 @@ const FleetSetupPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Naklos'a Hoş Geldiniz</h1>
-          <p className="text-gray-600">Filo şirketinizi oluşturarak başlayın</p>
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex-1 text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Naklos'a Hoş Geldiniz</h1>
+            <p className="text-gray-600">Filo şirketinizi oluşturarak başlayın</p>
+            {user?.name && (
+              <p className="text-xs text-gray-500 mt-2">Giriş: {user.name}</p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={logout}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Çıkış Yap"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Çıkış</span>
+          </button>
         </div>
 
         {error && (
