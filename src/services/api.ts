@@ -322,6 +322,11 @@ export const truckApi = {
     }),
   updateStatus: (id: string, status: string) =>
     apiCall(`/trucks/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
+  updateMyTruckLocation: (latitude: number, longitude: number, city: string) =>
+    apiCall('/trucks/my-truck/location', {
+      method: 'PUT',
+      body: JSON.stringify({ latitude, longitude, city }),
+    }),
   delete: (id: string) =>
     apiCall(`/trucks/${id}`, { method: 'DELETE' }),
 };

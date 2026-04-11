@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { TRUCKS } from '../constants/text';
 import { useTrucks } from '../hooks/useApiData';
 import { useData } from '../contexts/DataContext';
-import { formatDate } from '../utils/format';
+import { formatDate, formatRelativeTime } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import AddTruckModal from '../components/common/AddTruckModal';
 import BulkImportModal from '../components/common/BulkImportModal';
@@ -443,9 +443,26 @@ const TrucksPage = () => {
                       {TRUCKS.driver}: {truck.assignedDriverName || 'Atanmadı'}
                     </p>
                     {truck.lastPosition && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(
+                            `https://www.google.com/maps?q=${truck.lastPosition!.lat},${truck.lastPosition!.lng}`,
+                            '_blank',
+                            'noopener,noreferrer'
+                          );
+                        }}
+                        className="mt-1 inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 hover:underline"
+                      >
                         📍 {truck.lastPosition.city}
-                      </p>
+                        {truck.lastPosition.updatedAt && (
+                          <span className="text-gray-400">
+                            · {formatRelativeTime(truck.lastPosition.updatedAt)}
+                          </span>
+                        )}
+                      </button>
                     )}
                   </div>
 

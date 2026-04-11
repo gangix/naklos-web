@@ -32,6 +32,7 @@ export interface Truck {
     lat: number;
     lng: number;
     city: string;
+    updatedAt: string | null;
   };
   monthlyRevenue: number;
   tripCount: number;

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { driverApi, truckApi } from '../../services/api';
 import { TRUCKS } from '../../constants/text';
+import { formatRelativeTime } from '../../utils/format';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import type { Driver, Truck, DocumentCategory } from '../../types';
@@ -12,6 +13,56 @@ const DriverTruckPage = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
+  const [sharingLocation, setSharingLocation] = useState(false);
+  const [locationMessage, setLocationMessage] = useState<string | null>(null);
+
+  const handleShareLocation = async () => {
+    if (!navigator.geolocation) {
+      setLocationMessage('Tarayıcınız konum paylaşımını desteklemiyor');
+      return;
+    }
+    setSharingLocation(true);
+    setLocationMessage(null);
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const { latitude, longitude } = pos.coords;
+        try {
+          // Reverse-geocode via Nominatim (free, requires a User-Agent but browsers add Origin header)
+          const resp = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&accept-language=tr`
+          );
+          const data = await resp.json();
+          const city =
+            data?.address?.city ||
+            data?.address?.town ||
+            data?.address?.state_district ||
+            data?.address?.state ||
+            'Bilinmiyor';
+
+          const updated = await truckApi.updateMyTruckLocation(latitude, longitude, city);
+          setAssignedTruck(updated as Truck);
+          setLocationMessage(`✓ Konum paylaşıldı: ${city}`);
+        } catch (err) {
+          console.error('Location update failed:', err);
+          setLocationMessage('Konum gönderilemedi, tekrar deneyin');
+        } finally {
+          setSharingLocation(false);
+        }
+      },
+      (err) => {
+        setSharingLocation(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setLocationMessage('Konum izni reddedildi. Tarayıcı ayarlarından izin verin.');
+        } else if (err.code === err.POSITION_UNAVAILABLE) {
+          setLocationMessage('Konum alınamadı');
+        } else {
+          setLocationMessage('Konum alınırken hata oluştu');
+        }
+      },
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 }
+    );
+  };
 
   useEffect(() => {
     loadData();
@@ -91,6 +142,40 @@ const DriverTruckPage = () => {
             <p className="text-sm font-medium text-gray-900">{assignedTruck.type}</p>
           </div>
         </div>
+      </div>
+
+      {/* Location sharing */}
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <h2 className="text-lg font-bold text-gray-900 mb-3">📍 Konum</h2>
+        {assignedTruck.lastPosition ? (
+          <div className="mb-3">
+            <p className="text-sm text-gray-900">
+              Son konum: <span className="font-medium">{assignedTruck.lastPosition.city}</span>
+            </p>
+            {assignedTruck.lastPosition.updatedAt && (
+              <p className="text-xs text-gray-500 mt-1">
+                {formatRelativeTime(assignedTruck.lastPosition.updatedAt)}
+              </p>
+            )}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500 mb-3">Henüz konum paylaşılmadı</p>
+        )}
+        <button
+          onClick={handleShareLocation}
+          disabled={sharingLocation}
+          className="w-full py-2.5 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {sharingLocation ? 'Konum alınıyor...' : '📍 Konumumu Paylaş'}
+        </button>
+        {locationMessage && (
+          <p className={`text-xs mt-2 ${locationMessage.startsWith('✓') ? 'text-green-600' : 'text-orange-600'}`}>
+            {locationMessage}
+          </p>
+        )}
+        <p className="text-xs text-gray-400 mt-2">
+          Konumunuz yöneticinizle paylaşılır, sadece araç takibi için kullanılır.
+        </p>
       </div>
 
       <div className="mb-4">
