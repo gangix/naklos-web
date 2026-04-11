@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { TRUCKS } from '../constants/text';
-import { formatCurrency } from '../utils/format';
+import { formatCurrency, formatDate } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import type { DocumentCategory, Truck, Driver } from '../types';
@@ -13,6 +13,7 @@ const TruckDetailPage = () => {
   const navigate = useNavigate();
   const { fleetId } = useFleet();
   const [truck, setTruck] = useState<Truck | null>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -38,7 +39,17 @@ const TruckDetailPage = () => {
       }
     };
 
+    const fetchDocuments = async () => {
+      try {
+        const docs = await truckApi.getDocuments(truckId);
+        setDocuments(docs as any[]);
+      } catch (err) {
+        console.error('Error fetching truck documents:', err);
+      }
+    };
+
     fetchTruck();
+    fetchDocuments();
   }, [truckId]);
 
   useEffect(() => {
@@ -93,6 +104,15 @@ const TruckDetailPage = () => {
         return 'bg-orange-100 text-orange-700';
       default:
         return 'bg-gray-100 text-gray-700';
+    }
+  };
+
+  const documentTypeLabel = (type: string) => {
+    switch (type) {
+      case 'compulsory-insurance': return TRUCKS.compulsoryInsurance;
+      case 'comprehensive-insurance': return TRUCKS.comprehensiveInsurance;
+      case 'inspection': return TRUCKS.inspection;
+      default: return type;
     }
   };
 
@@ -338,6 +358,44 @@ const TruckDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Document upload history (audit trail) */}
+      {documents.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Geçmişi</h2>
+          <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+            {documents.map((doc) => (
+              <div key={doc.id} className="p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-gray-900">
+                    {documentTypeLabel(doc.documentType)}
+                  </p>
+                  <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
+                </div>
+                <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-xs text-gray-500">
+                    Yükleyen: {doc.uploadedByName || '-'}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {doc.expiryDate && (
+                      <p className="text-xs text-gray-500">
+                        Geçerlilik: {formatDate(doc.expiryDate)}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => truckApi.downloadDocument(doc.id)}
+                      className="text-xs text-primary-600 font-medium hover:text-primary-700"
+                    >
+                      İndir
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Location card */}
       {truck.lastPosition && (

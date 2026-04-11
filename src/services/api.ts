@@ -193,6 +193,14 @@ export const clientApi = {
 // Driver API — fleet is derived from JWT
 export const driverApi = {
   getMe: () => apiCall<any>('/drivers/me'),
+  getMyDocuments: () => apiCall<any[]>('/drivers/me/documents'),
+  uploadMyDocument: (file: File, documentType: string, expiryDate?: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('documentType', documentType);
+    if (expiryDate) formData.append('expiryDate', expiryDate);
+    return multipartCall<any>('/drivers/me/documents/upload', formData);
+  },
   register: (data: any) =>
     apiCall('/drivers', {
       method: 'POST',

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useData } from '../../contexts/DataContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
 import { PROFILE, DRIVERS, COMMON } from '../../constants/text';
@@ -12,7 +11,6 @@ import type { DocumentCategory } from '../../types';
 const DriverProfilePage = () => {
   const { user, loginAsDriver, loginAsManager, logout } = useAuth();
   const { fleetId } = useFleet();
-  const { documentSubmissions } = useData();
   const [isEditing, setIsEditing] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
@@ -21,6 +19,7 @@ const DriverProfilePage = () => {
   // Real data from API
   const [allDrivers, setAllDrivers] = useState<any[]>([]);
   const [driver, setDriver] = useState<any>(null);
+  const [myDocuments, setMyDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDriverList, setShowDriverList] = useState(false);
 
@@ -33,9 +32,11 @@ const DriverProfilePage = () => {
     emergencyRelationship: '',
   });
 
-  // Load all drivers for developer login
+  // Dev-only: load all drivers so the "switch user" panel has options.
+  // Drivers don't have permission to call /drivers, so this would 403 in
+  // production — guarded behind import.meta.env.DEV.
   useEffect(() => {
-    if (fleetId) {
+    if (fleetId && import.meta.env.DEV) {
       loadDrivers();
     }
   }, [fleetId]);
@@ -44,6 +45,13 @@ const DriverProfilePage = () => {
   useEffect(() => {
     loadCurrentDriver();
   }, [user?.driverId]);
+
+  // Load this driver's own document history
+  useEffect(() => {
+    if (driver) {
+      loadMyDocuments();
+    }
+  }, [driver?.id]);
 
   // Update editForm when driver loads
   useEffect(() => {
@@ -80,6 +88,15 @@ const DriverProfilePage = () => {
       setDriver(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMyDocuments = async () => {
+    try {
+      const docs = await driverApi.getMyDocuments();
+      setMyDocuments(docs);
+    } catch (err) {
+      console.error('Error loading driver documents:', err);
     }
   };
 
@@ -152,40 +169,13 @@ const DriverProfilePage = () => {
     );
   }
 
-  if (!driver) {
-    return (
-      <div className="p-4">
-        <p className="text-center text-gray-600">Sürücü bilgisi bulunamadı</p>
-        <button
-          onClick={logout}
-          className="mt-4 mx-auto block px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
-        >
-          Çıkış Yap
-        </button>
-      </div>
-    );
-  }
-
-  // Find pending submissions for this driver
-  const pendingDocs = documentSubmissions.filter(
-    (sub) => sub.relatedId === driver.id && sub.status === 'pending'
-  );
-
-  // Check if a document type has pending submission
-  const hasPending = (category: string) => {
-    return pendingDocs.some((doc) => doc.category === category);
-  };
-
-  // Get document status badge
-  const getDocumentStatus = (category: string, expiryDate: string) => {
-    if (hasPending(category)) {
-      return (
-        <span className="inline-block px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-700 rounded">
-          Onay Bekliyor
-        </span>
-      );
+  const documentTypeLabel = (type: string) => {
+    switch (type) {
+      case 'license': return 'Ehliyet';
+      case 'src': return 'SRC Belgesi';
+      case 'cpc': return 'CPC Belgesi';
+      default: return type;
     }
-    return <ExpiryBadge label="" date={expiryDate} />;
   };
 
   const handleSave = () => {
@@ -423,7 +413,7 @@ const DriverProfilePage = () => {
               <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseExpiry}</p>
               <p className="text-sm font-medium text-gray-900">{formatDate(driver.licenseExpiryDate)}</p>
             </div>
-            {getDocumentStatus('license', driver.licenseExpiryDate)}
+            <ExpiryBadge label="" date={driver.licenseExpiryDate} />
           </div>
         </div>
 
@@ -456,13 +446,38 @@ const DriverProfilePage = () => {
                     <p className="text-xs text-gray-600 mb-1">{DRIVERS.expiryDate}</p>
                     <p className="text-sm font-medium text-gray-900">{formatDate(cert.expiryDate)}</p>
                   </div>
-                  {getDocumentStatus(cert.type.toLowerCase(), cert.expiryDate)}
+                  <ExpiryBadge label="" date={cert.expiryDate} />
                 </div>
               </div>
             ))}
           </>
         )}
       </div>
+
+      {/* Upload history */}
+      {myDocuments.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Geçmişi</h2>
+          <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+            {myDocuments.map((doc) => (
+              <div key={doc.id} className="p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-gray-900">
+                    {documentTypeLabel(doc.documentType)}
+                  </p>
+                  <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
+                </div>
+                <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
+                {doc.expiryDate && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Geçerlilik: {formatDate(doc.expiryDate)}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Document Upload Modal */}
       {uploadModalOpen && uploadCategory && (
@@ -471,11 +486,11 @@ const DriverProfilePage = () => {
           onClose={() => setUploadModalOpen(false)}
           category={uploadCategory}
           relatedType="driver"
-          relatedId={driver.id}
-          relatedName={`${driver.firstName} ${driver.lastName}`}
-          submittedByName={`${driver.firstName} ${driver.lastName}`}
           currentExpiryDate={uploadCurrentExpiry}
-          previousImageUrl={null} // TODO: Get from existing documents
+          onUploadSuccess={() => {
+            loadCurrentDriver();
+            loadMyDocuments();
+          }}
         />
       )}
     </div>

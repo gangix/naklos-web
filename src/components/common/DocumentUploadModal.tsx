@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { useData } from '../../contexts/DataContext';
 import { DOCUMENT_UPLOAD, COMMON } from '../../constants/text';
-import { truckApi } from '../../services/api';
+import { driverApi, truckApi } from '../../services/api';
 import FileUpload from './FileUpload';
 import type { Document, DocumentCategory } from '../../types';
 
@@ -10,11 +9,7 @@ interface DocumentUploadModalProps {
   onClose: () => void;
   category: DocumentCategory;
   relatedType: 'driver' | 'truck';
-  relatedId: string;
-  relatedName: string;
-  submittedByName: string;
   currentExpiryDate: string | null;
-  previousImageUrl: string | null;
   onUploadSuccess?: () => void;
 }
 
@@ -23,14 +18,9 @@ const DocumentUploadModal = ({
   onClose,
   category,
   relatedType,
-  relatedId,
-  relatedName,
-  submittedByName,
   currentExpiryDate,
-  previousImageUrl,
   onUploadSuccess,
 }: DocumentUploadModalProps) => {
-  const { submitDocument } = useData();
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [suggestedExpiryDate, setSuggestedExpiryDate] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,49 +37,34 @@ const DocumentUploadModal = ({
       return;
     }
 
+    if (!selectedDocument.rawFile) {
+      alert('❌ Dosya hazırlanamadı. Lütfen tekrar deneyin.');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      // Truck documents go straight to the backend — the existing
-      // TruckDocumentService records the audit trail (uploadedBy /
-      // uploadedAt) and updates the truck's denormalized expiry date
-      // for this document type, so the manager sees the new date the
-      // next time they load the trucks page or detail view.
+      // Both branches go straight to the backend. The existing services
+      // record the audit trail (uploadedBy / uploadedAt) and update the
+      // denormalized expiry field on the truck or driver row so the
+      // manager sees the new date the next time they load the list.
       if (relatedType === 'truck') {
-        if (!selectedDocument.rawFile) {
-          alert('❌ Dosya hazırlanamadı. Lütfen tekrar deneyin.');
-          return;
-        }
         await truckApi.uploadMyTruckDocument(
           selectedDocument.rawFile,
           category,
           suggestedExpiryDate
         );
-        alert('✓ Belge yüklendi. Yöneticiniz görüntüleyebilir.');
-        onUploadSuccess?.();
-        handleClose();
-        return;
+      } else {
+        await driverApi.uploadMyDocument(
+          selectedDocument.rawFile,
+          category,
+          suggestedExpiryDate
+        );
       }
 
-      // Driver documents (license / SRC / CPC) still go through the
-      // local mock — wiring them to the backend is a separate task.
-      submitDocument({
-        category,
-        relatedType,
-        relatedId,
-        relatedName,
-        submittedBy: 'driver',
-        submittedByName,
-        imageDataUrl: selectedDocument.dataUrl,
-        suggestedExpiryDate,
-        confirmedExpiryDate: null,
-        rejectionReason: null,
-        rejectionNote: null,
-        previousImageDataUrl: previousImageUrl,
-        previousExpiryDate: currentExpiryDate,
-      });
-
-      alert('✓ Belge başarıyla gönderildi! Yöneticiniz inceleyecek.');
+      alert('✓ Belge yüklendi.');
+      onUploadSuccess?.();
       handleClose();
     } catch (error) {
       console.error('Document upload failed:', error);
@@ -180,18 +155,14 @@ const DocumentUploadModal = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
-              {relatedType === 'truck'
-                ? 'Belgede yazan geçerlilik tarihini girin.'
-                : 'Belgede yazan geçerlilik tarihini girin. Yöneticiniz kontrol edecek.'}
+              Belgede yazan geçerlilik tarihini girin.
             </p>
           </div>
 
           {/* Info note */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-xs text-blue-800">
-              {relatedType === 'truck'
-                ? 'ℹ️ Belge anında kaydedilecek ve yöneticiniz görüntüleyebilecek.'
-                : 'ℹ️ Belge yöneticiniz tarafından onaylandıktan sonra sistemde güncellenecek.'}
+              ℹ️ Belge anında kaydedilecek ve yöneticiniz görüntüleyebilecek.
             </p>
           </div>
         </div>

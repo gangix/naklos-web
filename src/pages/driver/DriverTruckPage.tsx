@@ -134,8 +134,6 @@ const DriverTruckPage = () => {
     );
   }
 
-  const fullName = `${driver.firstName} ${driver.lastName}`;
-
   return (
     <div className="p-4 pb-20">
       <h1 className="text-2xl font-bold text-gray-900 mb-4">Aracım</h1>
@@ -249,11 +247,7 @@ const DriverTruckPage = () => {
           onClose={() => setUploadModalOpen(false)}
           category={uploadCategory}
           relatedType="truck"
-          relatedId={assignedTruck.id}
-          relatedName={assignedTruck.plateNumber}
-          submittedByName={fullName}
           currentExpiryDate={uploadCurrentExpiry}
-          previousImageUrl={null}
           onUploadSuccess={reloadTruck}
         />
       )}

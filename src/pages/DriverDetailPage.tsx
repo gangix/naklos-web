@@ -11,6 +11,7 @@ const DriverDetailPage = () => {
   const { driverId } = useParams<{ driverId: string }>();
   const navigate = useNavigate();
   const [driver, setDriver] = useState<Driver | null>(null);
+  const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -49,8 +50,27 @@ const DriverDetailPage = () => {
       }
     };
 
+    const fetchDocuments = async () => {
+      try {
+        const docs = await driverApi.getDocuments(driverId);
+        setDocuments(docs as any[]);
+      } catch (err) {
+        console.error('Error fetching driver documents:', err);
+      }
+    };
+
     fetchDriver();
+    fetchDocuments();
   }, [driverId]);
+
+  const documentTypeLabel = (type: string) => {
+    switch (type) {
+      case 'license': return DRIVERS.license;
+      case 'src': return DRIVERS.srcCertificate;
+      case 'cpc': return DRIVERS.cpcCertificate;
+      default: return type;
+    }
+  };
 
   if (loading) {
     return (
@@ -600,9 +620,47 @@ const DriverDetailPage = () => {
 
       {/* Assigned truck card */}
       {driver.assignedTruckPlate && (
-        <div className="bg-white rounded-lg p-4 shadow-sm">
+        <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-2">{DRIVERS.assignedTruck}</h2>
           <p className="text-sm font-medium text-gray-900">{driver.assignedTruckPlate}</p>
+        </div>
+      )}
+
+      {/* Document upload history (audit trail) */}
+      {documents.length > 0 && (
+        <div className="mb-4">
+          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Geçmişi</h2>
+          <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+            {documents.map((doc) => (
+              <div key={doc.id} className="p-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-gray-900">
+                    {documentTypeLabel(doc.documentType)}
+                  </p>
+                  <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
+                </div>
+                <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
+                <div className="flex items-center justify-between mt-1">
+                  <p className="text-xs text-gray-500">
+                    Yükleyen: {doc.uploadedByName || '-'}
+                  </p>
+                  <div className="flex items-center gap-3">
+                    {doc.expiryDate && (
+                      <p className="text-xs text-gray-500">
+                        Geçerlilik: {formatDate(doc.expiryDate)}
+                      </p>
+                    )}
+                    <button
+                      onClick={() => driverApi.downloadDocument(doc.id)}
+                      className="text-xs text-primary-600 font-medium hover:text-primary-700"
+                    >
+                      İndir
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
