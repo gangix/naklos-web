@@ -1,16 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, Building2, AlertTriangle } from 'lucide-react';
+import { Truck, Users, Building2, AlertTriangle, ChevronRight } from 'lucide-react';
 import { truckApi, driverApi, clientApi } from '../services/api';
 import type { Truck as TruckType, Driver, Client } from '../types';
 
 interface ExpiringItem {
-  id: string;
-  entity: 'truck' | 'driver';
-  name: string;
   label: string;
-  expiryDate: string | null;
-  daysLeft: number | null; // null means "no date set"
+  daysLeft: number | null;
+}
+
+interface EntityWarningGroup {
+  entity: 'truck' | 'driver';
+  entityId: string;
+  name: string;
+  items: ExpiringItem[];
+  worstDaysLeft: number | null; // null only when ALL items are missing dates
 }
 
 const daysUntil = (dateStr: string | null | undefined): number | null => {
@@ -50,49 +54,68 @@ const DashboardPage = () => {
     loadAll();
   }, []);
 
-  const expiringItems: ExpiringItem[] = [];
   const WARN_THRESHOLD_DAYS = 30;
 
-  const addItem = (
-    id: string,
-    entity: 'truck' | 'driver',
-    name: string,
-    label: string,
-    date: string | null | undefined
-  ) => {
-    if (!date) {
-      expiringItems.push({ id, entity, name, label, expiryDate: null, daysLeft: null });
-      return;
+  const warningGroups = useMemo<EntityWarningGroup[]>(() => {
+    const groups: EntityWarningGroup[] = [];
+
+    const collectItems = (
+      entity: 'truck' | 'driver',
+      entityId: string,
+      name: string,
+      checks: Array<[string | null | undefined, string]>
+    ) => {
+      const items: ExpiringItem[] = [];
+      for (const [date, label] of checks) {
+        if (!date) {
+          items.push({ label, daysLeft: null });
+          continue;
+        }
+        const days = daysUntil(date);
+        if (days !== null && days <= WARN_THRESHOLD_DAYS) {
+          items.push({ label, daysLeft: days });
+        }
+      }
+      if (items.length === 0) return;
+
+      // "Worst" = smallest daysLeft (most urgent). Missing dates go last.
+      let worstDaysLeft: number | null = null;
+      for (const item of items) {
+        if (item.daysLeft === null) continue;
+        if (worstDaysLeft === null || item.daysLeft < worstDaysLeft) {
+          worstDaysLeft = item.daysLeft;
+        }
+      }
+
+      groups.push({ entity, entityId, name, items, worstDaysLeft });
+    };
+
+    for (const truck of trucks) {
+      collectItems('truck', truck.id, truck.plateNumber, [
+        [truck.compulsoryInsuranceExpiry, 'Zorunlu Trafik Sigortası'],
+        [truck.comprehensiveInsuranceExpiry, 'Kasko'],
+        [truck.inspectionExpiry, 'Muayene'],
+      ]);
     }
-    const days = daysUntil(date);
-    if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-      expiringItems.push({ id, entity, name, label, expiryDate: date, daysLeft: days });
+
+    for (const driver of drivers) {
+      collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, [
+        [driver.licenseExpiryDate, 'Ehliyet'],
+      ]);
     }
-  };
 
-  for (const truck of trucks) {
-    addItem(`truck-${truck.id}-compulsory`, 'truck', truck.plateNumber, 'Zorunlu Trafik Sigortası', truck.compulsoryInsuranceExpiry);
-    addItem(`truck-${truck.id}-comprehensive`, 'truck', truck.plateNumber, 'Kasko', truck.comprehensiveInsuranceExpiry);
-    addItem(`truck-${truck.id}-inspection`, 'truck', truck.plateNumber, 'Muayene', truck.inspectionExpiry);
-  }
+    // Sort: expired first, then expiring soon, then groups with only missing dates last
+    groups.sort((a, b) => {
+      if (a.worstDaysLeft === null && b.worstDaysLeft === null) return 0;
+      if (a.worstDaysLeft === null) return 1;
+      if (b.worstDaysLeft === null) return -1;
+      return a.worstDaysLeft - b.worstDaysLeft;
+    });
 
-  for (const driver of drivers) {
-    addItem(
-      `driver-${driver.id}-license`,
-      'driver',
-      `${driver.firstName} ${driver.lastName}`,
-      'Ehliyet',
-      driver.licenseExpiryDate
-    );
-  }
+    return groups;
+  }, [trucks, drivers]);
 
-  // Sort: expired first, then expiring soon, then missing dates last
-  expiringItems.sort((a, b) => {
-    if (a.daysLeft === null && b.daysLeft === null) return 0;
-    if (a.daysLeft === null) return 1;
-    if (b.daysLeft === null) return -1;
-    return a.daysLeft - b.daysLeft;
-  });
+  const totalWarningCount = warningGroups.reduce((sum, g) => sum + g.items.length, 0);
 
   if (loading) {
     return (
@@ -131,50 +154,66 @@ const DashboardPage = () => {
         })}
       </div>
 
-      {expiringItems.length > 0 && (
+      {warningGroups.length > 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-red-50 border-b border-red-100 px-4 py-3 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-600" />
             <h2 className="font-bold text-red-900">Dikkat Gereken Belgeler</h2>
-            <span className="ml-auto text-sm text-red-700 font-medium">{expiringItems.length}</span>
+            <span className="ml-auto text-sm text-red-700 font-medium">
+              {warningGroups.length} kayıt · {totalWarningCount} belge
+            </span>
           </div>
           <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
-            {expiringItems.map((item) => (
+            {warningGroups.map((group) => (
               <button
-                key={item.id}
+                key={`${group.entity}-${group.entityId}`}
                 onClick={() =>
-                  navigate(item.entity === 'truck' ? '/manager/trucks' : '/manager/drivers')
+                  navigate(
+                    group.entity === 'truck'
+                      ? `/manager/trucks/${group.entityId}`
+                      : `/manager/drivers/${group.entityId}`
+                  )
                 }
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between"
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3"
               >
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {item.name}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">{item.label}</p>
-                </div>
-                <div className="text-right ml-3">
-                  {item.daysLeft === null ? (
-                    <span className="text-xs font-bold text-gray-600">Tarih eksik</span>
-                  ) : item.daysLeft < 0 ? (
-                    <span className="text-xs font-bold text-red-700">
-                      {Math.abs(item.daysLeft)} gün geçti
-                    </span>
-                  ) : item.daysLeft === 0 ? (
-                    <span className="text-xs font-bold text-red-700">Bugün</span>
+                <div className="w-9 h-9 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center flex-shrink-0">
+                  {group.entity === 'truck' ? (
+                    <Truck className="w-4 h-4" />
                   ) : (
-                    <span className="text-xs font-bold text-orange-600">
-                      {item.daysLeft} gün kaldı
+                    <Users className="w-4 h-4" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 truncate">
+                    {group.name}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {group.items.length} belge · {group.items.map((i) => i.label).join(', ')}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  {group.worstDaysLeft === null ? (
+                    <span className="text-xs font-bold text-gray-600 whitespace-nowrap">Tarih eksik</span>
+                  ) : group.worstDaysLeft < 0 ? (
+                    <span className="text-xs font-bold text-red-700 whitespace-nowrap">
+                      {Math.abs(group.worstDaysLeft)} gün geçti
+                    </span>
+                  ) : group.worstDaysLeft === 0 ? (
+                    <span className="text-xs font-bold text-red-700 whitespace-nowrap">Bugün</span>
+                  ) : (
+                    <span className="text-xs font-bold text-orange-600 whitespace-nowrap">
+                      {group.worstDaysLeft} gün kaldı
                     </span>
                   )}
                 </div>
+                <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {expiringItems.length === 0 && !loading && (
+      {warningGroups.length === 0 && !loading && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
           <div className="text-4xl mb-2">✓</div>
           <p className="text-sm font-medium text-green-900">
