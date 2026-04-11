@@ -99,8 +99,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     register: () => keycloak.register({ redirectUri: window.location.origin }),
     loginAsDriver: () => {},
     loginAsManager: () => {},
-    isDriver: user?.role === 'driver',
-    isFleetManager: user?.role === 'fleet-manager',
+    // Only true when the user actually has the Keycloak role.
+    // A role-less self-signup should not be treated as a driver.
+    isDriver: hasDriverRole,
+    isFleetManager: hasManagerRole,
     hasBothRoles: hasDriverRole && hasManagerRole,
     logout: () => keycloak.logout({ redirectUri: window.location.origin }),
   };
