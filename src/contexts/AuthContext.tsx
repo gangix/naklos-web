@@ -14,7 +14,11 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  authenticated: boolean;
   setUser: (user: User | null) => void;
+  login: () => void;
+  loginWith: (idpHint: 'google' | 'apple') => void;
+  register: () => void;
   loginAsDriver: (driverId: string, driverName: string) => void;
   loginAsManager: () => void;
   isDriver: boolean;
@@ -31,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     keycloak
-      .init({ onLoad: 'login-required', checkLoginIframe: false, pkceMethod: 'S256' })
+      .init({ onLoad: 'check-sso', checkLoginIframe: false, pkceMethod: 'S256' })
       .then(async (authenticated) => {
         if (authenticated) {
           const token = keycloak.tokenParsed as any;
@@ -39,17 +43,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const hasDriverRole = roles.includes('fleet_driver');
           const hasManagerRole = roles.includes('fleet_manager') || roles.includes('fleet_admin');
 
-          // Default to driver view if user has driver role only, otherwise manager
           const primaryRole: UserRole = hasDriverRole && !hasManagerRole ? 'driver' : hasManagerRole ? 'fleet-manager' : 'driver';
 
-          // Resolve real driver entity ID from backend if user has driver role
           let driverId: string | undefined;
           if (hasDriverRole) {
             try {
               const driverProfile = await driverApi.getMe();
               driverId = driverProfile.id;
             } catch {
-              // Driver not linked yet - driverId stays undefined
               console.warn('No driver profile linked to this Keycloak account');
             }
           }
@@ -64,9 +65,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
         setInitialized(true);
 
-        // Refresh token before it expires
         setInterval(() => {
-          keycloak.updateToken(60).catch(() => keycloak.logout());
+          if (keycloak.authenticated) {
+            keycloak.updateToken(60).catch(() => keycloak.logout());
+          }
         }, 30000);
       })
       .catch(() => setInitialized(true));
@@ -77,7 +79,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 text-sm">Giriş yapılıyor...</p>
+          <p className="text-gray-600 text-sm">Yükleniyor...</p>
         </div>
       </div>
     );
@@ -89,8 +91,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const value: AuthContextType = {
     user,
+    authenticated: !!user,
     setUser: setUserState,
-    // These are kept for dev-tool compatibility but do nothing in production
+    login: () => keycloak.login({ redirectUri: window.location.origin }),
+    loginWith: (idpHint) =>
+      keycloak.login({ redirectUri: window.location.origin, idpHint }),
+    register: () => keycloak.register({ redirectUri: window.location.origin }),
     loginAsDriver: () => {},
     loginAsManager: () => {},
     isDriver: user?.role === 'driver',

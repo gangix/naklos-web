@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useFleet } from '../contexts/FleetContext';
 import { fleetApi } from '../services/api';
+import keycloak from '../auth/keycloak';
 
 const FleetSetupPage = () => {
   const { setFleetId } = useFleet();
@@ -28,12 +29,12 @@ const FleetSetupPage = () => {
 
     try {
       const result: any = await fleetApi.create(formData);
-      console.log('Fleet created:', result);
-
-      // Save fleet ID and redirect
       if (result.id) {
         setFleetId(result.id);
-        window.location.reload(); // Reload to fetch fleet data
+        // Force-refresh the Keycloak token so the fleet_manager role that
+        // the backend just assigned is reflected in the new access token.
+        await keycloak.updateToken(-1).catch(() => keycloak.logout());
+        window.location.reload();
       }
     } catch (err) {
       console.error('Error creating fleet:', err);

@@ -12,6 +12,7 @@ import ClientsPage from './pages/ClientsPage';
 import ClientDetailPage from './pages/ClientDetailPage';
 import MorePage from './pages/MorePage';
 import FleetSetupPage from './pages/FleetSetupPage';
+import LandingPage from './pages/LandingPage';
 
 // Driver pages
 import DriverProfilePage from './pages/driver/DriverProfilePage';
@@ -26,9 +27,20 @@ const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
 
 function App() {
   const { fleetId } = useFleet();
-  const { isDriver, isFleetManager } = useAuth();
+  const { isDriver, isFleetManager, authenticated } = useAuth();
 
-  if (!fleetId && isFleetManager) {
+  if (!authenticated) {
+    return (
+      <BrowserRouter basename={BASE}>
+        <LandingPage />
+      </BrowserRouter>
+    );
+  }
+
+  // Authenticated but not a driver yet and no fleet → fresh signup, send to onboarding.
+  // This covers both: new signups (no roles yet) and existing managers with no fleet.
+  const needsFleetSetup = !isDriver && !fleetId;
+  if (needsFleetSetup) {
     return (
       <BrowserRouter basename={BASE}>
         <FleetSetupPage />

@@ -9,8 +9,8 @@ interface ExpiringItem {
   entity: 'truck' | 'driver';
   name: string;
   label: string;
-  expiryDate: string;
-  daysLeft: number;
+  expiryDate: string | null;
+  daysLeft: number | null; // null means "no date set"
 }
 
 const daysUntil = (dateStr: string | null | undefined): number | null => {
@@ -53,42 +53,46 @@ const DashboardPage = () => {
   const expiringItems: ExpiringItem[] = [];
   const WARN_THRESHOLD_DAYS = 30;
 
-  for (const truck of trucks) {
-    const checks: Array<[string | null | undefined, string]> = [
-      [truck.compulsoryInsuranceExpiry, 'Zorunlu Trafik Sigortası'],
-      [truck.comprehensiveInsuranceExpiry, 'Kasko'],
-      [truck.inspectionExpiry, 'Muayene'],
-    ];
-    for (const [date, label] of checks) {
-      const days = daysUntil(date);
-      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-        expiringItems.push({
-          id: `truck-${truck.id}-${label}`,
-          entity: 'truck',
-          name: truck.plateNumber,
-          label,
-          expiryDate: date!,
-          daysLeft: days,
-        });
-      }
+  const addItem = (
+    id: string,
+    entity: 'truck' | 'driver',
+    name: string,
+    label: string,
+    date: string | null | undefined
+  ) => {
+    if (!date) {
+      expiringItems.push({ id, entity, name, label, expiryDate: null, daysLeft: null });
+      return;
     }
+    const days = daysUntil(date);
+    if (days !== null && days <= WARN_THRESHOLD_DAYS) {
+      expiringItems.push({ id, entity, name, label, expiryDate: date, daysLeft: days });
+    }
+  };
+
+  for (const truck of trucks) {
+    addItem(`truck-${truck.id}-compulsory`, 'truck', truck.plateNumber, 'Zorunlu Trafik Sigortası', truck.compulsoryInsuranceExpiry);
+    addItem(`truck-${truck.id}-comprehensive`, 'truck', truck.plateNumber, 'Kasko', truck.comprehensiveInsuranceExpiry);
+    addItem(`truck-${truck.id}-inspection`, 'truck', truck.plateNumber, 'Muayene', truck.inspectionExpiry);
   }
 
   for (const driver of drivers) {
-    const days = daysUntil(driver.licenseExpiryDate);
-    if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-      expiringItems.push({
-        id: `driver-${driver.id}-license`,
-        entity: 'driver',
-        name: `${driver.firstName} ${driver.lastName}`,
-        label: 'Ehliyet',
-        expiryDate: driver.licenseExpiryDate,
-        daysLeft: days,
-      });
-    }
+    addItem(
+      `driver-${driver.id}-license`,
+      'driver',
+      `${driver.firstName} ${driver.lastName}`,
+      'Ehliyet',
+      driver.licenseExpiryDate
+    );
   }
 
-  expiringItems.sort((a, b) => a.daysLeft - b.daysLeft);
+  // Sort: expired first, then expiring soon, then missing dates last
+  expiringItems.sort((a, b) => {
+    if (a.daysLeft === null && b.daysLeft === null) return 0;
+    if (a.daysLeft === null) return 1;
+    if (b.daysLeft === null) return -1;
+    return a.daysLeft - b.daysLeft;
+  });
 
   if (loading) {
     return (
@@ -131,7 +135,7 @@ const DashboardPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-red-50 border-b border-red-100 px-4 py-3 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-600" />
-            <h2 className="font-bold text-red-900">Yenilenmesi Gereken Belgeler</h2>
+            <h2 className="font-bold text-red-900">Dikkat Gereken Belgeler</h2>
             <span className="ml-auto text-sm text-red-700 font-medium">{expiringItems.length}</span>
           </div>
           <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
@@ -150,7 +154,9 @@ const DashboardPage = () => {
                   <p className="text-xs text-gray-500 truncate">{item.label}</p>
                 </div>
                 <div className="text-right ml-3">
-                  {item.daysLeft < 0 ? (
+                  {item.daysLeft === null ? (
+                    <span className="text-xs font-bold text-gray-600">Tarih eksik</span>
+                  ) : item.daysLeft < 0 ? (
                     <span className="text-xs font-bold text-red-700">
                       {Math.abs(item.daysLeft)} gün geçti
                     </span>
