@@ -73,14 +73,25 @@ function App() {
     );
   }
 
-  const homeRoute = isDriver ? '/driver' : '/manager/dashboard';
+  const homeRoute = isDriver ? '/driver' : isFleetManager ? '/manager/dashboard' : '/';
 
   return (
     <BrowserRouter basename={BASE}>
       <Routes>
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsOfServicePage />} />
         <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
-        <Route path="/manager" element={isFleetManager ? <ManagerLayout /> : <Navigate to="/driver" replace />}>
+        <Route
+          path="/manager"
+          element={
+            isFleetManager
+              ? <ManagerLayout />
+              : isDriver
+                ? <Navigate to="/driver" replace />
+                : <FleetSetupPage />
+          }
+        >
           <Route index element={<Navigate to="/manager/dashboard" replace />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="trucks" element={<TrucksPage />} />
@@ -92,11 +103,23 @@ function App() {
           <Route path="more" element={<MorePage />} />
         </Route>
 
-        <Route path="/driver" element={isDriver ? <DriverLayout /> : <Navigate to="/manager/dashboard" replace />}>
+        <Route
+          path="/driver"
+          element={
+            isDriver
+              ? <DriverLayout />
+              : isFleetManager
+                ? <Navigate to="/manager/dashboard" replace />
+                : <FleetSetupPage />
+          }
+        >
           <Route index element={<Navigate to="/driver/profile" replace />} />
           <Route path="truck" element={<DriverTruckPage />} />
           <Route path="profile" element={<DriverProfilePage />} />
         </Route>
+
+        {/* Catch-all: unknown routes → FleetSetupPage if role-less, else home */}
+        <Route path="*" element={<Navigate to={homeRoute} replace />} />
       </Routes>
     </BrowserRouter>
   );

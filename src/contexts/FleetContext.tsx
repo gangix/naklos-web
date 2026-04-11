@@ -34,6 +34,17 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('naklos_fleet_id', id);
   };
 
+  // A user who is not a fleet manager cannot own a fleet.
+  // Wipe any stale localStorage value from a previous session to prevent
+  // the app from redirect-looping between /manager and /driver.
+  useEffect(() => {
+    if (!isFleetManager && fleetId) {
+      localStorage.removeItem('naklos_fleet_id');
+      setFleetIdState(null);
+      setFleet(null);
+    }
+  }, [isFleetManager]);
+
   // Auto-discover fleet from backend when manager has no fleetId
   useEffect(() => {
     if (fleetId || !isFleetManager) return;
