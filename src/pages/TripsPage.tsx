@@ -7,10 +7,15 @@ import type { TripStatus, Trip } from '../types';
 
 const TripsPage = () => {
   const navigate = useNavigate();
-  const { trips, updateTrip, addInvoice } = useData();
+  const { trips, updateTrip, addInvoice, refreshTrips } = useData();
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'planned' | 'pending' | 'ready'>('planned');
   const [selectedTripIds, setSelectedTripIds] = useState<string[]>([]);
+
+  // Refresh trips from backend on mount so we pick up changes made elsewhere
+  useEffect(() => {
+    refreshTrips();
+  }, []);
 
   // Handle query param for auto-tab selection
   useEffect(() => {

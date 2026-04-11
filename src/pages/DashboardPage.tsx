@@ -318,9 +318,13 @@ const DashboardPage = () => {
       (w) => w.relatedType === 'driver' && w.severity === 'error'
     );
 
-    // Total counts
+    // Total active trips = everything that isn't cancelled or already invoiced
     const totalTrips = trips.filter(
-      (trip) => trip.status === 'IN_PROGRESS' || trip.status === 'CREATED'
+      (trip) =>
+        trip.status === 'CREATED' ||
+        trip.status === 'IN_PROGRESS' ||
+        trip.status === 'DELIVERED' ||
+        trip.status === 'APPROVED'
     ).length;
     const totalTrucks = trucks.length;
     const totalDrivers = drivers.length;

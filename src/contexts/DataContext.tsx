@@ -15,6 +15,8 @@ interface DataContextType {
   invoices: Invoice[];
   documentSubmissions: DocumentSubmission[];
   truckAssignmentRequests: TruckAssignmentRequest[];
+  refreshTrips: () => Promise<void>;
+  refreshInvoices: () => Promise<void>;
   updateTrip: (tripId: string, updates: Partial<Trip>) => Promise<void>;
   addTrip: (trip: Trip) => void;
   addInvoice: (invoice: Invoice) => void;
@@ -202,6 +204,8 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         invoices,
         documentSubmissions,
         truckAssignmentRequests,
+        refreshTrips: loadTrips,
+        refreshInvoices: loadInvoices,
         updateTrip,
         addTrip,
         addInvoice,
