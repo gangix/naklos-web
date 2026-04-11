@@ -1,66 +1,84 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useData } from '../contexts/DataContext';
 import { useFleet } from '../contexts/FleetContext';
 import { tripApi, clientApi, driverApi, truckApi } from '../services/api';
 import { TRIPS, EXPENSES, DOCUMENTS } from '../constants/text';
 import { formatCurrency, formatDate } from '../utils/format';
 import FileUpload from '../components/common/FileUpload';
-import type { Document } from '../types';
+import type { Document, Trip } from '../types';
+
+const emptyEditForm = {
+  originCity: '',
+  destinationCity: '',
+  clientId: null as string | null,
+  clientName: '',
+  driverId: null as string | null,
+  driverName: '',
+  truckId: null as string | null,
+  truckPlate: '',
+  cargoDescription: '',
+  revenue: 0,
+  expenses: { fuel: 0, tolls: 0, other: 0, otherReason: '' },
+};
+
+const tripToFormValues = (trip: Trip) => ({
+  originCity: trip.originCity || '',
+  destinationCity: trip.destinationCity || '',
+  clientId: trip.clientId,
+  clientName: trip.clientName || '',
+  driverId: trip.driverId,
+  driverName: trip.driverName || '',
+  truckId: trip.truckId,
+  truckPlate: trip.truckPlate || '',
+  cargoDescription: trip.cargoDescription || '',
+  revenue: trip.revenue?.amount || 0,
+  expenses: {
+    fuel: trip.expenses?.fuel?.amount || 0,
+    tolls: trip.expenses?.tolls?.amount || 0,
+    other: trip.expenses?.other?.amount || 0,
+    otherReason: trip.expenses?.otherReason || '',
+  },
+});
 
 const TripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const navigate = useNavigate();
   const { fleetId } = useFleet();
-  const { trips, invoices, updateTrip } = useData();
+  const { invoices, updateTrip } = useData();
 
-  const trip = trips.find((t) => t.id === tripId);
-  const [documents, setDocuments] = useState<Document[]>(trip?.deliveryDocuments || []);
+  // toListDto omits expenses/deliveryDocuments; must fetch full detail from API.
+  const [trip, setTrip] = useState<Trip | null>(null);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
 
-  // Real data from APIs
   const [clients, setClients] = useState<any[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [trucks, setTrucks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Edit mode state
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState({
-    originCity: trip?.originCity || '',
-    destinationCity: trip?.destinationCity || '',
-    clientId: trip?.clientId || null,
-    clientName: trip?.clientName || '',
-    driverId: trip?.driverId || null,
-    driverName: trip?.driverName || '',
-    truckId: trip?.truckId || null,
-    truckPlate: trip?.truckPlate || '',
-    cargoDescription: trip?.cargoDescription || '',
-    revenue: trip?.revenue?.amount || 0,
-    expenses: {
-      fuel: trip?.expenses?.fuel?.amount || 0,
-      tolls: trip?.expenses?.tolls?.amount || 0,
-      other: trip?.expenses?.other?.amount || 0,
-      otherReason: trip?.expenses?.otherReason || '',
-    },
-  });
+  const [editForm, setEditForm] = useState(emptyEditForm);
 
-  // Load data from APIs
   useEffect(() => {
-    if (fleetId) {
+    if (fleetId && tripId) {
       loadData();
     }
-  }, [fleetId]);
+  }, [fleetId, tripId]);
 
   const loadData = async () => {
-    if (!fleetId) return;
+    if (!fleetId || !tripId) return;
     try {
       setLoading(true);
-      const [clientsPage, driversPage, trucksPage] = await Promise.all([
+      const [tripData, clientsPage, driversPage, trucksPage] = await Promise.all([
+        tripApi.getById(tripId),
         clientApi.getByFleet(0, 1000),
         driverApi.getByFleet(0, 1000),
         truckApi.getByFleet(0, 1000),
       ]);
+      setTrip(tripData as Trip);
+      setDocuments((tripData as Trip).deliveryDocuments || []);
+      setEditForm(tripToFormValues(tripData as Trip));
       setClients(clientsPage.content);
       setDrivers(driversPage.content);
       setTrucks(trucksPage.content);
@@ -71,33 +89,10 @@ const TripDetailPage = () => {
     }
   };
 
-  // Sync with context when trip changes
-  useEffect(() => {
-    if (trip) {
-      setDocuments(trip.deliveryDocuments);
-      setEditForm({
-        originCity: trip.originCity || '',
-        destinationCity: trip.destinationCity || '',
-        clientId: trip.clientId || null,
-        clientName: trip.clientName || '',
-        driverId: trip.driverId || null,
-        driverName: trip.driverName || '',
-        truckId: trip.truckId || null,
-        truckPlate: trip.truckPlate || '',
-        cargoDescription: trip.cargoDescription || '',
-        revenue: trip.revenue?.amount || 0,
-        expenses: {
-          fuel: trip.expenses?.fuel?.amount || 0,
-          tolls: trip.expenses?.tolls?.amount || 0,
-          other: trip.expenses?.other?.amount || 0,
-          otherReason: trip.expenses?.otherReason || '',
-        },
-      });
-    }
-  }, [trip]);
-
-  // Check if invoice already exists for this trip
-  const existingInvoice = invoices.find((inv) => inv.tripIds.includes(tripId || ''));
+  const existingInvoice = useMemo(
+    () => invoices.find((inv) => inv.tripIds.includes(tripId || '')),
+    [invoices, tripId]
+  );
 
   if (!trip) {
     return (
@@ -229,26 +224,8 @@ const TripDetailPage = () => {
   };
 
   const handleCancel = () => {
-    // Reset form to original trip data
     if (trip) {
-      setEditForm({
-        originCity: trip.originCity || '',
-        destinationCity: trip.destinationCity || '',
-        clientId: trip.clientId || null,
-        clientName: trip.clientName || '',
-        driverId: trip.driverId || null,
-        driverName: trip.driverName || '',
-        truckId: trip.truckId || null,
-        truckPlate: trip.truckPlate || '',
-        cargoDescription: trip.cargoDescription || '',
-        revenue: trip.revenue?.amount || 0,
-        expenses: {
-          fuel: trip.expenses?.fuel?.amount || 0,
-          tolls: trip.expenses?.tolls?.amount || 0,
-          other: trip.expenses?.other?.amount || 0,
-          otherReason: trip.expenses?.otherReason || '',
-        },
-      });
+      setEditForm(tripToFormValues(trip));
     }
     setIsEditing(false);
   };
