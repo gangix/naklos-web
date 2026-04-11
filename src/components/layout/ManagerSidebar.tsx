@@ -7,9 +7,11 @@ const ManagerSidebar = () => {
   const { documentSubmissions, truckAssignmentRequests, trips } = useData();
   const { logout } = useAuth();
 
-  // Calculate pending approval counts per context
+  // Calculate pending approval counts per context.
+  // A DELIVERED trip always has POD uploaded by domain rule, and the list
+  // endpoint's TripDto does not include deliveryDocuments.
   const tripsPendingCount = trips.filter(
-    (trip) => trip.status === 'DELIVERED' && trip.deliveryDocuments.length > 0
+    (trip) => trip.status === 'DELIVERED'
   ).length;
 
   const trucksPendingCount = documentSubmissions.filter(

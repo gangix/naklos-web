@@ -29,13 +29,12 @@ const TripsPage = () => {
     );
   }, [trips]);
 
-  // Pending approval: POD uploaded (delivered status), awaiting manager approval
+  // Pending approval: delivered, awaiting manager approval.
+  // Domain rule: a trip can only reach DELIVERED after POD upload,
+  // so we don't need to re-check deliveryDocuments here. The list
+  // endpoint's TripDto doesn't include deliveryDocuments anyway.
   const pendingTrips = useMemo(() => {
-    return trips.filter(
-      (trip) =>
-        trip.status === 'DELIVERED' &&
-        trip.deliveryDocuments.length > 0
-    );
+    return trips.filter((trip) => trip.status === 'DELIVERED');
   }, [trips]);
 
   // Ready to invoice: approved trips not yet invoiced
