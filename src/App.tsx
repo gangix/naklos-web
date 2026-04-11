@@ -13,6 +13,10 @@ import ClientDetailPage from './pages/ClientDetailPage';
 import MorePage from './pages/MorePage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import CookieBanner from './components/common/CookieBanner';
+import WhatsAppButton from './components/common/WhatsAppButton';
 
 // Driver pages
 import DriverProfilePage from './pages/driver/DriverProfilePage';
@@ -32,7 +36,13 @@ function App() {
   if (!authenticated) {
     return (
       <BrowserRouter basename={BASE}>
-        <LandingPage />
+        <Routes>
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="*" element={<LandingPage />} />
+        </Routes>
+        <CookieBanner />
+        <WhatsAppButton />
       </BrowserRouter>
     );
   }

@@ -1,4 +1,5 @@
 import { Truck, Users, AlertTriangle, Building2, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const LandingPage = () => {
@@ -184,13 +185,21 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-10 px-4">
+      <footer className="py-10 px-4 border-t border-gray-200">
         <div className="max-w-6xl mx-auto text-center text-sm text-gray-500">
           <div className="flex items-center justify-center gap-2 mb-3">
             <div className="w-6 h-6 rounded bg-primary-600 flex items-center justify-center">
               <Truck className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-gray-900">Naklos</span>
+          </div>
+          <div className="flex items-center justify-center gap-6 mb-3">
+            <Link to="/privacy" className="hover:text-primary-600 transition-colors">
+              Gizlilik Politikası
+            </Link>
+            <Link to="/terms" className="hover:text-primary-600 transition-colors">
+              Kullanım Şartları
+            </Link>
           </div>
           <p>© {new Date().getFullYear()} Naklos. Tüm hakları saklıdır.</p>
         </div>

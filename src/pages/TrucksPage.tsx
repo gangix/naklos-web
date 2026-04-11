@@ -392,6 +392,35 @@ const TrucksPage = () => {
 
           {/* Truck list */}
           <div className="space-y-3">
+            {filteredTrucks.length === 0 && trucks.length === 0 && (
+              <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-10 text-center">
+                <div className="text-5xl mb-3">🚛</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Henüz araç eklenmedi</h3>
+                <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">
+                  Filonuzdaki araçları eklemeye başlayın. Tek tek ekleyebilir veya Excel dosyanızdan
+                  toplu içe aktarabilirsiniz.
+                </p>
+                <div className="flex gap-2 justify-center flex-wrap">
+                  <button
+                    onClick={() => setBulkImportOpen(true)}
+                    className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
+                  >
+                    📥 Excel ile İçe Aktar
+                  </button>
+                  <button
+                    onClick={() => setAddTruckModalOpen(true)}
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700"
+                  >
+                    + İlk Aracı Ekle
+                  </button>
+                </div>
+              </div>
+            )}
+            {filteredTrucks.length === 0 && trucks.length > 0 && (
+              <div className="bg-white rounded-lg p-6 text-center text-gray-500">
+                Bu filtreye uygun araç bulunamadı
+              </div>
+            )}
             {filteredTrucks.map((truck) => {
               const hasWarning = hasUrgentWarning(truck.id);
               return (
