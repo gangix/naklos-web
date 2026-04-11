@@ -97,16 +97,9 @@ const MorePage = () => {
       color: 'bg-green-100',
     },
     {
-      icon: '💰',
-      title: 'Ödemeler',
-      description: 'Faturalar ve tahsilatlar',
-      path: '/manager/invoices',
-      color: 'bg-purple-100',
-    },
-    {
       icon: '👥',
       title: 'Müşteriler',
-      description: 'Müşteri listesi ve ödeme durumu',
+      description: 'Müşteri listesi',
       path: '/manager/clients',
       color: 'bg-blue-100',
     },
@@ -150,13 +143,14 @@ const MorePage = () => {
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">E-posta</label>
+              <label className="block text-xs text-gray-500 mb-1">E-posta (kayıt sırasında belirlenmiştir)</label>
               <input
                 type="email"
                 value={fleetEmail}
-                onChange={(e) => setFleetEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                readOnly
+                className="w-full border border-gray-200 bg-gray-50 text-gray-600 rounded-lg px-3 py-2 text-sm cursor-not-allowed"
               />
+              <p className="text-xs text-gray-400 mt-1">Değiştirmek için destek ile iletişime geçin.</p>
             </div>
             <div>
               <label className="block text-xs text-gray-500 mb-1">Telefon</label>
