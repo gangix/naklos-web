@@ -262,8 +262,16 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
       const res = isTruck
         ? await truckApi.bulkImport(normalizedRows)
         : await driverApi.bulkImport(normalizedRows);
-      setResult(res);
+
       if (res.successCount > 0) onSuccess();
+
+      // All rows imported successfully → close the modal.
+      // Otherwise show the result screen so the user can review errors.
+      if (res.errorCount === 0) {
+        handleClose();
+      } else {
+        setResult(res);
+      }
     } catch (err) {
       alert(err instanceof Error ? err.message : 'İçe aktarma başarısız');
     } finally {
