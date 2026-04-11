@@ -31,7 +31,18 @@ const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
 
 function App() {
   const { fleetId } = useFleet();
-  const { isDriver, isFleetManager, authenticated } = useAuth();
+  const { isDriver, isFleetManager, authenticated, user } = useAuth();
+
+  // Debug: log routing decision so we can see why a user lands where they do
+  if (authenticated) {
+    console.log('[Naklos] Auth state:', {
+      authenticated,
+      isDriver,
+      isFleetManager,
+      fleetId,
+      keycloakRoles: user?.keycloakRoles,
+    });
+  }
 
   if (!authenticated) {
     return (
