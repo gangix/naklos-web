@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { clientApi, tripApi } from '../services/api';
-import { formatCurrency } from '../utils/format';
+import { clientApi } from '../services/api';
 import type { Client } from '../types';
 
 type PaymentTerms = 'NET_0' | 'NET_30' | 'NET_60' | 'NET_90';
@@ -23,7 +22,6 @@ const ClientDetailPage = () => {
   const navigate = useNavigate();
 
   const [client, setClient] = useState<Client | null>(null);
-  const [trips, setTrips] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -46,12 +44,8 @@ const ClientDetailPage = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [clientData, tripsData] = await Promise.all([
-          clientApi.getById(clientId),
-          tripApi.getByClient(clientId),
-        ]);
+        const clientData = await clientApi.getById(clientId);
         setClient(clientData);
-        setTrips(Array.isArray(tripsData) ? tripsData : []);
       } catch (err) {
         console.error('Error fetching client:', err);
         setError(err instanceof Error ? err.message : 'Müşteri yüklenirken hata oluştu');
@@ -135,49 +129,6 @@ const ClientDetailPage = () => {
     }
   };
 
-  const getReliabilityLabel = (reliability: string) => {
-    switch (reliability) {
-      case 'good':
-        return 'İyi';
-      case 'moderate':
-        return 'Orta';
-      case 'poor':
-        return 'Zayıf';
-      default:
-        return reliability;
-    }
-  };
-
-  const getReliabilityColor = (reliability: string) => {
-    switch (reliability) {
-      case 'good':
-        return 'bg-green-100 text-green-700';
-      case 'moderate':
-        return 'bg-yellow-100 text-yellow-700';
-      case 'poor':
-        return 'bg-red-100 text-red-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  const getTripStatusLabel = (status: string) => {
-    switch (status) {
-      case 'PLANNED':
-        return 'Planlandı';
-      case 'ASSIGNED':
-        return 'Atandı';
-      case 'IN_PROGRESS':
-        return 'Devam Ediyor';
-      case 'DELIVERED':
-        return 'Teslim Edildi';
-      case 'CANCELLED':
-        return 'İptal';
-      default:
-        return status;
-    }
-  };
-
   if (loading) {
     return (
       <div className="p-4">
@@ -205,7 +156,6 @@ const ClientDetailPage = () => {
     );
   }
 
-  const invoiceCount = trips.filter((t) => t.invoiceId).length;
   const clientPaymentTerms: PaymentTerms = (client as any).paymentTerms ?? 'NET_30';
 
   return (
@@ -257,12 +207,6 @@ const ClientDetailPage = () => {
             <span className="text-sm text-gray-600">Şehir</span>
             <span className="text-sm font-medium text-gray-900">{client.city || '-'}</span>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">Ödeme Güvenilirliği</span>
-            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getReliabilityColor(client.paymentReliability)}`}>
-              {getReliabilityLabel(client.paymentReliability)}
-            </span>
-          </div>
         </div>
       </div>
 
@@ -282,90 +226,6 @@ const ClientDetailPage = () => {
         </select>
         {updatingTerms && (
           <p className="text-xs text-gray-500 mt-1">Güncelleniyor...</p>
-        )}
-      </div>
-
-      {/* Financial Stats Card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">Finansal Özet</h2>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">Toplam Faturalandırılan</span>
-            <span className="text-sm font-bold text-gray-900">{formatCurrency(client.totalInvoiced)}</span>
-          </div>
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">Toplam Ödenen</span>
-            <span className="text-sm font-bold text-green-600">{formatCurrency(client.totalPaid)}</span>
-          </div>
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">Bakiye</span>
-            <span className="text-sm font-bold text-blue-600">{formatCurrency(client.outstanding)}</span>
-          </div>
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">Vadesi Geçmiş</span>
-            <span className={`text-sm font-bold ${client.overdue > 0 ? 'text-red-600' : 'text-gray-900'}`}>
-              {formatCurrency(client.overdue)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm text-gray-600">Ort. Ödeme Süresi</span>
-            <span className="text-sm font-bold text-gray-900">{client.avgPaymentDays ?? 0} gün</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Related Invoices Count */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-gray-900">Faturalar</h2>
-          <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
-            {invoiceCount} fatura
-          </span>
-        </div>
-      </div>
-
-      {/* Related Trips */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">Seferler</h2>
-          <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
-            {trips.length} sefer
-          </span>
-        </div>
-
-        {trips.length === 0 ? (
-          <div className="bg-white rounded-lg p-4 shadow-sm">
-            <p className="text-sm text-gray-500 text-center">Henüz sefer bulunmuyor.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {trips.map((trip) => (
-              <div
-                key={trip.id}
-                className="bg-white rounded-lg p-4 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => navigate(`/manager/trips/${trip.id}`)}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
-                      {trip.originCity} → {trip.destinationCity}
-                    </p>
-                    {trip.cargoDescription && (
-                      <p className="text-xs text-gray-500 mt-1">{trip.cargoDescription}</p>
-                    )}
-                  </div>
-                  <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
-                    {getTripStatusLabel(trip.status)}
-                  </span>
-                </div>
-                {trip.revenueAmount != null && (
-                  <p className="text-sm font-bold text-green-600 mt-2">
-                    {formatCurrency(trip.revenueAmount)}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
         )}
       </div>
 
