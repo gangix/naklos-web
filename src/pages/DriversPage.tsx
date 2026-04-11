@@ -337,26 +337,6 @@ const DriversPage = () => {
             >
               {DRIVERS.available} ({drivers.filter((d) => d.status === 'available').length})
             </button>
-            <button
-              onClick={() => setFilter('on-trip')}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'on-trip'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              {DRIVERS.onTrip} ({drivers.filter((d) => d.status === 'on-trip').length})
-            </button>
-            <button
-              onClick={() => setFilter('off-duty')}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'off-duty'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              {DRIVERS.offDuty} ({drivers.filter((d) => d.status === 'off-duty').length})
-            </button>
           </div>
 
           {/* Driver list */}

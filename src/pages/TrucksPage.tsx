@@ -369,16 +369,6 @@ const TrucksPage = () => {
               {TRUCKS.available} ({trucks.filter((t) => t.status === 'available').length})
             </button>
             <button
-              onClick={() => setFilter('in-transit')}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'in-transit'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              {TRUCKS.inTransit} ({trucks.filter((t) => t.status === 'in-transit').length})
-            </button>
-            <button
               onClick={() => setFilter('maintenance')}
               className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
                 filter === 'maintenance'
