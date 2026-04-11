@@ -63,7 +63,7 @@ const LandingPage = () => {
       {/* Hero */}
       <section className="max-w-6xl mx-auto px-4 pt-16 pb-12 md:pt-24 md:pb-20 text-center">
         <div className="inline-block px-3 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-medium mb-6">
-          Küçük ve orta ölçekli filolar için
+          KOBİ filoları için
         </div>
         <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
           Filonuzu kolayca<br />
