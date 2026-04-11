@@ -99,9 +99,16 @@ const DashboardPage = () => {
     }
 
     for (const driver of drivers) {
-      collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, [
+      const checks: Array<[string | null | undefined, string]> = [
         [driver.licenseExpiryDate, 'Ehliyet'],
-      ]);
+      ];
+      // SRC and CPC certificates — flag if missing entirely or if expiring soon
+      const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
+      const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
+      checks.push([srcCert?.expiryDate, 'SRC Belgesi']);
+      checks.push([cpcCert?.expiryDate, 'CPC Belgesi']);
+
+      collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, checks);
     }
 
     // Sort: expired first, then expiring soon, then groups with only missing dates last
