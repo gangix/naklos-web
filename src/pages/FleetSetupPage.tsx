@@ -1,12 +1,16 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useFleet } from '../contexts/FleetContext';
 import { fleetApi } from '../services/api';
 import keycloak from '../auth/keycloak';
+
+const TERMS_VERSION = '2026-04-11';
 
 const FleetSetupPage = () => {
   const { setFleetId } = useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     taxId: '',
@@ -24,11 +28,16 @@ const FleetSetupPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!termsAccepted) {
+      setError('Devam etmek için Kullanım Şartları ve Gizlilik Politikasını kabul etmelisiniz');
+      return;
+    }
     setLoading(true);
     setError(null);
 
     try {
-      const result: any = await fleetApi.create(formData);
+      const payload = { ...formData, termsAcceptedVersion: TERMS_VERSION };
+      const result: any = await fleetApi.create(payload);
       if (result.id) {
         setFleetId(result.id);
         // Force-refresh the Keycloak token so the fleet_manager role that
@@ -211,9 +220,31 @@ const FleetSetupPage = () => {
             </div>
           </div>
 
+          {/* Terms acceptance */}
+          <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <label className="flex items-start gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="mt-0.5 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer"
+              />
+              <span className="text-sm text-gray-700 leading-relaxed">
+                <Link to="/terms" target="_blank" className="text-primary-600 font-medium underline">
+                  Kullanım Şartları
+                </Link>
+                {' '}ve{' '}
+                <Link to="/privacy" target="_blank" className="text-primary-600 font-medium underline">
+                  Gizlilik Politikası
+                </Link>
+                'nı okudum ve kabul ediyorum. *
+              </span>
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !termsAccepted}
             className="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {loading ? 'Oluşturuluyor...' : 'Filo Şirketini Oluştur'}

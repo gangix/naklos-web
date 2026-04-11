@@ -53,7 +53,11 @@ function App() {
   if (needsFleetSetup) {
     return (
       <BrowserRouter basename={BASE}>
-        <FleetSetupPage />
+        <Routes>
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="*" element={<FleetSetupPage />} />
+        </Routes>
       </BrowserRouter>
     );
   }
