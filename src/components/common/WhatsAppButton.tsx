@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = '905551234567'; // TODO: replace with real support number
+const WHATSAPP_NUMBER = '4915257870965';
 const WHATSAPP_MESSAGE = 'Merhaba, Naklos hakkında bilgi almak istiyorum.';
 
 const WhatsAppButton = () => {

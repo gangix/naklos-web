@@ -94,7 +94,7 @@ const PrivacyPolicyPage = () => {
               <li>Zarara uğramanız halinde zararın giderilmesini talep etme</li>
             </ul>
             <p className="mt-3">
-              Bu haklarınızı kullanmak için <strong>kvkk@naklos.com</strong> adresine yazılı başvuruda
+              Bu haklarınızı kullanmak için <strong>olcay.bilir@gmail.com</strong> adresine yazılı başvuruda
               bulunabilirsiniz. Başvurunuz en geç 30 gün içinde yanıtlanacaktır.
             </p>
           </section>
@@ -118,7 +118,7 @@ const PrivacyPolicyPage = () => {
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">9. İletişim</h2>
             <p>
-              Bu Gizlilik Politikası hakkında sorularınız için <strong>kvkk@naklos.com</strong>
+              Bu Gizlilik Politikası hakkında sorularınız için <strong>olcay.bilir@gmail.com</strong>
               adresi üzerinden bize ulaşabilirsiniz.
             </p>
           </section>
