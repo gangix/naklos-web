@@ -7,6 +7,7 @@ import { formatDate } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import TruckAssignmentModal from '../components/common/TruckAssignmentModal';
 import AddDriverModal from '../components/common/AddDriverModal';
+import BulkImportModal from '../components/common/BulkImportModal';
 import type { DriverStatus, DocumentSubmission, TruckAssignmentRequest } from '../types';
 
 const DriversPage = () => {
@@ -20,6 +21,7 @@ const DriversPage = () => {
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<TruckAssignmentRequest | null>(null);
   const [addDriverModalOpen, setAddDriverModalOpen] = useState(false);
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
 
   // Calculate warnings for drivers based on document expiry dates
   const warnings = useMemo(() => {
@@ -256,12 +258,20 @@ const DriversPage = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-gray-900">{DRIVERS.title}</h1>
-        <button
-          onClick={() => setAddDriverModalOpen(true)}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
-        >
-          + Sürücü Ekle
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setBulkImportOpen(true)}
+            className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
+          >
+            📥 İçe Aktar
+          </button>
+          <button
+            onClick={() => setAddDriverModalOpen(true)}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+          >
+            + Sürücü Ekle
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -600,6 +610,13 @@ const DriversPage = () => {
         onSuccess={() => {
           refresh();
         }}
+      />
+
+      <BulkImportModal
+        isOpen={bulkImportOpen}
+        onClose={() => setBulkImportOpen(false)}
+        onSuccess={refresh}
+        entityType="driver"
       />
     </div>
   );

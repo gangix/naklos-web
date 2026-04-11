@@ -6,6 +6,7 @@ import { useData } from '../contexts/DataContext';
 import { formatDate } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import AddTruckModal from '../components/common/AddTruckModal';
+import BulkImportModal from '../components/common/BulkImportModal';
 import type { TruckStatus, DocumentSubmission } from '../types';
 
 const TrucksPage = () => {
@@ -17,6 +18,7 @@ const TrucksPage = () => {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
   const [addTruckModalOpen, setAddTruckModalOpen] = useState(false);
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
 
   // Calculate expiry warnings for trucks
   const warnings = useMemo(() => {
@@ -287,12 +289,20 @@ const TrucksPage = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold text-gray-900">{TRUCKS.title}</h1>
-        <button
-          onClick={() => setAddTruckModalOpen(true)}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
-        >
-          + Araç Ekle
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setBulkImportOpen(true)}
+            className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
+          >
+            📥 İçe Aktar
+          </button>
+          <button
+            onClick={() => setAddTruckModalOpen(true)}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+          >
+            + Araç Ekle
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -595,6 +605,13 @@ const TrucksPage = () => {
         onSuccess={() => {
           refresh();
         }}
+      />
+
+      <BulkImportModal
+        isOpen={bulkImportOpen}
+        onClose={() => setBulkImportOpen(false)}
+        onSuccess={refresh}
+        entityType="truck"
       />
     </div>
   );

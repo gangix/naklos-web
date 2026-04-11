@@ -10,6 +10,12 @@ export interface PageResponse<T> {
   number: number; // current page (0-indexed)
 }
 
+export interface BulkImportResult {
+  successCount: number;
+  errorCount: number;
+  errors: Array<{ rowNumber: number; identifier: string; message: string }>;
+}
+
 async function apiCall<T>(
   endpoint: string,
   options?: RequestInit
@@ -174,6 +180,11 @@ export const driverApi = {
     apiCall<PageResponse<any>>(`/drivers?page=${page}&size=${size}`),
   getAvailable: (page = 0, size = 20) =>
     apiCall<PageResponse<any>>(`/drivers?status=AVAILABLE&page=${page}&size=${size}`),
+  bulkImport: (rows: any[]) =>
+    apiCall<BulkImportResult>('/drivers/bulk', {
+      method: 'POST',
+      body: JSON.stringify(rows),
+    }),
   getById: (id: string) => apiCall(`/drivers/${id}`),
   update: (id: string, data: { firstName?: string; lastName?: string; phone?: string; email?: string; status?: string }) =>
     apiCall(`/drivers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -252,6 +263,11 @@ export const truckApi = {
     apiCall<PageResponse<any>>(`/trucks?page=${page}&size=${size}`),
   getAvailable: (page = 0, size = 20) =>
     apiCall<PageResponse<any>>(`/trucks?status=AVAILABLE&page=${page}&size=${size}`),
+  bulkImport: (rows: any[]) =>
+    apiCall<BulkImportResult>('/trucks/bulk', {
+      method: 'POST',
+      body: JSON.stringify(rows),
+    }),
   getById: (id: string) => apiCall(`/trucks/${id}`),
   updateDocuments: (id: string, data: any) =>
     apiCall(`/trucks/${id}/documents`, {
