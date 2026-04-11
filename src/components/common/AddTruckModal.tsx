@@ -10,9 +10,13 @@ interface AddTruckModalProps {
 
 const truckTypes = [
   { value: 'VAN', label: 'Van', capacity: 1500 },
+  { value: 'PICKUP', label: 'Kamyonet', capacity: 1000 },
   { value: 'SMALL_TRUCK', label: 'Küçük Kamyon (3.5 ton)', capacity: 3500 },
   { value: 'MEDIUM_TRUCK', label: 'Orta Boy Kamyon (7.5 ton)', capacity: 7500 },
   { value: 'LARGE_TRUCK', label: 'Büyük Kamyon (24 ton)', capacity: 24000 },
+  { value: 'TIR', label: 'TIR (Çekici)', capacity: 40000 },
+  { value: 'FLATBED', label: 'Açık Kasa', capacity: 20000 },
+  { value: 'TIPPER', label: 'Damperli Kamyon', capacity: 25000 },
   { value: 'REFRIGERATED', label: 'Soğutuculu Kamyon', capacity: 20000 },
   { value: 'TANKER', label: 'Tanker', capacity: 30000 },
 ];
