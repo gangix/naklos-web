@@ -75,13 +75,20 @@ const DriverTruckPage = () => {
       setDriver(driverData);
 
       if (driverData.assignedTruckId) {
-        const truck = await truckApi.getById(driverData.assignedTruckId);
-        setAssignedTruck(truck as Truck);
+        // Use the driver-callable /trucks/my-truck endpoint — drivers don't
+        // have permission to call /trucks/{id}.
+        try {
+          const truck = await truckApi.getMyTruck();
+          setAssignedTruck(truck as Truck);
+        } catch (truckErr) {
+          console.error('Error loading assigned truck:', truckErr);
+          setAssignedTruck(null);
+        }
       } else {
         setAssignedTruck(null);
       }
     } catch (error) {
-      console.error('Error loading truck data:', error);
+      console.error('Error loading driver profile:', error);
     } finally {
       setLoading(false);
     }
