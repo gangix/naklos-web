@@ -40,14 +40,9 @@ const DriverProfilePage = () => {
     }
   }, [fleetId]);
 
-  // Load current driver details (doesn't need fleetId - uses driver ID directly)
+  // Load current driver details — prefer /drivers/me which auto-links by email
   useEffect(() => {
-    if (user?.driverId) {
-      loadCurrentDriver();
-    } else {
-      // Not logged in as driver, stop loading
-      setLoading(false);
-    }
+    loadCurrentDriver();
   }, [user?.driverId]);
 
   // Update editForm when driver loads
@@ -74,31 +69,15 @@ const DriverProfilePage = () => {
   };
 
   const loadCurrentDriver = async () => {
-    if (!user?.driverId) {
-      setLoading(false);
-      return;
-    }
-
-    // Validate UUID format before API call
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(user.driverId)) {
-      console.warn('Invalid driver UUID in localStorage, clearing...');
-      // Clear invalid localStorage data
-      localStorage.removeItem('dev-auth-user');
-      loginAsManager();
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
-      const data = await driverApi.getById(user.driverId);
+      // Always use /drivers/me — backend looks up by Keycloak user ID and
+      // falls back to email matching to auto-link the account.
+      const data = await driverApi.getMe();
       setDriver(data);
     } catch (error) {
-      console.error('Error loading driver:', error);
-      // If driver not found, clear and reset to manager
-      localStorage.removeItem('dev-auth-user');
-      loginAsManager();
+      console.error('Error loading driver profile:', error);
+      setDriver(null);
     } finally {
       setLoading(false);
     }
@@ -124,20 +103,14 @@ const DriverProfilePage = () => {
     );
   }
 
-  if (!driver && !user?.driverId) {
+  if (!driver) {
     return (
       <div className="p-4 pb-20">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <h2 className="font-bold text-yellow-900 mb-2">⚠️ Sürücü Girişi Gerekli</h2>
+          <h2 className="font-bold text-yellow-900 mb-2">⚠️ Sürücü Profili Bulunamadı</h2>
           <p className="text-sm text-yellow-700 mb-3">
-            Profil sayfasını görüntülemek için bir sürücü olarak giriş yapmalısınız.
+            Hesabınız henüz bir sürücü kaydına bağlanmamış. Lütfen yöneticinizden sizi sürücü olarak eklemesini isteyin.
           </p>
-          <button
-            onClick={() => setShowDriverList(true)}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-          >
-            Sürücü Olarak Giriş Yap
-          </button>
         </div>
 
         {/* Developer Login Panel — only in development */}
