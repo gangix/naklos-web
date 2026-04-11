@@ -47,6 +47,7 @@ export async function convertFileToDocument(file: File): Promise<FileUploadResul
       dataUrl,
       uploadedAt: new Date().toISOString(),
       size: file.size,
+      rawFile: file,
     };
 
     return {

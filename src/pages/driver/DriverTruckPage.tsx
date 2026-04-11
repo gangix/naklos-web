@@ -68,6 +68,17 @@ const DriverTruckPage = () => {
     loadData();
   }, []);
 
+  const reloadTruck = async () => {
+    // Drivers can't call /trucks/{id} (manager-only); use /trucks/my-truck.
+    try {
+      const truck = await truckApi.getMyTruck();
+      setAssignedTruck(truck as Truck);
+    } catch (truckErr) {
+      console.error('Error loading assigned truck:', truckErr);
+      setAssignedTruck(null);
+    }
+  };
+
   const loadData = async () => {
     try {
       setLoading(true);
@@ -75,15 +86,7 @@ const DriverTruckPage = () => {
       setDriver(driverData);
 
       if (driverData.assignedTruckId) {
-        // Use the driver-callable /trucks/my-truck endpoint — drivers don't
-        // have permission to call /trucks/{id}.
-        try {
-          const truck = await truckApi.getMyTruck();
-          setAssignedTruck(truck as Truck);
-        } catch (truckErr) {
-          console.error('Error loading assigned truck:', truckErr);
-          setAssignedTruck(null);
-        }
+        await reloadTruck();
       } else {
         setAssignedTruck(null);
       }
@@ -236,7 +239,7 @@ const DriverTruckPage = () => {
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <p className="text-sm text-blue-800">
-          ℹ️ Araç belgelerini güncelleyebilirsiniz. Yüklediğiniz belgeler yöneticiniz tarafından onaylandıktan sonra geçerli olacak.
+          ℹ️ Yüklediğiniz araç belgeleri anında sisteme kaydedilir ve yöneticiniz tarafından görüntülenebilir.
         </p>
       </div>
 
@@ -251,6 +254,7 @@ const DriverTruckPage = () => {
           submittedByName={fullName}
           currentExpiryDate={uploadCurrentExpiry}
           previousImageUrl={null}
+          onUploadSuccess={reloadTruck}
         />
       )}
     </div>

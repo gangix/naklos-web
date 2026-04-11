@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useData } from '../../contexts/DataContext';
 import { DOCUMENT_UPLOAD, COMMON } from '../../constants/text';
+import { truckApi } from '../../services/api';
 import FileUpload from './FileUpload';
 import type { Document, DocumentCategory } from '../../types';
 
@@ -14,6 +15,7 @@ interface DocumentUploadModalProps {
   submittedByName: string;
   currentExpiryDate: string | null;
   previousImageUrl: string | null;
+  onUploadSuccess?: () => void;
 }
 
 const DocumentUploadModal = ({
@@ -26,6 +28,7 @@ const DocumentUploadModal = ({
   submittedByName,
   currentExpiryDate,
   previousImageUrl,
+  onUploadSuccess,
 }: DocumentUploadModalProps) => {
   const { submitDocument } = useData();
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
@@ -47,6 +50,29 @@ const DocumentUploadModal = ({
     setIsSubmitting(true);
 
     try {
+      // Truck documents go straight to the backend — the existing
+      // TruckDocumentService records the audit trail (uploadedBy /
+      // uploadedAt) and updates the truck's denormalized expiry date
+      // for this document type, so the manager sees the new date the
+      // next time they load the trucks page or detail view.
+      if (relatedType === 'truck') {
+        if (!selectedDocument.rawFile) {
+          alert('❌ Dosya hazırlanamadı. Lütfen tekrar deneyin.');
+          return;
+        }
+        await truckApi.uploadMyTruckDocument(
+          selectedDocument.rawFile,
+          category,
+          suggestedExpiryDate
+        );
+        alert('✓ Belge yüklendi. Yöneticiniz görüntüleyebilir.');
+        onUploadSuccess?.();
+        handleClose();
+        return;
+      }
+
+      // Driver documents (license / SRC / CPC) still go through the
+      // local mock — wiring them to the backend is a separate task.
       submitDocument({
         category,
         relatedType,
@@ -66,6 +92,7 @@ const DocumentUploadModal = ({
       alert('✓ Belge başarıyla gönderildi! Yöneticiniz inceleyecek.');
       handleClose();
     } catch (error) {
+      console.error('Document upload failed:', error);
       alert('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
@@ -153,14 +180,18 @@ const DocumentUploadModal = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Belgede yazan geçerlilik tarihini girin. Yöneticiniz kontrol edecek.
+              {relatedType === 'truck'
+                ? 'Belgede yazan geçerlilik tarihini girin.'
+                : 'Belgede yazan geçerlilik tarihini girin. Yöneticiniz kontrol edecek.'}
             </p>
           </div>
 
           {/* Info note */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-xs text-blue-800">
-              ℹ️ Belge yöneticiniz tarafından onaylandıktan sonra sistemde güncellenecek.
+              {relatedType === 'truck'
+                ? 'ℹ️ Belge anında kaydedilecek ve yöneticiniz görüntüleyebilecek.'
+                : 'ℹ️ Belge yöneticiniz tarafından onaylandıktan sonra sistemde güncellenecek.'}
             </p>
           </div>
         </div>

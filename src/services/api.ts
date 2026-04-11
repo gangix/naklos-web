@@ -41,6 +41,28 @@ async function apiCall<T>(
   return text ? JSON.parse(text) : ({} as T);
 }
 
+/**
+ * Multipart POST for file uploads. Browsers must set the Content-Type header
+ * themselves so the multipart boundary is included, so we can't reuse apiCall.
+ */
+async function multipartCall<T>(endpoint: string, formData: FormData): Promise<T> {
+  const headers: Record<string, string> = {};
+  if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
+
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: 'POST',
+    headers,
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`API Error: ${response.status} - ${error}`);
+  }
+
+  return response.json();
+}
+
 // Fleet API
 export const fleetApi = {
   create: (data: any) =>
@@ -209,29 +231,12 @@ export const driverApi = {
     apiCall(`/drivers/${driverId}/certificates/${certificateId}`, {
       method: 'DELETE',
     }),
-  uploadDocument: async (driverId: string, file: File, documentType: string, expiryDate?: string) => {
+  uploadDocument: (driverId: string, file: File, documentType: string, expiryDate?: string) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('documentType', documentType);
-    if (expiryDate) {
-      formData.append('expiryDate', expiryDate);
-    }
-
-    const headers: Record<string, string> = {};
-    if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
-
-    const response = await fetch(`${API_BASE_URL}/drivers/${driverId}/documents/upload`, {
-      method: 'POST',
-      headers,
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`API Error: ${response.status} - ${error}`);
-    }
-
-    return response.json();
+    if (expiryDate) formData.append('expiryDate', expiryDate);
+    return multipartCall<any>(`/drivers/${driverId}/documents/upload`, formData);
   },
   getDocuments: (driverId: string) =>
     apiCall(`/drivers/${driverId}/documents`),
@@ -274,29 +279,12 @@ export const truckApi = {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
-  uploadDocument: async (truckId: string, file: File, documentType: string, expiryDate?: string) => {
+  uploadDocument: (truckId: string, file: File, documentType: string, expiryDate?: string) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('documentType', documentType);
-    if (expiryDate) {
-      formData.append('expiryDate', expiryDate);
-    }
-
-    const headers: Record<string, string> = {};
-    if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
-
-    const response = await fetch(`${API_BASE_URL}/trucks/${truckId}/documents/upload`, {
-      method: 'POST',
-      headers,
-      body: formData,
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`API Error: ${response.status} - ${error}`);
-    }
-
-    return response.json();
+    if (expiryDate) formData.append('expiryDate', expiryDate);
+    return multipartCall<any>(`/trucks/${truckId}/documents/upload`, formData);
   },
   getDocuments: (truckId: string) =>
     apiCall(`/trucks/${truckId}/documents`),
@@ -323,6 +311,14 @@ export const truckApi = {
   updateStatus: (id: string, status: string) =>
     apiCall(`/trucks/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
   getMyTruck: () => apiCall<any>('/trucks/my-truck'),
+  getMyTruckDocuments: () => apiCall<any[]>('/trucks/my-truck/documents'),
+  uploadMyTruckDocument: (file: File, documentType: string, expiryDate?: string) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('documentType', documentType);
+    if (expiryDate) formData.append('expiryDate', expiryDate);
+    return multipartCall<any>('/trucks/my-truck/documents/upload', formData);
+  },
   updateMyTruckLocation: (latitude: number, longitude: number, city: string) =>
     apiCall('/trucks/my-truck/location', {
       method: 'PUT',

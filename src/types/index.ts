@@ -151,9 +151,10 @@ export interface Document {
   name: string;
   type: 'delivery-confirmation' | 'other';
   mimeType: string;
-  dataUrl: string; // base64 encoded
+  dataUrl: string; // base64 encoded — used for previews
   uploadedAt: string;
   size: number;
+  rawFile?: File; // original File handle, used when uploading multipart to the backend
 }
 
 export interface ProfessionalCertificate {
