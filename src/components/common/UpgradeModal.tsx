@@ -21,9 +21,11 @@ interface UpgradeModalProps {
   onClose: () => void;
   resource: string;
   currentPlan: string;
+  /** Custom message for feature gates (e.g., bulk import). If set, replaces the limit-based subtitle. */
+  message?: string;
 }
 
-const UpgradeModal = ({ isOpen, onClose, resource, currentPlan }: UpgradeModalProps) => {
+const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: UpgradeModalProps) => {
   if (!isOpen) return null;
 
   const current = PLAN_DISPLAY[currentPlan] ?? PLAN_DISPLAY.FREE;
@@ -58,9 +60,13 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan }: UpgradeModalPr
                 Plan Limitine Ulaştınız
               </h2>
               <p className="text-sm text-gray-600 mt-1">
-                {current.name} planınızda en fazla{' '}
-                <span className="font-semibold">{currentLimit} {resource}</span>{' '}
-                ekleyebilirsiniz.
+                {message ?? (
+                  <>
+                    {current.name} planınızda en fazla{' '}
+                    <span className="font-semibold">{currentLimit} {resource}</span>{' '}
+                    ekleyebilirsiniz.
+                  </>
+                )}
               </p>
             </div>
           </div>

@@ -28,6 +28,7 @@ const DriversPage = () => {
   const [addDriverModalOpen, setAddDriverModalOpen] = useState(false);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [upgradeMessage, setUpgradeMessage] = useState<string | undefined>();
 
   // Calculate warnings for drivers based on document expiry dates
   const warnings = useMemo(() => {
@@ -271,13 +272,19 @@ const DriversPage = () => {
         </h1>
         <div className="flex gap-2">
           <button
-            onClick={() => plan === 'FREE' ? setUpgradeModalOpen(true) : setBulkImportOpen(true)}
+            onClick={() => {
+              if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+              else setBulkImportOpen(true);
+            }}
             className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
           >
             <Download className="w-4 h-4 inline -mt-0.5" /> İçe Aktar
           </button>
           <button
-            onClick={() => maxDrivers !== -1 && drivers.length >= maxDrivers ? setUpgradeModalOpen(true) : setAddDriverModalOpen(true)}
+            onClick={() => {
+              if (maxDrivers !== -1 && drivers.length >= maxDrivers) { setUpgradeMessage(undefined); setUpgradeModalOpen(true); }
+              else setAddDriverModalOpen(true);
+            }}
             className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
           >
             + Sürücü Ekle
@@ -362,13 +369,19 @@ const DriversPage = () => {
                 </p>
                 <div className="flex gap-2 justify-center flex-wrap">
                   <button
-                    onClick={() => plan === 'FREE' ? setUpgradeModalOpen(true) : setBulkImportOpen(true)}
+                    onClick={() => {
+              if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+              else setBulkImportOpen(true);
+            }}
                     className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
                   >
                     <Download className="w-4 h-4 inline -mt-0.5" /> Excel ile İçe Aktar
                   </button>
                   <button
-                    onClick={() => maxDrivers !== -1 && drivers.length >= maxDrivers ? setUpgradeModalOpen(true) : setAddDriverModalOpen(true)}
+                    onClick={() => {
+              if (maxDrivers !== -1 && drivers.length >= maxDrivers) { setUpgradeMessage(undefined); setUpgradeModalOpen(true); }
+              else setAddDriverModalOpen(true);
+            }}
                     className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700"
                   >
                     + İlk Sürücüyü Ekle
@@ -641,9 +654,10 @@ const DriversPage = () => {
 
       <UpgradeModal
         isOpen={upgradeModalOpen}
-        onClose={() => setUpgradeModalOpen(false)}
+        onClose={() => { setUpgradeModalOpen(false); setUpgradeMessage(undefined); }}
         resource="sürücü"
         currentPlan={plan}
+        message={upgradeMessage}
       />
     </div>
   );

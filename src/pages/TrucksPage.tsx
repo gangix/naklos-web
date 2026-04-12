@@ -25,6 +25,7 @@ const TrucksPage = () => {
   const [addTruckModalOpen, setAddTruckModalOpen] = useState(false);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
+  const [upgradeMessage, setUpgradeMessage] = useState<string | undefined>();
 
   // Calculate expiry warnings for trucks
   const warnings = useMemo(() => {
@@ -302,13 +303,19 @@ const TrucksPage = () => {
         </h1>
         <div className="flex gap-2">
           <button
-            onClick={() => plan === 'FREE' ? setUpgradeModalOpen(true) : setBulkImportOpen(true)}
+            onClick={() => {
+              if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+              else setBulkImportOpen(true);
+            }}
             className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
           >
             <Download className="w-4 h-4 inline -mt-0.5" /> İçe Aktar
           </button>
           <button
-            onClick={() => maxTrucks !== -1 && trucks.length >= maxTrucks ? setUpgradeModalOpen(true) : setAddTruckModalOpen(true)}
+            onClick={() => {
+              if (maxTrucks !== -1 && trucks.length >= maxTrucks) { setUpgradeMessage(undefined); setUpgradeModalOpen(true); }
+              else setAddTruckModalOpen(true);
+            }}
             className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
           >
             + Araç Ekle
@@ -663,9 +670,10 @@ const TrucksPage = () => {
 
       <UpgradeModal
         isOpen={upgradeModalOpen}
-        onClose={() => setUpgradeModalOpen(false)}
+        onClose={() => { setUpgradeModalOpen(false); setUpgradeMessage(undefined); }}
         resource="araç"
         currentPlan={plan}
+        message={upgradeMessage}
       />
     </div>
   );
