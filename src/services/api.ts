@@ -206,6 +206,8 @@ export const clientApi = {
 // Driver API — fleet is derived from JWT
 export const driverApi = {
   getMe: () => apiCall<any>('/drivers/me'),
+  updateMyContact: (data: { phone?: string; email?: string }) =>
+    apiCall('/drivers/me/contact', { method: 'PUT', body: JSON.stringify(data) }),
   getMyDocuments: () => apiCall<any[]>('/drivers/me/documents'),
   uploadMyDocument: (file: File, documentType: string, expiryDate?: string) => {
     const formData = new FormData();

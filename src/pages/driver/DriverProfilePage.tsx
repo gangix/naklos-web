@@ -15,6 +15,10 @@ const DriverProfilePage = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editPhone, setEditPhone] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [saving, setSaving] = useState(false);
 
   // Real data from API
   const [allDrivers, setAllDrivers] = useState<any[]>([]);
@@ -159,6 +163,26 @@ const DriverProfilePage = () => {
     }
   };
 
+  const startEditing = () => {
+    setEditPhone(driver.phone || '');
+    setEditEmail(driver.email || '');
+    setIsEditing(true);
+  };
+
+  const handleSaveContact = async () => {
+    setSaving(true);
+    try {
+      await driverApi.updateMyContact({ phone: editPhone, email: editEmail });
+      await loadCurrentDriver();
+      setIsEditing(false);
+      toast.success('İletişim bilgileri güncellendi');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string) => {
     setUploadCategory(category);
     setUploadCurrentExpiry(currentExpiry);
@@ -263,10 +287,17 @@ const DriverProfilePage = () => {
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{PROFILE.personalInfo}</h2>
+          {!isEditing && (
+            <button
+              onClick={startEditing}
+              className="text-sm text-primary-600 font-medium"
+            >
+              Düzenle
+            </button>
+          )}
         </div>
 
         <div className="space-y-3">
-          {/* Full Name */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.fullName}</p>
             <p className="text-sm font-medium text-gray-900">
@@ -274,35 +305,61 @@ const DriverProfilePage = () => {
             </p>
           </div>
 
-          {/* Phone */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.phone}</p>
-            <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
+            {isEditing ? (
+              <input
+                type="tel"
+                value={editPhone}
+                onChange={(e) => setEditPhone(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            ) : (
+              <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
+            )}
           </div>
 
-          {/* Email */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.email}</p>
-            <p className="text-sm font-medium text-gray-900">{driver.email || '-'}</p>
+            {isEditing ? (
+              <input
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              />
+            ) : (
+              <p className="text-sm font-medium text-gray-900">{driver.email || '-'}</p>
+            )}
           </div>
 
-          {/* License Number */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseNumber}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
           </div>
 
-          {/* License Class */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseClass}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mt-2">
-            <p className="text-xs text-blue-700">
-              İletişim bilgilerinizi değiştirmek için yöneticinize başvurun
-            </p>
-          </div>
+          {isEditing && (
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={handleSaveContact}
+                disabled={saving}
+                className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:opacity-50"
+              >
+                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              >
+                İptal
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
