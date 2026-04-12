@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Truck, User, MapPin } from 'lucide-react';
+import { Truck, User, MapPin, MapPinOff } from 'lucide-react';
 import { useLocationSharing } from '../../contexts/LocationSharingContext';
 
 const DriverBottomNav = () => {
@@ -39,17 +39,20 @@ const DriverBottomNav = () => {
         <button
           onClick={toggle}
           className={`flex flex-col items-center justify-center flex-1 h-full transition-colors relative ${
-            enabled ? 'text-green-600' : 'text-gray-500 hover:text-gray-900'
+            enabled ? 'text-green-600' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           <div className="relative">
-            <MapPin className={`w-5 h-5 ${sending ? 'animate-pulse' : ''}`} />
+            {enabled
+              ? <MapPin className={`w-5 h-5 ${sending ? 'animate-pulse' : ''}`} />
+              : <MapPinOff className="w-5 h-5" />
+            }
             {enabled && (
               <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full" />
             )}
           </div>
           <span className="text-[10px] mt-1 font-medium">
-            {sending ? 'Gönderiliyor' : enabled ? 'Konum Açık' : 'Konum'}
+            {sending ? 'Gönderiliyor' : enabled ? 'Konum Açık' : 'Konum Kapalı'}
           </span>
         </button>
       </div>
