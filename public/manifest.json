@@ -1,0 +1,24 @@
+{
+  "name": "Naklos - Filo Yönetimi",
+  "short_name": "Naklos",
+  "description": "KOBİ filoları için araç, sürücü ve belge yönetim platformu",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#005cc0",
+  "icons": [
+    {
+      "src": "/naklos-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/naklos-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
