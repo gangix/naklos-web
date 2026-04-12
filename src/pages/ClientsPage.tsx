@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Building2 } from 'lucide-react';
 import { CLIENTS } from '../constants/text';
 import { useClients } from '../hooks/useApiData';
 import AddClientModal from '../components/common/AddClientModal';
@@ -53,9 +54,21 @@ const ClientsPage = () => {
       </div>
 
       <div className="space-y-3">
-        {filteredClients.length === 0 ? (
+        {filteredClients.length === 0 && clients.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <Building2 className="w-16 h-16 text-gray-300 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-1">Henüz müşteri eklenmemiş</h3>
+            <p className="text-sm text-gray-500 mb-6">İlk müşterinizi ekleyerek başlayın</p>
+            <button
+              onClick={() => setAddClientModalOpen(true)}
+              className="px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+            >
+              Müşteri Ekle
+            </button>
+          </div>
+        ) : filteredClients.length === 0 && clients.length > 0 ? (
           <div className="bg-white rounded-lg p-6 text-center text-gray-500">
-            Henüz müşteri eklenmedi
+            Bu filtreye uygun sonuç bulunamadı
           </div>
         ) : (
           filteredClients.map((client: any) => (

@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
-import { PROFILE, DRIVERS, COMMON } from '../../constants/text';
+import { PROFILE, DRIVERS } from '../../constants/text';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import { formatDate } from '../../utils/format';
@@ -12,7 +12,6 @@ import type { DocumentCategory } from '../../types';
 const DriverProfilePage = () => {
   const { user, loginAsDriver, loginAsManager, logout } = useAuth();
   const { fleetId } = useFleet();
-  const [isEditing, setIsEditing] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
@@ -24,14 +23,6 @@ const DriverProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [showDriverList, setShowDriverList] = useState(false);
 
-  // Edit form state - MUST be declared before any conditional returns
-  const [editForm, setEditForm] = useState({
-    phone: '',
-    email: '',
-    emergencyName: '',
-    emergencyPhone: '',
-    emergencyRelationship: '',
-  });
 
   // Dev-only: load all drivers so the "switch user" panel has options.
   // Drivers don't have permission to call /drivers, so this would 403 in
@@ -54,18 +45,7 @@ const DriverProfilePage = () => {
     }
   }, [driver?.id]);
 
-  // Update editForm when driver loads
-  useEffect(() => {
-    if (driver) {
-      setEditForm({
-        phone: driver.phone || '',
-        email: driver.email || '',
-        emergencyName: driver.emergencyContact?.name || '',
-        emergencyPhone: driver.emergencyContact?.phone || '',
-        emergencyRelationship: driver.emergencyContact?.relationship || '',
-      });
-    }
-  }, [driver]);
+  // Note: editForm sync removed — driver self-editing is not supported yet.
 
   const loadDrivers = async () => {
     if (!fleetId) return;
@@ -179,12 +159,6 @@ const DriverProfilePage = () => {
     }
   };
 
-  const handleSave = () => {
-    // TODO: Update driver info via DataContext
-    toast.success('Bilgiler kaydedildi');
-    setIsEditing(false);
-  };
-
   const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string) => {
     setUploadCategory(category);
     setUploadCurrentExpiry(currentExpiry);
@@ -289,18 +263,10 @@ const DriverProfilePage = () => {
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{PROFILE.personalInfo}</h2>
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-sm text-primary-600 font-medium"
-            >
-              {COMMON.edit}
-            </button>
-          )}
         </div>
 
         <div className="space-y-3">
-          {/* Full Name (read-only) */}
+          {/* Full Name */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.fullName}</p>
             <p className="text-sm font-medium text-gray-900">
@@ -308,69 +274,40 @@ const DriverProfilePage = () => {
             </p>
           </div>
 
-          {/* Phone (editable) */}
+          {/* Phone */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.phone}</p>
-            {isEditing ? (
-              <input
-                type="tel"
-                value={editForm.phone}
-                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            ) : (
-              <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
-            )}
+            <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
           </div>
 
-          {/* Email (editable) */}
+          {/* Email */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.email}</p>
-            {isEditing ? (
-              <input
-                type="email"
-                value={editForm.email}
-                onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            ) : (
-              <p className="text-sm font-medium text-gray-900">{driver.email || '-'}</p>
-            )}
+            <p className="text-sm font-medium text-gray-900">{driver.email || '-'}</p>
           </div>
 
-          {/* License Number (read-only) */}
+          {/* License Number */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseNumber}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
           </div>
 
-          {/* License Class (read-only) */}
+          {/* License Class */}
           <div>
             <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseClass}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
           </div>
 
-          {isEditing && (
-            <div className="flex gap-2 pt-2">
-              <button
-                onClick={handleSave}
-                className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
-              >
-                {COMMON.save}
-              </button>
-              <button
-                onClick={() => setIsEditing(false)}
-                className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
-              >
-                {COMMON.cancel}
-              </button>
-            </div>
-          )}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 mt-2">
+            <p className="text-xs text-blue-700">
+              İletişim bilgilerinizi değiştirmek için yöneticinize başvurun
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Emergency Contact Card */}
-      {!isEditing && driver.emergencyContact && (
+      {driver.emergencyContact && (
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{DRIVERS.emergencyContact}</h2>
           <div className="space-y-3">

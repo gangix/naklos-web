@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Truck, Users, Building2, AlertTriangle, ChevronRight } from 'lucide-react';
 import { truckApi, driverApi, clientApi } from '../services/api';
@@ -32,25 +32,29 @@ const DashboardPage = () => {
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const loadAll = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const [trucksPage, driversPage, clientsPage] = await Promise.all([
+        truckApi.getByFleet(0, 1000),
+        driverApi.getByFleet(0, 1000),
+        clientApi.getByFleet(0, 1000),
+      ]);
+      setTrucks(trucksPage.content as TruckType[]);
+      setDrivers(driversPage.content as Driver[]);
+      setClients(clientsPage.content as Client[]);
+    } catch (err) {
+      console.error('Error loading dashboard data:', err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const loadAll = async () => {
-      try {
-        setLoading(true);
-        const [trucksPage, driversPage, clientsPage] = await Promise.all([
-          truckApi.getByFleet(0, 1000),
-          driverApi.getByFleet(0, 1000),
-          clientApi.getByFleet(0, 1000),
-        ]);
-        setTrucks(trucksPage.content as TruckType[]);
-        setDrivers(driversPage.content as Driver[]);
-        setClients(clientsPage.content as Client[]);
-      } catch (error) {
-        console.error('Error loading dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadAll();
   }, []);
 
@@ -128,6 +132,25 @@ const DashboardPage = () => {
     return (
       <div className="p-4 flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 pb-20 max-w-4xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">Filom</h1>
+        <div className="bg-white rounded-xl shadow-sm border border-red-200 p-8 text-center">
+          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">Veriler yüklenemedi</h3>
+          <p className="text-sm text-gray-500 mb-6">Bir hata oluştu. Lütfen tekrar deneyin.</p>
+          <button
+            onClick={loadAll}
+            className="px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
+          >
+            Tekrar Dene
+          </button>
+        </div>
       </div>
     );
   }
