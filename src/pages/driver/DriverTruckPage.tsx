@@ -189,50 +189,44 @@ const DriverTruckPage = () => {
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.documents}</h2>
 
-        {assignedTruck.compulsoryInsuranceExpiry && (
-          <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.compulsoryInsurance}</h3>
-              <button
-                onClick={() => handleDocumentUpdate('compulsory-insurance', assignedTruck.compulsoryInsuranceExpiry)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                Güncelle
-              </button>
-            </div>
-            <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.compulsoryInsuranceExpiry} />
+        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-gray-900">{TRUCKS.compulsoryInsurance}</h3>
+            <button
+              onClick={() => handleDocumentUpdate('compulsory-insurance', assignedTruck.compulsoryInsuranceExpiry)}
+              className="text-sm text-primary-600 font-medium"
+            >
+              {assignedTruck.compulsoryInsuranceExpiry ? 'Güncelle' : 'Yükle'}
+            </button>
           </div>
-        )}
+          <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.compulsoryInsuranceExpiry} />
+        </div>
 
-        {assignedTruck.comprehensiveInsuranceExpiry && (
-          <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.comprehensiveInsurance}</h3>
-              <button
-                onClick={() => handleDocumentUpdate('comprehensive-insurance', assignedTruck.comprehensiveInsuranceExpiry)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                Güncelle
-              </button>
-            </div>
-            <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.comprehensiveInsuranceExpiry} />
+        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-gray-900">{TRUCKS.comprehensiveInsurance}</h3>
+            <button
+              onClick={() => handleDocumentUpdate('comprehensive-insurance', assignedTruck.comprehensiveInsuranceExpiry)}
+              className="text-sm text-primary-600 font-medium"
+            >
+              {assignedTruck.comprehensiveInsuranceExpiry ? 'Güncelle' : 'Yükle'}
+            </button>
           </div>
-        )}
+          <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.comprehensiveInsuranceExpiry} />
+        </div>
 
-        {assignedTruck.inspectionExpiry && (
-          <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.inspection}</h3>
-              <button
-                onClick={() => handleDocumentUpdate('inspection', assignedTruck.inspectionExpiry)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                Güncelle
-              </button>
-            </div>
-            <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.inspectionExpiry} />
+        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-gray-900">{TRUCKS.inspection}</h3>
+            <button
+              onClick={() => handleDocumentUpdate('inspection', assignedTruck.inspectionExpiry)}
+              className="text-sm text-primary-600 font-medium"
+            >
+              {assignedTruck.inspectionExpiry ? 'Güncelle' : 'Yükle'}
+            </button>
           </div>
-        )}
+          <ExpiryBadge label={TRUCKS.expiryDate} date={assignedTruck.inspectionExpiry} />
+        </div>
       </div>
 
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

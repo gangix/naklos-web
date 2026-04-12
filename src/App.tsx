@@ -113,7 +113,7 @@ function App() {
                 : <FleetSetupPage />
           }
         >
-          <Route index element={<Navigate to="/driver/profile" replace />} />
+          <Route index element={<Navigate to="/driver/truck" replace />} />
           <Route path="truck" element={<DriverTruckPage />} />
           <Route path="profile" element={<DriverProfilePage />} />
         </Route>

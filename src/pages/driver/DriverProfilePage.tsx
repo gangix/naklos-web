@@ -417,41 +417,71 @@ const DriverProfilePage = () => {
           </div>
         </div>
 
-        {/* Certificates */}
-        {driver.certificates && driver.certificates.length > 0 && (
-          <>
-            {driver.certificates.map((cert, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 shadow-sm mb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-bold text-gray-900">
-                    {cert.type === 'SRC' ? DRIVERS.srcCertificate : DRIVERS.cpcCertificate}
-                  </h3>
-                  <button
-                    onClick={() => handleDocumentUpdate(cert.type.toLowerCase() as DocumentCategory, cert.expiryDate)}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    Güncelle
-                  </button>
-                </div>
+        {/* SRC Certificate */}
+        {(() => {
+          const srcCert = driver.certificates?.find((c: any) => c.type === 'SRC');
+          return (
+            <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-gray-900">{DRIVERS.srcCertificate}</h3>
+                <button
+                  onClick={() => handleDocumentUpdate('src', srcCert?.expiryDate || null)}
+                  className="text-sm text-primary-600 font-medium"
+                >
+                  {srcCert ? 'Güncelle' : 'Yükle'}
+                </button>
+              </div>
+              {srcCert ? (
                 <div className="space-y-2">
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{DRIVERS.certificateNumber}</p>
-                    <p className="text-sm font-medium text-gray-900">{cert.number}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.issueDate}</p>
-                    <p className="text-sm font-medium text-gray-900">{formatDate(cert.issueDate)}</p>
+                    <p className="text-sm font-medium text-gray-900">{srcCert.number}</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{DRIVERS.expiryDate}</p>
-                    <p className="text-sm font-medium text-gray-900">{formatDate(cert.expiryDate)}</p>
+                    <p className="text-sm font-medium text-gray-900">{formatDate(srcCert.expiryDate)}</p>
                   </div>
-                  <ExpiryBadge label="" date={cert.expiryDate} />
+                  <ExpiryBadge label="" date={srcCert.expiryDate} />
                 </div>
+              ) : (
+                <p className="text-sm text-gray-500">Henüz yüklenmemiş</p>
+              )}
+            </div>
+          );
+        })()}
+
+        {/* CPC Certificate */}
+        {(() => {
+          const cpcCert = driver.certificates?.find((c: any) => c.type === 'CPC');
+          return (
+            <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-sm font-bold text-gray-900">{DRIVERS.cpcCertificate}</h3>
+                <button
+                  onClick={() => handleDocumentUpdate('cpc', cpcCert?.expiryDate || null)}
+                  className="text-sm text-primary-600 font-medium"
+                >
+                  {cpcCert ? 'Güncelle' : 'Yükle'}
+                </button>
               </div>
-            ))}
-          </>
-        )}
+              {cpcCert ? (
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.certificateNumber}</p>
+                    <p className="text-sm font-medium text-gray-900">{cpcCert.number}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.expiryDate}</p>
+                    <p className="text-sm font-medium text-gray-900">{formatDate(cpcCert.expiryDate)}</p>
+                  </div>
+                  <ExpiryBadge label="" date={cpcCert.expiryDate} />
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">Henüz yüklenmemiş</p>
+              )}
+            </div>
+          );
+        })()}
       </div>
 
       {/* Upload history */}
