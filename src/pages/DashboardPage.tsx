@@ -156,14 +156,14 @@ const DashboardPage = () => {
   }
 
   const cards = [
-    { label: 'Araçlar', count: trucks.length, icon: Truck, color: 'blue', path: '/manager/trucks' },
-    { label: 'Sürücüler', count: drivers.length, icon: Users, color: 'green', path: '/manager/drivers' },
-    { label: 'Müşteriler', count: clients.length, icon: Building2, color: 'purple', path: '/manager/clients' },
+    { label: 'Araçlar', count: trucks.length, icon: Truck, accent: 'bg-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', path: '/manager/trucks' },
+    { label: 'Sürücüler', count: drivers.length, icon: Users, accent: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-600', path: '/manager/drivers' },
+    { label: 'Müşteriler', count: clients.length, icon: Building2, accent: 'bg-violet-500', bg: 'bg-violet-50', text: 'text-violet-600', path: '/manager/clients' },
   ];
 
   return (
-    <div className="p-4 pb-20 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Filom</h1>
+    <div className="pb-20 max-w-4xl mx-auto">
+      <h1 className="text-2xl font-extrabold text-gray-900 mb-6 tracking-tight">Filom</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {cards.map((card) => {
@@ -172,13 +172,18 @@ const DashboardPage = () => {
             <button
               key={card.path}
               onClick={() => navigate(card.path)}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 text-left border border-gray-200 group"
+              className="bg-white rounded-xl hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200 p-5 text-left border border-gray-100 group hover:-translate-y-0.5 overflow-hidden relative"
             >
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-3 bg-${card.color}-100 text-${card.color}-600`}>
-                <Icon className="w-7 h-7" />
+              <div className={`absolute left-0 top-0 bottom-0 w-1 ${card.accent} rounded-l-xl`} />
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{card.count}</p>
+                  <p className="text-sm text-gray-500 mt-0.5 font-medium">{card.label}</p>
+                </div>
+                <div className={`w-12 h-12 rounded-xl ${card.bg} ${card.text} flex items-center justify-center`}>
+                  <Icon className="w-6 h-6" />
+                </div>
               </div>
-              <p className="text-3xl font-bold text-gray-900">{card.count}</p>
-              <p className="text-sm text-gray-600 mt-1">{card.label}</p>
             </button>
           );
         })}
