@@ -1,4 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Component } from 'react';
+import type { ReactNode, ErrorInfo } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { useFleet } from './contexts/FleetContext';
 import { useAuth } from './contexts/AuthContext';
 import ManagerLayout from './components/layout/ManagerLayout';
@@ -29,12 +31,62 @@ import DriverTruckPage from './pages/driver/DriverTruckPage';
 
 const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
 
+/* ---------- Error Boundary ---------- */
+interface EBProps { children: ReactNode }
+interface EBState { hasError: boolean }
+
+class ErrorBoundary extends Component<EBProps, EBState> {
+  constructor(props: EBProps) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(): EBState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('ErrorBoundary caught:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, textAlign: 'center' }}>
+          <h1 style={{ fontSize: 24, marginBottom: 12 }}>Bir hata olustu</h1>
+          <p style={{ marginBottom: 24, color: '#666' }}>Beklenmeyen bir hata meydana geldi.</p>
+          <button
+            onClick={() => window.location.reload()}
+            style={{ padding: '10px 24px', fontSize: 16, borderRadius: 8, border: 'none', background: '#2563eb', color: '#fff', cursor: 'pointer' }}
+          >
+            Sayfayi Yenile
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+/* ---------- 404 Page ---------- */
+function NotFoundPage() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, textAlign: 'center' }}>
+      <h1 style={{ fontSize: 48, marginBottom: 8 }}>404</h1>
+      <p style={{ fontSize: 18, marginBottom: 24, color: '#666' }}>Sayfa bulunamadi</p>
+      <Link to="/" style={{ padding: '10px 24px', fontSize: 16, borderRadius: 8, background: '#2563eb', color: '#fff', textDecoration: 'none' }}>
+        Ana Sayfaya Don
+      </Link>
+    </div>
+  );
+}
+
 function App() {
   const { fleetId } = useFleet();
   const { isDriver, isFleetManager, authenticated, user } = useAuth();
 
   // Debug: log routing decision so we can see why a user lands where they do
-  if (authenticated) {
+  if (import.meta.env.DEV && authenticated) {
     console.log('[Naklos] Auth state:', {
       authenticated,
       isDriver,
@@ -77,50 +129,51 @@ function App() {
 
   return (
     <BrowserRouter basename={BASE}>
-      <Routes>
-        <Route path="/privacy" element={<PrivacyPolicyPage />} />
-        <Route path="/terms" element={<TermsOfServicePage />} />
-        <Route path="/" element={<Navigate to={homeRoute} replace />} />
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
-        <Route
-          path="/manager"
-          element={
-            isFleetManager
-              ? <ManagerLayout />
-              : isDriver
-                ? <Navigate to="/driver" replace />
-                : <FleetSetupPage />
-          }
-        >
-          <Route index element={<Navigate to="/manager/dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="trucks" element={<TrucksPage />} />
-          <Route path="trucks/:truckId" element={<TruckDetailPage />} />
-          <Route path="drivers" element={<DriversPage />} />
-          <Route path="drivers/:driverId" element={<DriverDetailPage />} />
-          <Route path="clients" element={<ClientsPage />} />
-          <Route path="clients/:clientId" element={<ClientDetailPage />} />
-          <Route path="more" element={<MorePage />} />
-        </Route>
+          <Route
+            path="/manager"
+            element={
+              isFleetManager
+                ? <ManagerLayout />
+                : isDriver
+                  ? <Navigate to="/driver" replace />
+                  : <FleetSetupPage />
+            }
+          >
+            <Route index element={<Navigate to="/manager/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="trucks" element={<TrucksPage />} />
+            <Route path="trucks/:truckId" element={<TruckDetailPage />} />
+            <Route path="drivers" element={<DriversPage />} />
+            <Route path="drivers/:driverId" element={<DriverDetailPage />} />
+            <Route path="clients" element={<ClientsPage />} />
+            <Route path="clients/:clientId" element={<ClientDetailPage />} />
+            <Route path="more" element={<MorePage />} />
+          </Route>
 
-        <Route
-          path="/driver"
-          element={
-            isDriver
-              ? <DriverLayout />
-              : isFleetManager
-                ? <Navigate to="/manager/dashboard" replace />
-                : <FleetSetupPage />
-          }
-        >
-          <Route index element={<Navigate to="/driver/truck" replace />} />
-          <Route path="truck" element={<DriverTruckPage />} />
-          <Route path="profile" element={<DriverProfilePage />} />
-        </Route>
+          <Route
+            path="/driver"
+            element={
+              isDriver
+                ? <DriverLayout />
+                : isFleetManager
+                  ? <Navigate to="/manager/dashboard" replace />
+                  : <FleetSetupPage />
+            }
+          >
+            <Route index element={<Navigate to="/driver/truck" replace />} />
+            <Route path="truck" element={<DriverTruckPage />} />
+            <Route path="profile" element={<DriverProfilePage />} />
+          </Route>
 
-        {/* Catch-all: unknown routes → FleetSetupPage if role-less, else home */}
-        <Route path="*" element={<Navigate to={homeRoute} replace />} />
-      </Routes>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </ErrorBoundary>
     </BrowserRouter>
   );
 }

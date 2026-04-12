@@ -265,8 +265,22 @@ export const driverApi = {
     apiCall(`/drivers/documents/${documentId}/expiry?expiryDate=${expiryDate}`, {
       method: 'PUT',
     }),
-  downloadDocument: (documentId: string) => {
-    window.open(`${API_BASE_URL}/drivers/documents/${documentId}/download`, '_blank');
+  downloadDocument: async (documentId: string) => {
+    const headers: Record<string, string> = {};
+    if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
+
+    const response = await fetch(`${API_BASE_URL}/drivers/documents/${documentId}/download`, { headers });
+    if (!response.ok) throw new Error('Download failed');
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   },
   deleteDocument: (documentId: string) =>
     apiCall(`/drivers/documents/${documentId}`, {
@@ -313,8 +327,22 @@ export const truckApi = {
     apiCall(`/trucks/documents/${documentId}/expiry?expiryDate=${expiryDate}`, {
       method: 'PUT',
     }),
-  downloadDocument: (documentId: string) => {
-    window.open(`${API_BASE_URL}/trucks/documents/${documentId}/download`, '_blank');
+  downloadDocument: async (documentId: string) => {
+    const headers: Record<string, string> = {};
+    if (keycloak.token) headers['Authorization'] = `Bearer ${keycloak.token}`;
+
+    const response = await fetch(`${API_BASE_URL}/trucks/documents/${documentId}/download`, { headers });
+    if (!response.ok) throw new Error('Download failed');
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   },
   deleteDocument: (documentId: string) =>
     apiCall(`/trucks/documents/${documentId}`, {
