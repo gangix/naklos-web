@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Building2, Truck, Users, ChevronRight } from 'lucide-react';
+import { Building2, Truck, Users, ChevronRight, LogOut } from 'lucide-react';
 import { adminApi } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
 
 interface AdminStats {
   totalFleets: number;
@@ -22,6 +23,7 @@ interface FleetSummary {
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [fleets, setFleets] = useState<FleetSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +84,16 @@ const AdminDashboardPage = () => {
 
   return (
     <div className="p-4 pb-20 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Yonetim Paneli</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Yonetim Paneli</h1>
+        <button
+          onClick={logout}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Cikis</span>
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {statCards.map((card) => {
