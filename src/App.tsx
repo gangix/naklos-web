@@ -17,6 +17,8 @@ import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminFleetDetailPage from './pages/AdminFleetDetailPage';
 import CookieBanner from './components/common/CookieBanner';
 import WhatsAppButton from './components/common/WhatsAppButton';
 
@@ -113,7 +115,9 @@ function App() {
   // The fleet_manager role is only assigned when the user creates a fleet,
   // so !isFleetManager means they genuinely don't have a fleet yet — no need
   // to wait for fleetApi.getMy() to confirm.
-  const needsFleetSetup = !isDriver && !isFleetManager;
+  const isSystemAdmin = user?.keycloakRoles?.includes('system_admin') ?? false;
+
+  const needsFleetSetup = !isSystemAdmin && !isDriver && !isFleetManager;
   if (needsFleetSetup) {
     return (
       <BrowserRouter basename={BASE}>
@@ -126,7 +130,7 @@ function App() {
     );
   }
 
-  const homeRoute = isDriver ? '/driver' : isFleetManager ? '/manager/dashboard' : '/';
+  const homeRoute = isSystemAdmin ? '/admin' : isDriver ? '/driver' : isFleetManager ? '/manager/dashboard' : '/';
 
   return (
     <BrowserRouter basename={BASE}>
@@ -135,6 +139,13 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="/" element={<Navigate to={homeRoute} replace />} />
+
+          {isSystemAdmin && (
+            <Route path="/admin">
+              <Route index element={<AdminDashboardPage />} />
+              <Route path="fleets/:fleetId" element={<AdminFleetDetailPage />} />
+            </Route>
+          )}
 
           <Route
             path="/manager"

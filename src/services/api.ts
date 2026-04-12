@@ -403,6 +403,13 @@ export const tripTemplateApi = {
     apiCall(`/trip-templates/${id}`, { method: 'DELETE' }),
 };
 
+// Admin API — platform-level admin endpoints
+export const adminApi = {
+  getStats: () => apiCall<any>('/admin/stats'),
+  getFleets: () => apiCall<any[]>('/admin/fleets'),
+  getFleetDetails: (fleetId: string) => apiCall<any>(`/admin/fleets/${fleetId}/details`),
+};
+
 // Invoice API — fleet is derived from JWT
 export const invoiceApi = {
   create: (data: { clientId: string; clientName: string; tripIds: string[]; dueDate: string }) =>
