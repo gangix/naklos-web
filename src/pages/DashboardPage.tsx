@@ -163,7 +163,10 @@ const DashboardPage = () => {
 
   return (
     <div className="pb-20 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-extrabold text-gray-900 mb-6 tracking-tight">Filom</h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Filom</h1>
+        <p className="text-sm text-gray-500 mt-1">{new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {cards.map((card) => {
@@ -180,8 +183,8 @@ const DashboardPage = () => {
                   <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{card.count}</p>
                   <p className="text-sm text-gray-500 mt-0.5 font-medium">{card.label}</p>
                 </div>
-                <div className={`w-12 h-12 rounded-xl ${card.bg} ${card.text} flex items-center justify-center`}>
-                  <Icon className="w-6 h-6" />
+                <div className={`w-10 h-10 rounded-lg ${card.bg} ${card.text} flex items-center justify-center`}>
+                  <Icon className="w-5 h-5" />
                 </div>
               </div>
             </button>
@@ -211,7 +214,7 @@ const DashboardPage = () => {
                 }
                 className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3"
               >
-                <div className="w-9 h-9 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center flex-shrink-0">
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${group.entity === 'truck' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'}`}>
                   {group.entity === 'truck' ? (
                     <Truck className="w-4 h-4" />
                   ) : (
@@ -254,6 +257,7 @@ const DashboardPage = () => {
           <p className="text-sm font-medium text-green-900">
             Tüm belgeler güncel
           </p>
+          <p className="text-xs text-green-700 mt-1">Son 30 gün içinde yenilenmesi gereken belge yok</p>
         </div>
       )}
     </div>

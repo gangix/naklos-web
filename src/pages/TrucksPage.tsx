@@ -275,7 +275,7 @@ const TrucksPage = () => {
   if (trucksLoading) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">{TRUCKS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{TRUCKS.title}</h1>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
@@ -289,7 +289,7 @@ const TrucksPage = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-gray-900">{TRUCKS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{TRUCKS.title}</h1>
         <div className="flex gap-2">
           <button
             onClick={() => setBulkImportOpen(true)}
@@ -299,7 +299,7 @@ const TrucksPage = () => {
           </button>
           <button
             onClick={() => setAddTruckModalOpen(true)}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
           >
             + Araç Ekle
           </button>
@@ -307,7 +307,7 @@ const TrucksPage = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4 border-b border-gray-200">
+      <div className="flex gap-2 mb-4 border-b border-gray-100">
         <button
           onClick={() => setTab('list')}
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
@@ -419,7 +419,7 @@ const TrucksPage = () => {
                   key={truck.id}
                   to={`/manager/trucks/${truck.id}`}
                   className={`block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
-                    hasWarning ? 'border-2 border-red-500' : 'border border-gray-200'
+                    hasWarning ? 'border-2 border-red-500' : 'border border-gray-100'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
@@ -595,7 +595,7 @@ const TrucksPage = () => {
             completedSubmissions.map((submission) => (
               <div
                 key={submission.id}
-                className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 opacity-60"
+                className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 opacity-60"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">

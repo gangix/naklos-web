@@ -23,7 +23,7 @@ const ClientsPage = () => {
   if (clientsLoading) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">{CLIENTS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{CLIENTS.title}</h1>
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
         </div>
@@ -34,10 +34,10 @@ const ClientsPage = () => {
   return (
     <div className="p-4 pb-20">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-gray-900">{CLIENTS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{CLIENTS.title}</h1>
         <button
           onClick={() => setAddClientModalOpen(true)}
-          className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
         >
           + Müşteri Ekle
         </button>

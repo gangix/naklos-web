@@ -323,7 +323,7 @@ const DriverDetailPage = () => {
           ←
         </button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">{fullName}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{fullName}</h1>
           <select
             value={driver.status}
             onChange={(e) => handleStatusChange(e.target.value)}
@@ -334,13 +334,6 @@ const DriverDetailPage = () => {
             <option value="OFF_DUTY">İzinli</option>
           </select>
         </div>
-        <button
-          onClick={handleDeleteDriver}
-          disabled={deleting}
-          className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-        >
-          {deleting ? 'Siliniyor...' : 'Sil'}
-        </button>
       </div>
 
       {/* Contact info card */}
@@ -664,6 +657,17 @@ const DriverDetailPage = () => {
           </div>
         </div>
       )}
+
+      {/* Delete driver */}
+      <div className="mt-6">
+        <button
+          onClick={handleDeleteDriver}
+          disabled={deleting}
+          className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+        >
+          {deleting ? 'Siliniyor...' : 'Sürücüyü Sil'}
+        </button>
+      </div>
 
       {/* Document Update Modal */}
       {uploadModalOpen && uploadCategory && (

@@ -196,7 +196,7 @@ const DriverProfilePage = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{PROFILE.title}</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{PROFILE.title}</h1>
             <p className="text-sm text-gray-600 mt-1">
               {driver.firstName} {driver.lastName}
             </p>

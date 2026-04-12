@@ -224,7 +224,7 @@ const TruckDetailPage = () => {
           ←
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{truck.plateNumber}</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{truck.plateNumber}</h1>
           <p className="text-sm text-gray-600 mt-1">{truck.type}</p>
         </div>
       </div>

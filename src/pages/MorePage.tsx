@@ -111,7 +111,7 @@ const MorePage = () => {
     <div className="p-4 pb-20">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Diğer</h1>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Diğer</h1>
         <div className="flex items-center justify-between mt-2">
           <div>
             <p className="text-sm text-gray-600">Giriş: <span className="font-medium">{user?.name}</span></p>

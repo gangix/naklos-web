@@ -75,7 +75,7 @@ const DriverTruckPage = () => {
   if (!assignedTruck) {
     return (
       <div className="p-4 pb-20">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Aracım</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-6">Aracım</h1>
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
           <TruckIcon className="w-10 h-10 text-blue-400 mx-auto mb-3" />
           <h2 className="text-lg font-bold text-gray-900 mb-2">Henüz araç atanmadı</h2>
@@ -89,7 +89,7 @@ const DriverTruckPage = () => {
 
   return (
     <div className="p-4 pb-20">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">Aracım</h1>
+      <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">Aracım</h1>
 
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.basicInfo}</h2>
@@ -106,7 +106,7 @@ const DriverTruckPage = () => {
       </div>
 
       {/* Location status (controls are in bottom nav) */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-lg p-4 shadow-sm mb-4 border-l-4 border-l-primary-500">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-bold text-gray-900">Konum Durumu</h2>
           <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full ${
