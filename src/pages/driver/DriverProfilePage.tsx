@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { AlertTriangle, Wrench } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
@@ -109,7 +110,7 @@ const DriverProfilePage = () => {
     return (
       <div className="p-4 pb-20">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <h2 className="font-bold text-yellow-900 mb-2">⚠️ Sürücü Profili Bulunamadı</h2>
+          <h2 className="font-bold text-yellow-900 mb-2 flex items-center gap-1.5"><AlertTriangle className="w-5 h-5 text-orange-500" /> Sürücü Profili Bulunamadı</h2>
           <p className="text-sm text-yellow-700 mb-3">
             Hesabınız henüz bir sürücü kaydına bağlanmamış. Lütfen yöneticinizden sizi sürücü olarak eklemesini isteyin.
           </p>
@@ -119,7 +120,7 @@ const DriverProfilePage = () => {
         {showDriverList && import.meta.env.DEV && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-              <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>
+              <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
               <p className="text-xs text-gray-600 mt-1">Test için herhangi bir sürücü olarak giriş yapın</p>
             </div>
 
@@ -206,7 +207,7 @@ const DriverProfilePage = () => {
                 onClick={() => setShowDriverList(!showDriverList)}
                 className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
               >
-                {showDriverList ? 'Kapat' : '🔧 Kullanıcı Değiştir'}
+                {showDriverList ? 'Kapat' : 'Kullanıcı Değiştir'}
               </button>
             )}
             <button
@@ -223,7 +224,7 @@ const DriverProfilePage = () => {
       {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>
+            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
             <p className="text-xs text-gray-600 mt-1">Test için herhangi bir kullanıcı olarak giriş yapın</p>
           </div>
 

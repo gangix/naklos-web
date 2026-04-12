@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Camera } from 'lucide-react';
 import type { Document } from '../../types';
 import { convertFileToDocument, MAX_FILE_SIZE, formatFileSize } from '../../utils/fileUpload';
 import { DOCUMENTS } from '../../constants/text';
@@ -80,7 +81,7 @@ const FileUpload = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }:
           </span>
         ) : (
           <span className="flex items-center justify-center gap-2">
-            <span className="text-2xl">📷</span>
+            <Camera className="w-6 h-6" />
             {DOCUMENTS.uploadPhoto}
           </span>
         )}

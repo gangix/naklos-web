@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, MapPin, Truck as TruckIcon } from 'lucide-react';
 import { TRUCKS } from '../constants/text';
 import { useTrucks } from '../hooks/useApiData';
 import { useData } from '../contexts/DataContext';
@@ -294,7 +295,7 @@ const TrucksPage = () => {
             onClick={() => setBulkImportOpen(true)}
             className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
           >
-            📥 İçe Aktar
+            <Download className="w-4 h-4 inline -mt-0.5" /> İçe Aktar
           </button>
           <button
             onClick={() => setAddTruckModalOpen(true)}
@@ -350,7 +351,7 @@ const TrucksPage = () => {
           <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
             <button
               onClick={() => setFilter('all')}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
+              className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
                 filter === 'all'
                   ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 text-gray-700'
@@ -360,7 +361,7 @@ const TrucksPage = () => {
             </button>
             <button
               onClick={() => setFilter('available')}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
+              className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
                 filter === 'available'
                   ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 text-gray-700'
@@ -370,7 +371,7 @@ const TrucksPage = () => {
             </button>
             <button
               onClick={() => setFilter('maintenance')}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${
+              className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
                 filter === 'maintenance'
                   ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 text-gray-700'
@@ -384,7 +385,7 @@ const TrucksPage = () => {
           <div className="space-y-3">
             {filteredTrucks.length === 0 && trucks.length === 0 && (
               <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-10 text-center">
-                <div className="text-5xl mb-3">🚛</div>
+                <TruckIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                 <h3 className="text-lg font-bold text-gray-900 mb-2">Henüz araç eklenmedi</h3>
                 <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">
                   Filonuzdaki araçları eklemeye başlayın. Tek tek ekleyebilir veya Excel dosyanızdan
@@ -395,7 +396,7 @@ const TrucksPage = () => {
                     onClick={() => setBulkImportOpen(true)}
                     className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
                   >
-                    📥 Excel ile İçe Aktar
+                    <Download className="w-4 h-4 inline -mt-0.5" /> Excel ile İçe Aktar
                   </button>
                   <button
                     onClick={() => setAddTruckModalOpen(true)}
@@ -429,7 +430,7 @@ const TrucksPage = () => {
                       </div>
                       {hasUrgentWarning(truck.id) && (
                         <div className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded-md">
-                          <span className="text-base">🚨</span>
+                          <AlertCircle className="w-4 h-4 text-red-500" />
                           <span className="text-xs font-medium text-red-700">Uyarı</span>
                         </div>
                       )}
@@ -456,7 +457,7 @@ const TrucksPage = () => {
                         }}
                         className="mt-1 inline-flex items-center gap-1 text-xs text-primary-600 hover:text-primary-700 hover:underline"
                       >
-                        📍 {truck.lastPosition.city}
+                        <MapPin className="w-3.5 h-3.5 inline -mt-0.5" /> {truck.lastPosition.city}
                         {truck.lastPosition.updatedAt && (
                           <span className="text-gray-400">
                             · {formatRelativeTime(truck.lastPosition.updatedAt)}
@@ -478,7 +479,7 @@ const TrucksPage = () => {
                               : 'bg-yellow-50 text-yellow-700'
                           }`}
                         >
-                          {warning.severity === 'error' ? '🚨' : '⚠️'} {warning.message}
+                          <span className="inline-flex items-center gap-1">{warning.severity === 'error' ? <AlertCircle className="w-3.5 h-3.5 text-red-500 inline flex-shrink-0" /> : <AlertTriangle className="w-3.5 h-3.5 text-orange-500 inline flex-shrink-0" />} {warning.message}</span>
                         </div>
                       ))}
                     </div>
@@ -495,7 +496,7 @@ const TrucksPage = () => {
         <div className="space-y-4">
           {pendingSubmissions.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg">
-              <div className="text-6xl mb-4">✅</div>
+              <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">Onay bekleyen belge yok</p>
               <p className="text-sm text-gray-600">Tüm belge güncellemeleri kontrol edildi.</p>
             </div>
@@ -515,7 +516,7 @@ const TrucksPage = () => {
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg">📄</span>
+                              <FileText className="w-5 h-5 text-gray-500" />
                               <h3 className="text-sm font-bold text-gray-900">
                                 {getCategoryLabel(submission.category)}
                               </h3>
@@ -553,7 +554,7 @@ const TrucksPage = () => {
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="text-lg">📄</span>
+                              <FileText className="w-5 h-5 text-gray-500" />
                               <h3 className="text-sm font-bold text-gray-900">
                                 {getCategoryLabel(submission.category)}
                               </h3>
@@ -586,7 +587,7 @@ const TrucksPage = () => {
         <div className="space-y-3">
           {completedSubmissions.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg">
-              <div className="text-6xl mb-4">📋</div>
+              <ClipboardList className="w-14 h-14 text-gray-300 mx-auto mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">Geçmiş kayıt yok</p>
               <p className="text-sm text-gray-600">Onaylanan veya reddedilen belgeler burada görünecek.</p>
             </div>
@@ -599,7 +600,7 @@ const TrucksPage = () => {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">📄</span>
+                      <FileText className="w-5 h-5 text-gray-500" />
                       <h3 className="text-sm font-bold text-gray-900">
                         {getCategoryLabel(submission.category)}
                       </h3>

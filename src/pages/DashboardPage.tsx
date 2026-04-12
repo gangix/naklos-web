@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, Building2, AlertTriangle, ChevronRight } from 'lucide-react';
+import { Truck, Users, Building2, AlertTriangle, CheckCircle, ChevronRight } from 'lucide-react';
 import { truckApi, driverApi, clientApi } from '../services/api';
 import type { Truck as TruckType, Driver, Client } from '../types';
 
@@ -245,7 +245,7 @@ const DashboardPage = () => {
 
       {warningGroups.length === 0 && !loading && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-          <div className="text-4xl mb-2">✓</div>
+          <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
           <p className="text-sm font-medium text-green-900">
             Tüm belgeler güncel
           </p>

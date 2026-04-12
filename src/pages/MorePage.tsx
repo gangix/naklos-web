@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { User, Users, Wrench } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useFleet } from '../contexts/FleetContext';
 import { driverApi, fleetApi } from '../services/api';
@@ -91,14 +92,14 @@ const MorePage = () => {
 
   const menuItems = [
     {
-      icon: '👤',
+      icon: <User className="w-6 h-6 text-green-600" />,
       title: 'Sürücüler',
       description: 'Sürücü listesi ve belgeler',
       path: '/manager/drivers',
       color: 'bg-green-100',
     },
     {
-      icon: '👥',
+      icon: <Users className="w-6 h-6 text-blue-600" />,
       title: 'Müşteriler',
       description: 'Müşteri listesi',
       path: '/manager/clients',
@@ -192,7 +193,7 @@ const MorePage = () => {
       {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900">🔧 Geliştirici Girişi</h2>
+            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
             <p className="text-xs text-gray-600 mt-1">Test için herhangi bir kullanıcı olarak giriş yapın</p>
           </div>
 
@@ -264,7 +265,7 @@ const MorePage = () => {
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 ${item.color} rounded-lg flex items-center justify-center text-2xl`}>
+                <div className={`w-12 h-12 ${item.color} rounded-lg flex items-center justify-center`}>
                   {item.icon}
                 </div>
                 <div>

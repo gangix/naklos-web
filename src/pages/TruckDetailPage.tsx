@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { MapPin } from 'lucide-react';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { TRUCKS } from '../constants/text';
@@ -403,7 +404,7 @@ const TruckDetailPage = () => {
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.location}</h2>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">📍</span>
+            <MapPin className="w-6 h-6 text-primary-600" />
             <div>
               <p className="text-sm font-medium text-gray-900">{truck.lastPosition.city}</p>
               <p className="text-xs text-gray-500">

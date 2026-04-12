@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { FileText, Pencil, Upload } from 'lucide-react';
 import { truckApi, driverApi } from '../../services/api';
 import type { DocumentCategory } from '../../types';
 
@@ -224,7 +225,7 @@ const SimpleDocumentUpdateModal = ({
           {/* File Upload Section */}
           <div className="border-2 border-primary-200 bg-primary-50 rounded-lg p-4 space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900">📤 Yeni Belge Yükle</h3>
+              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><Upload className="w-5 h-5" /> Yeni Belge Yükle</h3>
               <p className="text-xs text-gray-600 mt-1">Yeni bir belge dosyası yüklemek için bu bölümü kullanın</p>
             </div>
 
@@ -270,7 +271,7 @@ const SimpleDocumentUpdateModal = ({
           {(
           <div className="border-2 border-blue-200 bg-blue-50 rounded-lg p-4 space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900">📄 Yüklenmiş Belgeler</h3>
+              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><FileText className="w-5 h-5" /> Yüklenmiş Belgeler</h3>
               <p className="text-xs text-gray-600 mt-1">
                 Mevcut belge tarihlerini güncellemek için <strong>"Tarih Düzenle"</strong> butonuna tıklayın
               </p>
@@ -288,7 +289,7 @@ const SimpleDocumentUpdateModal = ({
                       // Edit mode
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
-                          <span className="text-lg">✏️</span>
+                          <Pencil className="w-4 h-4 text-gray-600" />
                           <p className="text-sm font-medium text-gray-900">{doc.fileName}</p>
                         </div>
                         <div className="bg-white rounded p-2 border border-yellow-300">

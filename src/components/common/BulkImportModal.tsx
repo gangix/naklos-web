@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { toast } from 'sonner';
+import { AlertTriangle, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { truckApi, driverApi, type BulkImportResult } from '../../services/api';
 
@@ -322,7 +323,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                 onClick={downloadTemplate}
                 className="w-full mb-4 px-4 py-3 border-2 border-primary-600 text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-colors"
               >
-                📥 Şablonu İndir (.xlsx)
+                <Download className="w-5 h-5 inline -mt-0.5" /> Şablonu İndir (.xlsx)
               </button>
 
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
@@ -401,7 +402,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                   {missingRequiredFields.length > 0 && (
                     <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
                       <p className="text-sm text-orange-900 font-medium">
-                        ⚠️ Eksik zorunlu alanlar: {missingRequiredFields.map((f) => f.label).join(', ')}
+                        <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4 text-orange-500 inline flex-shrink-0" /> Eksik zorunlu alanlar: {missingRequiredFields.map((f) => f.label).join(', ')}</span>
                       </p>
                       <p className="text-xs text-orange-700 mt-1">
                         Devam etmek için yukarıdaki listeden sütunları seçin.

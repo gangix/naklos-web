@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Truck as TruckIcon } from 'lucide-react';
 import { driverApi, truckApi } from '../../services/api';
 import { TRUCKS } from '../../constants/text';
 import { formatRelativeTime } from '../../utils/format';
@@ -76,7 +77,7 @@ const DriverTruckPage = () => {
       <div className="p-4 pb-20">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Aracım</h1>
         <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-          <div className="text-4xl mb-3">🚛</div>
+          <TruckIcon className="w-10 h-10 text-blue-400 mx-auto mb-3" />
           <h2 className="text-lg font-bold text-gray-900 mb-2">Henüz araç atanmadı</h2>
           <p className="text-sm text-gray-600">
             Size bir araç atanmamış. Lütfen yöneticinizle iletişime geçin.

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+import { AlertTriangle, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { formatDate } from '../../utils/format';
 import { WARNINGS } from '../../constants/text';
 
@@ -32,28 +34,28 @@ const ExpiryBadge = ({ label, date, warningDays = 30 }: ExpiryBadgeProps) => {
   // Determine badge color and message
   let badgeColor = '';
   let badgeText = '';
-  let badgeIcon = '';
+  let badgeIcon: ReactNode = null;
 
   if (daysRemaining < 0) {
     // Expired
     badgeColor = 'bg-red-100 text-red-700 border border-red-200';
     badgeText = WARNINGS.expired;
-    badgeIcon = '❌';
+    badgeIcon = <XCircle className="w-3.5 h-3.5" />;
   } else if (daysRemaining <= 7) {
     // Critical: 1-7 days
     badgeColor = 'bg-orange-100 text-orange-700 border border-orange-200';
-    badgeText = `⚠️ ${daysRemaining} ${WARNINGS.daysRemaining}`;
-    badgeIcon = '';
+    badgeText = `${daysRemaining} ${WARNINGS.daysRemaining}`;
+    badgeIcon = <AlertTriangle className="w-3.5 h-3.5" />;
   } else if (daysRemaining <= warningDays) {
     // Warning: 8-30 days
     badgeColor = 'bg-yellow-100 text-yellow-700 border border-yellow-200';
-    badgeText = `⏰ ${daysRemaining} ${WARNINGS.daysRemaining}`;
-    badgeIcon = '';
+    badgeText = `${daysRemaining} ${WARNINGS.daysRemaining}`;
+    badgeIcon = <Clock className="w-3.5 h-3.5" />;
   } else {
     // Valid: More than warning threshold
     badgeColor = 'bg-green-100 text-green-700 border border-green-200';
     badgeText = WARNINGS.valid;
-    badgeIcon = '✓';
+    badgeIcon = <CheckCircle className="w-3.5 h-3.5" />;
   }
 
   return (
@@ -61,7 +63,7 @@ const ExpiryBadge = ({ label, date, warningDays = 30 }: ExpiryBadgeProps) => {
       <p className="text-sm text-gray-600 mb-2">{label}</p>
       <p className="text-sm font-medium text-gray-900 mb-2">{formatDate(date)}</p>
       <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${badgeColor}`}>
-        {badgeIcon && <span>{badgeIcon}</span>}
+        {badgeIcon}
         <span>{badgeText}</span>
       </div>
     </div>
