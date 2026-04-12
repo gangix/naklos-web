@@ -18,14 +18,14 @@ const ManagerTopNav = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 bg-white border-b border-gray-200/80">
-      {/* Top row: logo + hamburger/logout */}
+    <header className="fixed top-0 left-0 right-0 z-30 bg-slate-900">
+      {/* Top row: logo + nav + logout */}
       <div className="h-16 px-4 lg:px-6 flex items-center justify-between max-w-6xl mx-auto">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-sm shadow-primary-500/20">
+          <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
             <Truck className="w-4 h-4 text-white" />
           </div>
-          <span className="text-lg font-extrabold tracking-tight text-gray-900">Naklos</span>
+          <span className="text-lg font-extrabold tracking-tight text-white">Naklos</span>
         </div>
 
         {/* Desktop nav inline */}
@@ -39,8 +39,8 @@ const ManagerTopNav = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'bg-white/15 text-white'
+                      : 'text-slate-400 hover:text-white hover:bg-white/10'
                   }`
                 }
               >
@@ -59,10 +59,10 @@ const ManagerTopNav = () => {
         </nav>
 
         <div className="flex items-center gap-2">
-          <div className="hidden md:block w-px h-6 bg-gray-200 mx-1" />
+          <div className="hidden md:block w-px h-6 bg-slate-700 mx-1" />
           <button
             onClick={logout}
-            className="hidden md:flex items-center gap-2 px-3 py-2 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
+            className="hidden md:flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-white/10 rounded-lg transition-colors font-medium"
           >
             <LogOut className="w-4 h-4" />
             <span>Çıkış</span>
@@ -71,16 +71,16 @@ const ManagerTopNav = () => {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors"
           >
-            {mobileOpen ? <X className="w-5 h-5 text-gray-600" /> : <Menu className="w-5 h-5 text-gray-600" />}
+            {mobileOpen ? <X className="w-5 h-5 text-slate-300" /> : <Menu className="w-5 h-5 text-slate-300" />}
           </button>
         </div>
       </div>
 
       {/* Mobile dropdown nav */}
       {mobileOpen && (
-        <nav className="md:hidden border-t border-gray-100 bg-white px-4 pb-3 pt-1 shadow-lg shadow-gray-200/50">
+        <nav className="md:hidden border-t border-slate-700 bg-slate-900 px-4 pb-3 pt-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -91,8 +91,8 @@ const ManagerTopNav = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                      ? 'bg-white/15 text-white'
+                      : 'text-slate-400 hover:bg-white/10 hover:text-white'
                   }`
                 }
               >
@@ -110,7 +110,7 @@ const ManagerTopNav = () => {
           })}
           <button
             onClick={logout}
-            className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 transition-colors mt-1"
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-white/10 transition-colors mt-1"
           >
             <LogOut className="w-5 h-5" />
             <span>Çıkış Yap</span>
