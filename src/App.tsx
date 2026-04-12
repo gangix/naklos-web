@@ -82,7 +82,7 @@ function NotFoundPage() {
 }
 
 function App() {
-  const { fleetId, isLoading: fleetLoading } = useFleet();
+  const { fleetId } = useFleet();
   const { isDriver, isFleetManager, authenticated, user } = useAuth();
 
   // Debug: log routing decision so we can see why a user lands where they do
@@ -110,21 +110,10 @@ function App() {
     );
   }
 
-  // Fleet data is still loading from the backend — show a spinner so we
-  // don't flash the FleetSetupPage for users who already have a fleet.
-  if (isFleetManager && !fleetId && fleetLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 text-sm">Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Authenticated but not a driver and no fleet (after loading finished) → onboarding.
-  const needsFleetSetup = !isDriver && !fleetId;
+  // The fleet_manager role is only assigned when the user creates a fleet,
+  // so !isFleetManager means they genuinely don't have a fleet yet — no need
+  // to wait for fleetApi.getMy() to confirm.
+  const needsFleetSetup = !isDriver && !isFleetManager;
   if (needsFleetSetup) {
     return (
       <BrowserRouter basename={BASE}>
