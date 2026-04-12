@@ -410,6 +410,11 @@ export const adminApi = {
   getStats: () => apiCall<any>('/admin/stats'),
   getFleets: () => apiCall<any[]>('/admin/fleets'),
   getFleetDetails: (fleetId: string) => apiCall<any>(`/admin/fleets/${fleetId}/details`),
+  changePlan: (fleetId: string, plan: string) =>
+    apiCall(`/admin/fleets/${fleetId}/plan`, {
+      method: 'PUT',
+      body: JSON.stringify({ plan }),
+    }),
 };
 
 // Invoice API — fleet is derived from JWT

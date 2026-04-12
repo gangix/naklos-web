@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Truck, Users } from 'lucide-react';
+import { toast } from 'sonner';
 import { adminApi } from '../services/api';
 
 interface FleetDetail {
@@ -9,6 +10,7 @@ interface FleetDetail {
   email: string;
   phone: string;
   taxId: string;
+  plan?: string;
   trucks: Array<{
     id: string;
     plateNumber: string;
@@ -63,21 +65,22 @@ const AdminFleetDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadFleet = async () => {
     if (!fleetId) return;
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const data = await adminApi.getFleetDetails(fleetId);
-        setFleet(data);
-      } catch (err: any) {
-        console.error('Error loading fleet details:', err);
-        setError(err.message ?? 'Filo detaylari yuklenemedi');
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadData();
+    try {
+      setLoading(true);
+      const data = await adminApi.getFleetDetails(fleetId);
+      setFleet(data);
+    } catch (err: any) {
+      console.error('Error loading fleet details:', err);
+      setError(err.message ?? 'Filo detaylari yuklenemedi');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadFleet();
   }, [fleetId]);
 
   if (loading) {
@@ -130,6 +133,27 @@ const AdminFleetDetailPage = () => {
           <div>
             <span className="text-gray-500">Vergi No:</span>{' '}
             <span className="text-gray-900">{fleet.taxId || '-'}</span>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 mb-1">Plan</p>
+            <select
+              value={fleet.plan || 'FREE'}
+              onChange={async (e) => {
+                try {
+                  await adminApi.changePlan(fleetId!, e.target.value);
+                  toast.success('Plan güncellendi');
+                  loadFleet();
+                } catch (err) {
+                  toast.error('Plan güncellenirken hata oluştu');
+                }
+              }}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium"
+            >
+              <option value="FREE">Başlangıç (Ücretsiz)</option>
+              <option value="PROFESSIONAL">Profesyonel (499 TL/ay)</option>
+              <option value="BUSINESS">İşletme (999 TL/ay)</option>
+              <option value="ENTERPRISE">Kurumsal</option>
+            </select>
           </div>
         </div>
       </div>

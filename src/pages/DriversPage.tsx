@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, HardHat, Truck as TruckIcon } from 'lucide-react';
 import { DRIVERS } from '../constants/text';
 import { useDrivers } from '../hooks/useApiData';
+import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
 import { formatDate } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
@@ -13,7 +14,9 @@ import type { DriverStatus, DocumentSubmission, TruckAssignmentRequest } from '.
 
 const DriversPage = () => {
   const { data: drivers, loading: driversLoading, refresh } = useDrivers();
+  const { plan } = useFleet();
   const { documentSubmissions, truckAssignmentRequests } = useData();
+  const maxDrivers = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
   const [filter, setFilter] = useState<DriverStatus | 'all'>('all');
@@ -258,7 +261,12 @@ const DriversPage = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{DRIVERS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+          {DRIVERS.title}
+          <span className="text-sm font-medium text-gray-400 ml-2">
+            ({drivers.length}{maxDrivers !== -1 ? `/${maxDrivers}` : ''})
+          </span>
+        </h1>
         <div className="flex gap-2">
           <button
             onClick={() => setBulkImportOpen(true)}

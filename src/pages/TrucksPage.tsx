@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, MapPin, Truck as TruckIcon } from 'lucide-react';
 import { TRUCKS } from '../constants/text';
 import { useTrucks } from '../hooks/useApiData';
+import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
 import { formatDate, formatRelativeTime } from '../utils/format';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
@@ -12,7 +13,9 @@ import type { TruckStatus, DocumentSubmission } from '../types';
 
 const TrucksPage = () => {
   const { data: trucks, loading: trucksLoading, refresh } = useTrucks();
+  const { plan } = useFleet();
   const { documentSubmissions } = useData();
+  const maxTrucks = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
   const [filter, setFilter] = useState<TruckStatus | 'all'>('all');
@@ -289,7 +292,12 @@ const TrucksPage = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{TRUCKS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+          {TRUCKS.title}
+          <span className="text-sm font-medium text-gray-400 ml-2">
+            ({trucks.length}{maxTrucks !== -1 ? `/${maxTrucks}` : ''})
+          </span>
+        </h1>
         <div className="flex gap-2">
           <button
             onClick={() => setBulkImportOpen(true)}

@@ -10,11 +10,13 @@ interface Fleet {
   email: string;
   phone: string;
   defaultCurrency: string;
+  plan: string;
 }
 
 interface FleetContextType {
   fleetId: string | null;
   fleet: Fleet | null;
+  plan: string;
   setFleetId: (id: string) => void;
   isLoading: boolean;
 }
@@ -84,7 +86,7 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
   }, [fleetId, isFleetManager]);
 
   return (
-    <FleetContext.Provider value={{ fleetId, fleet, setFleetId, isLoading }}>
+    <FleetContext.Provider value={{ fleetId, fleet, plan: fleet?.plan ?? 'FREE', setFleetId, isLoading }}>
       {children}
     </FleetContext.Provider>
   );

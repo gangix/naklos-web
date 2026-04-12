@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Building2 } from 'lucide-react';
 import { CLIENTS } from '../constants/text';
 import { useClients } from '../hooks/useApiData';
+import { useFleet } from '../contexts/FleetContext';
 import AddClientModal from '../components/common/AddClientModal';
 
 const ClientsPage = () => {
   const navigate = useNavigate();
   const { data: clients, loading: clientsLoading, refresh } = useClients();
+  const { plan } = useFleet();
+  const maxClients = { FREE: 3, PROFESSIONAL: -1, BUSINESS: -1, ENTERPRISE: -1 }[plan] ?? 3;
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientModalOpen, setAddClientModalOpen] = useState(false);
 
@@ -34,7 +37,12 @@ const ClientsPage = () => {
   return (
     <div className="p-4 pb-20">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{CLIENTS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+          {CLIENTS.title}
+          <span className="text-sm font-medium text-gray-400 ml-2">
+            ({clients.length}{maxClients !== -1 ? `/${maxClients}` : ''})
+          </span>
+        </h1>
         <button
           onClick={() => setAddClientModalOpen(true)}
           className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"

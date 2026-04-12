@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, Truck, Users, Building2, Settings, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useFleet } from '../../contexts/FleetContext';
 import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
 
 const ManagerTopNav = () => {
   const { logout } = useAuth();
+  const { plan } = useFleet();
   const warningCount = useDocumentWarnings();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -26,6 +28,16 @@ const ManagerTopNav = () => {
             <Truck className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-extrabold tracking-tight text-white">Naklos</span>
+          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ml-2 ${
+            plan === 'PROFESSIONAL' ? 'bg-blue-500/20 text-blue-300' :
+            plan === 'BUSINESS' ? 'bg-violet-500/20 text-violet-300' :
+            plan === 'ENTERPRISE' ? 'bg-amber-500/20 text-amber-300' :
+            'bg-white/10 text-slate-400'
+          }`}>
+            {plan === 'PROFESSIONAL' ? 'Profesyonel' :
+             plan === 'BUSINESS' ? 'İşletme' :
+             plan === 'ENTERPRISE' ? 'Kurumsal' : 'Başlangıç'}
+          </span>
         </div>
 
         {/* Desktop nav inline */}
