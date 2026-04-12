@@ -2,6 +2,17 @@ import keycloak from '../auth/keycloak';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
 
+function getUserFriendlyMessage(status: number): string {
+  switch (status) {
+    case 400: return 'Geçersiz istek';
+    case 401: return 'Oturum süreniz doldu, lütfen tekrar giriş yapın';
+    case 403: return 'Bu işlem için yetkiniz yok';
+    case 404: return 'Kayıt bulunamadı';
+    case 429: return 'Çok fazla istek gönderdiniz, lütfen bekleyin';
+    default:  return status >= 500 ? 'Sunucu hatası, lütfen tekrar deneyin' : `İstek başarısız (${status})`;
+  }
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;
@@ -32,8 +43,9 @@ async function apiCall<T>(
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`API Error: ${response.status} - ${error}`);
+    const errorBody = await response.text();
+    console.error(`API Error ${response.status} ${options?.method ?? 'GET'} ${endpoint}:`, errorBody);
+    throw new Error(getUserFriendlyMessage(response.status));
   }
 
   // Handle empty responses (e.g., 204 No Content for DELETE)
@@ -56,8 +68,9 @@ async function multipartCall<T>(endpoint: string, formData: FormData): Promise<T
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`API Error: ${response.status} - ${error}`);
+    const errorBody = await response.text();
+    console.error(`API Error ${response.status} POST ${endpoint}:`, errorBody);
+    throw new Error(getUserFriendlyMessage(response.status));
   }
 
   return response.json();

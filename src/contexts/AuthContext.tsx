@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import keycloak from '../auth/keycloak';
 import { driverApi } from '../services/api';
 
@@ -32,6 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [initialized, setInitialized] = useState(false);
   const [user, setUserState] = useState<User | null>(null);
+  const refreshIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     keycloak
@@ -62,16 +63,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             driverId,
             keycloakRoles: roles,
           });
+
+          refreshIntervalRef.current = setInterval(() => {
+            if (keycloak.authenticated) {
+              keycloak.updateToken(60).catch((err) => {
+                // Only logout if the refresh token is actually expired/invalid,
+                // not on transient network errors
+                if (err instanceof Error && err.message?.includes('network')) {
+                  console.warn('Token refresh failed due to network error, will retry', err);
+                } else if (keycloak.isTokenExpired(0)) {
+                  console.error('Refresh token expired, logging out');
+                  keycloak.logout();
+                } else {
+                  console.warn('Token refresh failed, will retry on next interval', err);
+                }
+              });
+            }
+          }, 30000);
         }
         setInitialized(true);
-
-        setInterval(() => {
-          if (keycloak.authenticated) {
-            keycloak.updateToken(60).catch(() => keycloak.logout());
-          }
-        }, 30000);
       })
       .catch(() => setInitialized(true));
+
+    return () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+        refreshIntervalRef.current = null;
+      }
+    };
   }, []);
 
   if (!initialized) {
@@ -104,7 +123,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isDriver: hasDriverRole,
     isFleetManager: hasManagerRole,
     hasBothRoles: hasDriverRole && hasManagerRole,
-    logout: () => keycloak.logout({ redirectUri: window.location.origin }),
+    logout: () => {
+      if (refreshIntervalRef.current) {
+        clearInterval(refreshIntervalRef.current);
+        refreshIntervalRef.current = null;
+      }
+      keycloak.logout({ redirectUri: window.location.origin });
+    },
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
