@@ -1,8 +1,10 @@
-import { Component } from 'react';
+import { Component, useState, useEffect } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { useFleet } from './contexts/FleetContext';
 import { useAuth } from './contexts/AuthContext';
+import { driverApi } from './services/api';
+import keycloak from './auth/keycloak';
 import ManagerLayout from './components/layout/ManagerLayout';
 import DriverLayout from './components/layout/DriverLayout';
 import DashboardPage from './pages/DashboardPage';
@@ -86,6 +88,8 @@ function NotFoundPage() {
 function App() {
   const { fleetId } = useFleet();
   const { isDriver, isFleetManager, authenticated, user } = useAuth();
+  const [checkingDriver, setCheckingDriver] = useState(true);
+  const [isPreRegisteredDriver, setIsPreRegisteredDriver] = useState(false);
 
   // Debug: log routing decision so we can see why a user lands where they do
   if (import.meta.env.DEV && authenticated) {
@@ -97,6 +101,34 @@ function App() {
       keycloakRoles: user?.keycloakRoles,
     });
   }
+
+  const isSystemAdmin = user?.keycloakRoles?.includes('system_admin') ?? false;
+  const hasRole = isSystemAdmin || isDriver || isFleetManager;
+
+  // For role-less authenticated users: check if they're a pre-registered
+  // driver (added by a manager via bulk import). GET /drivers/me is open to
+  // all authenticated users; if it returns a profile, the backend also
+  // assigns fleet_driver role. We force a page reload to pick up the new
+  // role from the refreshed JWT.
+  useEffect(() => {
+    if (!authenticated || hasRole) {
+      setCheckingDriver(false);
+      return;
+    }
+    driverApi.getMe()
+      .then(() => {
+        // Driver profile found — backend just assigned fleet_driver role.
+        // Force token refresh then reload so isDriver becomes true.
+        setIsPreRegisteredDriver(true);
+        keycloak.updateToken(-1)
+          .then(() => window.location.reload())
+          .catch(() => window.location.reload());
+      })
+      .catch(() => {
+        // No driver profile — genuinely new user, show fleet setup
+        setCheckingDriver(false);
+      });
+  }, [authenticated, hasRole]);
 
   if (!authenticated) {
     return (
@@ -112,10 +144,19 @@ function App() {
     );
   }
 
-  // The fleet_manager role is only assigned when the user creates a fleet,
-  // so !isFleetManager means they genuinely don't have a fleet yet — no need
-  // to wait for fleetApi.getMy() to confirm.
-  const isSystemAdmin = user?.keycloakRoles?.includes('system_admin') ?? false;
+  // Show spinner while checking driver profile or preparing account
+  if ((checkingDriver && !hasRole) || isPreRegisteredDriver) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 text-sm">
+            {isPreRegisteredDriver ? 'Hesabınız hazırlanıyor...' : 'Yükleniyor...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const needsFleetSetup = !isSystemAdmin && !isDriver && !isFleetManager;
   if (needsFleetSetup) {
