@@ -1,4 +1,4 @@
-import { Truck, Users, AlertTriangle, Building2, Check, ArrowRight } from 'lucide-react';
+import { Truck, Users, AlertTriangle, Building2, Check, Minus, ArrowRight, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -211,6 +211,121 @@ const LandingPage = () => {
                   </li>
                 ))}
               </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="relative py-20 md:py-28 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+              Basit ve şeffaf fiyatlandırma
+            </h2>
+            <p className="text-lg text-gray-500 max-w-lg mx-auto">
+              Gizli ücret yok. İhtiyacınız kadar ödeyin.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 items-start">
+            {/* Başlangıç */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-lg hover:shadow-gray-200/50 hover:-translate-y-1 transition-all duration-300">
+              <h3 className="text-sm font-bold text-gray-900 mb-1">Başlangıç</h3>
+              <div className="mb-5">
+                <span className="text-3xl font-extrabold text-gray-900 tracking-tight">Ücretsiz</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm text-gray-600">
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 5 araç</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 5 sürücü</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 3 müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Haftalık e-posta özeti</li>
+                <li className="flex items-center gap-2.5"><Minus className="w-4 h-4 text-gray-300 flex-shrink-0" /> <span className="text-gray-400">Toplu içe aktarma</span></li>
+              </ul>
+              <button
+                onClick={register}
+                className="w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors text-sm"
+              >
+                Ücretsiz Başla
+              </button>
+            </div>
+
+            {/* Profesyonel — highlighted */}
+            <div className="bg-white rounded-2xl border-2 border-primary-500 ring-1 ring-primary-500/20 p-6 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-1 transition-all duration-300 relative lg:scale-[1.03]">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <span className="bg-primary-600 text-white text-[11px] font-bold px-3 py-1 rounded-full tracking-wide">
+                  En Popüler
+                </span>
+              </div>
+              <h3 className="text-sm font-bold text-primary-700 mb-1">Profesyonel</h3>
+              <div className="mb-5">
+                <span className="text-3xl font-extrabold text-gray-900 tracking-tight">499 ₺</span>
+                <span className="text-sm text-gray-500 font-medium">/ay</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm text-gray-600">
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 25 araç</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 25 sürücü</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Sınırsız müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Haftalık e-posta özeti</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Toplu içe aktarma</li>
+              </ul>
+              <a
+                href="https://wa.me/4915257870965?text=Naklos%20Profesyonel%20plan%20hakkında%20bilgi%20almak%20istiyorum"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-colors text-sm flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Bize Ulaşın
+              </a>
+            </div>
+
+            {/* İşletme */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-lg hover:shadow-gray-200/50 hover:-translate-y-1 transition-all duration-300">
+              <h3 className="text-sm font-bold text-gray-900 mb-1">İşletme</h3>
+              <div className="mb-5">
+                <span className="text-3xl font-extrabold text-gray-900 tracking-tight">999 ₺</span>
+                <span className="text-sm text-gray-500 font-medium">/ay</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm text-gray-600">
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 100 araç</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 100 sürücü</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Sınırsız müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Haftalık e-posta özeti</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Toplu içe aktarma</li>
+              </ul>
+              <a
+                href="https://wa.me/4915257870965?text=Naklos%20İşletme%20planı%20hakkında%20bilgi%20almak%20istiyorum"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-black transition-colors text-sm flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Bize Ulaşın
+              </a>
+            </div>
+
+            {/* Kurumsal */}
+            <div className="bg-gray-900 rounded-2xl border border-gray-800 p-6 hover:shadow-lg hover:shadow-gray-900/30 hover:-translate-y-1 transition-all duration-300">
+              <h3 className="text-sm font-bold text-gray-300 mb-1">Kurumsal</h3>
+              <div className="mb-5">
+                <span className="text-2xl font-extrabold text-white tracking-tight">Bize ulaşın</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-sm text-gray-400">
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Sınırsız araç</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Sınırsız sürücü</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Sınırsız müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> API erişimi</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Öncelikli destek</li>
+              </ul>
+              <a
+                href="https://wa.me/4915257870965?text=Naklos%20Kurumsal%20plan%20hakkında%20bilgi%20almak%20istiyorum"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-white text-gray-900 rounded-xl font-semibold hover:bg-gray-100 transition-colors text-sm flex items-center justify-center gap-2"
+              >
+                İletişime Geç
+              </a>
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import TruckAssignmentModal from '../components/common/TruckAssignmentModal';
 import AddDriverModal from '../components/common/AddDriverModal';
 import BulkImportModal from '../components/common/BulkImportModal';
+import UpgradeModal from '../components/common/UpgradeModal';
 import type { DriverStatus, DocumentSubmission, TruckAssignmentRequest } from '../types';
 
 const DriversPage = () => {
@@ -26,6 +27,7 @@ const DriversPage = () => {
   const [selectedRequest, setSelectedRequest] = useState<TruckAssignmentRequest | null>(null);
   const [addDriverModalOpen, setAddDriverModalOpen] = useState(false);
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   // Calculate warnings for drivers based on document expiry dates
   const warnings = useMemo(() => {
@@ -269,13 +271,13 @@ const DriversPage = () => {
         </h1>
         <div className="flex gap-2">
           <button
-            onClick={() => setBulkImportOpen(true)}
+            onClick={() => plan === 'FREE' ? setUpgradeModalOpen(true) : setBulkImportOpen(true)}
             className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
           >
             <Download className="w-4 h-4 inline -mt-0.5" /> İçe Aktar
           </button>
           <button
-            onClick={() => setAddDriverModalOpen(true)}
+            onClick={() => maxDrivers !== -1 && drivers.length >= maxDrivers ? setUpgradeModalOpen(true) : setAddDriverModalOpen(true)}
             className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
           >
             + Sürücü Ekle
@@ -360,13 +362,13 @@ const DriversPage = () => {
                 </p>
                 <div className="flex gap-2 justify-center flex-wrap">
                   <button
-                    onClick={() => setBulkImportOpen(true)}
+                    onClick={() => plan === 'FREE' ? setUpgradeModalOpen(true) : setBulkImportOpen(true)}
                     className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
                   >
                     <Download className="w-4 h-4 inline -mt-0.5" /> Excel ile İçe Aktar
                   </button>
                   <button
-                    onClick={() => setAddDriverModalOpen(true)}
+                    onClick={() => maxDrivers !== -1 && drivers.length >= maxDrivers ? setUpgradeModalOpen(true) : setAddDriverModalOpen(true)}
                     className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700"
                   >
                     + İlk Sürücüyü Ekle
@@ -635,6 +637,13 @@ const DriversPage = () => {
         onClose={() => setBulkImportOpen(false)}
         onSuccess={refresh}
         entityType="driver"
+      />
+
+      <UpgradeModal
+        isOpen={upgradeModalOpen}
+        onClose={() => setUpgradeModalOpen(false)}
+        resource="sürücü"
+        currentPlan={plan}
       />
     </div>
   );

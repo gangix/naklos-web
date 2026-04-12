@@ -5,6 +5,7 @@ import { CLIENTS } from '../constants/text';
 import { useClients } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import AddClientModal from '../components/common/AddClientModal';
+import UpgradeModal from '../components/common/UpgradeModal';
 
 const ClientsPage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const ClientsPage = () => {
   const maxClients = { FREE: 3, PROFESSIONAL: -1, BUSINESS: -1, ENTERPRISE: -1 }[plan] ?? 3;
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientModalOpen, setAddClientModalOpen] = useState(false);
+  const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
 
   const filteredClients = useMemo(() => {
     if (!searchQuery) return clients;
@@ -44,7 +46,7 @@ const ClientsPage = () => {
           </span>
         </h1>
         <button
-          onClick={() => setAddClientModalOpen(true)}
+          onClick={() => maxClients !== -1 && clients.length >= maxClients ? setUpgradeModalOpen(true) : setAddClientModalOpen(true)}
           className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
         >
           + Müşteri Ekle
@@ -68,7 +70,7 @@ const ClientsPage = () => {
             <h3 className="text-lg font-semibold text-gray-900 mb-1">Henüz müşteri eklenmemiş</h3>
             <p className="text-sm text-gray-500 mb-6">İlk müşterinizi ekleyerek başlayın</p>
             <button
-              onClick={() => setAddClientModalOpen(true)}
+              onClick={() => maxClients !== -1 && clients.length >= maxClients ? setUpgradeModalOpen(true) : setAddClientModalOpen(true)}
               className="px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
             >
               Müşteri Ekle
@@ -101,6 +103,13 @@ const ClientsPage = () => {
         isOpen={addClientModalOpen}
         onClose={() => setAddClientModalOpen(false)}
         onSuccess={refresh}
+      />
+
+      <UpgradeModal
+        isOpen={upgradeModalOpen}
+        onClose={() => setUpgradeModalOpen(false)}
+        resource="müşteri"
+        currentPlan={plan}
       />
     </div>
   );
