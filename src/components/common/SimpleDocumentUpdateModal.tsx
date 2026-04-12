@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { truckApi, driverApi } from '../../services/api';
 import type { DocumentCategory } from '../../types';
 
@@ -106,7 +107,7 @@ const SimpleDocumentUpdateModal = ({
         await truckApi.uploadDocument(relatedId, selectedFile, category, expiryDate);
       }
 
-      alert('✓ Belge başarıyla yüklendi!');
+      toast.success('Belge başarıyla yüklendi');
       setSelectedFile(null);
       setExpiryDate('');
       await loadDocuments(); // Reload documents list
@@ -131,13 +132,13 @@ const SimpleDocumentUpdateModal = ({
       } else {
         await truckApi.deleteDocument(documentId);
       }
-      alert('✓ Belge başarıyla silindi!');
+      toast.success('Belge başarıyla silindi');
       await loadDocuments();
       // Refresh parent component to update expiry dates
       await onUpdate(category, '');
     } catch (err) {
       console.error('Error deleting document:', err);
-      alert('Belge silinirken hata oluştu');
+      toast.error('Belge silinirken hata oluştu');
     }
   };
 
@@ -148,7 +149,7 @@ const SimpleDocumentUpdateModal = ({
 
   const handleSaveExpiry = async (documentId: string) => {
     if (!editingExpiry) {
-      alert('Lütfen geçerlilik tarihi girin');
+      toast.warning('Lütfen geçerlilik tarihi girin');
       return;
     }
 
@@ -158,7 +159,7 @@ const SimpleDocumentUpdateModal = ({
       } else {
         await truckApi.updateDocumentExpiry(documentId, editingExpiry);
       }
-      alert('✓ Geçerlilik tarihi güncellendi!');
+      toast.success('Geçerlilik tarihi güncellendi');
       setEditingDocId(null);
       setEditingExpiry('');
       await loadDocuments();
@@ -166,7 +167,7 @@ const SimpleDocumentUpdateModal = ({
       await onUpdate(category, editingExpiry);
     } catch (err) {
       console.error('Error updating expiry:', err);
-      alert('Tarih güncellenirken hata oluştu');
+      toast.error('Tarih güncellenirken hata oluştu');
     }
   };
 

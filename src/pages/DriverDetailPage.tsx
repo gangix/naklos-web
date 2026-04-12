@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { driverApi } from '../services/api';
 import { DRIVERS } from '../constants/text';
 import ExpiryBadge from '../components/common/ExpiryBadge';
@@ -151,7 +152,7 @@ const DriverDetailPage = () => {
     if (!driverId) return;
 
     if (!certificateNumber || !certificateIssueDate || !certificateExpiryDate) {
-      alert('Lütfen tüm alanları doldurun');
+      toast.warning('Lütfen tüm alanları doldurun');
       return;
     }
 
@@ -161,14 +162,14 @@ const DriverDetailPage = () => {
     today.setHours(0, 0, 0, 0);
 
     if (expiryDate < today) {
-      alert('❌ Hata: Geçerlilik tarihi geçmişte olamaz. Lütfen gelecekte bir tarih seçin.');
+      toast.error('Geçerlilik tarihi geçmişte olamaz. Lütfen gelecekte bir tarih seçin.');
       return;
     }
 
     // Check if issue date is before expiry date
     const issueDate = new Date(certificateIssueDate);
     if (expiryDate < issueDate) {
-      alert('❌ Hata: Geçerlilik tarihi, veriliş tarihinden önce olamaz.');
+      toast.error('Geçerlilik tarihi, veriliş tarihinden önce olamaz.');
       return;
     }
 
@@ -190,18 +191,18 @@ const DriverDetailPage = () => {
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
 
-      alert('✓ Sertifika başarıyla eklendi!');
+      toast.success('Sertifika başarıyla eklendi');
     } catch (err) {
       console.error('Error adding certificate:', err);
       const errorMessage = err instanceof Error ? err.message : 'Sertifika eklenirken hata oluştu';
 
       // Show user-friendly error
       if (errorMessage.includes('already expired')) {
-        alert('❌ Geçmiş tarihli sertifika eklenemez. Lütfen gelecekte bir geçerlilik tarihi girin.');
+        toast.error('Geçmiş tarihli sertifika eklenemez. Lütfen gelecekte bir geçerlilik tarihi girin.');
       } else if (errorMessage.includes('already exists')) {
-        alert('❌ Bu tipte bir sertifika zaten mevcut. Önce mevcut sertifikayı silin.');
+        toast.error('Bu tipte bir sertifika zaten mevcut. Önce mevcut sertifikayı silin.');
       } else {
-        alert('❌ ' + errorMessage);
+        toast.error(errorMessage);
       }
     }
   };
@@ -220,10 +221,10 @@ const DriverDetailPage = () => {
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
 
-      alert('✓ Sertifika başarıyla kaldırıldı!');
+      toast.success('Sertifika başarıyla kaldırıldı');
     } catch (err) {
       console.error('Error removing certificate:', err);
-      alert('Sertifika kaldırılırken hata oluştu');
+      toast.error('Sertifika kaldırılırken hata oluştu');
     }
   };
 
@@ -249,7 +250,7 @@ const DriverDetailPage = () => {
       setDriver(updated);
       setEditingContact(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
     } finally {
       setSaving(false);
     }
@@ -275,7 +276,7 @@ const DriverDetailPage = () => {
       setDriver(updated);
       setEditingEmergency(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
     } finally {
       setSaving(false);
     }
@@ -288,7 +289,7 @@ const DriverDetailPage = () => {
       const updated = await driverApi.getById(driverId);
       setDriver(updated);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Durum güncellenirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Durum güncellenirken hata oluştu');
     }
   };
 
@@ -301,11 +302,11 @@ const DriverDetailPage = () => {
     try {
       setDeleting(true);
       await driverApi.delete(driverId);
-      alert('Sürücü başarıyla silindi.');
+      toast.success('Sürücü başarıyla silindi');
       navigate('/manager/drivers');
     } catch (err) {
       console.error('Error deleting driver:', err);
-      alert(err instanceof Error ? err.message : 'Sürücü silinirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Sürücü silinirken hata oluştu');
     } finally {
       setDeleting(false);
     }

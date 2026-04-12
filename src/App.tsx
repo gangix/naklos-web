@@ -1,6 +1,7 @@
 import { Component, useState, useEffect } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { useFleet } from './contexts/FleetContext';
 import { useAuth } from './contexts/AuthContext';
 import { driverApi } from './services/api';
@@ -138,6 +139,7 @@ function App() {
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
+        <Toaster position="top-center" richColors />
         <CookieBanner />
         <WhatsAppButton />
       </BrowserRouter>
@@ -147,14 +149,17 @@ function App() {
   // Show spinner while checking driver profile or preparing account
   if ((checkingDriver && !hasRole) || isPreRegisteredDriver) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 text-sm">
-            {isPreRegisteredDriver ? 'Hesabınız hazırlanıyor...' : 'Yükleniyor...'}
-          </p>
+      <>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-gray-600 text-sm">
+              {isPreRegisteredDriver ? 'Hesabınız hazırlanıyor...' : 'Yükleniyor...'}
+            </p>
+          </div>
         </div>
-      </div>
+        <Toaster position="top-center" richColors />
+      </>
     );
   }
 
@@ -167,6 +172,7 @@ function App() {
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="*" element={<FleetSetupPage />} />
         </Routes>
+        <Toaster position="top-center" richColors />
       </BrowserRouter>
     );
   }
@@ -227,6 +233,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </ErrorBoundary>
+      <Toaster position="top-center" richColors />
     </BrowserRouter>
   );
 }

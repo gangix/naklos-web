@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { DOCUMENT_UPLOAD, COMMON } from '../../constants/text';
 import { driverApi, truckApi } from '../../services/api';
 import FileUpload from './FileUpload';
@@ -33,12 +34,12 @@ const DocumentUploadModal = ({
 
   const handleSubmit = async () => {
     if (!selectedDocument || !suggestedExpiryDate) {
-      alert('Lütfen belge ve geçerlilik tarihi seçin');
+      toast.warning('Lütfen belge ve geçerlilik tarihi seçin');
       return;
     }
 
     if (!selectedDocument.rawFile) {
-      alert('❌ Dosya hazırlanamadı. Lütfen tekrar deneyin.');
+      toast.error('Dosya hazırlanamadı. Lütfen tekrar deneyin.');
       return;
     }
 
@@ -63,12 +64,12 @@ const DocumentUploadModal = ({
         );
       }
 
-      alert('✓ Belge yüklendi.');
+      toast.success('Belge yüklendi');
       onUploadSuccess?.();
       handleClose();
     } catch (error) {
       console.error('Document upload failed:', error);
-      alert('❌ Bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
     }

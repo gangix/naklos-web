@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
@@ -103,13 +104,13 @@ const DriverProfilePage = () => {
   const handleDriverSelect = (selectedDriver: any) => {
     loginAsDriver(selectedDriver.id, `${selectedDriver.firstName} ${selectedDriver.lastName}`);
     setShowDriverList(false);
-    alert(`✓ ${selectedDriver.firstName} ${selectedDriver.lastName} olarak giriş yaptınız`);
+    toast.success(`${selectedDriver.firstName} ${selectedDriver.lastName} olarak giriş yaptınız`);
   };
 
   const handleManagerLogin = () => {
     loginAsManager();
     setShowDriverList(false);
-    alert('✓ Fleet Manager olarak giriş yaptınız');
+    toast.success('Fleet Manager olarak giriş yaptınız');
   };
 
   if (loading) {
@@ -180,7 +181,7 @@ const DriverProfilePage = () => {
 
   const handleSave = () => {
     // TODO: Update driver info via DataContext
-    alert('Bilgiler kaydedildi');
+    toast.success('Bilgiler kaydedildi');
     setIsEditing(false);
   };
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useData } from '../../contexts/DataContext';
 import { APPROVALS, COMMON, REJECTION_REASONS } from '../../constants/text';
 import type { DocumentSubmission } from '../../types';
@@ -21,17 +22,17 @@ const DocumentReviewModal = ({ isOpen, onClose, submission }: DocumentReviewModa
 
   const handleApprove = async () => {
     if (!confirmedDate) {
-      alert('Lütfen geçerlilik tarihi girin');
+      toast.warning('Lütfen geçerlilik tarihi girin');
       return;
     }
 
     setIsSubmitting(true);
     try {
       approveDocument(submission.id, confirmedDate);
-      alert('✓ Belge onaylandı');
+      toast.success('Belge onaylandı');
       onClose();
     } catch (error) {
-      alert('❌ Bir hata oluştu');
+      toast.error('Bir hata oluştu');
     } finally {
       setIsSubmitting(false);
     }
@@ -39,22 +40,22 @@ const DocumentReviewModal = ({ isOpen, onClose, submission }: DocumentReviewModa
 
   const handleReject = async () => {
     if (!rejectionReason) {
-      alert('Lütfen ret nedeni seçin');
+      toast.warning('Lütfen ret nedeni seçin');
       return;
     }
 
     if (rejectionReason === 'other' && !rejectionNote.trim()) {
-      alert('Lütfen açıklama girin');
+      toast.warning('Lütfen açıklama girin');
       return;
     }
 
     setIsSubmitting(true);
     try {
       rejectDocument(submission.id, rejectionReason, rejectionNote || null);
-      alert('✓ Belge reddedildi');
+      toast.success('Belge reddedildi');
       onClose();
     } catch (error) {
-      alert('❌ Bir hata oluştu');
+      toast.error('Bir hata oluştu');
     } finally {
       setIsSubmitting(false);
     }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { TRUCKS } from '../constants/text';
@@ -139,7 +140,7 @@ const TruckDetailPage = () => {
       setShowDriverSelect(false);
     } catch (err) {
       console.error('Error assigning driver:', err);
-      alert('Sürücü atanırken hata oluştu');
+      toast.error('Sürücü atanırken hata oluştu');
     } finally {
       setAssigningDriver(false);
     }
@@ -156,7 +157,7 @@ const TruckDetailPage = () => {
       setTruck(updatedTruck);
     } catch (err) {
       console.error('Error unassigning driver:', err);
-      alert('Sürücü kaldırılırken hata oluştu');
+      toast.error('Sürücü kaldırılırken hata oluştu');
     } finally {
       setAssigningDriver(false);
     }
@@ -195,7 +196,7 @@ const TruckDetailPage = () => {
       setTruck(updatedTruck);
     } catch (err) {
       console.error('Error updating status:', err);
-      alert('Durum güncellenirken hata oluştu');
+      toast.error('Durum güncellenirken hata oluştu');
     }
   };
 
@@ -207,7 +208,7 @@ const TruckDetailPage = () => {
       navigate('/manager/trucks');
     } catch (err) {
       console.error('Error deleting truck:', err);
-      alert('Araç silinirken hata oluştu');
+      toast.error('Araç silinirken hata oluştu');
     }
   };
 

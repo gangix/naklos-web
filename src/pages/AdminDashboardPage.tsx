@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Building2, Truck, Users, ChevronRight, LogOut } from 'lucide-react';
 import { adminApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { formatDate } from '../utils/format';
 
 interface AdminStats {
   totalFleets: number;
@@ -10,6 +11,13 @@ interface AdminStats {
   totalDrivers: number;
   totalClients: number;
 }
+
+const COLOR_CLASSES: Record<string, string> = {
+  blue: 'bg-blue-100 text-blue-600',
+  green: 'bg-green-100 text-green-600',
+  orange: 'bg-orange-100 text-orange-600',
+  purple: 'bg-purple-100 text-purple-600',
+};
 
 interface FleetSummary {
   id: string;
@@ -69,29 +77,21 @@ const AdminDashboardPage = () => {
 
   const statCards = [
     { label: 'Toplam Filo', count: stats?.totalFleets ?? 0, icon: Building2, color: 'blue' },
-    { label: 'Toplam Arac', count: stats?.totalTrucks ?? 0, icon: Truck, color: 'green' },
-    { label: 'Toplam Surucu', count: stats?.totalDrivers ?? 0, icon: Users, color: 'orange' },
-    { label: 'Toplam Musteri', count: stats?.totalClients ?? 0, icon: Building2, color: 'purple' },
+    { label: 'Toplam Araç', count: stats?.totalTrucks ?? 0, icon: Truck, color: 'green' },
+    { label: 'Toplam Sürücü', count: stats?.totalDrivers ?? 0, icon: Users, color: 'orange' },
+    { label: 'Toplam Müşteri', count: stats?.totalClients ?? 0, icon: Building2, color: 'purple' },
   ];
-
-  const formatDate = (dateStr: string) => {
-    try {
-      return new Date(dateStr).toLocaleDateString('tr-TR');
-    } catch {
-      return dateStr;
-    }
-  };
 
   return (
     <div className="p-4 pb-20 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Yonetim Paneli</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Yönetim Paneli</h1>
         <button
           onClick={logout}
           className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
         >
           <LogOut className="w-4 h-4" />
-          <span>Cikis</span>
+          <span>Çıkış</span>
         </button>
       </div>
 
@@ -103,7 +103,7 @@ const AdminDashboardPage = () => {
               key={card.label}
               className="bg-white rounded-xl shadow-sm p-6 text-left border border-gray-200"
             >
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-3 bg-${card.color}-100 text-${card.color}-600`}>
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-3 ${COLOR_CLASSES[card.color]}`}>
                 <Icon className="w-7 h-7" />
               </div>
               <p className="text-3xl font-bold text-gray-900">{card.count}</p>
@@ -135,7 +135,7 @@ const AdminDashboardPage = () => {
               <span>E-posta</span>
               <span className="text-center">Arac</span>
               <span className="text-center">Surucu</span>
-              <span>Olusturulma</span>
+              <span>Oluşturulma</span>
             </div>
             {fleets.map((fleet) => (
               <button

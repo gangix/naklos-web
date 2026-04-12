@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { clientApi } from '../services/api';
 import type { Client } from '../types';
 
@@ -90,7 +91,7 @@ const ClientDetailPage = () => {
       setEditing(false);
     } catch (err) {
       console.error('Error updating client:', err);
-      alert(err instanceof Error ? err.message : 'Müşteri güncellenirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Müşteri güncellenirken hata oluştu');
     } finally {
       setSaving(false);
     }
@@ -105,7 +106,7 @@ const ClientDetailPage = () => {
       setClient(updated);
     } catch (err) {
       console.error('Error updating payment terms:', err);
-      alert(err instanceof Error ? err.message : 'Ödeme vadesi güncellenirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Ödeme vadesi güncellenirken hata oluştu');
     } finally {
       setUpdatingTerms(false);
     }
@@ -119,11 +120,11 @@ const ClientDetailPage = () => {
     try {
       setDeleting(true);
       await clientApi.delete(clientId);
-      alert('Müşteri başarıyla silindi.');
+      toast.success('Müşteri başarıyla silindi');
       navigate('/manager/clients');
     } catch (err) {
       console.error('Error deleting client:', err);
-      alert(err instanceof Error ? err.message : 'Müşteri silinirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : 'Müşteri silinirken hata oluştu');
     } finally {
       setDeleting(false);
     }

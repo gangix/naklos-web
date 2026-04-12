@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useAuth } from '../contexts/AuthContext';
 import { useFleet } from '../contexts/FleetContext';
 import { driverApi, fleetApi } from '../services/api';
@@ -67,10 +68,10 @@ const MorePage = () => {
         await fleetApi.changeCurrency(fleetData.id, fleetCurrency);
       }
       await loadFleet();
-      alert('Filo ayarları kaydedildi');
+      toast.success('Filo ayarları kaydedildi');
     } catch (error) {
       console.error('Error saving fleet:', error);
-      alert('Kayıt sırasında hata oluştu');
+      toast.error('Kayıt sırasında hata oluştu');
     } finally {
       setFleetSaving(false);
     }

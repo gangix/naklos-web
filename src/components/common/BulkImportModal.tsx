@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from 'react';
+import { toast } from 'sonner';
 import * as XLSX from 'xlsx';
 import { truckApi, driverApi, type BulkImportResult } from '../../services/api';
 
@@ -273,7 +274,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
         setResult(res);
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'İçe aktarma başarısız');
+      toast.error(err instanceof Error ? err.message : 'İçe aktarma başarısız');
     } finally {
       setImporting(false);
     }

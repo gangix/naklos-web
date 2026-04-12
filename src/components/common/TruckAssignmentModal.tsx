@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { useData } from '../../contexts/DataContext';
 import { TRUCK_REQUEST, APPROVALS, COMMON } from '../../constants/text';
 import { truckApi } from '../../services/api';
@@ -32,17 +33,17 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
 
   const handleApprove = async () => {
     if (!selectedTruckId || !selectedTruck) {
-      alert('Lütfen bir araç seçin');
+      toast.warning('Lütfen bir araç seçin');
       return;
     }
 
     setIsSubmitting(true);
     try {
       approveTruckRequest(request.id, selectedTruckId, selectedTruck.plateNumber);
-      alert(`✓ ${request.driverName} sürücüsüne ${selectedTruck.plateNumber} aracı atandı`);
+      toast.success(`${request.driverName} sürücüsüne ${selectedTruck.plateNumber} aracı atandı`);
       onClose();
     } catch (error) {
-      alert('❌ Bir hata oluştu');
+      toast.error('Bir hata oluştu');
     } finally {
       setIsSubmitting(false);
     }
@@ -50,17 +51,17 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
 
   const handleReject = async () => {
     if (!rejectionNote.trim()) {
-      alert('Lütfen red nedeni girin');
+      toast.warning('Lütfen red nedeni girin');
       return;
     }
 
     setIsSubmitting(true);
     try {
       rejectTruckRequest(request.id, rejectionNote);
-      alert('✓ Araç talebi reddedildi');
+      toast.success('Araç talebi reddedildi');
       onClose();
     } catch (error) {
-      alert('❌ Bir hata oluştu');
+      toast.error('Bir hata oluştu');
     } finally {
       setIsSubmitting(false);
     }

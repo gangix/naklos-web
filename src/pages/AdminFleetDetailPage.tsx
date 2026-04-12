@@ -29,10 +29,10 @@ interface FleetDetail {
 
 const statusLabel = (status: string): string => {
   const map: Record<string, string> = {
-    AVAILABLE: 'Musait',
+    AVAILABLE: 'Müsait',
     IN_TRANSIT: 'Yolda',
-    ON_LEAVE: 'Izinli',
-    MAINTENANCE: 'Bakimda',
+    ON_LEAVE: 'İzinli',
+    MAINTENANCE: 'Bakımda',
     INACTIVE: 'Pasif',
     ACTIVE: 'Aktif',
   };
@@ -96,7 +96,7 @@ const AdminFleetDetailPage = () => {
           className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Geri Don
+          Geri Dön
         </button>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
           <p className="text-sm font-medium text-red-900">{error ?? 'Filo bulunamadi'}</p>
@@ -112,7 +112,7 @@ const AdminFleetDetailPage = () => {
         className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        Geri Don
+        Geri Dön
       </button>
 
       {/* Fleet Info Card */}
@@ -138,7 +138,7 @@ const AdminFleetDetailPage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
         <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
           <Truck className="w-5 h-5 text-gray-600" />
-          <h2 className="font-bold text-gray-900">Araclar</h2>
+          <h2 className="font-bold text-gray-900">Araçlar</h2>
           <span className="ml-auto text-sm text-gray-500 font-medium">
             {fleet.trucks.length} arac
           </span>
@@ -153,7 +153,7 @@ const AdminFleetDetailPage = () => {
               <span>Plaka</span>
               <span>Tip</span>
               <span>Durum</span>
-              <span>Atanmis Surucu</span>
+              <span>Atanmış Sürücü</span>
             </div>
             {fleet.trucks.map((truck) => (
               <div key={truck.id} className="px-4 py-3 md:grid md:grid-cols-4 gap-4 items-center">
@@ -175,7 +175,7 @@ const AdminFleetDetailPage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
           <Users className="w-5 h-5 text-gray-600" />
-          <h2 className="font-bold text-gray-900">Suruculer</h2>
+          <h2 className="font-bold text-gray-900">Sürücüler</h2>
           <span className="ml-auto text-sm text-gray-500 font-medium">
             {fleet.drivers.length} surucu
           </span>
@@ -191,7 +191,7 @@ const AdminFleetDetailPage = () => {
               <span>Telefon</span>
               <span>E-posta</span>
               <span>Durum</span>
-              <span>Atanmis Arac</span>
+              <span>Atanmış Araç</span>
             </div>
             {fleet.drivers.map((driver) => (
               <div key={driver.id} className="px-4 py-3 md:grid md:grid-cols-5 gap-4 items-center">
