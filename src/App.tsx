@@ -29,11 +29,6 @@ import WhatsAppButton from './components/common/WhatsAppButton';
 import DriverProfilePage from './pages/driver/DriverProfilePage';
 import DriverTruckPage from './pages/driver/DriverTruckPage';
 
-// v2 pages kept but not wired up:
-// import TripsPage, TripCreatePage, TripDetailPage,
-// InvoicesPage, InvoiceCreatePage, InvoiceDetailPage,
-// DriverDashboardPage, DriverTripsPage, DriverTripCreatePage, DriverTripDetailPage
-
 const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
 
 /* ---------- Error Boundary ---------- */

@@ -93,79 +93,6 @@ export const fleetApi = {
 
 // Trip API — fleet is derived from JWT on the backend
 export const tripApi = {
-  // Trip Creation
-  createPlanned: (data: any) =>
-    apiCall('/trips/planned', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  createPodFirst: (data: any) =>
-    apiCall('/trips/pod-first', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-
-  // Trip Lifecycle Management
-  assignDriverAndTruck: (tripId: string, data: { driverId: string; driverName: string; truckId: string; truckPlate: string }) =>
-    apiCall(`/trips/${tripId}/assign`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-  markInProgress: (tripId: string) =>
-    apiCall(`/trips/${tripId}/start`, {
-      method: 'PUT',
-    }),
-  markDelivered: (tripId: string, data: { deliveryLocation?: string; deliveryNotes?: string }) =>
-    apiCall(`/trips/${tripId}/deliver`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-  approveTrip: (tripId: string, data: {
-    clientId: string;
-    clientName: string;
-    cargoDescription?: string;
-    revenueAmount: number;
-    revenueCurrency: string;
-  }) =>
-    apiCall(`/trips/${tripId}/approve`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-  cancelTrip: (tripId: string, reason?: string) =>
-    apiCall(`/trips/${tripId}${reason ? `?reason=${encodeURIComponent(reason)}` : ''}`, {
-      method: 'DELETE',
-    }),
-
-  // Detail Updates
-  updateDetails: (tripId: string, data: {
-    originCity?: string;
-    destinationCity?: string;
-    cargoDescription?: string;
-    revenueAmount?: number;
-    revenueCurrency?: string;
-  }) =>
-    apiCall(`/trips/${tripId}/details`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-
-  // Expense Management
-  updateExpenses: (tripId: string, data: {
-    fuelAmount: number;
-    fuelCurrency: string;
-    tollsAmount: number;
-    tollsCurrency: string;
-    otherAmount: number;
-    otherCurrency: string;
-    otherReason?: string;
-  }) =>
-    apiCall(`/trips/${tripId}/expenses`, {
-      method: 'PUT',
-      body: JSON.stringify(data),
-    }),
-
-  // Query Endpoints
-  getById: (id: string) => apiCall(`/trips/${id}`),
   getByFleet: (status?: string, page = 0, size = 20) => {
     const params = new URLSearchParams();
     if (status) params.set('status', status);
@@ -173,16 +100,6 @@ export const tripApi = {
     params.set('size', String(size));
     return apiCall<PageResponse<any>>(`/trips?${params}`);
   },
-  getUnassigned: () =>
-    apiCall('/trips/unassigned'),
-  getPendingApproval: () =>
-    apiCall('/trips/pending-approval'),
-  getReadyForInvoice: (clientId?: string) =>
-    apiCall(`/trips/ready-for-invoice${clientId ? `?clientId=${clientId}` : ''}`),
-  getByDriver: (driverId: string) =>
-    apiCall(`/trips/by-driver/${driverId}`),
-  getByClient: (clientId: string) =>
-    apiCall(`/trips/by-client/${clientId}`),
 };
 
 // Client API — fleet is derived from JWT
@@ -381,32 +298,6 @@ export const truckApi = {
     apiCall(`/trucks/${id}`, { method: 'DELETE' }),
 };
 
-// Trip Template API — fleet is derived from JWT
-export const tripTemplateApi = {
-  getByFleet: () =>
-    apiCall('/trip-templates'),
-  create: (data: {
-    name: string;
-    originCity: string;
-    destinationCity: string;
-    clientId?: string;
-    clientName?: string;
-    cargoDescription?: string;
-    typicalRevenueAmount?: number;
-    typicalRevenueCurrency?: string;
-    preferredTruckId?: string;
-    preferredTruckPlate?: string;
-    preferredDriverId?: string;
-    preferredDriverName?: string;
-  }) =>
-    apiCall('/trip-templates', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
-  delete: (id: string) =>
-    apiCall(`/trip-templates/${id}`, { method: 'DELETE' }),
-};
-
 // Admin API — platform-level admin endpoints
 export const adminApi = {
   getStats: () => apiCall<any>('/admin/stats'),
@@ -421,18 +312,6 @@ export const adminApi = {
 
 // Invoice API — fleet is derived from JWT
 export const invoiceApi = {
-  create: (data: { clientId: string; clientName: string; tripIds: string[]; dueDate: string }) =>
-    apiCall('/invoices', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }),
   getByFleet: (page = 0, size = 20) =>
     apiCall<PageResponse<any>>(`/invoices?page=${page}&size=${size}`),
-  getById: (id: string) =>
-    apiCall(`/invoices/${id}`),
-  markAsPaid: (id: string, paymentDate: string) =>
-    apiCall(`/invoices/${id}/pay`, {
-      method: 'PUT',
-      body: JSON.stringify({ paymentDate }),
-    }),
 };
