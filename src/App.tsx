@@ -60,7 +60,7 @@ class ErrorBoundary extends Component<EBProps, EBState> {
             onClick={() => window.location.reload()}
             style={{ padding: '10px 24px', fontSize: 16, borderRadius: 8, border: 'none', background: '#2563eb', color: '#fff', cursor: 'pointer' }}
           >
-            Sayfayi Yenile
+            {i18n.t('error.reload')}
           </button>
         </div>
       );
@@ -76,7 +76,7 @@ function NotFoundPage() {
       <h1 style={{ fontSize: 48, marginBottom: 8 }}>404</h1>
       <p style={{ fontSize: 18, marginBottom: 24, color: '#666' }}>{i18n.t('error.notFound')}</p>
       <Link to="/" style={{ padding: '10px 24px', fontSize: 16, borderRadius: 8, background: '#2563eb', color: '#fff', textDecoration: 'none' }}>
-        Ana Sayfaya Don
+        {i18n.t('error.goHome')}
       </Link>
     </div>
   );
