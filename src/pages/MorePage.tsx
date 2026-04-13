@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { User, Users, Wrench } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,6 +9,7 @@ import { driverApi, fleetApi } from '../services/api';
 
 const MorePage = () => {
   const navigate = useNavigate();
+  const { i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager } = useAuth();
   const { fleetId } = useFleet();
   const [drivers, setDrivers] = useState<any[]>([]);
@@ -75,6 +77,16 @@ const MorePage = () => {
       toast.error('Kayıt sırasında hata oluştu');
     } finally {
       setFleetSaving(false);
+    }
+  };
+
+  const handleLanguageChange = async (locale: string) => {
+    try {
+      await driverApi.updateLocale(locale);
+      i18n.changeLanguage(locale);
+      toast.success('Dil güncellendi');
+    } catch {
+      toast.error('Bir hata oluştu');
     }
   };
 
@@ -176,6 +188,18 @@ const MorePage = () => {
                 <option value="EUR">EUR</option>
                 <option value="USD">USD</option>
                 <option value="GBP">GBP</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">Dil</label>
+              <select
+                value={i18n.language}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
               </select>
             </div>
             <button

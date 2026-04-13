@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { AlertTriangle, Wrench } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -11,6 +12,7 @@ import { formatDate } from '../../utils/format';
 import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
+  const { i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager, logout } = useAuth();
   const { fleetId } = useFleet();
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -96,6 +98,16 @@ const DriverProfilePage = () => {
     loginAsManager();
     setShowDriverList(false);
     toast.success('Fleet Manager olarak giriş yaptınız');
+  };
+
+  const handleLanguageChange = async (locale: string) => {
+    try {
+      await driverApi.updateLocale(locale);
+      i18n.changeLanguage(locale);
+      toast.success('Dil güncellendi');
+    } catch {
+      toast.error('Bir hata oluştu');
+    }
   };
 
   if (loading) {
@@ -217,6 +229,17 @@ const DriverProfilePage = () => {
               Çıkış
             </button>
           </div>
+        </div>
+        <div className="mt-3">
+          <select
+            value={i18n.language}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          >
+            <option value="tr">Türkçe</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </select>
         </div>
       </div>
 

@@ -125,6 +125,8 @@ export const driverApi = {
   getMe: () => apiCall<any>('/drivers/me'),
   updateMyContact: (data: { phone?: string; email?: string }) =>
     apiCall('/drivers/me/contact', { method: 'PUT', body: JSON.stringify(data) }),
+  updateLocale: (locale: string) =>
+    apiCall('/drivers/me/locale', { method: 'PUT', body: JSON.stringify({ locale }) }),
   getMyDocuments: () => apiCall<any[]>('/drivers/me/documents'),
   uploadMyDocument: (file: File, documentType: string, expiryDate?: string) => {
     const formData = new FormData();
