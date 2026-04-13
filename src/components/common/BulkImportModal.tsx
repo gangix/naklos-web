@@ -236,7 +236,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
         const data = new Uint8Array(evt.target?.result as ArrayBuffer);
         const workbook = XLSX.read(data, { type: 'array' });
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const parsed = XLSX.utils.sheet_to_json<any>(firstSheet, { defval: null });
+        const parsed = XLSX.utils.sheet_to_json<any>(firstSheet, { defval: null, raw: false });
 
         if (parsed.length === 0) {
           setParseError('Dosya boş görünüyor');
