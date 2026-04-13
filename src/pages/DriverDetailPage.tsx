@@ -5,6 +5,7 @@ import { driverApi } from '../services/api';
 import { DRIVERS } from '../constants/text';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
+import { Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import type { DocumentCategory, Driver } from '../types';
 
@@ -617,6 +618,41 @@ const DriverDetailPage = () => {
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-2">{DRIVERS.assignedTruck}</h2>
           <p className="text-sm font-medium text-gray-900">{driver.assignedTruckPlate}</p>
+        </div>
+      )}
+
+      {/* Invite status */}
+      {(driver.inviteStatus === 'FAILED' || driver.inviteStatus === 'PENDING') && (
+        <div className={`rounded-lg p-4 shadow-sm mb-4 ${
+          driver.inviteStatus === 'FAILED' ? 'bg-red-50 border border-red-200' : 'bg-yellow-50 border border-yellow-200'
+        }`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Mail className={`w-4 h-4 ${driver.inviteStatus === 'FAILED' ? 'text-red-500' : 'text-yellow-500'}`} />
+              <span className={`text-sm font-medium ${driver.inviteStatus === 'FAILED' ? 'text-red-700' : 'text-yellow-700'}`}>
+                {driver.inviteStatus === 'FAILED' ? 'Davet e-postası gönderilemedi' : 'Davet gönderiliyor...'}
+              </span>
+            </div>
+            {driver.inviteStatus === 'FAILED' && (
+              <button
+                onClick={async (e) => {
+                  e.preventDefault();
+                  try {
+                    await driverApi.resendInvite(driver.id);
+                    toast.success('Davet tekrar gönderildi');
+                    const data = await driverApi.getById(driver.id);
+                    setDriver(data);
+                  } catch {
+                    toast.error('Davet gönderilemedi');
+                  }
+                }}
+                className="flex items-center gap-1 px-3 py-1.5 bg-white border border-red-300 rounded-lg text-xs font-medium text-red-700 hover:bg-red-50"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Tekrar Gönder
+              </button>
+            )}
+          </div>
         </div>
       )}
 

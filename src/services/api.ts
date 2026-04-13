@@ -288,6 +288,8 @@ export const driverApi = {
     apiCall(`/drivers/documents/${documentId}`, {
       method: 'DELETE',
     }),
+  resendInvite: (id: string) =>
+    apiCall(`/drivers/${id}/resend-invite`, { method: 'POST' }),
   delete: (id: string) =>
     apiCall(`/drivers/${id}`, {
       method: 'DELETE',

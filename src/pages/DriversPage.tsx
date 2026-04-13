@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, HardHat, Truck as TruckIcon } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, HardHat, Mail, Truck as TruckIcon } from 'lucide-react';
 import { DRIVERS } from '../constants/text';
 import { useDrivers } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
@@ -428,6 +428,19 @@ const DriversPage = () => {
                       <p>
                         {DRIVERS.assignedTruck}: {driver.assignedTruckPlate}
                       </p>
+                    </div>
+                  )}
+
+                  {driver.inviteStatus === 'FAILED' && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <Mail className="w-3.5 h-3.5 text-red-500" />
+                      <span className="text-xs text-red-600 font-medium">Davet e-postası gönderilemedi</span>
+                    </div>
+                  )}
+                  {driver.inviteStatus === 'PENDING' && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <Mail className="w-3.5 h-3.5 text-yellow-500" />
+                      <span className="text-xs text-yellow-600 font-medium">Davet gönderiliyor...</span>
                     </div>
                   )}
 

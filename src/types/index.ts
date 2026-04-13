@@ -54,6 +54,7 @@ export interface Driver {
   status: DriverStatus;
   assignedTruckId: string | null;
   assignedTruckPlate?: string;
+  inviteStatus?: 'NOT_INVITED' | 'PENDING' | 'SENT' | 'FAILED';
   email?: string;
   emergencyContact?: {
     name: string;
