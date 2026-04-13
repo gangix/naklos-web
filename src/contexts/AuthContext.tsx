@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import keycloak from '../auth/keycloak';
 import { driverApi } from '../services/api';
+import i18n from '../i18n';
 
 export type UserRole = 'driver' | 'fleet-manager';
 
@@ -40,6 +41,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .then(async (authenticated) => {
         if (authenticated) {
           const token = keycloak.tokenParsed as any;
+          const userLocale = token?.locale || 'tr';
+          i18n.changeLanguage(userLocale);
           const roles: string[] = token?.realm_access?.roles ?? [];
           const hasDriverRole = roles.includes('fleet_driver');
           const hasManagerRole = roles.includes('fleet_manager') || roles.includes('fleet_admin');
