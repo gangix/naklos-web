@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { truckApi } from '../services/api';
+import i18n from '../i18n';
 
 const STORAGE_KEY = 'naklos_location_sharing';
 const INTERVAL_MS = 30 * 60 * 1000; // 30 minutes
@@ -27,7 +28,7 @@ export const LocationSharingProvider = ({ children }: { children: ReactNode }) =
 
   const sendLocation = useCallback(async () => {
     if (!navigator.geolocation) {
-      setError('Tarayıcınız konum paylaşımını desteklemiyor');
+      setError(i18n.t('location.notSupported'));
       return;
     }
 
@@ -55,7 +56,7 @@ export const LocationSharingProvider = ({ children }: { children: ReactNode }) =
           setError(null);
         } catch (err) {
           console.error('Location update failed:', err);
-          setError('Konum gönderilemedi');
+          setError(i18n.t('location.sendFailed'));
         } finally {
           setSending(false);
         }
@@ -63,11 +64,11 @@ export const LocationSharingProvider = ({ children }: { children: ReactNode }) =
       (err) => {
         setSending(false);
         if (err.code === err.PERMISSION_DENIED) {
-          setError('Konum izni reddedildi. Tarayıcı ayarlarından izin verin.');
+          setError(i18n.t('location.denied'));
         } else if (err.code === err.POSITION_UNAVAILABLE) {
-          setError('Konum alınamadı');
+          setError(i18n.t('location.unavailable'));
         } else {
-          setError('Konum alınırken hata oluştu');
+          setError(i18n.t('location.error'));
         }
       },
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 }

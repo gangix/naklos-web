@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { useData } from '../../contexts/DataContext';
-import { TRUCK_REQUEST, APPROVALS, COMMON } from '../../constants/text';
 import { truckApi } from '../../services/api';
 import type { Truck, TruckAssignmentRequest } from '../../types';
 
@@ -12,6 +12,7 @@ interface TruckAssignmentModalProps {
 }
 
 const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModalProps) => {
+  const { t } = useTranslation();
   const { approveTruckRequest, rejectTruckRequest } = useData();
   const [isRejecting, setIsRejecting] = useState(false);
   const [selectedTruckId, setSelectedTruckId] = useState(request.preferredTruckId);
@@ -33,17 +34,17 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
 
   const handleApprove = async () => {
     if (!selectedTruckId || !selectedTruck) {
-      toast.warning('Lütfen bir araç seçin');
+      toast.warning(t('toast.warning.selectVehicle'));
       return;
     }
 
     setIsSubmitting(true);
     try {
       approveTruckRequest(request.id, selectedTruckId, selectedTruck.plateNumber);
-      toast.success(`${request.driverName} sürücüsüne ${selectedTruck.plateNumber} aracı atandı`);
+      toast.success(`${request.driverName} ${t('driver.title').toLowerCase()} ${selectedTruck.plateNumber} ${t('truck.title').toLowerCase()}`);
       onClose();
     } catch (error) {
-      toast.error('Bir hata oluştu');
+      toast.error(t('toast.error.generic'));
     } finally {
       setIsSubmitting(false);
     }
@@ -51,17 +52,17 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
 
   const handleReject = async () => {
     if (!rejectionNote.trim()) {
-      toast.warning('Lütfen red nedeni girin');
+      toast.warning(t('toast.warning.enterRejectionReason'));
       return;
     }
 
     setIsSubmitting(true);
     try {
       rejectTruckRequest(request.id, rejectionNote);
-      toast.success('Araç talebi reddedildi');
+      toast.success(t('toast.success.truckRequestRejected'));
       onClose();
     } catch (error) {
-      toast.error('Bir hata oluştu');
+      toast.error(t('toast.error.generic'));
     } finally {
       setIsSubmitting(false);
     }
@@ -73,7 +74,7 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <div>
-            <h2 className="text-lg font-bold text-gray-900">{TRUCK_REQUEST.title}</h2>
+            <h2 className="text-lg font-bold text-gray-900">{t('truckRequest.title')}</h2>
             <p className="text-sm text-gray-600 mt-1">{request.driverName}</p>
           </div>
           <button
@@ -92,19 +93,19 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
               {preferredTruck && (
                 <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-4">
                   <h3 className="text-sm font-bold text-blue-900 mb-2">
-                    {TRUCK_REQUEST.preferredTruck}
+                    {t('truckRequest.preferredTruck')}
                   </h3>
                   <div className="space-y-2">
                     <div>
-                      <p className="text-xs text-blue-700">Plaka</p>
+                      <p className="text-xs text-blue-700">{t('truckAssignment.plate')}</p>
                       <p className="text-lg font-bold text-blue-900">{preferredTruck.plateNumber}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-blue-700">Araç Tipi</p>
+                      <p className="text-xs text-blue-700">{t('truckAssignment.vehicleType')}</p>
                       <p className="text-sm font-medium text-blue-900">{preferredTruck.type}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-blue-700">Durum</p>
+                      <p className="text-xs text-blue-700">{t('truckAssignment.status')}</p>
                       <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                         preferredTruck.status === 'available'
                           ? 'bg-green-100 text-green-700'
@@ -112,8 +113,8 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
                           ? 'bg-blue-100 text-blue-700'
                           : 'bg-orange-100 text-orange-700'
                       }`}>
-                        {preferredTruck.status === 'available' ? 'Müsait' :
-                         preferredTruck.status === 'in-transit' ? 'Yolda' : 'Bakımda'}
+                        {preferredTruck.status === 'available' ? t('truck.available') :
+                         preferredTruck.status === 'in-transit' ? t('truck.inTransit') : t('truck.maintenance')}
                       </span>
                     </div>
                   </div>
@@ -123,15 +124,15 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
               {/* Truck Selection */}
               <div className="mb-4">
                 <h3 className="text-sm font-bold text-gray-900 mb-3">
-                  Atanacak Aracı Seçin
+                  {t('truckAssignment.selectVehicle')}
                 </h3>
                 <p className="text-xs text-gray-600 mb-3">
-                  Sürücünün tercih ettiği aracı onaylayabilir veya farklı bir araç atayabilirsiniz.
+                  {t('truckAssignment.selectVehicleHint')}
                 </p>
 
                 {availableTrucks.length === 0 ? (
                   <div className="bg-gray-50 rounded-lg p-6 text-center">
-                    <p className="text-sm text-gray-600">{TRUCK_REQUEST.noAvailable}</p>
+                    <p className="text-sm text-gray-600">{t('truckRequest.noAvailable')}</p>
                   </div>
                 ) : (
                   <div className="space-y-2 max-h-64 overflow-y-auto">
@@ -157,7 +158,7 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
                             <p className="font-bold text-gray-900">{truck.plateNumber}</p>
                             {truck.id === request.preferredTruckId && (
                               <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                                Tercih Edilen
+                                {t('truckAssignment.preferred')}
                               </span>
                             )}
                           </div>
@@ -173,7 +174,7 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
               {selectedTruckId !== request.preferredTruckId && selectedTruck && (
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
                   <p className="text-xs text-orange-800">
-                    ⚠️ Sürücünün tercih ettiği araçtan farklı bir araç seçiyorsunuz: <strong>{selectedTruck.plateNumber}</strong>
+                    {t('truckAssignment.differentVehicleWarning')}: <strong>{selectedTruck.plateNumber}</strong>
                   </p>
                 </div>
               )}
@@ -185,14 +186,14 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
                   disabled={isSubmitting}
                   className="flex-1 px-4 py-3 border-2 border-red-500 text-red-600 rounded-lg font-medium hover:bg-red-50 disabled:opacity-50"
                 >
-                  {APPROVALS.reject}
+                  {t('approval.reject')}
                 </button>
                 <button
                   onClick={handleApprove}
                   disabled={!selectedTruckId || isSubmitting || availableTrucks.length === 0}
                   className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {APPROVALS.approve}
+                  {t('approval.approve')}
                 </button>
               </div>
             </>
@@ -200,19 +201,19 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
             <>
               {/* Rejection Form */}
               <div className="mb-4">
-                <h3 className="text-lg font-bold text-gray-900 mb-3">Talebi Reddet</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-3">{t('truckAssignment.rejectTitle')}</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Sürücüye neden araç atanamadığını açıklayın.
+                  {t('truckAssignment.rejectHint')}
                 </p>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Red Nedeni *
+                    {t('truckAssignment.rejectionReason')}
                   </label>
                   <textarea
                     value={rejectionNote}
                     onChange={(e) => setRejectionNote(e.target.value)}
-                    placeholder="Örn: Şu anda müsait araç bulunmuyor, lütfen daha sonra tekrar deneyin."
+                    placeholder=""
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                     rows={4}
                   />
@@ -229,14 +230,14 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
                   disabled={isSubmitting}
                   className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50"
                 >
-                  {COMMON.cancel}
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleReject}
                   disabled={!rejectionNote.trim() || isSubmitting}
                   className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {APPROVALS.reject}
+                  {t('approval.reject')}
                 </button>
               </div>
             </>

@@ -1,15 +1,17 @@
-import { COMMON } from '../constants/text';
+import i18n from '../i18n';
 
 export const formatCurrency = (amount: number | null | undefined): string => {
   if (amount === null || amount === undefined) {
-    return `${COMMON.currency}0`;
+    return `${i18n.t('common.currency')}0`;
   }
-  return `${COMMON.currency}${amount.toLocaleString('tr-TR')}`;
+  return `${i18n.t('common.currency')}${amount.toLocaleString('tr-TR')}`;
 };
 
 export const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
-  return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+  return new Intl.DateTimeFormat(i18n.language, {
+    day: 'numeric', month: 'short', year: 'numeric',
+  }).format(date);
 };
 
 /**
@@ -19,9 +21,9 @@ export const formatRelativeTime = (dateString: string): string => {
   const then = new Date(dateString).getTime();
   const diffSec = Math.floor((Date.now() - then) / 1000);
 
-  if (diffSec < 60) return 'az önce';
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)} dk önce`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)} saat önce`;
-  if (diffSec < 604800) return `${Math.floor(diffSec / 86400)} gün önce`;
-  return new Date(dateString).toLocaleDateString('tr-TR');
+  if (diffSec < 60) return i18n.t('format.justNow');
+  if (diffSec < 3600) return i18n.t('format.minutesAgo', { count: Math.floor(diffSec / 60) });
+  if (diffSec < 86400) return i18n.t('format.hoursAgo', { count: Math.floor(diffSec / 3600) });
+  if (diffSec < 604800) return i18n.t('format.daysAgo', { count: Math.floor(diffSec / 86400) });
+  return new Intl.DateTimeFormat(i18n.language).format(new Date(dateString));
 };

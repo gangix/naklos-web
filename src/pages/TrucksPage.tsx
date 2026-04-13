@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, MapPin, Truck as TruckIcon } from 'lucide-react';
-import { TRUCKS } from '../constants/text';
+import { useTranslation } from 'react-i18next';
 import { useTrucks } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
@@ -13,6 +13,7 @@ import UpgradeModal from '../components/common/UpgradeModal';
 import type { TruckStatus, DocumentSubmission } from '../types';
 
 const TrucksPage = () => {
+  const { t } = useTranslation();
   const { data: trucks, loading: trucksLoading, refresh } = useTrucks();
   const { plan } = useFleet();
   const { documentSubmissions } = useData();
@@ -226,11 +227,11 @@ const TrucksPage = () => {
   const getStatusLabel = (status: TruckStatus) => {
     switch (status) {
       case 'available':
-        return TRUCKS.available;
+        return t('truck.available');
       case 'in-transit':
-        return TRUCKS.inTransit;
+        return t('truck.inTransit');
       case 'maintenance':
-        return TRUCKS.maintenance;
+        return t('truck.maintenance');
       default:
         return status;
     }
@@ -238,18 +239,18 @@ const TrucksPage = () => {
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
-      'compulsory-insurance': 'Zorunlu Trafik Sigortası',
-      'comprehensive-insurance': 'Kasko',
-      'inspection': 'Muayene',
+      'compulsory-insurance': t('trucksPage.compulsoryInsurance'),
+      'comprehensive-insurance': t('trucksPage.comprehensiveInsurance'),
+      'inspection': t('trucksPage.inspection'),
     };
     return labels[category] || category;
   };
 
   const getSubmissionStatusBadge = (status: string) => {
     const badges: Record<string, { bg: string; text: string; label: string }> = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Bekliyor' },
-      approved: { bg: 'bg-green-100', text: 'text-green-700', label: 'Onaylandı' },
-      rejected: { bg: 'bg-red-100', text: 'text-red-700', label: 'Reddedildi' },
+      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: t('trucksPage.pending') },
+      approved: { bg: 'bg-green-100', text: 'text-green-700', label: t('trucksPage.approved') },
+      rejected: { bg: 'bg-red-100', text: 'text-red-700', label: t('trucksPage.rejected') },
     };
     const badge = badges[status] || badges.pending;
     return (
@@ -281,11 +282,11 @@ const TrucksPage = () => {
   if (trucksLoading) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{TRUCKS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{t('truck.title')}</h1>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Yükleniyor...</p>
+            <p className="text-gray-600">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -296,7 +297,7 @@ const TrucksPage = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
-          {TRUCKS.title}
+          {t('truck.title')}
           <span className="text-sm font-medium text-gray-400 ml-2">
             ({trucks.length}{maxTrucks !== -1 ? `/${maxTrucks}` : ''})
           </span>
@@ -304,12 +305,12 @@ const TrucksPage = () => {
         <div className="flex gap-2">
           <button
             onClick={() => {
-              if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+              if (plan === 'FREE') { setUpgradeMessage(t('bulkImport.bulkImportUpgrade')); setUpgradeModalOpen(true); }
               else setBulkImportOpen(true);
             }}
             className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
           >
-            <Download className="w-4 h-4 inline -mt-0.5" /> İçe Aktar
+            <Download className="w-4 h-4 inline -mt-0.5" /> {t('trucksPage.import')}
           </button>
           <button
             onClick={() => {
@@ -318,7 +319,7 @@ const TrucksPage = () => {
             }}
             className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
           >
-            + Araç Ekle
+            {t('trucksPage.addTruck')}
           </button>
         </div>
       </div>
@@ -333,7 +334,7 @@ const TrucksPage = () => {
               : 'border-transparent text-gray-600 hover:text-gray-900'
           }`}
         >
-          Araçlar ({trucks.length})
+          {t('trucksPage.trucks')} ({trucks.length})
         </button>
         {completedSubmissions.length > 0 && (
           <button
@@ -344,7 +345,7 @@ const TrucksPage = () => {
                 : 'border-transparent text-gray-600 hover:text-gray-900'
             }`}
           >
-            Geçmiş
+            {t('trucksPage.history')}
           </button>
         )}
         {pendingSubmissions.length > 0 && (
@@ -356,7 +357,7 @@ const TrucksPage = () => {
                 : 'border-transparent text-orange-600 hover:text-orange-700'
             }`}
           >
-            Onay Bekliyor ({pendingSubmissions.length})
+            {t('trucksPage.pendingApprovals')} ({pendingSubmissions.length})
           </button>
         )}
       </div>
@@ -374,7 +375,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.all} ({trucks.length})
+              {t('truck.all')} ({trucks.length})
             </button>
             <button
               onClick={() => setFilter('available')}
@@ -384,7 +385,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.available} ({trucks.filter((t) => t.status === 'available').length})
+              {t('truck.available')} ({trucks.filter((t) => t.status === 'available').length})
             </button>
             <button
               onClick={() => setFilter('maintenance')}
@@ -394,7 +395,7 @@ const TrucksPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {TRUCKS.maintenance} ({trucks.filter((t) => t.status === 'maintenance').length})
+              {t('truck.maintenance')} ({trucks.filter((t) => t.status === 'maintenance').length})
             </button>
           </div>
 
@@ -403,20 +404,19 @@ const TrucksPage = () => {
             {filteredTrucks.length === 0 && trucks.length === 0 && (
               <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-10 text-center">
                 <TruckIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Henüz araç eklenmedi</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{t('trucksPage.emptyTitle')}</h3>
                 <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">
-                  Filonuzdaki araçları eklemeye başlayın. Tek tek ekleyebilir veya Excel dosyanızdan
-                  toplu içe aktarabilirsiniz.
+                  {t('trucksPage.emptyHint')}
                 </p>
                 <div className="flex gap-2 justify-center flex-wrap">
                   <button
                     onClick={() => {
-                      if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+                      if (plan === 'FREE') { setUpgradeMessage(t('bulkImport.bulkImportUpgrade')); setUpgradeModalOpen(true); }
                       else setBulkImportOpen(true);
                     }}
                     className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
                   >
-                    <Download className="w-4 h-4 inline -mt-0.5" /> Excel ile İçe Aktar
+                    <Download className="w-4 h-4 inline -mt-0.5" /> {t('trucksPage.excelImport')}
                   </button>
                   <button
                     onClick={() => {
@@ -425,14 +425,14 @@ const TrucksPage = () => {
                     }}
                     className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700"
                   >
-                    + İlk Aracı Ekle
+                    {t('trucksPage.addFirst')}
                   </button>
                 </div>
               </div>
             )}
             {filteredTrucks.length === 0 && trucks.length > 0 && (
               <div className="bg-white rounded-lg p-6 text-center text-gray-500">
-                Bu filtreye uygun araç bulunamadı
+                {t('trucksPage.noFilterResult')}
               </div>
             )}
             {filteredTrucks.map((truck) => {
@@ -454,7 +454,7 @@ const TrucksPage = () => {
                       {hasUrgentWarning(truck.id) && (
                         <div className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded-md">
                           <AlertCircle className="w-4 h-4 text-red-500" />
-                          <span className="text-xs font-medium text-red-700">Uyarı</span>
+                          <span className="text-xs font-medium text-red-700">{t('trucksPage.warningLabel')}</span>
                         </div>
                       )}
                     </div>
@@ -464,7 +464,7 @@ const TrucksPage = () => {
                   </div>
                   <div className="text-sm text-gray-600">
                     <p>
-                      {TRUCKS.driver}: {truck.assignedDriverName || 'Atanmadı'}
+                      {t('truck.driver')}: {truck.assignedDriverName || t('trucksPage.notAssigned')}
                     </p>
                     {truck.lastPosition && (
                       <button
@@ -520,15 +520,15 @@ const TrucksPage = () => {
           {pendingSubmissions.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg">
               <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
-              <p className="text-lg font-medium text-gray-900 mb-2">Onay bekleyen belge yok</p>
-              <p className="text-sm text-gray-600">Tüm belge güncellemeleri kontrol edildi.</p>
+              <p className="text-lg font-medium text-gray-900 mb-2">{t('trucksPage.noPendingDoc')}</p>
+              <p className="text-sm text-gray-600">{t('trucksPage.allChecked')}</p>
             </div>
           ) : (
             <>
               {/* Sigorta Section */}
               {groupedByDocType.insurance.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-3">Sigorta</h2>
+                  <h2 className="text-lg font-bold text-gray-900 mb-3">{t('trucksPage.insurance')}</h2>
                   <div className="space-y-3">
                     {groupedByDocType.insurance.map((submission) => (
                       <button
@@ -545,17 +545,17 @@ const TrucksPage = () => {
                               </h3>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Araç: <span className="font-medium">{submission.relatedName}</span>
+                              {t('trucksPage.vehicleLabel')}: <span className="font-medium">{submission.relatedName}</span>
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                              Gönderen: {submission.submittedByName}
+                              {t('trucksPage.sender')}: {submission.submittedByName}
                             </p>
                           </div>
                           {getSubmissionStatusBadge(submission.status)}
                         </div>
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>{formatDate(submission.submittedAt)}</span>
-                          <span className="text-primary-600 font-medium">İncele →</span>
+                          <span className="text-primary-600 font-medium">{t('trucksPage.review')} →</span>
                         </div>
                       </button>
                     ))}
@@ -566,7 +566,7 @@ const TrucksPage = () => {
               {/* Muayene Section */}
               {groupedByDocType.inspection.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-3">Muayene</h2>
+                  <h2 className="text-lg font-bold text-gray-900 mb-3">{t('trucksPage.inspection')}</h2>
                   <div className="space-y-3">
                     {groupedByDocType.inspection.map((submission) => (
                       <button
@@ -583,17 +583,17 @@ const TrucksPage = () => {
                               </h3>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Araç: <span className="font-medium">{submission.relatedName}</span>
+                              {t('trucksPage.vehicleLabel')}: <span className="font-medium">{submission.relatedName}</span>
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                              Gönderen: {submission.submittedByName}
+                              {t('trucksPage.sender')}: {submission.submittedByName}
                             </p>
                           </div>
                           {getSubmissionStatusBadge(submission.status)}
                         </div>
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>{formatDate(submission.submittedAt)}</span>
-                          <span className="text-primary-600 font-medium">İncele →</span>
+                          <span className="text-primary-600 font-medium">{t('trucksPage.review')} →</span>
                         </div>
                       </button>
                     ))}
@@ -611,8 +611,8 @@ const TrucksPage = () => {
           {completedSubmissions.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg">
               <ClipboardList className="w-14 h-14 text-gray-300 mx-auto mb-4" />
-              <p className="text-lg font-medium text-gray-900 mb-2">Geçmiş kayıt yok</p>
-              <p className="text-sm text-gray-600">Onaylanan veya reddedilen belgeler burada görünecek.</p>
+              <p className="text-lg font-medium text-gray-900 mb-2">{t('trucksPage.noHistory')}</p>
+              <p className="text-sm text-gray-600">{t('trucksPage.historyHint')}</p>
             </div>
           ) : (
             completedSubmissions.map((submission) => (
@@ -629,10 +629,10 @@ const TrucksPage = () => {
                       </h3>
                     </div>
                     <p className="text-sm text-gray-600">
-                      Araç: <span className="font-medium">{submission.relatedName}</span>
+                      {t('trucksPage.vehicleLabel')}: <span className="font-medium">{submission.relatedName}</span>
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Gönderen: {submission.submittedByName}
+                      {t('trucksPage.sender')}: {submission.submittedByName}
                     </p>
                   </div>
                   {getSubmissionStatusBadge(submission.status)}

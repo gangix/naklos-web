@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { FileText, Pencil, Upload } from 'lucide-react';
 import { truckApi, driverApi } from '../../services/api';
 import type { DocumentCategory } from '../../types';
@@ -35,6 +36,7 @@ const SimpleDocumentUpdateModal = ({
   currentExpiryDate,
   onUpdate,
 }: SimpleDocumentUpdateModalProps) => {
+  const { t } = useTranslation();
   const [expiryDate, setExpiryDate] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [documents, setDocuments] = useState<TruckDocument[]>([]);
@@ -70,12 +72,12 @@ const SimpleDocumentUpdateModal = ({
 
   const getCategoryLabel = (cat: DocumentCategory) => {
     const labels: Record<DocumentCategory, string> = {
-      license: 'Ehliyet',
-      src: 'SRC Belgesi',
-      cpc: 'CPC Belgesi',
-      'compulsory-insurance': 'Zorunlu Trafik Sigortası',
-      'comprehensive-insurance': 'Kasko',
-      inspection: 'Muayene',
+      license: t('categoryLabel.license'),
+      src: t('categoryLabel.src'),
+      cpc: t('categoryLabel.cpc'),
+      'compulsory-insurance': t('categoryLabel.compulsoryInsurance'),
+      'comprehensive-insurance': t('categoryLabel.comprehensiveInsurance'),
+      inspection: t('categoryLabel.inspection'),
     };
     return labels[cat];
   };
@@ -89,12 +91,12 @@ const SimpleDocumentUpdateModal = ({
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      setError('Lütfen bir dosya seçin');
+      setError(t('simpleDocUpdate.selectFileError'));
       return;
     }
 
     if (!expiryDate) {
-      setError('Lütfen geçerlilik tarihi girin');
+      setError(t('simpleDocUpdate.expiryDateError'));
       return;
     }
 
@@ -108,7 +110,7 @@ const SimpleDocumentUpdateModal = ({
         await truckApi.uploadDocument(relatedId, selectedFile, category, expiryDate);
       }
 
-      toast.success('Belge başarıyla yüklendi');
+      toast.success(t('toast.success.documentUploaded'));
       setSelectedFile(null);
       setExpiryDate('');
       await loadDocuments(); // Reload documents list
@@ -116,14 +118,14 @@ const SimpleDocumentUpdateModal = ({
       await onUpdate(category, expiryDate);
     } catch (err) {
       console.error('Error uploading document:', err);
-      setError(err instanceof Error ? err.message : 'Belge yüklenirken hata oluştu');
+      setError(err instanceof Error ? err.message : t('toast.error.documentUpload'));
     } finally {
       setIsUploading(false);
     }
   };
 
   const handleDelete = async (documentId: string) => {
-    if (!confirm('Bu belgeyi silmek istediğinizden emin misiniz?')) {
+    if (!confirm(t('simpleDocUpdate.confirmDelete'))) {
       return;
     }
 
@@ -133,13 +135,13 @@ const SimpleDocumentUpdateModal = ({
       } else {
         await truckApi.deleteDocument(documentId);
       }
-      toast.success('Belge başarıyla silindi');
+      toast.success(t('toast.success.documentDeleted'));
       await loadDocuments();
       // Refresh parent component to update expiry dates
       await onUpdate(category, '');
     } catch (err) {
       console.error('Error deleting document:', err);
-      toast.error('Belge silinirken hata oluştu');
+      toast.error(t('toast.error.documentDelete'));
     }
   };
 
@@ -150,7 +152,7 @@ const SimpleDocumentUpdateModal = ({
 
   const handleSaveExpiry = async (documentId: string) => {
     if (!editingExpiry) {
-      toast.warning('Lütfen geçerlilik tarihi girin');
+      toast.warning(t('toast.warning.enterExpiryDate'));
       return;
     }
 
@@ -160,7 +162,7 @@ const SimpleDocumentUpdateModal = ({
       } else {
         await truckApi.updateDocumentExpiry(documentId, editingExpiry);
       }
-      toast.success('Geçerlilik tarihi güncellendi');
+      toast.success(t('toast.success.expiryUpdated'));
       setEditingDocId(null);
       setEditingExpiry('');
       await loadDocuments();
@@ -168,7 +170,7 @@ const SimpleDocumentUpdateModal = ({
       await onUpdate(category, editingExpiry);
     } catch (err) {
       console.error('Error updating expiry:', err);
-      toast.error('Tarih güncellenirken hata oluştu');
+      toast.error(t('toast.error.expiryUpdate'));
     }
   };
 
@@ -197,7 +199,7 @@ const SimpleDocumentUpdateModal = ({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-lg font-bold text-gray-900">
-            {getCategoryLabel(category)} Yönetimi
+            {getCategoryLabel(category)} {t('simpleDocUpdate.management')}
           </h2>
           <button
             onClick={handleClose}
@@ -211,7 +213,7 @@ const SimpleDocumentUpdateModal = ({
         <div className="p-4 space-y-6">
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-xs text-gray-600 mb-1">
-              {relatedType === 'truck' ? 'Araç' : 'Sürücü'}
+              {relatedType === 'truck' ? t('simpleDocUpdate.vehicle') : t('simpleDocUpdate.driver')}
             </p>
             <p className="text-sm font-medium text-gray-900">{relatedName}</p>
           </div>
@@ -225,13 +227,13 @@ const SimpleDocumentUpdateModal = ({
           {/* File Upload Section */}
           <div className="border-2 border-primary-200 bg-primary-50 rounded-lg p-4 space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><Upload className="w-5 h-5" /> Yeni Belge Yükle</h3>
-              <p className="text-xs text-gray-600 mt-1">Yeni bir belge dosyası yüklemek için bu bölümü kullanın</p>
+              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><Upload className="w-5 h-5" /> {t('simpleDocUpdate.uploadNew')}</h3>
+              <p className="text-xs text-gray-600 mt-1">{t('simpleDocUpdate.uploadHint')}</p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Dosya Seç *
+                {t('simpleDocUpdate.selectFile')}
               </label>
               <input
                 type="file"
@@ -241,14 +243,14 @@ const SimpleDocumentUpdateModal = ({
               />
               {selectedFile && (
                 <p className="text-sm text-gray-600 mt-1">
-                  Seçili: {selectedFile.name} ({formatFileSize(selectedFile.size)})
+                  {t('simpleDocUpdate.selected')}: {selectedFile.name} ({formatFileSize(selectedFile.size)})
                 </p>
               )}
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Geçerlilik Tarihi *
+                {t('simpleDocUpdate.expiryDate')}
               </label>
               <input
                 type="date"
@@ -263,7 +265,7 @@ const SimpleDocumentUpdateModal = ({
               disabled={!selectedFile || !expiryDate || isUploading}
               className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isUploading ? 'Yükleniyor...' : 'Belgeyi Yükle'}
+              {isUploading ? t('simpleDocUpdate.uploading') : t('simpleDocUpdate.uploadButton')}
             </button>
           </div>
 
@@ -271,16 +273,16 @@ const SimpleDocumentUpdateModal = ({
           {(
           <div className="border-2 border-blue-200 bg-blue-50 rounded-lg p-4 space-y-4">
             <div>
-              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><FileText className="w-5 h-5" /> Yüklenmiş Belgeler</h3>
+              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><FileText className="w-5 h-5" /> {t('simpleDocUpdate.uploadedDocuments')}</h3>
               <p className="text-xs text-gray-600 mt-1">
-                Mevcut belge tarihlerini güncellemek için <strong>"Tarih Düzenle"</strong> butonuna tıklayın
+                {t('simpleDocUpdate.editDateHint')}
               </p>
             </div>
 
             {loadingDocs ? (
-              <p className="text-sm text-gray-600">Yükleniyor...</p>
+              <p className="text-sm text-gray-600">{t('simpleDocUpdate.loading')}</p>
             ) : documents.length === 0 ? (
-              <p className="text-sm text-gray-600">Henüz belge yüklenmemiş. Yukarıdaki bölümden yeni belge yükleyebilirsiniz.</p>
+              <p className="text-sm text-gray-600">{t('simpleDocUpdate.noDocuments')}</p>
             ) : (
               <div className="space-y-2">
                 {documents.map((doc) => (
@@ -294,7 +296,7 @@ const SimpleDocumentUpdateModal = ({
                         </div>
                         <div className="bg-white rounded p-2 border border-yellow-300">
                           <label className="block text-xs font-medium text-gray-700 mb-1">
-                            Yeni Geçerlilik Tarihi Girin
+                            {t('simpleDocUpdate.newExpiryDate')}
                           </label>
                           <input
                             type="date"
@@ -303,7 +305,7 @@ const SimpleDocumentUpdateModal = ({
                             className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
                           />
                           <p className="text-xs text-gray-600 mt-1">
-                            Mevcut: {doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}
+                            {t('simpleDocUpdate.current')}: {doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('tr-TR') : t('simpleDocUpdate.notSpecified')}
                           </p>
                         </div>
                         <div className="flex gap-2">
@@ -311,13 +313,13 @@ const SimpleDocumentUpdateModal = ({
                             onClick={() => handleSaveExpiry(doc.id)}
                             className="flex-1 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
                           >
-                            ✓ Kaydet
+                            {t('simpleDocUpdate.saveDateBtn')}
                           </button>
                           <button
                             onClick={handleCancelEdit}
                             className="flex-1 px-3 py-2 text-sm border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
                           >
-                            ✕ İptal
+                            {t('simpleDocUpdate.cancelEditBtn')}
                           </button>
                         </div>
                       </div>
@@ -328,8 +330,8 @@ const SimpleDocumentUpdateModal = ({
                           <p className="text-sm font-medium text-gray-900">{doc.fileName}</p>
                           <p className="text-xs text-gray-600">
                             {formatFileSize(doc.fileSize)} •
-                            {doc.expiryDate && ` Son geçerlilik: ${new Date(doc.expiryDate).toLocaleDateString('tr-TR')}`} •
-                            Yüklenme: {new Date(doc.uploadedAt).toLocaleDateString('tr-TR')}
+                            {doc.expiryDate && ` ${t('simpleDocUpdate.lastExpiry')}: ${new Date(doc.expiryDate).toLocaleDateString('tr-TR')}`} •
+                            {t('simpleDocUpdate.uploadDate')}: {new Date(doc.uploadedAt).toLocaleDateString('tr-TR')}
                           </p>
                         </div>
                         <div className="flex gap-2 ml-4">
@@ -337,19 +339,19 @@ const SimpleDocumentUpdateModal = ({
                             onClick={() => handleEditExpiry(doc)}
                             className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                           >
-                            Tarih Düzenle
+                            {t('simpleDocUpdate.editDate')}
                           </button>
                           <button
                             onClick={() => relatedType === 'driver' ? driverApi.downloadDocument(doc.id) : truckApi.downloadDocument(doc.id)}
                             className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                           >
-                            İndir
+                            {t('simpleDocUpdate.download')}
                           </button>
                           <button
                             onClick={() => handleDelete(doc.id)}
                             className="text-sm text-red-600 hover:text-red-700 font-medium"
                           >
-                            Sil
+                            {t('simpleDocUpdate.delete')}
                           </button>
                         </div>
                       </div>
@@ -369,7 +371,7 @@ const SimpleDocumentUpdateModal = ({
             onClick={handleClose}
             className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
           >
-            Kapat
+            {t('simpleDocUpdate.close')}
           </button>
         </div>
       </div>

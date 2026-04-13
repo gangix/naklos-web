@@ -6,6 +6,7 @@ import { useFleet } from './contexts/FleetContext';
 import { useAuth } from './contexts/AuthContext';
 import { driverApi } from './services/api';
 import keycloak from './auth/keycloak';
+import i18n from './i18n';
 import ManagerLayout from './components/layout/ManagerLayout';
 import DriverLayout from './components/layout/DriverLayout';
 import DashboardPage from './pages/DashboardPage';
@@ -53,8 +54,8 @@ class ErrorBoundary extends Component<EBProps, EBState> {
     if (this.state.hasError) {
       return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, textAlign: 'center' }}>
-          <h1 style={{ fontSize: 24, marginBottom: 12 }}>Bir hata olustu</h1>
-          <p style={{ marginBottom: 24, color: '#666' }}>Beklenmeyen bir hata meydana geldi.</p>
+          <h1 style={{ fontSize: 24, marginBottom: 12 }}>{i18n.t('error.pageTitle')}</h1>
+          <p style={{ marginBottom: 24, color: '#666' }}>{i18n.t('error.pageDescription')}</p>
           <button
             onClick={() => window.location.reload()}
             style={{ padding: '10px 24px', fontSize: 16, borderRadius: 8, border: 'none', background: '#2563eb', color: '#fff', cursor: 'pointer' }}
@@ -73,7 +74,7 @@ function NotFoundPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 24, textAlign: 'center' }}>
       <h1 style={{ fontSize: 48, marginBottom: 8 }}>404</h1>
-      <p style={{ fontSize: 18, marginBottom: 24, color: '#666' }}>Sayfa bulunamadi</p>
+      <p style={{ fontSize: 18, marginBottom: 24, color: '#666' }}>{i18n.t('error.notFound')}</p>
       <Link to="/" style={{ padding: '10px 24px', fontSize: 16, borderRadius: 8, background: '#2563eb', color: '#fff', textDecoration: 'none' }}>
         Ana Sayfaya Don
       </Link>
@@ -149,7 +150,7 @@ function App() {
           <div className="text-center">
             <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
             <p className="text-gray-600 text-sm">
-              {isPreRegisteredDriver ? 'Hesabınız hazırlanıyor...' : 'Yükleniyor...'}
+              {i18n.t('common.loading')}
             </p>
           </div>
         </div>

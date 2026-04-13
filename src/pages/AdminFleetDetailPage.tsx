@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Truck, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
+import i18n from '../i18n';
 import { adminApi } from '../services/api';
 
 interface FleetDetail {
@@ -31,12 +33,12 @@ interface FleetDetail {
 
 const statusLabel = (status: string): string => {
   const map: Record<string, string> = {
-    AVAILABLE: 'Müsait',
-    IN_TRANSIT: 'Yolda',
-    ON_LEAVE: 'İzinli',
-    MAINTENANCE: 'Bakımda',
-    INACTIVE: 'Pasif',
-    ACTIVE: 'Aktif',
+    AVAILABLE: i18n.t('admin.statusAvailable'),
+    IN_TRANSIT: i18n.t('admin.statusInTransit'),
+    ON_LEAVE: i18n.t('admin.statusOnLeave'),
+    MAINTENANCE: i18n.t('admin.statusMaintenance'),
+    INACTIVE: i18n.t('admin.statusInactive'),
+    ACTIVE: i18n.t('admin.statusActive'),
   };
   return map[status] ?? status;
 };
@@ -59,6 +61,7 @@ const statusColor = (status: string): string => {
 };
 
 const AdminFleetDetailPage = () => {
+  const { t } = useTranslation();
   const { fleetId } = useParams<{ fleetId: string }>();
   const navigate = useNavigate();
   const [fleet, setFleet] = useState<FleetDetail | null>(null);
@@ -73,7 +76,7 @@ const AdminFleetDetailPage = () => {
       setFleet(data);
     } catch (err: any) {
       console.error('Error loading fleet details:', err);
-      setError(err.message ?? 'Filo detaylari yuklenemedi');
+      setError(err.message ?? t('admin.fleetLoadError'));
     } finally {
       setLoading(false);
     }
@@ -99,10 +102,10 @@ const AdminFleetDetailPage = () => {
           className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Geri Dön
+          {t('admin.backButton')}
         </button>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-          <p className="text-sm font-medium text-red-900">{error ?? 'Filo bulunamadi'}</p>
+          <p className="text-sm font-medium text-red-900">{error ?? t('admin.fleetNotFound')}</p>
         </div>
       </div>
     );
@@ -115,7 +118,7 @@ const AdminFleetDetailPage = () => {
         className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mb-4"
       >
         <ArrowLeft className="w-4 h-4" />
-        Geri Dön
+        {t('admin.backButton')}
       </button>
 
       {/* Fleet Info Card */}
@@ -123,36 +126,36 @@ const AdminFleetDetailPage = () => {
         <h1 className="text-2xl font-bold text-gray-900 mb-4">{fleet.name}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-gray-500">E-posta:</span>{' '}
+            <span className="text-gray-500">{t('admin.email')}:</span>{' '}
             <span className="text-gray-900">{fleet.email || '-'}</span>
           </div>
           <div>
-            <span className="text-gray-500">Telefon:</span>{' '}
+            <span className="text-gray-500">{t('admin.phone')}:</span>{' '}
             <span className="text-gray-900">{fleet.phone || '-'}</span>
           </div>
           <div>
-            <span className="text-gray-500">Vergi No:</span>{' '}
+            <span className="text-gray-500">{t('admin.taxId')}:</span>{' '}
             <span className="text-gray-900">{fleet.taxId || '-'}</span>
           </div>
           <div>
-            <p className="text-xs text-gray-500 mb-1">Plan</p>
+            <p className="text-xs text-gray-500 mb-1">{t('admin.plan')}</p>
             <select
               value={fleet.plan || 'FREE'}
               onChange={async (e) => {
                 try {
                   await adminApi.changePlan(fleetId!, e.target.value);
-                  toast.success('Plan güncellendi');
+                  toast.success(t('toast.success.planUpdated'));
                   loadFleet();
                 } catch (err) {
-                  toast.error('Plan güncellenirken hata oluştu');
+                  toast.error(t('toast.error.planUpdate'));
                 }
               }}
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium"
             >
-              <option value="FREE">Başlangıç (Ücretsiz)</option>
-              <option value="PROFESSIONAL">Profesyonel (499 TL/ay)</option>
-              <option value="BUSINESS">İşletme (999 TL/ay)</option>
-              <option value="ENTERPRISE">Kurumsal</option>
+              <option value="FREE">{t('admin.planFree')}</option>
+              <option value="PROFESSIONAL">{t('admin.planProfessional')}</option>
+              <option value="BUSINESS">{t('admin.planBusiness')}</option>
+              <option value="ENTERPRISE">{t('admin.planEnterprise')}</option>
             </select>
           </div>
         </div>
@@ -162,22 +165,22 @@ const AdminFleetDetailPage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
         <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
           <Truck className="w-5 h-5 text-gray-600" />
-          <h2 className="font-bold text-gray-900">Araçlar</h2>
+          <h2 className="font-bold text-gray-900">{t('admin.trucks')}</h2>
           <span className="ml-auto text-sm text-gray-500 font-medium">
-            {fleet.trucks.length} arac
+            {fleet.trucks.length} {t('admin.trucks').toLowerCase()}
           </span>
         </div>
         {fleet.trucks.length === 0 ? (
           <div className="p-6 text-center text-gray-500 text-sm">
-            Bu filoda kayitli arac yok.
+            {t('admin.noTrucks')}
           </div>
         ) : (
           <div className="divide-y divide-gray-100">
             <div className="hidden md:grid md:grid-cols-4 gap-4 px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <span>Plaka</span>
-              <span>Tip</span>
-              <span>Durum</span>
-              <span>Atanmış Sürücü</span>
+              <span>{t('admin.plate')}</span>
+              <span>{t('admin.type')}</span>
+              <span>{t('admin.status')}</span>
+              <span>{t('admin.assignedDriver')}</span>
             </div>
             {fleet.trucks.map((truck) => (
               <div key={truck.id} className="px-4 py-3 md:grid md:grid-cols-4 gap-4 items-center">
@@ -199,23 +202,23 @@ const AdminFleetDetailPage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
           <Users className="w-5 h-5 text-gray-600" />
-          <h2 className="font-bold text-gray-900">Sürücüler</h2>
+          <h2 className="font-bold text-gray-900">{t('admin.drivers')}</h2>
           <span className="ml-auto text-sm text-gray-500 font-medium">
-            {fleet.drivers.length} surucu
+            {fleet.drivers.length} {t('admin.drivers').toLowerCase()}
           </span>
         </div>
         {fleet.drivers.length === 0 ? (
           <div className="p-6 text-center text-gray-500 text-sm">
-            Bu filoda kayitli surucu yok.
+            {t('admin.noDrivers')}
           </div>
         ) : (
           <div className="divide-y divide-gray-100">
             <div className="hidden md:grid md:grid-cols-5 gap-4 px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <span>Ad Soyad</span>
-              <span>Telefon</span>
-              <span>E-posta</span>
-              <span>Durum</span>
-              <span>Atanmış Araç</span>
+              <span>{t('admin.fullName')}</span>
+              <span>{t('admin.phone')}</span>
+              <span>{t('admin.email')}</span>
+              <span>{t('admin.status')}</span>
+              <span>{t('admin.assignedTruck')}</span>
             </div>
             {fleet.drivers.map((driver) => (
               <div key={driver.id} className="px-4 py-3 md:grid md:grid-cols-5 gap-4 items-center">

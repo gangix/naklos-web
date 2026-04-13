@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, HardHat, Mail, Truck as TruckIcon } from 'lucide-react';
-import { DRIVERS } from '../constants/text';
+import { useTranslation } from 'react-i18next';
 import { useDrivers } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
@@ -14,6 +14,7 @@ import UpgradeModal from '../components/common/UpgradeModal';
 import type { DriverStatus, DocumentSubmission, TruckAssignmentRequest } from '../types';
 
 const DriversPage = () => {
+  const { t } = useTranslation();
   const { data: drivers, loading: driversLoading, refresh } = useDrivers();
   const { plan } = useFleet();
   const { documentSubmissions, truckAssignmentRequests } = useData();
@@ -201,11 +202,11 @@ const DriversPage = () => {
   const getStatusLabel = (status: DriverStatus) => {
     switch (status) {
       case 'available':
-        return DRIVERS.available;
+        return t('driver.available');
       case 'on-trip':
-        return DRIVERS.onTrip;
+        return t('driver.onTrip');
       case 'off-duty':
-        return DRIVERS.offDuty;
+        return t('driver.offDuty');
       default:
         return status;
     }
@@ -213,18 +214,18 @@ const DriversPage = () => {
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
-      license: 'Ehliyet',
-      src: 'SRC Belgesi',
-      cpc: 'CPC Belgesi',
+      license: t('categoryLabel.license'),
+      src: t('categoryLabel.src'),
+      cpc: t('categoryLabel.cpc'),
     };
     return labels[category] || category;
   };
 
   const getSubmissionStatusBadge = (status: string) => {
     const badges: Record<string, { bg: string; text: string; label: string }> = {
-      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: 'Bekliyor' },
-      approved: { bg: 'bg-green-100', text: 'text-green-700', label: 'Onaylandı' },
-      rejected: { bg: 'bg-red-100', text: 'text-red-700', label: 'Reddedildi' },
+      pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', label: t('driversPage.pending') },
+      approved: { bg: 'bg-green-100', text: 'text-green-700', label: t('driversPage.approved') },
+      rejected: { bg: 'bg-red-100', text: 'text-red-700', label: t('driversPage.rejected') },
     };
     const badge = badges[status] || badges.pending;
     return (
@@ -250,11 +251,11 @@ const DriversPage = () => {
   if (driversLoading) {
     return (
       <div className="p-4">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{DRIVERS.title}</h1>
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{t('driver.title')}</h1>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Yükleniyor...</p>
+            <p className="text-gray-600">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -265,7 +266,7 @@ const DriversPage = () => {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
-          {DRIVERS.title}
+          {t('driver.title')}
           <span className="text-sm font-medium text-gray-400 ml-2">
             ({drivers.length}{maxDrivers !== -1 ? `/${maxDrivers}` : ''})
           </span>
@@ -273,12 +274,12 @@ const DriversPage = () => {
         <div className="flex gap-2">
           <button
             onClick={() => {
-              if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+              if (plan === 'FREE') { setUpgradeMessage(t('bulkImport.bulkImportUpgrade')); setUpgradeModalOpen(true); }
               else setBulkImportOpen(true);
             }}
             className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50 transition-colors"
           >
-            <Download className="w-4 h-4 inline -mt-0.5" /> İçe Aktar
+            <Download className="w-4 h-4 inline -mt-0.5" /> {t('driversPage.import')}
           </button>
           <button
             onClick={() => {
@@ -287,7 +288,7 @@ const DriversPage = () => {
             }}
             className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-semibold hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
           >
-            + Sürücü Ekle
+            {t('driversPage.addDriver')}
           </button>
         </div>
       </div>
@@ -302,7 +303,7 @@ const DriversPage = () => {
               : 'border-transparent text-gray-600 hover:text-gray-900'
           }`}
         >
-          Sürücüler ({drivers.length})
+          {t('driversPage.drivers')} ({drivers.length})
         </button>
         {(completedDocSubmissions.length > 0 || completedTruckRequests.length > 0) && (
           <button
@@ -313,7 +314,7 @@ const DriversPage = () => {
                 : 'border-transparent text-gray-600 hover:text-gray-900'
             }`}
           >
-            Geçmiş
+            {t('driversPage.history')}
           </button>
         )}
         {totalPending > 0 && (
@@ -325,7 +326,7 @@ const DriversPage = () => {
                 : 'border-transparent text-orange-600 hover:text-orange-700'
             }`}
           >
-            Onay Bekliyor ({totalPending})
+            {t('driversPage.pendingApprovals')} ({totalPending})
           </button>
         )}
       </div>
@@ -343,7 +344,7 @@ const DriversPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {DRIVERS.all} ({drivers.length})
+              {t('driver.all')} ({drivers.length})
             </button>
             <button
               onClick={() => setFilter('available')}
@@ -353,7 +354,7 @@ const DriversPage = () => {
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {DRIVERS.available} ({drivers.filter((d) => d.status === 'available').length})
+              {t('driver.available')} ({drivers.filter((d) => d.status === 'available').length})
             </button>
           </div>
 
@@ -362,20 +363,19 @@ const DriversPage = () => {
             {filteredDrivers.length === 0 && drivers.length === 0 && (
               <div className="bg-white rounded-xl border-2 border-dashed border-gray-300 p-10 text-center">
                 <HardHat className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">Henüz sürücü eklenmedi</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{t('driversPage.emptyTitle')}</h3>
                 <p className="text-sm text-gray-600 mb-4 max-w-md mx-auto">
-                  Sürücülerinizi eklemeye başlayın. Tek tek ekleyebilir veya Excel dosyanızdan
-                  toplu içe aktarabilirsiniz.
+                  {t('driversPage.emptyHint')}
                 </p>
                 <div className="flex gap-2 justify-center flex-wrap">
                   <button
                     onClick={() => {
-              if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+              if (plan === 'FREE') { setUpgradeMessage(t('bulkImport.bulkImportUpgrade')); setUpgradeModalOpen(true); }
               else setBulkImportOpen(true);
             }}
                     className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
                   >
-                    <Download className="w-4 h-4 inline -mt-0.5" /> Excel ile İçe Aktar
+                    <Download className="w-4 h-4 inline -mt-0.5" /> {t('driversPage.excelImport')}
                   </button>
                   <button
                     onClick={() => {
@@ -384,14 +384,14 @@ const DriversPage = () => {
             }}
                     className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700"
                   >
-                    + İlk Sürücüyü Ekle
+                    {t('driversPage.addFirst')}
                   </button>
                 </div>
               </div>
             )}
             {filteredDrivers.length === 0 && drivers.length > 0 && (
               <div className="bg-white rounded-lg p-6 text-center text-gray-500">
-                Bu filtreye uygun sürücü bulunamadı
+                {t('driversPage.noFilterResult')}
               </div>
             )}
             {filteredDrivers.map((driver) => {
@@ -415,7 +415,7 @@ const DriversPage = () => {
                       {hasUrgentWarning(driver.id) && (
                         <div className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded-md">
                           <AlertCircle className="w-4 h-4 text-red-500" />
-                          <span className="text-xs font-medium text-red-700">Uyarı</span>
+                          <span className="text-xs font-medium text-red-700">{t('driversPage.warningLabel')}</span>
                         </div>
                       )}
                     </div>
@@ -426,7 +426,7 @@ const DriversPage = () => {
                   {driver.assignedTruckPlate && (
                     <div className="text-sm text-gray-600">
                       <p>
-                        {DRIVERS.assignedTruck}: {driver.assignedTruckPlate}
+                        {t('driver.assignedTruck')}: {driver.assignedTruckPlate}
                       </p>
                     </div>
                   )}
@@ -434,13 +434,13 @@ const DriversPage = () => {
                   {driver.inviteStatus === 'FAILED' && (
                     <div className="flex items-center gap-1 mt-1">
                       <Mail className="w-3.5 h-3.5 text-red-500" />
-                      <span className="text-xs text-red-600 font-medium">Davet e-postası gönderilemedi</span>
+                      <span className="text-xs text-red-600 font-medium">{t('driverDetail.inviteFailed')}</span>
                     </div>
                   )}
                   {driver.inviteStatus === 'PENDING' && (
                     <div className="flex items-center gap-1 mt-1">
                       <Mail className="w-3.5 h-3.5 text-yellow-500" />
-                      <span className="text-xs text-yellow-600 font-medium">Davet gönderiliyor...</span>
+                      <span className="text-xs text-yellow-600 font-medium">{t('driverDetail.invitePending')}</span>
                     </div>
                   )}
 
@@ -474,15 +474,15 @@ const DriversPage = () => {
           {totalPending === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg">
               <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
-              <p className="text-lg font-medium text-gray-900 mb-2">Onay bekleyen öğe yok</p>
-              <p className="text-sm text-gray-600">Tüm talepler işlendi.</p>
+              <p className="text-lg font-medium text-gray-900 mb-2">{t('driversPage.noPending')}</p>
+              <p className="text-sm text-gray-600">{t('driversPage.allProcessed')}</p>
             </div>
           ) : (
             <>
-              {/* Belge Onayları Section */}
+              {/* {t('driversPage.docApprovals')} Section */}
               {pendingDocSubmissions.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Onayları</h2>
+                  <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driversPage.docApprovals')}</h2>
                   <div className="space-y-3">
                     {pendingDocSubmissions.map((submission) => (
                       <button
@@ -499,17 +499,17 @@ const DriversPage = () => {
                               </h3>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Sürücü: <span className="font-medium">{submission.relatedName}</span>
+                              {t('driversPage.driverLabel')}: <span className="font-medium">{submission.relatedName}</span>
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                              Gönderen: {submission.submittedByName}
+                              {t('driversPage.sender')}: {submission.submittedByName}
                             </p>
                           </div>
                           {getSubmissionStatusBadge(submission.status)}
                         </div>
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>{formatDate(submission.submittedAt)}</span>
-                          <span className="text-primary-600 font-medium">İncele →</span>
+                          <span className="text-primary-600 font-medium">{t('driversPage.review')} →</span>
                         </div>
                       </button>
                     ))}
@@ -517,10 +517,10 @@ const DriversPage = () => {
                 </div>
               )}
 
-              {/* Araç Talepleri Section */}
+              {/* {t('driversPage.truckRequests')} Section */}
               {pendingTruckRequests.length > 0 && (
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900 mb-3">Araç Talepleri</h2>
+                  <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driversPage.truckRequests')}</h2>
                   <div className="space-y-3">
                     {pendingTruckRequests.map((request) => (
                       <button
@@ -532,20 +532,20 @@ const DriversPage = () => {
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
                               <TruckIcon className="w-5 h-5 text-gray-500" />
-                              <h3 className="text-sm font-bold text-gray-900">Araç Talebi</h3>
+                              <h3 className="text-sm font-bold text-gray-900">{t('driversPage.truckRequestLabel')}</h3>
                             </div>
                             <p className="text-sm text-gray-600">
-                              Sürücü: <span className="font-medium">{request.driverName}</span>
+                              {t('driversPage.driverLabel')}: <span className="font-medium">{request.driverName}</span>
                             </p>
                             <p className="text-xs text-gray-500 mt-1">
-                              Tercih: {request.preferredTruckPlate}
+                              {t('driversPage.preference')}: {request.preferredTruckPlate}
                             </p>
                           </div>
                           {getSubmissionStatusBadge(request.status)}
                         </div>
                         <div className="flex items-center justify-between text-xs text-gray-500">
                           <span>{formatDate(request.requestedAt)}</span>
-                          <span className="text-primary-600 font-medium">İncele →</span>
+                          <span className="text-primary-600 font-medium">{t('driversPage.review')} →</span>
                         </div>
                       </button>
                     ))}
@@ -563,8 +563,8 @@ const DriversPage = () => {
           {completedDocSubmissions.length === 0 && completedTruckRequests.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-lg">
               <ClipboardList className="w-14 h-14 text-gray-300 mx-auto mb-4" />
-              <p className="text-lg font-medium text-gray-900 mb-2">Geçmiş kayıt yok</p>
-              <p className="text-sm text-gray-600">İşlenen belgeler ve talepler burada görünecek.</p>
+              <p className="text-lg font-medium text-gray-900 mb-2">{t('driversPage.noHistory')}</p>
+              <p className="text-sm text-gray-600">{t('driversPage.historyHint')}</p>
             </div>
           ) : (
             <>
@@ -582,10 +582,10 @@ const DriversPage = () => {
                         </h3>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Sürücü: <span className="font-medium">{submission.relatedName}</span>
+                        {t('driversPage.driverLabel')}: <span className="font-medium">{submission.relatedName}</span>
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        Gönderen: {submission.submittedByName}
+                        {t('driversPage.sender')}: {submission.submittedByName}
                       </p>
                     </div>
                     {getSubmissionStatusBadge(submission.status)}
@@ -604,13 +604,13 @@ const DriversPage = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <TruckIcon className="w-5 h-5 text-gray-500" />
-                        <h3 className="text-sm font-bold text-gray-900">Araç Talebi</h3>
+                        <h3 className="text-sm font-bold text-gray-900">{t('driversPage.truckRequestLabel')}</h3>
                       </div>
                       <p className="text-sm text-gray-600">
-                        Sürücü: <span className="font-medium">{request.driverName}</span>
+                        {t('driversPage.driverLabel')}: <span className="font-medium">{request.driverName}</span>
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        Tercih: {request.preferredTruckPlate}
+                        {t('driversPage.preference')}: {request.preferredTruckPlate}
                       </p>
                     </div>
                     {getSubmissionStatusBadge(request.status)}

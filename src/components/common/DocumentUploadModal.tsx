@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { DOCUMENT_UPLOAD, COMMON } from '../../constants/text';
+import { useTranslation } from 'react-i18next';
 import { driverApi, truckApi } from '../../services/api';
 import FileUpload from './FileUpload';
 import type { Document, DocumentCategory } from '../../types';
@@ -22,6 +22,7 @@ const DocumentUploadModal = ({
   currentExpiryDate,
   onUploadSuccess,
 }: DocumentUploadModalProps) => {
+  const { t } = useTranslation();
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [suggestedExpiryDate, setSuggestedExpiryDate] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,22 +35,18 @@ const DocumentUploadModal = ({
 
   const handleSubmit = async () => {
     if (!selectedDocument || !suggestedExpiryDate) {
-      toast.warning('Lütfen belge ve geçerlilik tarihi seçin');
+      toast.warning(t('toast.warning.selectDocAndDate'));
       return;
     }
 
     if (!selectedDocument.rawFile) {
-      toast.error('Dosya hazırlanamadı. Lütfen tekrar deneyin.');
+      toast.error(t('toast.error.filePreparation'));
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Both branches go straight to the backend. The existing services
-      // record the audit trail (uploadedBy / uploadedAt) and update the
-      // denormalized expiry field on the truck or driver row so the
-      // manager sees the new date the next time they load the list.
       if (relatedType === 'truck') {
         await truckApi.uploadMyTruckDocument(
           selectedDocument.rawFile,
@@ -64,12 +61,12 @@ const DocumentUploadModal = ({
         );
       }
 
-      toast.success('Belge yüklendi');
+      toast.success(t('toast.success.documentUploaded'));
       onUploadSuccess?.();
       handleClose();
     } catch (error) {
       console.error('Document upload failed:', error);
-      toast.error('Bir hata oluştu. Lütfen tekrar deneyin.');
+      toast.error(t('toast.error.documentUpload'));
     } finally {
       setIsSubmitting(false);
     }
@@ -84,12 +81,12 @@ const DocumentUploadModal = ({
 
   const getCategoryLabel = (cat: DocumentCategory) => {
     const labels: Record<DocumentCategory, string> = {
-      license: 'Ehliyet',
-      src: 'SRC Belgesi',
-      cpc: 'CPC Belgesi',
-      'compulsory-insurance': 'Zorunlu Trafik Sigortası',
-      'comprehensive-insurance': 'Kasko',
-      inspection: 'Muayene',
+      license: t('categoryLabel.license'),
+      src: t('categoryLabel.src'),
+      cpc: t('categoryLabel.cpc'),
+      'compulsory-insurance': t('categoryLabel.compulsoryInsurance'),
+      'comprehensive-insurance': t('categoryLabel.comprehensiveInsurance'),
+      inspection: t('categoryLabel.inspection'),
     };
     return labels[cat];
   };
@@ -100,7 +97,7 @@ const DocumentUploadModal = ({
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-bold text-gray-900">
-            {getCategoryLabel(category)} {DOCUMENT_UPLOAD.update}
+            {getCategoryLabel(category)} {t('documentUpload.update')}
           </h2>
           <button
             onClick={handleClose}
@@ -115,7 +112,7 @@ const DocumentUploadModal = ({
           {/* Current expiry date */}
           {currentExpiryDate && (
             <div className="bg-gray-50 rounded-lg p-3">
-              <p className="text-xs text-gray-600 mb-1">Mevcut Geçerlilik Tarihi</p>
+              <p className="text-xs text-gray-600 mb-1">{t('docUploadModal.currentExpiry')}</p>
               <p className="text-sm font-medium text-gray-900">{currentExpiryDate}</p>
             </div>
           )}
@@ -123,7 +120,7 @@ const DocumentUploadModal = ({
           {/* Document upload */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Belge Fotoğrafı *
+              {t('docUploadModal.documentPhoto')}
             </label>
             {selectedDocument ? (
               <div className="relative">
@@ -147,7 +144,7 @@ const DocumentUploadModal = ({
           {/* Expiry date input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Yeni Geçerlilik Tarihi *
+              {t('docUploadModal.newExpiryDate')}
             </label>
             <input
               type="date"
@@ -156,14 +153,14 @@ const DocumentUploadModal = ({
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Belgede yazan geçerlilik tarihini girin.
+              {t('docUploadModal.expiryHint')}
             </p>
           </div>
 
           {/* Info note */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
             <p className="text-xs text-blue-800">
-              ℹ️ Belge anında kaydedilecek ve yöneticiniz görüntüleyebilecek.
+              {t('docUploadModal.infoNote')}
             </p>
           </div>
         </div>
@@ -175,14 +172,14 @@ const DocumentUploadModal = ({
             disabled={isSubmitting}
             className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 disabled:opacity-50"
           >
-            {COMMON.cancel}
+            {t('common.cancel')}
           </button>
           <button
             onClick={handleSubmit}
             disabled={!selectedDocument || !suggestedExpiryDate || isSubmitting}
             className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? DOCUMENT_UPLOAD.uploading : DOCUMENT_UPLOAD.submit}
+            {isSubmitting ? t('documentUpload.uploading') : t('documentUpload.submit')}
           </button>
         </div>
       </div>

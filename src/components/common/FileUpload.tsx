@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import { Camera } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Document } from '../../types';
 import { convertFileToDocument, MAX_FILE_SIZE, formatFileSize } from '../../utils/fileUpload';
-import { DOCUMENTS } from '../../constants/text';
 
 interface FileUploadProps {
   onFileSelect: (document: Document) => void;
@@ -15,6 +15,7 @@ interface FileUploadProps {
  * Validates file size and type, converts to base64, and provides user feedback
  */
 const FileUpload = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }: FileUploadProps) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +42,7 @@ const FileUpload = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }:
         setError(result.error);
       }
     } catch (err) {
-      setError(DOCUMENTS.uploadError);
+      setError(t('document.uploadError'));
     } finally {
       setIsUploading(false);
       // Reset input so the same file can be selected again
@@ -77,19 +78,19 @@ const FileUpload = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }:
         {isUploading ? (
           <span className="flex items-center justify-center gap-2">
             <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            Yükleniyor...
+            {t('common.loading')}
           </span>
         ) : (
           <span className="flex items-center justify-center gap-2">
             <Camera className="w-6 h-6" />
-            {DOCUMENTS.uploadPhoto}
+            {t('document.uploadPhoto')}
           </span>
         )}
       </button>
 
       {/* Size limit hint */}
       <p className="text-xs text-center text-gray-500">
-        {DOCUMENTS.maxSize}: {formatFileSize(maxSize)} • JPG, PNG, WebP
+        {t('document.maxSize')}: {formatFileSize(maxSize)} • JPG, PNG, WebP
       </p>
 
       {/* Error message */}

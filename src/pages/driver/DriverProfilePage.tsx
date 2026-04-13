@@ -5,14 +5,14 @@ import { AlertTriangle, Wrench } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
-import { PROFILE, DRIVERS } from '../../constants/text';
+
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import { formatDate } from '../../utils/format';
 import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager, logout } = useAuth();
   const { fleetId } = useFleet();
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -91,29 +91,29 @@ const DriverProfilePage = () => {
   const handleDriverSelect = (selectedDriver: any) => {
     loginAsDriver(selectedDriver.id, `${selectedDriver.firstName} ${selectedDriver.lastName}`);
     setShowDriverList(false);
-    toast.success(`${selectedDriver.firstName} ${selectedDriver.lastName} olarak giriş yaptınız`);
+    toast.success(`${selectedDriver.firstName} ${selectedDriver.lastName}`);
   };
 
   const handleManagerLogin = () => {
     loginAsManager();
     setShowDriverList(false);
-    toast.success('Fleet Manager olarak giriş yaptınız');
+    toast.success('Fleet Manager');
   };
 
   const handleLanguageChange = async (locale: string) => {
     try {
       await driverApi.updateLocale(locale);
       i18n.changeLanguage(locale);
-      toast.success('Dil güncellendi');
+      toast.success(t('toast.success.languageUpdated'));
     } catch {
-      toast.error('Bir hata oluştu');
+      toast.error(t('toast.error.generic'));
     }
   };
 
   if (loading) {
     return (
       <div className="p-4">
-        <p className="text-center text-gray-600">Yükleniyor...</p>
+        <p className="text-center text-gray-600">{t('common.loading')}</p>
       </div>
     );
   }
@@ -124,7 +124,7 @@ const DriverProfilePage = () => {
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
           <h2 className="font-bold text-yellow-900 mb-2 flex items-center gap-1.5"><AlertTriangle className="w-5 h-5 text-orange-500" /> Sürücü Profili Bulunamadı</h2>
           <p className="text-sm text-yellow-700 mb-3">
-            Hesabınız henüz bir sürücü kaydına bağlanmamış. Lütfen yöneticinizden sizi sürücü olarak eklemesini isteyin.
+            {t('driverProfile.notFoundDesc')}
           </p>
         </div>
 
@@ -133,13 +133,13 @@ const DriverProfilePage = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
               <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
-              <p className="text-xs text-gray-600 mt-1">Test için herhangi bir sürücü olarak giriş yapın</p>
+              <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devLoginHint')}</p>
             </div>
 
             <div className="p-4 space-y-2 max-h-96 overflow-y-auto">
               {allDrivers.length === 0 ? (
                 <div className="text-center py-4 text-gray-600">
-                  Sürücü bulunamadı. Önce sürücü ekleyin.
+                  {t('driverProfile.noDriversFound')}
                 </div>
               ) : (
                 allDrivers.map((d) => (
@@ -169,9 +169,9 @@ const DriverProfilePage = () => {
 
   const documentTypeLabel = (type: string) => {
     switch (type) {
-      case 'license': return 'Ehliyet';
-      case 'src': return 'SRC Belgesi';
-      case 'cpc': return 'CPC Belgesi';
+      case 'license': return t('categoryLabel.license');
+      case 'src': return t('categoryLabel.src');
+      case 'cpc': return t('categoryLabel.cpc');
       default: return type;
     }
   };
@@ -188,9 +188,9 @@ const DriverProfilePage = () => {
       await driverApi.updateMyContact({ phone: editPhone, email: editEmail });
       await loadCurrentDriver();
       setIsEditing(false);
-      toast.success('İletişim bilgileri güncellendi');
+      toast.success(t('toast.success.contactUpdated'));
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+      toast.error(err instanceof Error ? err.message : t('toast.error.saveError'));
     } finally {
       setSaving(false);
     }
@@ -208,7 +208,7 @@ const DriverProfilePage = () => {
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{PROFILE.title}</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{t('profile.title')}</h1>
             <p className="text-sm text-gray-600 mt-1">
               {driver.firstName} {driver.lastName}
             </p>
@@ -219,7 +219,7 @@ const DriverProfilePage = () => {
                 onClick={() => setShowDriverList(!showDriverList)}
                 className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
               >
-                {showDriverList ? 'Kapat' : 'Kullanıcı Değiştir'}
+                {showDriverList ? t('driverProfile.closePanel') : t('driverProfile.switchUser')}
               </button>
             )}
             <button
@@ -248,7 +248,7 @@ const DriverProfilePage = () => {
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
-            <p className="text-xs text-gray-600 mt-1">Test için herhangi bir kullanıcı olarak giriş yapın</p>
+            <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
           </div>
 
           <div className="p-4 space-y-2 max-h-96 overflow-y-auto">
@@ -264,7 +264,7 @@ const DriverProfilePage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-gray-900">Fleet Manager</p>
-                  <p className="text-xs text-gray-600">Yönetici Hesabı</p>
+                  <p className="text-xs text-gray-600">{t('driverProfile.managerAccount')}</p>
                 </div>
                 {user?.role === 'fleet-manager' && (
                   <span className="text-blue-600 font-bold">✓</span>
@@ -275,7 +275,7 @@ const DriverProfilePage = () => {
             {/* Drivers List */}
             {allDrivers.length === 0 ? (
               <div className="text-center py-4 text-gray-600">
-                Sürücü bulunamadı.
+                {t('driverProfile.noDriversShort')}
               </div>
             ) : (
               allDrivers.map((d) => (
@@ -310,7 +310,7 @@ const DriverProfilePage = () => {
       {/* Personal Info Card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{PROFILE.personalInfo}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t('profile.personalInfo')}</h2>
           {!isEditing && (
             <button
               onClick={startEditing}
@@ -323,14 +323,14 @@ const DriverProfilePage = () => {
 
         <div className="space-y-3">
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.fullName}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.fullName')}</p>
             <p className="text-sm font-medium text-gray-900">
               {driver.firstName} {driver.lastName}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.phone}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.phone')}</p>
             {isEditing ? (
               <input
                 type="tel"
@@ -344,7 +344,7 @@ const DriverProfilePage = () => {
           </div>
 
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.email}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.email')}</p>
             {isEditing ? (
               <input
                 type="email"
@@ -358,12 +358,12 @@ const DriverProfilePage = () => {
           </div>
 
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseNumber}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
           </div>
 
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseClass}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.licenseClass')}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
           </div>
 
@@ -374,7 +374,7 @@ const DriverProfilePage = () => {
                 disabled={saving}
                 className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors disabled:opacity-50"
               >
-                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                {saving ? t('driverProfile.saving') : t('driverProfile.save')}
               </button>
               <button
                 onClick={() => setIsEditing(false)}
@@ -390,18 +390,18 @@ const DriverProfilePage = () => {
       {/* Emergency Contact Card */}
       {driver.emergencyContact && (
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{DRIVERS.emergencyContact}</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driver.emergencyContact')}</h2>
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.contactName}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.contactName')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.name}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.contactPhone}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.contactPhone')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.phone}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.relationship}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.relationship')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.relationship}</p>
             </div>
           </div>
@@ -410,12 +410,12 @@ const DriverProfilePage = () => {
 
       {/* Documents Section */}
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{PROFILE.documents}</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('profile.documents')}</h2>
 
         {/* Driver's License */}
         <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-bold text-gray-900">{DRIVERS.license}</h3>
+            <h3 className="text-sm font-bold text-gray-900">{t('driver.license')}</h3>
             <button
               onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
               className="text-sm text-primary-600 font-medium"
@@ -425,11 +425,11 @@ const DriverProfilePage = () => {
           </div>
           <div className="space-y-2">
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseNumber}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseExpiry}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.licenseExpiry')}</p>
               <p className="text-sm font-medium text-gray-900">{formatDate(driver.licenseExpiryDate)}</p>
             </div>
             <ExpiryBadge label="" date={driver.licenseExpiryDate} />
@@ -442,28 +442,28 @@ const DriverProfilePage = () => {
           return (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-bold text-gray-900">{DRIVERS.srcCertificate}</h3>
+                <h3 className="text-sm font-bold text-gray-900">{t('driver.srcCertificate')}</h3>
                 <button
                   onClick={() => handleDocumentUpdate('src', srcCert?.expiryDate || null)}
                   className="text-sm text-primary-600 font-medium"
                 >
-                  {srcCert ? 'Güncelle' : 'Yükle'}
+                  {srcCert ? t('driverProfile.update') : t('driverProfile.upload')}
                 </button>
               </div>
               {srcCert ? (
                 <div className="space-y-2">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.certificateNumber}</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.certificateNumber')}</p>
                     <p className="text-sm font-medium text-gray-900">{srcCert.number}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.expiryDate}</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.expiryDate')}</p>
                     <p className="text-sm font-medium text-gray-900">{formatDate(srcCert.expiryDate)}</p>
                   </div>
                   <ExpiryBadge label="" date={srcCert.expiryDate} />
                 </div>
               ) : (
-                <p className="text-sm text-gray-500">Henüz yüklenmemiş</p>
+                <p className="text-sm text-gray-500">{t('driverProfile.notUploaded')}</p>
               )}
             </div>
           );
@@ -475,28 +475,28 @@ const DriverProfilePage = () => {
           return (
             <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="text-sm font-bold text-gray-900">{DRIVERS.cpcCertificate}</h3>
+                <h3 className="text-sm font-bold text-gray-900">{t('driver.cpcCertificate')}</h3>
                 <button
                   onClick={() => handleDocumentUpdate('cpc', cpcCert?.expiryDate || null)}
                   className="text-sm text-primary-600 font-medium"
                 >
-                  {cpcCert ? 'Güncelle' : 'Yükle'}
+                  {cpcCert ? t('driverProfile.update') : t('driverProfile.upload')}
                 </button>
               </div>
               {cpcCert ? (
                 <div className="space-y-2">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.certificateNumber}</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.certificateNumber')}</p>
                     <p className="text-sm font-medium text-gray-900">{cpcCert.number}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.expiryDate}</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.expiryDate')}</p>
                     <p className="text-sm font-medium text-gray-900">{formatDate(cpcCert.expiryDate)}</p>
                   </div>
                   <ExpiryBadge label="" date={cpcCert.expiryDate} />
                 </div>
               ) : (
-                <p className="text-sm text-gray-500">Henüz yüklenmemiş</p>
+                <p className="text-sm text-gray-500">{t('driverProfile.notUploaded')}</p>
               )}
             </div>
           );
@@ -506,7 +506,7 @@ const DriverProfilePage = () => {
       {/* Upload history */}
       {myDocuments.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Geçmişi</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverProfile.documentHistory')}</h2>
           <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
             {myDocuments.map((doc) => (
               <div key={doc.id} className="p-3">
@@ -519,7 +519,7 @@ const DriverProfilePage = () => {
                 <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
                 {doc.expiryDate && (
                   <p className="text-xs text-gray-500 mt-1">
-                    Geçerlilik: {formatDate(doc.expiryDate)}
+                    {t('driverProfile.expiryLabel')}: {formatDate(doc.expiryDate)}
                   </p>
                 )}
               </div>

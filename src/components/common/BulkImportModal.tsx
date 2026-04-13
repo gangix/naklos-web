@@ -1,5 +1,6 @@
 import { useState, useRef, useMemo } from 'react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { truckApi, driverApi, type BulkImportResult } from '../../services/api';
@@ -148,6 +149,7 @@ const normalizeTruckType = (value: any): string | null => {
 };
 
 const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportModalProps) => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rawRows, setRawRows] = useState<any[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
@@ -158,8 +160,8 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
   const [result, setResult] = useState<BulkImportResult | null>(null);
 
   const isTruck = entityType === 'truck';
-  const title = isTruck ? 'Araçları Toplu İçe Aktar' : 'Sürücüleri Toplu İçe Aktar';
-  const singularLabel = isTruck ? 'araç' : 'sürücü';
+  const title = isTruck ? t('bulkImport.truckTitle') : t('bulkImport.driverTitle');
+  const singularLabel = isTruck ? t('truck.title').toLowerCase() : t('driver.title').toLowerCase();
   const schema = isTruck ? TRUCK_SCHEMA : DRIVER_SCHEMA;
 
   const missingRequiredFields = useMemo(
@@ -239,7 +241,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
         const parsed = XLSX.utils.sheet_to_json<any>(firstSheet, { defval: null, raw: false });
 
         if (parsed.length === 0) {
-          setParseError('Dosya boş görünüyor');
+          setParseError(t('bulkImport.fileEmpty'));
           setRawRows([]);
           return;
         }
@@ -250,7 +252,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
         setMapping(buildInitialMapping(fileHeaders, schema));
       } catch (err) {
         console.error('Parse error:', err);
-        setParseError(err instanceof Error ? err.message : 'Dosya okunamadı');
+        setParseError(err instanceof Error ? err.message : t('bulkImport.fileReadError'));
         setRawRows([]);
       }
     };
@@ -275,7 +277,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
         setResult(res);
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'İçe aktarma başarısız');
+      toast.error(err instanceof Error ? err.message : t('toast.error.importFailed'));
     } finally {
       setImporting(false);
     }
@@ -310,12 +312,12 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
           {!result ? (
             <>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <h3 className="text-sm font-semibold text-blue-900 mb-2">Nasıl kullanılır?</h3>
+                <h3 className="text-sm font-semibold text-blue-900 mb-2">{t('bulkImport.howToUse')}</h3>
                 <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                  <li>Kendi Excel dosyanızı yükleyin — sütun adlarını otomatik eşleştireceğiz</li>
-                  <li>Veya aşağıdaki şablonu indirip kullanın</li>
-                  <li>Eşleştirmeleri kontrol edin, eksikleri elle seçin</li>
-                  <li>İçe aktarın</li>
+                  <li>{t('bulkImport.step1')}</li>
+                  <li>{t('bulkImport.step2')}</li>
+                  <li>{t('bulkImport.step3')}</li>
+                  <li>{t('bulkImport.step4')}</li>
                 </ol>
               </div>
 
@@ -323,7 +325,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                 onClick={downloadTemplate}
                 className="w-full mb-4 px-4 py-3 border-2 border-primary-600 text-primary-600 rounded-lg font-semibold hover:bg-primary-50 transition-colors"
               >
-                <Download className="w-5 h-5 inline -mt-0.5" /> Şablonu İndir (.xlsx)
+                <Download className="w-5 h-5 inline -mt-0.5" /> {t('bulkImport.downloadTemplate')}
               </button>
 
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
@@ -339,11 +341,11 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                   htmlFor="bulk-file-input"
                   className="cursor-pointer inline-block px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors"
                 >
-                  {fileName ? 'Farklı Dosya Seç' : 'Dosya Seç'}
+                  {fileName ? t('bulkImport.selectDifferentFile') : t('bulkImport.selectFile')}
                 </label>
                 {fileName && (
                   <p className="mt-3 text-sm text-gray-600">
-                    Seçili: <strong>{fileName}</strong>
+                    {t('bulkImport.selected')}: <strong>{fileName}</strong>
                   </p>
                 )}
               </div>
@@ -357,9 +359,9 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
               {rawRows.length > 0 && (
                 <>
                   <div className="mb-4">
-                    <h3 className="text-sm font-bold text-gray-900 mb-2">Sütun Eşleştirme</h3>
+                    <h3 className="text-sm font-bold text-gray-900 mb-2">{t('bulkImport.columnMapping')}</h3>
                     <p className="text-xs text-gray-500 mb-3">
-                      Dosyanızdaki sütunları alanlarımıza eşleştirin. Otomatik bulunan eşleştirmeleri değiştirebilirsiniz.
+                      {t('bulkImport.columnMappingHint')}
                     </p>
                     <div className="space-y-2">
                       {schema.map((field) => {
@@ -386,7 +388,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                               onChange={(e) => setFieldMapping(field.field, e.target.value)}
                               className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent min-w-0"
                             >
-                              <option value="">— Seçin —</option>
+                              <option value="">{t('bulkImport.selectColumn')}</option>
                               {headers.map((h) => (
                                 <option key={h} value={h}>
                                   {h}
@@ -402,10 +404,10 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                   {missingRequiredFields.length > 0 && (
                     <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mb-4">
                       <p className="text-sm text-orange-900 font-medium">
-                        <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4 text-orange-500 inline flex-shrink-0" /> Eksik zorunlu alanlar: {missingRequiredFields.map((f) => f.label).join(', ')}</span>
+                        <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4 text-orange-500 inline flex-shrink-0" /> {t('bulkImport.missingRequired')}: {missingRequiredFields.map((f) => f.label).join(', ')}</span>
                       </p>
                       <p className="text-xs text-orange-700 mt-1">
-                        Devam etmek için yukarıdaki listeden sütunları seçin.
+                        {t('bulkImport.missingRequiredHint')}
                       </p>
                     </div>
                   )}
@@ -414,7 +416,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                     <>
                       <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-3">
                         <p className="text-sm text-green-800 font-medium">
-                          ✓ {normalizedRows.length} {singularLabel} içe aktarılmaya hazır
+                          {t('bulkImport.readyToImport', { count: normalizedRows.length, entity: singularLabel })}
                         </p>
                       </div>
                       <div className="border border-gray-200 rounded-lg overflow-hidden mb-4">
@@ -444,7 +446,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                         </div>
                         {normalizedRows.length > 5 && (
                           <div className="px-3 py-2 bg-gray-50 text-xs text-gray-500 text-center border-t border-gray-100">
-                            ... ve {normalizedRows.length - 5} tane daha
+                            {t('bulkImport.andMore', { count: normalizedRows.length - 5 })}
                           </div>
                         )}
                       </div>
@@ -461,21 +463,21 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                 }`}
               >
                 <p className="text-lg font-bold text-gray-900">
-                  {result.successCount} başarılı
-                  {result.errorCount > 0 && `, ${result.errorCount} hata`}
+                  {t('bulkImport.successCount', { count: result.successCount })}
+                  {result.errorCount > 0 && `, ${t('bulkImport.errorCount', { count: result.errorCount })}`}
                 </p>
               </div>
 
               {result.errors.length > 0 && (
                 <div className="border border-red-200 rounded-lg overflow-hidden">
                   <div className="bg-red-50 px-4 py-2 border-b border-red-200">
-                    <p className="text-sm font-semibold text-red-900">Hatalar</p>
+                    <p className="text-sm font-semibold text-red-900">{t('bulkImport.errors')}</p>
                   </div>
                   <div className="max-h-64 overflow-y-auto">
                     {result.errors.map((err, idx) => (
                       <div key={idx} className="px-4 py-3 border-b border-red-100 last:border-b-0">
                         <p className="text-sm font-medium text-gray-900">
-                          Satır {err.rowNumber}: {err.identifier}
+                          {t('bulkImport.row', { number: err.rowNumber })}: {err.identifier}
                         </p>
                         <p className="text-xs text-red-700 mt-1">{err.message}</p>
                       </div>
@@ -492,7 +494,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
             onClick={handleClose}
             className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
           >
-            {result ? 'Kapat' : 'İptal'}
+            {result ? t('bulkImport.close') : t('common.cancel')}
           </button>
           {!result && readyToImport && (
             <button
@@ -500,7 +502,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
               disabled={importing}
               className="flex-[2] py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 disabled:opacity-50"
             >
-              {importing ? 'İçe Aktarılıyor...' : `${normalizedRows.length} ${singularLabel} İçe Aktar`}
+              {importing ? t('bulkImport.importing') : t('bulkImport.importButton', { count: normalizedRows.length, entity: singularLabel })}
             </button>
           )}
         </div>

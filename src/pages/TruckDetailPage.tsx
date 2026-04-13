@@ -4,13 +4,14 @@ import { toast } from 'sonner';
 import { MapPin } from 'lucide-react';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
-import { TRUCKS } from '../constants/text';
+import { useTranslation } from 'react-i18next';
 import { formatCurrency, formatDate } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import type { DocumentCategory, Truck, Driver } from '../types';
 
 const TruckDetailPage = () => {
+  const { t } = useTranslation();
   const { truckId } = useParams<{ truckId: string }>();
   const navigate = useNavigate();
   const { fleetId } = useFleet();
@@ -35,7 +36,7 @@ const TruckDetailPage = () => {
         setTruck(data);
       } catch (err) {
         console.error('Error fetching truck:', err);
-        setError(err instanceof Error ? err.message : 'Araç yüklenirken hata oluştu');
+        setError(err instanceof Error ? err.message : t('truckDetail.loadError'));
       } finally {
         setLoading(false);
       }
@@ -75,7 +76,7 @@ const TruckDetailPage = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Yükleniyor...</p>
+            <p className="text-gray-600">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -85,7 +86,7 @@ const TruckDetailPage = () => {
   if (error || !truck) {
     return (
       <div className="p-4">
-        <p className="text-center text-red-600">{error || 'Araç bulunamadı'}</p>
+        <p className="text-center text-red-600">{error || t('truckDetail.notFound')}</p>
         <button
           onClick={() => navigate(-1)}
           className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
@@ -111,9 +112,9 @@ const TruckDetailPage = () => {
 
   const documentTypeLabel = (type: string) => {
     switch (type) {
-      case 'compulsory-insurance': return TRUCKS.compulsoryInsurance;
-      case 'comprehensive-insurance': return TRUCKS.comprehensiveInsurance;
-      case 'inspection': return TRUCKS.inspection;
+      case 'compulsory-insurance': return t('truck.compulsoryInsurance');
+      case 'comprehensive-insurance': return t('truck.comprehensiveInsurance');
+      case 'inspection': return t('truck.inspection');
       default: return type;
     }
   };
@@ -121,11 +122,11 @@ const TruckDetailPage = () => {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'available':
-        return TRUCKS.available;
+        return t('truck.available');
       case 'in-transit':
-        return TRUCKS.inTransit;
+        return t('truck.inTransit');
       case 'maintenance':
-        return TRUCKS.maintenance;
+        return t('truck.maintenance');
       default:
         return status;
     }
@@ -141,7 +142,7 @@ const TruckDetailPage = () => {
       setShowDriverSelect(false);
     } catch (err) {
       console.error('Error assigning driver:', err);
-      toast.error('Sürücü atanırken hata oluştu');
+      toast.error(t('toast.error.assignDriver'));
     } finally {
       setAssigningDriver(false);
     }
@@ -150,7 +151,7 @@ const TruckDetailPage = () => {
   const handleUnassignDriver = async () => {
     if (!truckId) return;
 
-    if (!confirm('Sürücüyü kaldırmak istediğinizden emin misiniz?')) return;
+    if (!confirm(t('truckDetail.confirmRemoveDriver'))) return;
 
     try {
       setAssigningDriver(true);
@@ -158,7 +159,7 @@ const TruckDetailPage = () => {
       setTruck(updatedTruck);
     } catch (err) {
       console.error('Error unassigning driver:', err);
-      toast.error('Sürücü kaldırılırken hata oluştu');
+      toast.error(t('toast.error.removeDriver'));
     } finally {
       setAssigningDriver(false);
     }
@@ -197,19 +198,19 @@ const TruckDetailPage = () => {
       setTruck(updatedTruck);
     } catch (err) {
       console.error('Error updating status:', err);
-      toast.error('Durum güncellenirken hata oluştu');
+      toast.error(t('toast.error.updateStatus'));
     }
   };
 
   const handleDelete = async () => {
     if (!truckId) return;
-    if (!confirm('Bu aracı silmek istediğinizden emin misiniz?')) return;
+    if (!confirm(t('truckDetail.confirmDelete'))) return;
     try {
       await truckApi.delete(truckId);
       navigate('/manager/trucks');
     } catch (err) {
       console.error('Error deleting truck:', err);
-      toast.error('Araç silinirken hata oluştu');
+      toast.error(t('toast.error.deleteTruck'));
     }
   };
 
@@ -231,22 +232,22 @@ const TruckDetailPage = () => {
 
       {/* Basic info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.basicInfo}</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{TRUCKS.status}</span>
+            <span className="text-sm text-gray-600">{t('truck.status')}</span>
             <select
               value={truck.status}
               onChange={(e) => handleStatusChange(e.target.value)}
               className={`px-3 py-1 rounded-full text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer ${getStatusColor(truck.status)}`}
             >
-              <option value="available">Müsait</option>
-              <option value="in-transit">Yolda</option>
-              <option value="maintenance">Bakımda</option>
+              <option value="available">{t('truckDetail.statusAvailable')}</option>
+              <option value="in-transit">{t('truckDetail.statusInTransit')}</option>
+              <option value="maintenance">{t('truckDetail.statusMaintenance')}</option>
             </select>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{TRUCKS.driver}</span>
+            <span className="text-sm text-gray-600">{t('truck.driver')}</span>
             <div className="flex items-center gap-2">
               {truck.currentDriverId ? (
                 <>
@@ -282,7 +283,7 @@ const TruckDetailPage = () => {
                         className="text-sm border border-gray-300 rounded px-2 py-1 disabled:opacity-50"
                         defaultValue=""
                       >
-                        <option value="">Sürücü seçin</option>
+                        <option value="">{t('truckDetail.selectDriver')}</option>
                         {drivers.map((driver) => (
                           <option key={driver.id} value={driver.id}>
                             {driver.firstName} {driver.lastName}
@@ -306,12 +307,12 @@ const TruckDetailPage = () => {
 
       {/* Document expiry section */}
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.documents}</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
         <div className="space-y-3">
           {/* Compulsory Insurance */}
           <div className="bg-white rounded-lg p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.compulsoryInsurance}</h3>
+              <h3 className="text-sm font-bold text-gray-900">{t('truck.compulsoryInsurance')}</h3>
               <button
                 onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
                 className="text-sm text-primary-600 font-medium"
@@ -328,7 +329,7 @@ const TruckDetailPage = () => {
           {/* Comprehensive Insurance */}
           <div className="bg-white rounded-lg p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.comprehensiveInsurance}</h3>
+              <h3 className="text-sm font-bold text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
               <button
                 onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
                 className="text-sm text-primary-600 font-medium"
@@ -345,7 +346,7 @@ const TruckDetailPage = () => {
           {/* Inspection */}
           <div className="bg-white rounded-lg p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{TRUCKS.inspection}</h3>
+              <h3 className="text-sm font-bold text-gray-900">{t('truck.inspection')}</h3>
               <button
                 onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
                 className="text-sm text-primary-600 font-medium"
@@ -364,7 +365,7 @@ const TruckDetailPage = () => {
       {/* Document upload history (audit trail) */}
       {documents.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Geçmişi</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truckDetail.documentHistory')}</h2>
           <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
             {documents.map((doc) => (
               <div key={doc.id} className="p-3">
@@ -377,12 +378,12 @@ const TruckDetailPage = () => {
                 <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs text-gray-500">
-                    Yükleyen: {doc.uploadedByName || '-'}
+                    {t('truckDetail.uploadedBy')}: {doc.uploadedByName || '-'}
                   </p>
                   <div className="flex items-center gap-3">
                     {doc.expiryDate && (
                       <p className="text-xs text-gray-500">
-                        Geçerlilik: {formatDate(doc.expiryDate)}
+                        {t('truckDetail.expiryLabel')}: {formatDate(doc.expiryDate)}
                       </p>
                     )}
                     <button
@@ -402,7 +403,7 @@ const TruckDetailPage = () => {
       {/* Location card */}
       {truck.lastPosition && (
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.location}</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.location')}</h2>
           <div className="flex items-center gap-2">
             <MapPin className="w-6 h-6 text-primary-600" />
             <div>
@@ -417,20 +418,20 @@ const TruckDetailPage = () => {
 
       {/* Performance metrics */}
       <div className="bg-white rounded-lg p-4 shadow-sm">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{TRUCKS.performance}</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.performance')}</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">{TRUCKS.monthlyRevenue}</span>
+            <span className="text-sm text-gray-600">{t('truck.monthlyRevenue')}</span>
             <span className="text-sm font-bold text-green-600">
               {formatCurrency(truck.monthlyRevenue)}
             </span>
           </div>
           <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">{TRUCKS.tripCount}</span>
+            <span className="text-sm text-gray-600">{t('truck.tripCount')}</span>
             <span className="text-sm font-bold text-gray-900">{truck.tripCount || 0}</span>
           </div>
           <div className="flex items-center justify-between py-2">
-            <span className="text-sm text-gray-600">{TRUCKS.utilization}</span>
+            <span className="text-sm text-gray-600">{t('truck.utilization')}</span>
             <span className="text-sm font-bold text-gray-900">{truck.utilizationRate || 0}%</span>
           </div>
         </div>

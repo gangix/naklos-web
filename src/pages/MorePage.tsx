@@ -9,7 +9,7 @@ import { driverApi, fleetApi } from '../services/api';
 
 const MorePage = () => {
   const navigate = useNavigate();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager } = useAuth();
   const { fleetId } = useFleet();
   const [drivers, setDrivers] = useState<any[]>([]);
@@ -71,10 +71,10 @@ const MorePage = () => {
         await fleetApi.changeCurrency(fleetData.id, fleetCurrency);
       }
       await loadFleet();
-      toast.success('Filo ayarları kaydedildi');
+      toast.success(t('toast.success.fleetSettings'));
     } catch (error) {
       console.error('Error saving fleet:', error);
-      toast.error('Kayıt sırasında hata oluştu');
+      toast.error(t('toast.error.saveError'));
     } finally {
       setFleetSaving(false);
     }
@@ -84,36 +84,36 @@ const MorePage = () => {
     try {
       await driverApi.updateLocale(locale);
       i18n.changeLanguage(locale);
-      toast.success('Dil güncellendi');
+      toast.success(t('toast.success.languageUpdated'));
     } catch {
-      toast.error('Bir hata oluştu');
+      toast.error(t('toast.error.generic'));
     }
   };
 
   const handleDriverSelect = (driver: any) => {
     loginAsDriver(driver.id, `${driver.firstName} ${driver.lastName}`);
     setShowDriverList(false);
-    alert(`✓ ${driver.firstName} ${driver.lastName} olarak giriş yaptınız`);
+    alert(`${driver.firstName} ${driver.lastName}`);
   };
 
   const handleManagerLogin = () => {
     loginAsManager();
     setShowDriverList(false);
-    alert('✓ Fleet Manager olarak giriş yaptınız');
+    alert('Fleet Manager');
   };
 
   const menuItems = [
     {
       icon: <User className="w-6 h-6 text-green-600" />,
-      title: 'Sürücüler',
-      description: 'Sürücü listesi ve belgeler',
+      title: t('morePage.driversMenu'),
+      description: t('morePage.driversDesc'),
       path: '/manager/drivers',
       color: 'bg-green-100',
     },
     {
       icon: <Users className="w-6 h-6 text-blue-600" />,
-      title: 'Müşteriler',
-      description: 'Müşteri listesi',
+      title: t('morePage.clientsMenu'),
+      description: t('morePage.clientsDesc'),
       path: '/manager/clients',
       color: 'bg-blue-100',
     },
@@ -123,18 +123,18 @@ const MorePage = () => {
     <div className="p-4 pb-20">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Diğer</h1>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('morePage.title')}</h1>
         <div className="flex items-center justify-between mt-2">
           <div>
-            <p className="text-sm text-gray-600">Giriş: <span className="font-medium">{user?.name}</span></p>
-            <p className="text-xs text-gray-500">Rol: {user?.role === 'driver' ? 'Sürücü' : 'Yönetici'}</p>
+            <p className="text-sm text-gray-600">{t('morePage.loggedIn')}: <span className="font-medium">{user?.name}</span></p>
+            <p className="text-xs text-gray-500">{t('morePage.role')}: {user?.role === 'driver' ? t('morePage.roleDriver') : t('morePage.roleManager')}</p>
           </div>
           {import.meta.env.DEV && (
             <button
               onClick={() => setShowDriverList(!showDriverList)}
               className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
             >
-              {showDriverList ? 'Kapat' : 'Kullanıcı Değiştir'}
+              {showDriverList ? t('morePage.close') : t('morePage.switchUser')}
             </button>
           )}
         </div>
@@ -144,11 +144,11 @@ const MorePage = () => {
       {fleetData && (
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900">Filo Ayarları</h2>
+            <h2 className="font-bold text-gray-900">{t('morePage.fleetSettings')}</h2>
           </div>
           <div className="p-4 space-y-3">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Filo Adı</label>
+              <label className="block text-xs text-gray-500 mb-1">{t('morePage.fleetName')}</label>
               <input
                 type="text"
                 value={fleetName}
@@ -157,7 +157,7 @@ const MorePage = () => {
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Filo İletişim E-postası</label>
+              <label className="block text-xs text-gray-500 mb-1">{t('morePage.fleetEmail')}</label>
               <input
                 type="email"
                 value={fleetEmail}
@@ -165,11 +165,11 @@ const MorePage = () => {
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
               <p className="text-xs text-gray-400 mt-1">
-                Belge uyarıları ve bildirimler bu adrese gönderilir. Giriş e-postanızı etkilemez.
+                {t('morePage.fleetEmailHint')}
               </p>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Telefon</label>
+              <label className="block text-xs text-gray-500 mb-1">{t('morePage.phone')}</label>
               <input
                 type="tel"
                 value={fleetPhone}
@@ -178,7 +178,7 @@ const MorePage = () => {
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Para Birimi</label>
+              <label className="block text-xs text-gray-500 mb-1">{t('morePage.currency')}</label>
               <select
                 value={fleetCurrency}
                 onChange={(e) => setFleetCurrency(e.target.value)}
@@ -191,7 +191,7 @@ const MorePage = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">Dil</label>
+              <label className="block text-xs text-gray-500 mb-1">{t('morePage.language')}</label>
               <select
                 value={i18n.language}
                 onChange={(e) => handleLanguageChange(e.target.value)}
@@ -207,7 +207,7 @@ const MorePage = () => {
               disabled={fleetSaving}
               className="w-full py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 text-sm"
             >
-              {fleetSaving ? 'Kaydediliyor...' : 'Kaydet'}
+              {fleetSaving ? t('morePage.saving') : t('morePage.save')}
             </button>
           </div>
         </div>
@@ -218,7 +218,7 @@ const MorePage = () => {
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
-            <p className="text-xs text-gray-600 mt-1">Test için herhangi bir kullanıcı olarak giriş yapın</p>
+            <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
           </div>
 
           <div className="p-4 space-y-2 max-h-96 overflow-y-auto">
@@ -234,7 +234,7 @@ const MorePage = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-gray-900">Fleet Manager</p>
-                  <p className="text-xs text-gray-600">Yönetici Hesabı</p>
+                  <p className="text-xs text-gray-600">{t('driverProfile.managerAccount')}</p>
                 </div>
                 {user?.role === 'fleet-manager' && (
                   <span className="text-blue-600 font-bold">✓</span>
@@ -244,10 +244,10 @@ const MorePage = () => {
 
             {/* Drivers List */}
             {loading ? (
-              <div className="text-center py-4 text-gray-600">Yükleniyor...</div>
+              <div className="text-center py-4 text-gray-600">{t('common.loading')}</div>
             ) : drivers.length === 0 ? (
               <div className="text-center py-4 text-gray-600">
-                Sürücü bulunamadı. Önce sürücü ekleyin.
+                {t('driverProfile.noDriversFound')}
               </div>
             ) : (
               drivers.map((driver) => (
@@ -306,10 +306,10 @@ const MorePage = () => {
       {/* App Info */}
       <div className="mt-8 p-4 bg-gray-50 rounded-lg">
         <p className="text-xs text-gray-600 text-center">
-          Naklos Filo Yönetimi
+          {t('morePage.appInfo')}
         </p>
         <p className="text-xs text-gray-500 text-center mt-1">
-          Versiyon 1.0.0 (Development Mode)
+          {t('morePage.version')}
         </p>
         {user?.driverId && (
           <p className="text-xs text-gray-400 text-center mt-2 font-mono">

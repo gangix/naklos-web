@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { driverApi } from '../services/api';
-import { DRIVERS } from '../constants/text';
+import { useTranslation } from 'react-i18next';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import { Mail, RefreshCw } from 'lucide-react';
@@ -10,6 +10,7 @@ import { formatDate } from '../utils/format';
 import type { DocumentCategory, Driver } from '../types';
 
 const DriverDetailPage = () => {
+  const { t } = useTranslation();
   const { driverId } = useParams<{ driverId: string }>();
   const navigate = useNavigate();
   const [driver, setDriver] = useState<Driver | null>(null);
@@ -46,7 +47,7 @@ const DriverDetailPage = () => {
         setDriver(data);
       } catch (err) {
         console.error('Error fetching driver:', err);
-        setError(err instanceof Error ? err.message : 'Sürücü yüklenirken hata oluştu');
+        setError(err instanceof Error ? err.message : t('driverDetail.loadError'));
       } finally {
         setLoading(false);
       }
@@ -67,9 +68,9 @@ const DriverDetailPage = () => {
 
   const documentTypeLabel = (type: string) => {
     switch (type) {
-      case 'license': return DRIVERS.license;
-      case 'src': return DRIVERS.srcCertificate;
-      case 'cpc': return DRIVERS.cpcCertificate;
+      case 'license': return t('driver.license');
+      case 'src': return t('driver.srcCertificate');
+      case 'cpc': return t('driver.cpcCertificate');
       default: return type;
     }
   };
@@ -80,7 +81,7 @@ const DriverDetailPage = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Yükleniyor...</p>
+            <p className="text-gray-600">{t('common.loading')}</p>
           </div>
         </div>
       </div>
@@ -90,7 +91,7 @@ const DriverDetailPage = () => {
   if (error || !driver) {
     return (
       <div className="p-4">
-        <p className="text-center text-red-600">{error || 'Sürücü bulunamadı'}</p>
+        <p className="text-center text-red-600">{error || t('driverDetail.notFound')}</p>
         <button
           onClick={() => navigate(-1)}
           className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
@@ -117,11 +118,11 @@ const DriverDetailPage = () => {
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'available':
-        return DRIVERS.available;
+        return t('driver.available');
       case 'on-trip':
-        return DRIVERS.onTrip;
+        return t('driver.onTrip');
       case 'off-duty':
-        return DRIVERS.offDuty;
+        return t('driver.offDuty');
       default:
         return status;
     }
@@ -153,7 +154,7 @@ const DriverDetailPage = () => {
     if (!driverId) return;
 
     if (!certificateNumber || !certificateIssueDate || !certificateExpiryDate) {
-      toast.warning('Lütfen tüm alanları doldurun');
+      toast.warning(t('toast.warning.fillAllFields'));
       return;
     }
 
@@ -163,14 +164,14 @@ const DriverDetailPage = () => {
     today.setHours(0, 0, 0, 0);
 
     if (expiryDate < today) {
-      toast.error('Geçerlilik tarihi geçmişte olamaz. Lütfen gelecekte bir tarih seçin.');
+      toast.error(t('toast.error.expiryInPast'));
       return;
     }
 
     // Check if issue date is before expiry date
     const issueDate = new Date(certificateIssueDate);
     if (expiryDate < issueDate) {
-      toast.error('Geçerlilik tarihi, veriliş tarihinden önce olamaz.');
+      toast.error(t('toast.error.expiryBeforeIssue'));
       return;
     }
 
@@ -192,16 +193,16 @@ const DriverDetailPage = () => {
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
 
-      toast.success('Sertifika başarıyla eklendi');
+      toast.success(t('toast.success.certificateAdded'));
     } catch (err) {
       console.error('Error adding certificate:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Sertifika eklenirken hata oluştu';
+      const errorMessage = err instanceof Error ? err.message : t('toast.error.generic');
 
       // Show user-friendly error
       if (errorMessage.includes('already expired')) {
-        toast.error('Geçmiş tarihli sertifika eklenemez. Lütfen gelecekte bir geçerlilik tarihi girin.');
+        toast.error(t('toast.error.expiredCertificate'));
       } else if (errorMessage.includes('already exists')) {
-        toast.error('Bu tipte bir sertifika zaten mevcut. Önce mevcut sertifikayı silin.');
+        toast.error(t('toast.error.duplicateCertificate'));
       } else {
         toast.error(errorMessage);
       }
@@ -211,7 +212,7 @@ const DriverDetailPage = () => {
   const handleRemoveCertificate = async (certificateId: string) => {
     if (!driverId) return;
 
-    if (!confirm('Bu sertifikayı kaldırmak istediğinizden emin misiniz?')) {
+    if (!confirm(t('driverDetail.confirmRemoveCert'))) {
       return;
     }
 
@@ -222,10 +223,10 @@ const DriverDetailPage = () => {
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
 
-      toast.success('Sertifika başarıyla kaldırıldı');
+      toast.success(t('toast.success.certificateRemoved'));
     } catch (err) {
       console.error('Error removing certificate:', err);
-      toast.error('Sertifika kaldırılırken hata oluştu');
+      toast.error(t('toast.error.deleteCertificate'));
     }
   };
 
@@ -251,7 +252,7 @@ const DriverDetailPage = () => {
       setDriver(updated);
       setEditingContact(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+      toast.error(err instanceof Error ? err.message : t('toast.error.saveError'));
     } finally {
       setSaving(false);
     }
@@ -277,7 +278,7 @@ const DriverDetailPage = () => {
       setDriver(updated);
       setEditingEmergency(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Güncelleme sırasında hata oluştu');
+      toast.error(err instanceof Error ? err.message : t('toast.error.saveError'));
     } finally {
       setSaving(false);
     }
@@ -290,24 +291,24 @@ const DriverDetailPage = () => {
       const updated = await driverApi.getById(driverId);
       setDriver(updated);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Durum güncellenirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : t('toast.error.updateStatus'));
     }
   };
 
   const handleDeleteDriver = async () => {
     if (!driverId) return;
-    if (!confirm(`${fullName} adlı sürücüyü silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+    if (!confirm(`${fullName} - ${t("driverDetail.confirmDelete")}`)) {
       return;
     }
 
     try {
       setDeleting(true);
       await driverApi.delete(driverId);
-      toast.success('Sürücü başarıyla silindi');
+      toast.success(t('toast.success.driverDeleted'));
       navigate('/manager/drivers');
     } catch (err) {
       console.error('Error deleting driver:', err);
-      toast.error(err instanceof Error ? err.message : 'Sürücü silinirken hata oluştu');
+      toast.error(err instanceof Error ? err.message : t('toast.error.generic'));
     } finally {
       setDeleting(false);
     }
@@ -330,9 +331,9 @@ const DriverDetailPage = () => {
             onChange={(e) => handleStatusChange(e.target.value)}
             className={`mt-2 px-3 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${getStatusColor(driver.status)}`}
           >
-            <option value="AVAILABLE">Müsait</option>
-            <option value="ON_TRIP">Yolda</option>
-            <option value="OFF_DUTY">İzinli</option>
+            <option value="AVAILABLE">{t('driverDetail.statusAvailable')}</option>
+            <option value="ON_TRIP">{t('driverDetail.statusOnTrip')}</option>
+            <option value="OFF_DUTY">{t('driverDetail.statusOffDuty')}</option>
           </select>
         </div>
       </div>
@@ -340,7 +341,7 @@ const DriverDetailPage = () => {
       {/* Contact info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.contactInfo}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t('driver.contactInfo')}</h2>
           {!editingContact && (
             <button onClick={startEditContact} className="text-sm text-primary-600 font-medium">
               Düzenle
@@ -350,29 +351,29 @@ const DriverDetailPage = () => {
         {editingContact ? (
           <div className="space-y-3">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Ad</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driverDetail.firstName')}</label>
               <input type="text" value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">Soyad</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driverDetail.lastName')}</label>
               <input type="text" value={editLastName} onChange={(e) => setEditLastName(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.phone}</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driver.phone')}</label>
               <input type="tel" value={editPhone} onChange={(e) => setEditPhone(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.email}</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driver.email')}</label>
               <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div className="flex gap-2 pt-1">
               <button onClick={handleSaveContact} disabled={saving}
                 className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
-                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                {saving ? t('driverDetail.saving') : t('driverDetail.save')}
               </button>
               <button onClick={() => setEditingContact(false)}
                 className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
@@ -383,12 +384,12 @@ const DriverDetailPage = () => {
         ) : (
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.phone}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.phone')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
             </div>
             {driver.email && (
               <div>
-                <p className="text-xs text-gray-600 mb-1">{DRIVERS.email}</p>
+                <p className="text-xs text-gray-600 mb-1">{t('driver.email')}</p>
                 <p className="text-sm font-medium text-gray-900">{driver.email}</p>
               </div>
             )}
@@ -399,35 +400,35 @@ const DriverDetailPage = () => {
       {/* Emergency contact card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.emergencyContact}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t('driver.emergencyContact')}</h2>
           {!editingEmergency && (
             <button onClick={startEditEmergency} className="text-sm text-primary-600 font-medium">
-              {driver.emergencyContact ? 'Düzenle' : '+ Ekle'}
+              {driver.emergencyContact ? t('driverDetail.edit') : t('driverDetail.add')}
             </button>
           )}
         </div>
         {editingEmergency ? (
           <div className="space-y-3">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.contactName}</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driver.contactName')}</label>
               <input type="text" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.contactPhone}</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driver.contactPhone')}</label>
               <input type="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">{DRIVERS.relationship}</label>
+              <label className="block text-xs text-gray-600 mb-1">{t('driver.relationship')}</label>
               <input type="text" value={emergencyRelationship} onChange={(e) => setEmergencyRelationship(e.target.value)}
-                placeholder="Örn: Eş, Kardeş, Anne"
+                placeholder=""
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
             <div className="flex gap-2 pt-1">
               <button onClick={handleSaveEmergency} disabled={saving}
                 className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
-                {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                {saving ? t('driverDetail.saving') : t('driverDetail.save')}
               </button>
               <button onClick={() => setEditingEmergency(false)}
                 className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
@@ -438,27 +439,27 @@ const DriverDetailPage = () => {
         ) : driver.emergencyContact ? (
           <div className="space-y-3">
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.contactName}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.contactName')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.name}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.contactPhone}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.contactPhone')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.phone}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-600 mb-1">{DRIVERS.relationship}</p>
+              <p className="text-xs text-gray-600 mb-1">{t('driver.relationship')}</p>
               <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.relationship}</p>
             </div>
           </div>
         ) : (
-          <p className="text-sm text-gray-500">Acil durum kişisi eklenmemiş</p>
+          <p className="text-sm text-gray-500">{t('driverDetail.noEmergencyContact')}</p>
         )}
       </div>
 
       {/* License info card */}
       <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.license}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t('driver.license')}</h2>
           <button
             onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
             className="text-sm text-primary-600 font-medium"
@@ -468,16 +469,16 @@ const DriverDetailPage = () => {
         </div>
         <div className="space-y-3 mb-3">
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseNumber}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.license')Number}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-600 mb-1">{DRIVERS.licenseClass}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.license')Class}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
           </div>
         </div>
         <ExpiryBadge
-          label={DRIVERS.licenseExpiry}
+          label={t('driver.license')Expiry}
           date={driver.licenseExpiryDate}
         />
       </div>
@@ -485,7 +486,7 @@ const DriverDetailPage = () => {
       {/* Certificates section */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{DRIVERS.certificates}</h2>
+          <h2 className="text-lg font-bold text-gray-900">{t('driver.certificates')}</h2>
           <button
             onClick={() => setShowAddCertificate(true)}
             className="text-sm text-primary-600 font-medium"
@@ -497,7 +498,7 @@ const DriverDetailPage = () => {
         {/* Add Certificate Form */}
         {showAddCertificate && (
           <div className="bg-primary-50 border-2 border-primary-200 rounded-lg p-4 mb-3">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">Yeni Sertifika Ekle</h3>
+            <h3 className="text-sm font-bold text-gray-900 mb-3">{t('driverDetail.newCertificate')}</h3>
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
@@ -508,8 +509,8 @@ const DriverDetailPage = () => {
                   onChange={(e) => setCertificateType(e.target.value as 'SRC' | 'CPC')}
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 >
-                  <option value="SRC">SRC (Mesleki Yeterlilik Belgesi)</option>
-                  <option value="CPC">CPC (Profesyonel Yeterlilik Kartı)</option>
+                  <option value="SRC">{t('driverDetail.srcMandatory')}</option>
+                  <option value="CPC">{t('driverDetail.cpcProfessional')}</option>
                 </select>
               </div>
               <div>
@@ -520,7 +521,7 @@ const DriverDetailPage = () => {
                   type="text"
                   value={certificateNumber}
                   onChange={(e) => setCertificateNumber(e.target.value)}
-                  placeholder="Örn: SRC123456"
+                  placeholder=""
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
               </div>
@@ -547,7 +548,7 @@ const DriverDetailPage = () => {
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  ⚠️ Geçerlilik tarihi bugünden ileri bir tarih olmalıdır
+                  ⚠️ {t('driverDetail.expiryFutureWarning')}
                 </p>
               </div>
               <div className="flex gap-2 pt-2">
@@ -580,7 +581,7 @@ const DriverDetailPage = () => {
               <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-bold text-gray-900">
-                    {cert.type === 'SRC' ? DRIVERS.srcCertificate : DRIVERS.cpcCertificate}
+                    {cert.type === 'SRC' ? t('driver.srcCertificate') : t('driver.cpcCertificate')}
                   </h3>
                   <button
                     onClick={() => handleRemoveCertificate(cert.id)}
@@ -591,16 +592,16 @@ const DriverDetailPage = () => {
                 </div>
                 <div className="space-y-2 mb-3">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.certificateNumber}</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.certificateNumber')}</p>
                     <p className="text-sm font-medium text-gray-900">{cert.number}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">{DRIVERS.issueDate}</p>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.issueDate')}</p>
                     <p className="text-sm font-medium text-gray-900">{formatDate(cert.issueDate)}</p>
                   </div>
                 </div>
                 <ExpiryBadge
-                  label={DRIVERS.expiryDate}
+                  label={t('driver.expiryDate')}
                   date={cert.expiryDate}
                 />
               </div>
@@ -609,14 +610,14 @@ const DriverDetailPage = () => {
         )}
 
         {driver.certificates && driver.certificates.length === 0 && !showAddCertificate && (
-          <p className="text-sm text-gray-600">Henüz sertifika eklenmemiş. Yukarıdaki butonu kullanarak sertifika ekleyebilirsiniz.</p>
+          <p className="text-sm text-gray-600">{t('driverDetail.noCertificates')}</p>
         )}
       </div>
 
       {/* Assigned truck card */}
       {driver.assignedTruckPlate && (
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">{DRIVERS.assignedTruck}</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">{t('driver.assignedTruck')}</h2>
           <p className="text-sm font-medium text-gray-900">{driver.assignedTruckPlate}</p>
         </div>
       )}
@@ -630,7 +631,7 @@ const DriverDetailPage = () => {
             <div className="flex items-center gap-2">
               <Mail className={`w-4 h-4 ${driver.inviteStatus === 'FAILED' ? 'text-red-500' : 'text-yellow-500'}`} />
               <span className={`text-sm font-medium ${driver.inviteStatus === 'FAILED' ? 'text-red-700' : 'text-yellow-700'}`}>
-                {driver.inviteStatus === 'FAILED' ? 'Davet e-postası gönderilemedi' : 'Davet gönderiliyor...'}
+                {driver.inviteStatus === 'FAILED' ? '{t('driverDetail.inviteFailed')}' : '{t('driverDetail.invitePending')}'}
               </span>
             </div>
             {driver.inviteStatus === 'FAILED' && (
@@ -639,11 +640,11 @@ const DriverDetailPage = () => {
                   e.preventDefault();
                   try {
                     await driverApi.resendInvite(driver.id);
-                    toast.success('Davet tekrar gönderildi');
+                    toast.success(t('toast.success.inviteResent'));
                     const data = await driverApi.getById(driver.id);
                     setDriver(data);
                   } catch {
-                    toast.error('Davet gönderilemedi');
+                    toast.error(t('toast.error.inviteFailed'));
                   }
                 }}
                 className="flex items-center gap-1 px-3 py-1.5 bg-white border border-red-300 rounded-lg text-xs font-medium text-red-700 hover:bg-red-50"
@@ -659,7 +660,7 @@ const DriverDetailPage = () => {
       {/* Document upload history (audit trail) */}
       {documents.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">Belge Geçmişi</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverDetail.documentHistory')}</h2>
           <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
             {documents.map((doc) => (
               <div key={doc.id} className="p-3">
@@ -672,12 +673,12 @@ const DriverDetailPage = () => {
                 <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
                 <div className="flex items-center justify-between mt-1">
                   <p className="text-xs text-gray-500">
-                    Yükleyen: {doc.uploadedByName || '-'}
+                    {t('driverDetail.uploadedBy')}: {doc.uploadedByName || '-'}
                   </p>
                   <div className="flex items-center gap-3">
                     {doc.expiryDate && (
                       <p className="text-xs text-gray-500">
-                        Geçerlilik: {formatDate(doc.expiryDate)}
+                        {t('driverDetail.expiryLabel')}: {formatDate(doc.expiryDate)}
                       </p>
                     )}
                     <button
@@ -701,7 +702,7 @@ const DriverDetailPage = () => {
           disabled={deleting}
           className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
         >
-          {deleting ? 'Siliniyor...' : 'Sürücüyü Sil'}
+          {deleting ? t('driverDetail.deletingDriver') : t('driverDetail.deleteDriver')}
         </button>
       </div>
 
