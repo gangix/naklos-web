@@ -631,7 +631,7 @@ const DriverDetailPage = () => {
             <div className="flex items-center gap-2">
               <Mail className={`w-4 h-4 ${driver.inviteStatus === 'FAILED' ? 'text-red-500' : 'text-yellow-500'}`} />
               <span className={`text-sm font-medium ${driver.inviteStatus === 'FAILED' ? 'text-red-700' : 'text-yellow-700'}`}>
-                {driver.inviteStatus === 'FAILED' ? '{t('driverDetail.inviteFailed')}' : '{t('driverDetail.invitePending')}'}
+                {driver.inviteStatus === 'FAILED' ? t('driverDetail.inviteFailed') : t('driverDetail.invitePending')}
               </span>
             </div>
             {driver.inviteStatus === 'FAILED' && (
