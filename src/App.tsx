@@ -23,7 +23,7 @@ import TermsOfServicePage from './pages/TermsOfServicePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminFleetDetailPage from './pages/AdminFleetDetailPage';
 import CookieBanner from './components/common/CookieBanner';
-import WhatsAppButton from './components/common/WhatsAppButton';
+import ContactButton from './components/common/ContactButton';
 
 // Driver pages
 import DriverProfilePage from './pages/driver/DriverProfilePage';
@@ -136,7 +136,7 @@ function App() {
         </Routes>
         <Toaster position="top-center" richColors />
         <CookieBanner />
-        <WhatsAppButton />
+        <ContactButton />
       </BrowserRouter>
     );
   }

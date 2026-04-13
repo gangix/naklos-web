@@ -1,4 +1,4 @@
-import { Truck, Users, AlertTriangle, Building2, Check, Minus, ArrowRight, MessageCircle } from 'lucide-react';
+import { Truck, Users, AlertTriangle, Building2, Check, Minus, ArrowRight, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -270,12 +270,10 @@ const LandingPage = () => {
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Toplu içe aktarma</li>
               </ul>
               <a
-                href="https://wa.me/4915257870965?text=Naklos%20Profesyonel%20plan%20hakkında%20bilgi%20almak%20istiyorum"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:info@naklos.com.tr?subject=Naklos%20Profesyonel%20Plan"
                 className="w-full py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-colors text-sm flex items-center justify-center gap-2"
               >
-                <MessageCircle className="w-4 h-4" />
+                <Mail className="w-4 h-4" />
                 Bize Ulaşın
               </a>
             </div>
@@ -295,12 +293,10 @@ const LandingPage = () => {
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Toplu içe aktarma</li>
               </ul>
               <a
-                href="https://wa.me/4915257870965?text=Naklos%20İşletme%20planı%20hakkında%20bilgi%20almak%20istiyorum"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:info@naklos.com.tr?subject=Naklos%20İşletme%20Planı"
                 className="w-full py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-black transition-colors text-sm flex items-center justify-center gap-2"
               >
-                <MessageCircle className="w-4 h-4" />
+                <Mail className="w-4 h-4" />
                 Bize Ulaşın
               </a>
             </div>
@@ -319,11 +315,10 @@ const LandingPage = () => {
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Öncelikli destek</li>
               </ul>
               <a
-                href="https://wa.me/4915257870965?text=Naklos%20Kurumsal%20plan%20hakkında%20bilgi%20almak%20istiyorum"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:info@naklos.com.tr?subject=Naklos%20Kurumsal%20Plan"
                 className="w-full py-3 bg-white text-gray-900 rounded-xl font-semibold hover:bg-gray-100 transition-colors text-sm flex items-center justify-center gap-2"
               >
+                <Mail className="w-4 h-4" />
                 İletişime Geç
               </a>
             </div>

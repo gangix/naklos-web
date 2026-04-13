@@ -1,6 +1,6 @@
-import { AlertTriangle, MessageCircle, X } from 'lucide-react';
+import { AlertTriangle, Mail, X } from 'lucide-react';
 
-const WHATSAPP_URL = 'https://wa.me/4915257870965?text=Naklos%20plan%20yükseltme%20hakkında%20bilgi%20almak%20istiyorum';
+const CONTACT_EMAIL = 'mailto:info@naklos.com.tr?subject=Naklos%20Plan%20Yükseltme';
 
 const PLAN_DISPLAY: Record<string, { name: string; next: string; nextPrice: string }> = {
   FREE: { name: 'Başlangıç', next: 'Profesyonel', nextPrice: '499 ₺/ay' },
@@ -107,12 +107,10 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: Upgra
             Kapat
           </button>
           <a
-            href={WHATSAPP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={CONTACT_EMAIL}
             className="flex-1 py-3 bg-primary-600 text-white rounded-xl font-semibold hover:bg-primary-700 transition-colors text-sm flex items-center justify-center gap-2"
           >
-            <MessageCircle className="w-4 h-4" />
+            <Mail className="w-4 h-4" />
             Planı Yükselt
           </a>
         </div>
