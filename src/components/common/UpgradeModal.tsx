@@ -57,7 +57,7 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: Upgra
             </div>
             <div>
               <h2 className="text-lg font-extrabold text-gray-900 tracking-tight">
-                Plan Limitine Ulaştınız
+                {message ? 'Planınızı Yükseltin' : 'Plan Limitine Ulaştınız'}
               </h2>
               <p className="text-sm text-gray-600 mt-1">
                 {message ?? (
@@ -72,8 +72,8 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: Upgra
           </div>
         </div>
 
-        {/* Body — plan comparison */}
-        {nextPlan && (
+        {/* Body — plan comparison (hidden for feature gates where message is set) */}
+        {nextPlan && !message && (
           <div className="px-6 py-5">
             <div className="grid grid-cols-2 gap-3">
               {/* Current plan */}

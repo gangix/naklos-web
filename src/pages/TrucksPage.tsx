@@ -410,13 +410,19 @@ const TrucksPage = () => {
                 </p>
                 <div className="flex gap-2 justify-center flex-wrap">
                   <button
-                    onClick={() => setBulkImportOpen(true)}
+                    onClick={() => {
+                      if (plan === 'FREE') { setUpgradeMessage('Toplu içe aktarma özelliği Profesyonel planda kullanılabilir'); setUpgradeModalOpen(true); }
+                      else setBulkImportOpen(true);
+                    }}
                     className="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg text-sm font-medium hover:bg-primary-50"
                   >
                     <Download className="w-4 h-4 inline -mt-0.5" /> Excel ile İçe Aktar
                   </button>
                   <button
-                    onClick={() => setAddTruckModalOpen(true)}
+                    onClick={() => {
+                      if (maxTrucks !== -1 && trucks.length >= maxTrucks) { setUpgradeMessage(undefined); setUpgradeModalOpen(true); }
+                      else setAddTruckModalOpen(true);
+                    }}
                     className="px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700"
                   >
                     + İlk Aracı Ekle
