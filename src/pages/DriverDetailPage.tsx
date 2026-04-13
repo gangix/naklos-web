@@ -469,16 +469,16 @@ const DriverDetailPage = () => {
         </div>
         <div className="space-y-3 mb-3">
           <div>
-            <p className="text-xs text-gray-600 mb-1">{t('driver.license')Number}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
           </div>
           <div>
-            <p className="text-xs text-gray-600 mb-1">{t('driver.license')Class}</p>
+            <p className="text-xs text-gray-600 mb-1">{t('driver.licenseClass')}</p>
             <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
           </div>
         </div>
         <ExpiryBadge
-          label={t('driver.license')Expiry}
+          label={t('driver.licenseExpiry')}
           date={driver.licenseExpiryDate}
         />
       </div>
