@@ -169,65 +169,79 @@ const DashboardPage = () => {
   const localeTag = t('common.localeTag', { defaultValue: 'en-US' });
   const today = new Date();
 
+  // Plain-data day/month/year formatter — locale shapes the order, mono
+  // renders fixed-width digits.
+  const dateParts = today.toLocaleDateString(localeTag, {
+    day: '2-digit', month: '2-digit', year: 'numeric',
+  });
+  const weekday = today.toLocaleDateString(localeTag, { weekday: 'long' });
+
   return (
-    <div className="pb-20 max-w-5xl mx-auto px-4 md:px-6 pt-6 md:pt-10">
-      {/* Editorial header — display serif italic for the page title, tracked
-          microlabel above, big breathing date below. */}
-      <header className="mb-10 md:mb-14">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400 mb-3">
-          {today.toLocaleDateString(localeTag, { weekday: 'long' })}
-          <span className="mx-2 text-slate-300">·</span>
-          <span className="font-mono text-slate-500 normal-case tracking-normal">
-            {today.toLocaleDateString(localeTag, { day: '2-digit', month: '2-digit', year: 'numeric' })}
+    <div className="pb-20 max-w-5xl mx-auto px-4 md:px-6 pt-6 md:pt-8">
+      {/* Header — instrument-panel feel: hairline rule above the page name,
+          tracked-caps weekday + monospace ISO-style date, page name in
+          IBM Plex Sans 600. No italic, no decorative flourishes. */}
+      <header className="mb-8 md:mb-10 border-t border-slate-900 pt-4">
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+            {weekday}
           </span>
-        </p>
-        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-[1.05] tracking-[-0.025em]">
+          <span className="font-mono text-[11px] text-slate-500 tabular-nums">
+            {dateParts}
+          </span>
+        </div>
+        <h1 className="font-display text-3xl md:text-4xl font-semibold text-slate-900 leading-[1.1] tracking-[-0.02em]">
           {t('dashboard.myFleet')}
         </h1>
       </header>
 
-      {/* KPI strip — three slabs with hairline divider, big mono numbers,
-          uppercase microlabels. Architectural rather than card-y. */}
-      <div className="grid grid-cols-3 border-y border-slate-200 mb-12 md:mb-16">
+      {/* KPI strip — three slabs in a single hairline frame. Sharp corners,
+          big monospace numbers, uppercase microlabels in IBM Plex Sans.
+          Subtle 'INDEX 01/02/03' microcounter on each cell for an
+          instrumentation feel. */}
+      <div className="grid grid-cols-3 border border-slate-900/90 divide-x divide-slate-900/90 mb-8 md:mb-10">
         {cards.map((card, i) => {
           const Icon = card.icon;
           return (
             <button
               key={card.path}
               onClick={() => navigate(card.path)}
-              className={`group flex flex-col items-start gap-2 py-6 md:py-8 px-4 md:px-6 text-left transition-colors hover:bg-slate-50 ${
-                i > 0 ? 'border-l border-slate-200' : ''
-              }`}
+              className="group flex flex-col items-start gap-3 py-5 md:py-6 px-4 md:px-5 text-left transition-colors hover:bg-slate-50"
             >
-              <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 transition-colors">
-                <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">{card.label}</span>
+              <div className="flex items-center justify-between w-full">
+                <span className="font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 group-hover:text-slate-900 transition-colors">
+                  {card.label}
+                </span>
+                <span className="font-mono text-[9px] text-slate-400 tabular-nums">
+                  {String(i + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}
+                </span>
               </div>
-              <p className="font-mono text-4xl md:text-5xl font-medium text-slate-900 tabular-nums tracking-tight leading-none">
-                {card.count}
-              </p>
+              <div className="flex items-end justify-between w-full">
+                <p className="font-mono text-4xl md:text-5xl font-medium text-slate-900 tabular-nums leading-none">
+                  {String(card.count).padStart(2, '0')}
+                </p>
+                <Icon className="w-4 h-4 text-slate-400 mb-1" strokeWidth={1.5} />
+              </div>
             </button>
           );
         })}
       </div>
 
-      {/* Warnings — newspaper-style section header with a hairline rule,
-          flush-left rows that align the day-count in monospace tabular nums. */}
+      {/* Warnings — instrumentation log. Section header with hairline rule
+          and a monospaced count in brackets. Rows in a 4-column grid:
+          icon | name + doc list | day-count | chevron. Plate numbers in
+          mono uppercase. */}
       {warningGroups.length > 0 && (
         <section>
-          <div className="flex items-baseline justify-between border-b border-slate-900/90 pb-3 mb-1">
-            <h2 className="text-lg md:text-xl font-bold text-slate-900 tracking-[-0.01em]">
+          <div className="flex items-baseline justify-between border-b border-slate-900 pb-2.5 mb-0">
+            <h2 className="font-display text-base md:text-lg font-semibold text-slate-900 tracking-[-0.01em] uppercase">
               {t('dashboard.warningSection')}
             </h2>
-            <p className="font-mono text-xs text-slate-500 tabular-nums">
-              {t('dashboard.recordsAndDocs', {
-                count: warningGroups.length,
-                records: warningGroups.length,
-                docs: totalWarningCount,
-              })}
+            <p className="font-mono text-[11px] text-slate-500 tabular-nums">
+              [{String(warningGroups.length).padStart(2, '0')} · {String(totalWarningCount).padStart(2, '0')}]
             </p>
           </div>
-          <ul className="divide-y divide-slate-100">
+          <ul className="divide-y divide-slate-200">
             {warningGroups.map((group) => (
               <li key={`${group.entity}-${group.entityId}`}>
                 <button
@@ -238,9 +252,9 @@ const DashboardPage = () => {
                         : `/manager/drivers/${group.entityId}`,
                     )
                   }
-                  className="w-full grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 py-3.5 text-left hover:bg-slate-50/70 transition-colors"
+                  className="w-full grid grid-cols-[20px_1fr_auto_16px] items-center gap-3.5 py-3 text-left hover:bg-slate-50/70 transition-colors"
                 >
-                  <span className="text-slate-400">
+                  <span className="text-slate-500">
                     {group.entity === 'truck' ? (
                       <Truck className="w-4 h-4" strokeWidth={1.75} />
                     ) : (
@@ -251,7 +265,7 @@ const DashboardPage = () => {
                     <p className={`text-sm text-slate-900 truncate ${group.entity === 'truck' ? 'font-mono uppercase tracking-wide' : 'font-medium'}`}>
                       {group.name}
                     </p>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                    <p className="text-[11px] text-slate-500 truncate mt-0.5 font-mono uppercase tracking-wider">
                       {group.items.map((i) => t(i.labelKey)).join(' · ')}
                     </p>
                   </div>
@@ -264,14 +278,14 @@ const DashboardPage = () => {
         </section>
       )}
 
-      {/* Empty state — generous, single illustration, editorial italic */}
+      {/* Empty state — single hairline frame around a centred status block. */}
       {warningGroups.length === 0 && !loading && (
-        <section className="border-t border-b border-slate-200 py-16 text-center">
-          <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-4" strokeWidth={1.5} />
-          <p className="text-xl md:text-2xl font-bold text-slate-900 tracking-[-0.015em]">
+        <section className="border border-slate-200 py-12 text-center">
+          <CheckCircle className="w-7 h-7 text-emerald-600 mx-auto mb-3" strokeWidth={1.5} />
+          <p className="font-display text-lg md:text-xl font-semibold text-slate-900 tracking-[-0.01em]">
             {t('dashboard.allCurrent')}
           </p>
-          <p className="text-xs text-slate-500 mt-3 max-w-sm mx-auto leading-relaxed">
+          <p className="text-xs text-slate-500 mt-2 max-w-sm mx-auto leading-relaxed">
             {t('dashboard.allCurrentSubtitle')}
           </p>
         </section>
