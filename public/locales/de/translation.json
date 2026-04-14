@@ -181,7 +181,11 @@
     "daysExpired_other": "Seit {{count}} Tagen überfällig",
     "daysRemaining_one": "Noch {{count}} Tag",
     "daysRemaining_other": "Noch {{count}} Tage",
-    "localeTag": "de-DE"
+    "localeTag": "de-DE",
+    "back": "Zurück",
+    "remove": "Entfernen",
+    "update": "Aktualisieren",
+    "download": "Herunterladen"
   },
   "document": {
     "title": "Dokumente",
@@ -213,7 +217,18 @@
     "daysRemaining": "Tage verbleibend",
     "expired": "Abgelaufen",
     "expiringSoon": "Läuft bald ab",
-    "valid": "Gültig"
+    "valid": "Gültig",
+    "compulsoryInsuranceMissing": "Pflichtversicherung fehlt ({{plate}})",
+    "compulsoryInsuranceExpired": "Pflichtversicherung abgelaufen ({{plate}})",
+    "compulsoryInsuranceExpiring_one": "Pflichtversicherung läuft in {{count}} Tag ab ({{plate}})",
+    "compulsoryInsuranceExpiring_other": "Pflichtversicherung läuft in {{count}} Tagen ab ({{plate}})",
+    "comprehensiveInsuranceExpired": "Vollkasko abgelaufen ({{plate}})",
+    "comprehensiveInsuranceExpiring_one": "Vollkasko läuft in {{count}} Tag ab ({{plate}})",
+    "comprehensiveInsuranceExpiring_other": "Vollkasko läuft in {{count}} Tagen ab ({{plate}})",
+    "inspectionMissing": "Hauptuntersuchung fehlt ({{plate}})",
+    "inspectionExpired": "Hauptuntersuchung abgelaufen ({{plate}})",
+    "inspectionExpiring_one": "Hauptuntersuchung läuft in {{count}} Tag ab ({{plate}})",
+    "inspectionExpiring_other": "Hauptuntersuchung läuft in {{count}} Tagen ab ({{plate}})"
   },
   "approval": {
     "title": "Ausstehende Genehmigungen",
@@ -743,5 +758,10 @@
     "license": "Führerschein",
     "src": "SRC-Bescheinigung",
     "cpc": "CPC-Bescheinigung"
+  },
+  "resource": {
+    "truck": "Fahrzeug",
+    "driver": "Fahrer",
+    "client": "Kunde"
   }
 }

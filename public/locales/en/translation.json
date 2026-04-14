@@ -181,7 +181,11 @@
     "daysExpired_other": "{{count}} days overdue",
     "daysRemaining_one": "{{count}} day remaining",
     "daysRemaining_other": "{{count}} days remaining",
-    "localeTag": "en-US"
+    "localeTag": "en-US",
+    "back": "Back",
+    "remove": "Remove",
+    "update": "Update",
+    "download": "Download"
   },
   "document": {
     "title": "Documents",
@@ -213,7 +217,18 @@
     "daysRemaining": "days remaining",
     "expired": "Expired",
     "expiringSoon": "Expiring Soon",
-    "valid": "Valid"
+    "valid": "Valid",
+    "compulsoryInsuranceMissing": "Compulsory insurance missing ({{plate}})",
+    "compulsoryInsuranceExpired": "Compulsory insurance expired ({{plate}})",
+    "compulsoryInsuranceExpiring_one": "Compulsory insurance expires in {{count}} day ({{plate}})",
+    "compulsoryInsuranceExpiring_other": "Compulsory insurance expires in {{count}} days ({{plate}})",
+    "comprehensiveInsuranceExpired": "Comprehensive insurance expired ({{plate}})",
+    "comprehensiveInsuranceExpiring_one": "Comprehensive insurance expires in {{count}} day ({{plate}})",
+    "comprehensiveInsuranceExpiring_other": "Comprehensive insurance expires in {{count}} days ({{plate}})",
+    "inspectionMissing": "Inspection missing ({{plate}})",
+    "inspectionExpired": "Inspection expired ({{plate}})",
+    "inspectionExpiring_one": "Inspection expires in {{count}} day ({{plate}})",
+    "inspectionExpiring_other": "Inspection expires in {{count}} days ({{plate}})"
   },
   "approval": {
     "title": "Pending Approvals",
@@ -743,5 +758,10 @@
     "license": "Driver's License",
     "src": "SRC Certificate",
     "cpc": "CPC Certificate"
+  },
+  "resource": {
+    "truck": "truck",
+    "driver": "driver",
+    "client": "client"
   }
 }

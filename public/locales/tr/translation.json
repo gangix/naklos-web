@@ -181,7 +181,11 @@
     "daysExpired_other": "{{count}} gün geçti",
     "daysRemaining_one": "{{count}} gün kaldı",
     "daysRemaining_other": "{{count}} gün kaldı",
-    "localeTag": "tr-TR"
+    "localeTag": "tr-TR",
+    "back": "Geri Dön",
+    "remove": "Kaldır",
+    "update": "Güncelle",
+    "download": "İndir"
   },
   "document": {
     "title": "Belgeler",
@@ -213,7 +217,18 @@
     "daysRemaining": "gün kaldı",
     "expired": "Süresi dolmuş",
     "expiringSoon": "Yakında sona eriyor",
-    "valid": "Geçerli"
+    "valid": "Geçerli",
+    "compulsoryInsuranceMissing": "Zorunlu sigorta belgesi eksik ({{plate}})",
+    "compulsoryInsuranceExpired": "Zorunlu sigorta süresi dolmuş ({{plate}})",
+    "compulsoryInsuranceExpiring_one": "Zorunlu sigorta {{count}} gün içinde dolacak ({{plate}})",
+    "compulsoryInsuranceExpiring_other": "Zorunlu sigorta {{count}} gün içinde dolacak ({{plate}})",
+    "comprehensiveInsuranceExpired": "Kasko süresi dolmuş ({{plate}})",
+    "comprehensiveInsuranceExpiring_one": "Kasko {{count}} gün içinde dolacak ({{plate}})",
+    "comprehensiveInsuranceExpiring_other": "Kasko {{count}} gün içinde dolacak ({{plate}})",
+    "inspectionMissing": "Muayene belgesi eksik ({{plate}})",
+    "inspectionExpired": "Muayene süresi dolmuş ({{plate}})",
+    "inspectionExpiring_one": "Muayene {{count}} gün içinde dolacak ({{plate}})",
+    "inspectionExpiring_other": "Muayene {{count}} gün içinde dolacak ({{plate}})"
   },
   "approval": {
     "title": "Onay Bekleyenler",
@@ -743,5 +758,10 @@
     "license": "Ehliyet",
     "src": "SRC Belgesi",
     "cpc": "CPC Belgesi"
+  },
+  "resource": {
+    "truck": "araç",
+    "driver": "sürücü",
+    "client": "müşteri"
   }
 }

@@ -28,125 +28,70 @@ const TrucksPage = () => {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState<string | undefined>();
 
-  // Calculate expiry warnings for trucks
+  // Calculate expiry warnings for trucks. Each warning carries an i18n key
+  // + interpolation params instead of a pre-built message, so the rendered
+  // text follows the active language without re-running the calculation.
   const warnings = useMemo(() => {
     const today = new Date();
-    const warningsList: any[] = [];
+    const warningsList: Array<{
+      relatedId: string;
+      relatedType: 'truck';
+      severity: 'error' | 'warning';
+      key: string;
+      params: Record<string, string | number>;
+      type: string;
+    }> = [];
+
+    const checkExpiry = (
+      truck: typeof trucks[number],
+      date: string | null,
+      type: string,
+      keys: { missing?: string; expired: string; expiring: string },
+    ) => {
+      if (!date) {
+        if (keys.missing) {
+          warningsList.push({
+            relatedId: truck.id,
+            relatedType: 'truck',
+            severity: 'error',
+            key: keys.missing,
+            params: { plate: truck.plateNumber },
+            type,
+          });
+        }
+        return;
+      }
+      const days = Math.ceil((new Date(date).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      if (days < 0) {
+        warningsList.push({
+          relatedId: truck.id, relatedType: 'truck', severity: 'error',
+          key: keys.expired, params: { plate: truck.plateNumber }, type,
+        });
+      } else if (days <= 30) {
+        warningsList.push({
+          relatedId: truck.id, relatedType: 'truck',
+          severity: days <= 7 ? 'error' : 'warning',
+          key: keys.expiring, params: { plate: truck.plateNumber, count: days }, type,
+        });
+      }
+    };
 
     trucks.forEach((truck) => {
-      // Check compulsory insurance (MANDATORY)
-      if (truck.compulsoryInsuranceExpiry) {
-        const expiryDate = new Date(truck.compulsoryInsuranceExpiry);
-        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-        if (daysRemaining < 0) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            message: `Zorunlu sigorta süresi dolmuş (${truck.plateNumber})`,
-            type: 'compulsory-insurance'
-          });
-        } else if (daysRemaining <= 7) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            message: `Zorunlu sigorta ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
-            type: 'compulsory-insurance'
-          });
-        } else if (daysRemaining <= 30) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'warning',
-            message: `Zorunlu sigorta ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
-            type: 'compulsory-insurance'
-          });
-        }
-      } else {
-        // Missing compulsory insurance (MANDATORY)
-        warningsList.push({
-          relatedId: truck.id,
-          relatedType: 'truck',
-          severity: 'error',
-          message: `Zorunlu sigorta belgesi eksik (${truck.plateNumber})`,
-          type: 'compulsory-insurance'
-        });
-      }
-
-      // Check comprehensive insurance (optional but recommended)
-      if (truck.comprehensiveInsuranceExpiry) {
-        const expiryDate = new Date(truck.comprehensiveInsuranceExpiry);
-        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-        if (daysRemaining < 0) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            message: `Kasko süresi dolmuş (${truck.plateNumber})`,
-            type: 'comprehensive-insurance'
-          });
-        } else if (daysRemaining <= 7) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
-            type: 'comprehensive-insurance'
-          });
-        } else if (daysRemaining <= 30) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'warning',
-            message: `Kasko ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
-            type: 'comprehensive-insurance'
-          });
-        }
-      }
-
-      // Check inspection (MANDATORY)
-      if (truck.inspectionExpiry) {
-        const expiryDate = new Date(truck.inspectionExpiry);
-        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-        if (daysRemaining < 0) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            message: `Muayene süresi dolmuş (${truck.plateNumber})`,
-            type: 'inspection'
-          });
-        } else if (daysRemaining <= 7) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
-            type: 'inspection'
-          });
-        } else if (daysRemaining <= 30) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'warning',
-            message: `Muayene ${daysRemaining} gün içinde dolacak (${truck.plateNumber})`,
-            type: 'inspection'
-          });
-        }
-      } else {
-        // Missing inspection (MANDATORY)
-        warningsList.push({
-          relatedId: truck.id,
-          relatedType: 'truck',
-          severity: 'error',
-          message: `Muayene belgesi eksik (${truck.plateNumber})`,
-          type: 'inspection'
-        });
-      }
+      checkExpiry(truck, truck.compulsoryInsuranceExpiry, 'compulsory-insurance', {
+        missing: 'warning.compulsoryInsuranceMissing',
+        expired: 'warning.compulsoryInsuranceExpired',
+        expiring: 'warning.compulsoryInsuranceExpiring',
+      });
+      checkExpiry(truck, truck.comprehensiveInsuranceExpiry, 'comprehensive-insurance', {
+        // Comprehensive insurance is optional — no missing warning.
+        expired: 'warning.comprehensiveInsuranceExpired',
+        expiring: 'warning.comprehensiveInsuranceExpiring',
+      });
+      checkExpiry(truck, truck.inspectionExpiry, 'inspection', {
+        missing: 'warning.inspectionMissing',
+        expired: 'warning.inspectionExpired',
+        expiring: 'warning.inspectionExpiring',
+      });
     });
 
     return warningsList;
@@ -502,7 +447,7 @@ const TrucksPage = () => {
                               : 'bg-yellow-50 text-yellow-700'
                           }`}
                         >
-                          <span className="inline-flex items-center gap-1">{warning.severity === 'error' ? <AlertCircle className="w-3.5 h-3.5 text-red-500 inline flex-shrink-0" /> : <AlertTriangle className="w-3.5 h-3.5 text-orange-500 inline flex-shrink-0" />} {warning.message}</span>
+                          <span className="inline-flex items-center gap-1">{warning.severity === 'error' ? <AlertCircle className="w-3.5 h-3.5 text-red-500 inline flex-shrink-0" /> : <AlertTriangle className="w-3.5 h-3.5 text-orange-500 inline flex-shrink-0" />} {t(warning.key, warning.params)}</span>
                         </div>
                       ))}
                     </div>
@@ -677,7 +622,7 @@ const TrucksPage = () => {
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => { setUpgradeModalOpen(false); setUpgradeMessage(undefined); }}
-        resource="araç"
+        resource={t('resource.truck')}
         currentPlan={plan}
         message={upgradeMessage}
       />

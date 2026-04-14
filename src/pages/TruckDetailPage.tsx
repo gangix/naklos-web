@@ -91,7 +91,7 @@ const TruckDetailPage = () => {
           onClick={() => navigate(-1)}
           className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
         >
-          Geri Dön
+          {t('common.back')}
         </button>
       </div>
     );
@@ -246,7 +246,7 @@ const TruckDetailPage = () => {
                     disabled={assigningDriver}
                     className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                   >
-                    Kaldır
+                    {t('common.remove')}
                   </button>
                 </>
               ) : (
@@ -256,7 +256,7 @@ const TruckDetailPage = () => {
                       onClick={() => setShowDriverSelect(true)}
                       className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                     >
-                      + Sürücü Ata
+                      {t('truckDetail.assignDriver')}
                     </button>
                   ) : (
                     <div className="flex items-center gap-2">
@@ -281,7 +281,7 @@ const TruckDetailPage = () => {
                         onClick={() => setShowDriverSelect(false)}
                         className="text-xs text-gray-600 hover:text-gray-700"
                       >
-                        İptal
+                        {t('common.cancel')}
                       </button>
                     </div>
                   )}
@@ -304,7 +304,7 @@ const TruckDetailPage = () => {
                 onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
                 className="text-sm text-primary-600 font-medium"
               >
-                Güncelle
+                {t('common.update')}
               </button>
             </div>
             <ExpiryBadge
@@ -321,7 +321,7 @@ const TruckDetailPage = () => {
                 onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
                 className="text-sm text-primary-600 font-medium"
               >
-                Güncelle
+                {t('common.update')}
               </button>
             </div>
             <ExpiryBadge
@@ -338,7 +338,7 @@ const TruckDetailPage = () => {
                 onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
                 className="text-sm text-primary-600 font-medium"
               >
-                Güncelle
+                {t('common.update')}
               </button>
             </div>
             <ExpiryBadge
@@ -377,7 +377,7 @@ const TruckDetailPage = () => {
                       onClick={() => truckApi.downloadDocument(doc.id)}
                       className="text-xs text-primary-600 font-medium hover:text-primary-700"
                     >
-                      İndir
+                      {t('common.download')}
                     </button>
                   </div>
                 </div>
@@ -430,7 +430,7 @@ const TruckDetailPage = () => {
           onClick={handleDelete}
           className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
         >
-          Aracı Sil
+          {t('truckDetail.deleteTruck')}
         </button>
       </div>
 
