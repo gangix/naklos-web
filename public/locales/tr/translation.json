@@ -186,7 +186,8 @@
     "remove": "Kaldır",
     "update": "Güncelle",
     "download": "İndir",
-    "resend": "Tekrar Gönder"
+    "resend": "Tekrar Gönder",
+    "close": "Kapat"
   },
   "document": {
     "title": "Belgeler",
@@ -891,5 +892,27 @@
     "term90": "90 Gün",
     "addingClient": "Ekleniyor...",
     "addClientButton": "Müşteri Ekle"
+  },
+  "upgrade": {
+    "limitReached": "Plan Limitine Ulaştınız",
+    "upgradeYourPlan": "Planınızı Yükseltin",
+    "limitDescription_one": "{{planName}} planınızda en fazla {{count}} {{resource}} ekleyebilirsiniz.",
+    "limitDescription_other": "{{planName}} planınızda en fazla {{count}} {{resource}} ekleyebilirsiniz.",
+    "unlimited": "Sınırsız",
+    "current": "Mevcut",
+    "recommended": "Önerilen",
+    "upgradeButton": "Planı Yükselt",
+    "priceProfessional": "499 ₺/ay",
+    "priceBusiness": "999 ₺/ay",
+    "priceEnterprise": "Özel fiyat"
+  },
+  "cookie": {
+    "message": "🍪 Naklos yalnızca oturum yönetimi için zorunlu çerezler kullanır.",
+    "usingPlatform": "Platformu kullanarak",
+    "and": "ve",
+    "accept": "kabul etmiş olursunuz.",
+    "understood": "Anladım",
+    "privacyPolicy": "Gizlilik Politikamızı",
+    "terms": "Kullanım Şartlarımızı"
   }
 }

@@ -109,7 +109,7 @@ const ClientsPage = () => {
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => setUpgradeModalOpen(false)}
-        resource={t('resource.client')}
+        resource="client"
         currentPlan={plan}
       />
     </div>

@@ -186,7 +186,8 @@
     "remove": "Entfernen",
     "update": "Aktualisieren",
     "download": "Herunterladen",
-    "resend": "Erneut senden"
+    "resend": "Erneut senden",
+    "close": "Schließen"
   },
   "document": {
     "title": "Dokumente",
@@ -892,5 +893,27 @@
     "term90": "90 Tage",
     "addingClient": "Wird hinzugefügt…",
     "addClientButton": "Kunde hinzufügen"
+  },
+  "upgrade": {
+    "limitReached": "Plan-Limit erreicht",
+    "upgradeYourPlan": "Plan upgraden",
+    "limitDescription_one": "Ihr {{planName}}-Plan erlaubt bis zu {{count}} {{resource}}.",
+    "limitDescription_other": "Ihr {{planName}}-Plan erlaubt bis zu {{count}} {{resource}}.",
+    "unlimited": "Unbegrenzt",
+    "current": "Aktuell",
+    "recommended": "Empfohlen",
+    "upgradeButton": "Plan upgraden",
+    "priceProfessional": "499 ₺/Monat",
+    "priceBusiness": "999 ₺/Monat",
+    "priceEnterprise": "Individuelle Preise"
+  },
+  "cookie": {
+    "message": "🍪 Naklos verwendet nur unverzichtbare Sitzungscookies.",
+    "usingPlatform": "Durch die Nutzung der Plattform akzeptieren Sie unsere",
+    "and": "und",
+    "accept": ".",
+    "understood": "Verstanden",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "terms": "Nutzungsbedingungen"
   }
 }

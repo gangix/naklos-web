@@ -622,7 +622,7 @@ const TrucksPage = () => {
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => { setUpgradeModalOpen(false); setUpgradeMessage(undefined); }}
-        resource={t('resource.truck')}
+        resource="truck"
         currentPlan={plan}
         message={upgradeMessage}
       />

@@ -657,7 +657,7 @@ const DriversPage = () => {
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => { setUpgradeModalOpen(false); setUpgradeMessage(undefined); }}
-        resource={t('resource.driver')}
+        resource="driver"
         currentPlan={plan}
         message={upgradeMessage}
       />
