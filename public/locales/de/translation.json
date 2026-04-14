@@ -185,7 +185,8 @@
     "back": "Zurück",
     "remove": "Entfernen",
     "update": "Aktualisieren",
-    "download": "Herunterladen"
+    "download": "Herunterladen",
+    "resend": "Erneut senden"
   },
   "document": {
     "title": "Dokumente",
@@ -228,7 +229,16 @@
     "inspectionMissing": "Hauptuntersuchung fehlt ({{plate}})",
     "inspectionExpired": "Hauptuntersuchung abgelaufen ({{plate}})",
     "inspectionExpiring_one": "Hauptuntersuchung läuft in {{count}} Tag ab ({{plate}})",
-    "inspectionExpiring_other": "Hauptuntersuchung läuft in {{count}} Tagen ab ({{plate}})"
+    "inspectionExpiring_other": "Hauptuntersuchung läuft in {{count}} Tagen ab ({{plate}})",
+    "licenseMissing": "Führerschein fehlt ({{driverName}})",
+    "licenseExpired": "Führerschein abgelaufen ({{driverName}})",
+    "licenseExpiring_one": "Führerschein läuft in {{count}} Tag ab ({{driverName}})",
+    "licenseExpiring_other": "Führerschein läuft in {{count}} Tagen ab ({{driverName}})",
+    "srcMissing": "SRC-Bescheinigung fehlt ({{driverName}})",
+    "cpcMissing": "CPC-Bescheinigung fehlt ({{driverName}})",
+    "certExpired": "{{certName}} abgelaufen ({{driverName}})",
+    "certExpiring_one": "{{certName}} läuft in {{count}} Tag ab ({{driverName}})",
+    "certExpiring_other": "{{certName}} läuft in {{count}} Tagen ab ({{driverName}})"
   },
   "approval": {
     "title": "Ausstehende Genehmigungen",
@@ -534,7 +544,10 @@
     "statusOffDuty": "Abwesend",
     "warningLabel": "Warnung",
     "srcMandatory": "SRC (Berufliche Qualifikationsbescheinigung)",
-    "cpcProfessional": "CPC (Bescheinigung über die berufliche Befähigung)"
+    "cpcProfessional": "CPC (Bescheinigung über die berufliche Befähigung)",
+    "certificateNumber": "Bescheinigungsnummer *",
+    "issueDate": "Ausstellungsdatum *",
+    "expiryDate": "Ablaufdatum *"
   },
   "truckDetail": {
     "loadError": "Fehler beim Laden des Fahrzeugs",
@@ -763,5 +776,17 @@
     "truck": "Fahrzeug",
     "driver": "Fahrer",
     "client": "Kunde"
+  },
+  "truckType": {
+    "VAN": "Lieferwagen",
+    "PICKUP": "Pickup",
+    "SMALL_TRUCK": "Kleiner Lkw",
+    "MEDIUM_TRUCK": "Mittlerer Lkw",
+    "LARGE_TRUCK": "Großer Lkw",
+    "TIR": "Sattelzug (TIR)",
+    "FLATBED": "Pritschenwagen",
+    "TIPPER": "Kipper",
+    "REFRIGERATED": "Kühlfahrzeug",
+    "TANKER": "Tankwagen"
   }
 }

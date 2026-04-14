@@ -96,7 +96,7 @@ const DriverDetailPage = () => {
           onClick={() => navigate(-1)}
           className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
         >
-          Geri Dön
+          {t('common.back')}
         </button>
       </div>
     );
@@ -332,7 +332,7 @@ const DriverDetailPage = () => {
           <h2 className="text-lg font-bold text-gray-900">{t('driver.contactInfo')}</h2>
           {!editingContact && (
             <button onClick={startEditContact} className="text-sm text-primary-600 font-medium">
-              Düzenle
+              {t('common.edit')}
             </button>
           )}
         </div>
@@ -365,7 +365,7 @@ const DriverDetailPage = () => {
               </button>
               <button onClick={() => setEditingContact(false)}
                 className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
-                İptal
+                {t('common.cancel')}
               </button>
             </div>
           </div>
@@ -420,7 +420,7 @@ const DriverDetailPage = () => {
               </button>
               <button onClick={() => setEditingEmergency(false)}
                 className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
-                İptal
+                {t('common.cancel')}
               </button>
             </div>
           </div>
@@ -452,7 +452,7 @@ const DriverDetailPage = () => {
             onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
             className="text-sm text-primary-600 font-medium"
           >
-            Güncelle
+            {t('common.update')}
           </button>
         </div>
         <div className="space-y-3 mb-3">
@@ -503,7 +503,7 @@ const DriverDetailPage = () => {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Sertifika Numarası *
+                  {t('driverDetail.certificateNumber')}
                 </label>
                 <input
                   type="text"
@@ -515,7 +515,7 @@ const DriverDetailPage = () => {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Veriliş Tarihi *
+                  {t('driverDetail.issueDate')}
                 </label>
                 <input
                   type="date"
@@ -526,7 +526,7 @@ const DriverDetailPage = () => {
               </div>
               <div>
                 <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Son Geçerlilik Tarihi *
+                  {t('driverDetail.expiryDate')}
                 </label>
                 <input
                   type="date"
@@ -555,7 +555,7 @@ const DriverDetailPage = () => {
                   }}
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
                 >
-                  İptal
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
@@ -638,7 +638,7 @@ const DriverDetailPage = () => {
                 className="flex items-center gap-1 px-3 py-1.5 bg-white border border-red-300 rounded-lg text-xs font-medium text-red-700 hover:bg-red-50"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                Tekrar Gönder
+                {t('common.resend')}
               </button>
             )}
           </div>
@@ -673,7 +673,7 @@ const DriverDetailPage = () => {
                       onClick={() => driverApi.downloadDocument(doc.id)}
                       className="text-xs text-primary-600 font-medium hover:text-primary-700"
                     >
-                      İndir
+                      {t('common.download')}
                     </button>
                   </div>
                 </div>

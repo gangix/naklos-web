@@ -185,7 +185,8 @@
     "back": "Geri Dön",
     "remove": "Kaldır",
     "update": "Güncelle",
-    "download": "İndir"
+    "download": "İndir",
+    "resend": "Tekrar Gönder"
   },
   "document": {
     "title": "Belgeler",
@@ -228,7 +229,16 @@
     "inspectionMissing": "Muayene belgesi eksik ({{plate}})",
     "inspectionExpired": "Muayene süresi dolmuş ({{plate}})",
     "inspectionExpiring_one": "Muayene {{count}} gün içinde dolacak ({{plate}})",
-    "inspectionExpiring_other": "Muayene {{count}} gün içinde dolacak ({{plate}})"
+    "inspectionExpiring_other": "Muayene {{count}} gün içinde dolacak ({{plate}})",
+    "licenseMissing": "Ehliyet belgesi eksik ({{driverName}})",
+    "licenseExpired": "Ehliyet süresi dolmuş ({{driverName}})",
+    "licenseExpiring_one": "Ehliyet {{count}} gün içinde sona erecek ({{driverName}})",
+    "licenseExpiring_other": "Ehliyet {{count}} gün içinde sona erecek ({{driverName}})",
+    "srcMissing": "SRC Belgesi eksik ({{driverName}})",
+    "cpcMissing": "CPC Belgesi eksik ({{driverName}})",
+    "certExpired": "{{certName}} süresi dolmuş ({{driverName}})",
+    "certExpiring_one": "{{certName}} {{count}} gün içinde sona erecek ({{driverName}})",
+    "certExpiring_other": "{{certName}} {{count}} gün içinde sona erecek ({{driverName}})"
   },
   "approval": {
     "title": "Onay Bekleyenler",
@@ -534,7 +544,10 @@
     "statusOffDuty": "İzinli",
     "warningLabel": "Uyarı",
     "srcMandatory": "SRC (Mesleki Yeterlilik Belgesi)",
-    "cpcProfessional": "CPC (Profesyonel Yeterlilik Kartı)"
+    "cpcProfessional": "CPC (Profesyonel Yeterlilik Kartı)",
+    "certificateNumber": "Sertifika Numarası *",
+    "issueDate": "Veriliş Tarihi *",
+    "expiryDate": "Son Geçerlilik Tarihi *"
   },
   "truckDetail": {
     "loadError": "Araç yüklenirken hata oluştu",
@@ -763,5 +776,17 @@
     "truck": "araç",
     "driver": "sürücü",
     "client": "müşteri"
+  },
+  "truckType": {
+    "VAN": "Van",
+    "PICKUP": "Pikap",
+    "SMALL_TRUCK": "Küçük Kamyon",
+    "MEDIUM_TRUCK": "Orta Boy Kamyon",
+    "LARGE_TRUCK": "Büyük Kamyon",
+    "TIR": "TIR",
+    "FLATBED": "Açık Kasa",
+    "TIPPER": "Damperli",
+    "REFRIGERATED": "Frigorifik",
+    "TANKER": "Tanker"
   }
 }

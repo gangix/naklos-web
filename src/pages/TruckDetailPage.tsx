@@ -5,7 +5,7 @@ import { MapPin } from 'lucide-react';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { useTranslation } from 'react-i18next';
-import { formatCurrency, formatDate } from '../utils/format';
+import { formatDate } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import type { DocumentCategory, Truck, Driver } from '../types';
@@ -403,26 +403,9 @@ const TruckDetailPage = () => {
         </div>
       )}
 
-      {/* Performance metrics */}
-      <div className="bg-white rounded-lg p-4 shadow-sm">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.performance')}</h2>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">{t('truck.monthlyRevenue')}</span>
-            <span className="text-sm font-bold text-green-600">
-              {formatCurrency(truck.monthlyRevenue)}
-            </span>
-          </div>
-          <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <span className="text-sm text-gray-600">{t('truck.tripCount')}</span>
-            <span className="text-sm font-bold text-gray-900">{truck.tripCount || 0}</span>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <span className="text-sm text-gray-600">{t('truck.utilization')}</span>
-            <span className="text-sm font-bold text-gray-900">{truck.utilizationRate || 0}%</span>
-          </div>
-        </div>
-      </div>
+      {/* Performance metrics — hidden until trip + fuel modules ship.
+          Restoring this needs both: trip data populates revenue/tripCount,
+          fuel data feeds utilization. */}
 
       {/* Delete truck */}
       <div className="mt-6">

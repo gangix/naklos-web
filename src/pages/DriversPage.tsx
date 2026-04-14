@@ -36,80 +36,69 @@ const DriversPage = () => {
     if (!drivers) return [];
 
     const today = new Date();
-    const warningsList: any[] = [];
+    const warningsList: Array<{
+      relatedId: string;
+      relatedType: 'driver';
+      severity: 'error' | 'warning';
+      key: string;
+      params: Record<string, string | number>;
+      type: string;
+    }> = [];
 
     drivers.forEach((driver) => {
-      // Check driver license expiry
-      if (driver.licenseExpiryDate) {
-        const expiryDate = new Date(driver.licenseExpiryDate);
-        const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      const driverName = `${driver.firstName} ${driver.lastName}`;
 
-        if (daysRemaining < 0) {
+      // Driver license
+      if (!driver.licenseExpiryDate) {
+        warningsList.push({
+          relatedId: driver.id, relatedType: 'driver', severity: 'error',
+          key: 'warning.licenseMissing', params: { driverName }, type: 'license',
+        });
+      } else {
+        const days = Math.ceil((new Date(driver.licenseExpiryDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        if (days < 0) {
           warningsList.push({
-            relatedId: driver.id,
-            relatedType: 'driver',
-            severity: 'error',
-            message: `Ehliyet süresi dolmuş (${driver.firstName} ${driver.lastName})`,
-            type: 'license'
+            relatedId: driver.id, relatedType: 'driver', severity: 'error',
+            key: 'warning.licenseExpired', params: { driverName }, type: 'license',
           });
-        } else if (daysRemaining <= 30) {
+        } else if (days <= 30) {
           warningsList.push({
-            relatedId: driver.id,
-            relatedType: 'driver',
-            severity: daysRemaining <= 7 ? 'error' : 'warning',
-            message: `Ehliyet ${daysRemaining} gün içinde sona erecek (${driver.firstName} ${driver.lastName})`,
-            type: 'license'
+            relatedId: driver.id, relatedType: 'driver',
+            severity: days <= 7 ? 'error' : 'warning',
+            key: 'warning.licenseExpiring', params: { driverName, count: days }, type: 'license',
           });
         }
-      } else {
-        // Missing license document
+      }
+
+      // SRC mandatory
+      if (!driver.certificates?.some((c) => c.type === 'SRC')) {
         warningsList.push({
-          relatedId: driver.id,
-          relatedType: 'driver',
-          severity: 'error',
-          message: `Ehliyet belgesi eksik (${driver.firstName} ${driver.lastName})`,
-          type: 'license'
+          relatedId: driver.id, relatedType: 'driver', severity: 'error',
+          key: 'warning.srcMissing', params: { driverName }, type: 'src',
         });
       }
 
-      // Check for missing SRC certificate (MANDATORY for professional drivers)
-      const hasSRC = driver.certificates?.some(cert => cert.type === 'SRC');
-      if (!hasSRC) {
-        warningsList.push({
-          relatedId: driver.id,
-          relatedType: 'driver',
-          severity: 'error',
-          message: `SRC Belgesi eksik (${driver.firstName} ${driver.lastName})`,
-          type: 'src'
-        });
-      }
-
-      // Check professional certificates (SRC, CPC) expiry dates
-      if (driver.certificates && driver.certificates.length > 0) {
-        driver.certificates.forEach((cert) => {
-          const expiryDate = new Date(cert.expiryDate);
-          const daysRemaining = Math.ceil((expiryDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-          const certName = cert.type === 'SRC' ? 'SRC Belgesi' : 'CPC Belgesi';
-
-          if (daysRemaining < 0) {
-            warningsList.push({
-              relatedId: driver.id,
-              relatedType: 'driver',
-              severity: 'error',
-              message: `${certName} süresi dolmuş (${driver.firstName} ${driver.lastName})`,
-              type: cert.type.toLowerCase()
-            });
-          } else if (daysRemaining <= 30) {
-            warningsList.push({
-              relatedId: driver.id,
-              relatedType: 'driver',
-              severity: daysRemaining <= 7 ? 'error' : 'warning',
-              message: `${certName} ${daysRemaining} gün içinde sona erecek (${driver.firstName} ${driver.lastName})`,
-              type: cert.type.toLowerCase()
-            });
-          }
-        });
-      }
+      // SRC + CPC expiry
+      (driver.certificates ?? []).forEach((cert) => {
+        const days = Math.ceil((new Date(cert.expiryDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        const certName = cert.type === 'SRC' ? 'SRC' : 'CPC';
+        if (days < 0) {
+          warningsList.push({
+            relatedId: driver.id, relatedType: 'driver', severity: 'error',
+            key: 'warning.certExpired',
+            params: { driverName, certName },
+            type: cert.type.toLowerCase(),
+          });
+        } else if (days <= 30) {
+          warningsList.push({
+            relatedId: driver.id, relatedType: 'driver',
+            severity: days <= 7 ? 'error' : 'warning',
+            key: 'warning.certExpiring',
+            params: { driverName, certName, count: days },
+            type: cert.type.toLowerCase(),
+          });
+        }
+      });
     });
 
     return warningsList;
@@ -456,7 +445,7 @@ const DriversPage = () => {
                               : 'bg-yellow-50 text-yellow-700'
                           }`}
                         >
-                          <span className="inline-flex items-center gap-1">{warning.severity === 'error' ? <AlertCircle className="w-3.5 h-3.5 text-red-500 inline flex-shrink-0" /> : <AlertTriangle className="w-3.5 h-3.5 text-orange-500 inline flex-shrink-0" />} {warning.message}</span>
+                          <span className="inline-flex items-center gap-1">{warning.severity === 'error' ? <AlertCircle className="w-3.5 h-3.5 text-red-500 inline flex-shrink-0" /> : <AlertTriangle className="w-3.5 h-3.5 text-orange-500 inline flex-shrink-0" />} {t(warning.key, warning.params)}</span>
                         </div>
                       ))}
                     </div>
@@ -668,7 +657,7 @@ const DriversPage = () => {
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => { setUpgradeModalOpen(false); setUpgradeMessage(undefined); }}
-        resource="sürücü"
+        resource={t('resource.driver')}
         currentPlan={plan}
         message={upgradeMessage}
       />

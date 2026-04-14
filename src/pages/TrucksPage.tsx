@@ -394,7 +394,7 @@ const TrucksPage = () => {
                     <div className="flex items-center gap-2 flex-1">
                       <div className="flex-1">
                         <p className="font-bold text-gray-900">{truck.plateNumber}</p>
-                        <p className="text-sm text-gray-600 mt-1">{truck.type}</p>
+                        <p className="text-sm text-gray-600 mt-1">{t(`truckType.${truck.type}`, { defaultValue: truck.type })}</p>
                       </div>
                       {hasUrgentWarning(truck.id) && (
                         <div className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded-md">

@@ -185,7 +185,8 @@
     "back": "Back",
     "remove": "Remove",
     "update": "Update",
-    "download": "Download"
+    "download": "Download",
+    "resend": "Resend"
   },
   "document": {
     "title": "Documents",
@@ -228,7 +229,16 @@
     "inspectionMissing": "Inspection missing ({{plate}})",
     "inspectionExpired": "Inspection expired ({{plate}})",
     "inspectionExpiring_one": "Inspection expires in {{count}} day ({{plate}})",
-    "inspectionExpiring_other": "Inspection expires in {{count}} days ({{plate}})"
+    "inspectionExpiring_other": "Inspection expires in {{count}} days ({{plate}})",
+    "licenseMissing": "Driver's license missing ({{driverName}})",
+    "licenseExpired": "Driver's license expired ({{driverName}})",
+    "licenseExpiring_one": "Driver's license expires in {{count}} day ({{driverName}})",
+    "licenseExpiring_other": "Driver's license expires in {{count}} days ({{driverName}})",
+    "srcMissing": "SRC certificate missing ({{driverName}})",
+    "cpcMissing": "CPC certificate missing ({{driverName}})",
+    "certExpired": "{{certName}} expired ({{driverName}})",
+    "certExpiring_one": "{{certName}} expires in {{count}} day ({{driverName}})",
+    "certExpiring_other": "{{certName}} expires in {{count}} days ({{driverName}})"
   },
   "approval": {
     "title": "Pending Approvals",
@@ -534,7 +544,10 @@
     "statusOffDuty": "Off Duty",
     "warningLabel": "Warning",
     "srcMandatory": "SRC (Professional Competence Certificate)",
-    "cpcProfessional": "CPC (Certificate of Professional Competence)"
+    "cpcProfessional": "CPC (Certificate of Professional Competence)",
+    "certificateNumber": "Certificate number *",
+    "issueDate": "Issue date *",
+    "expiryDate": "Expiry date *"
   },
   "truckDetail": {
     "loadError": "An error occurred while loading truck",
@@ -763,5 +776,17 @@
     "truck": "truck",
     "driver": "driver",
     "client": "client"
+  },
+  "truckType": {
+    "VAN": "Van",
+    "PICKUP": "Pickup",
+    "SMALL_TRUCK": "Small Truck",
+    "MEDIUM_TRUCK": "Medium Truck",
+    "LARGE_TRUCK": "Large Truck",
+    "TIR": "Articulated (TIR)",
+    "FLATBED": "Flatbed",
+    "TIPPER": "Tipper",
+    "REFRIGERATED": "Refrigerated",
+    "TANKER": "Tanker"
   }
 }
