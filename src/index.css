@@ -1,14 +1,5 @@
-/* Body — Plus Jakarta Sans across the app. */
+/* Body + display — Plus Jakarta Sans across the app, no secondary face. */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-/* Display — IBM Plex Sans gives manager-area headings an architectural,
-   slightly technical voice. Sharper geometry than Plus Jakarta, no decorative
-   curves, designed by IBM as a corporate utility face. */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700&display=swap');
-
-/* Mono — for plate numbers, dates, day-counts, KPI digits. IBM Plex Mono
-   pairs natively with Plex Sans (same x-height, same character widths). */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;

@@ -159,136 +159,111 @@ const DashboardPage = () => {
   }
 
   const cards = [
-    { label: t('nav.trucks'),  count: trucks.length,  icon: Truck,      path: '/manager/trucks',  hint: t('truck.title') },
-    { label: t('nav.drivers'), count: drivers.length, icon: Users,      path: '/manager/drivers', hint: t('driver.title') },
-    { label: t('nav.clients'), count: clients.length, icon: Building2,  path: '/manager/clients', hint: t('client.title') },
+    { label: t('nav.trucks'),  count: trucks.length,  icon: Truck,     accent: 'bg-blue-500',    bg: 'bg-blue-50',    text: 'text-blue-600',    path: '/manager/trucks' },
+    { label: t('nav.drivers'), count: drivers.length, icon: Users,     accent: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-600', path: '/manager/drivers' },
+    { label: t('nav.clients'), count: clients.length, icon: Building2, accent: 'bg-violet-500',  bg: 'bg-violet-50',  text: 'text-violet-600',  path: '/manager/clients' },
   ];
 
   // Locale tag for date formatting — falls back to en-US if the language file
   // doesn't define one.
   const localeTag = t('common.localeTag', { defaultValue: 'en-US' });
   const today = new Date();
-
-  // Plain-data day/month/year formatter — locale shapes the order, mono
-  // renders fixed-width digits.
-  const dateParts = today.toLocaleDateString(localeTag, {
-    day: '2-digit', month: '2-digit', year: 'numeric',
-  });
   const weekday = today.toLocaleDateString(localeTag, { weekday: 'long' });
+  const fullDate = today.toLocaleDateString(localeTag, { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div className="pb-20 max-w-5xl mx-auto px-4 md:px-6 pt-6 md:pt-8">
-      {/* Header — instrument-panel feel: hairline rule above the page name,
-          tracked-caps weekday + monospace ISO-style date, page name in
-          IBM Plex Sans 600. No italic, no decorative flourishes. */}
-      <header className="mb-8 md:mb-10 border-t border-slate-900 pt-4">
-        <div className="flex items-baseline justify-between mb-2">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-            {weekday}
-          </span>
-          <span className="font-mono text-[11px] text-slate-500 tabular-nums">
-            {dateParts}
-          </span>
-        </div>
-        <h1 className="font-display text-3xl md:text-4xl font-semibold text-slate-900 leading-[1.1] tracking-[-0.02em]">
-          {t('dashboard.myFleet')}
-        </h1>
-      </header>
+    <div className="pb-20 max-w-4xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
+      {/* Header — date micro-line above the title, no border above. Tight
+          margin to the KPI cards (less empty space than before). */}
+      <div className="mb-5">
+        <p className="text-xs text-gray-500 mb-1">
+          <span className="font-medium text-gray-600">{weekday}</span>
+          <span className="mx-1.5 text-gray-300">·</span>
+          <span>{fullDate}</span>
+        </p>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
+      </div>
 
-      {/* KPI strip — three slabs in a single hairline frame. Sharp corners,
-          big monospace numbers, uppercase microlabels in IBM Plex Sans.
-          Subtle 'INDEX 01/02/03' microcounter on each cell for an
-          instrumentation feel. */}
-      <div className="grid grid-cols-3 border border-slate-900/90 divide-x divide-slate-900/90 mb-8 md:mb-10">
-        {cards.map((card, i) => {
+      {/* KPI cards — soft shadow, rounded-xl, colour-coded accent strip,
+          tinted icon chip. Tighter mb than the original. */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {cards.map((card) => {
           const Icon = card.icon;
           return (
             <button
               key={card.path}
               onClick={() => navigate(card.path)}
-              className="group flex flex-col items-start gap-3 py-5 md:py-6 px-4 md:px-5 text-left transition-colors hover:bg-slate-50"
+              className="bg-white rounded-xl hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200 p-5 text-left border border-gray-100 group hover:-translate-y-0.5 overflow-hidden relative"
             >
-              <div className="flex items-center justify-between w-full">
-                <span className="font-display text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 group-hover:text-slate-900 transition-colors">
-                  {card.label}
-                </span>
-                <span className="font-mono text-[9px] text-slate-400 tabular-nums">
-                  {String(i + 1).padStart(2, '0')} / {String(cards.length).padStart(2, '0')}
-                </span>
-              </div>
-              <div className="flex items-end justify-between w-full">
-                <p className="font-mono text-4xl md:text-5xl font-medium text-slate-900 tabular-nums leading-none">
-                  {String(card.count).padStart(2, '0')}
-                </p>
-                <Icon className="w-4 h-4 text-slate-400 mb-1" strokeWidth={1.5} />
+              <div className={`absolute left-0 top-0 bottom-0 w-1 ${card.accent} rounded-l-xl`} />
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{card.count}</p>
+                  <p className="text-sm text-gray-500 mt-0.5 font-medium">{card.label}</p>
+                </div>
+                <div className={`w-10 h-10 rounded-lg ${card.bg} ${card.text} flex items-center justify-center`}>
+                  <Icon className="w-5 h-5" />
+                </div>
               </div>
             </button>
           );
         })}
       </div>
 
-      {/* Warnings — instrumentation log. Section header with hairline rule
-          and a monospaced count in brackets. Rows in a 4-column grid:
-          icon | name + doc list | day-count | chevron. Plate numbers in
-          mono uppercase. */}
+      {/* Warnings — soft white card with a red-tinted header strip. */}
       {warningGroups.length > 0 && (
-        <section>
-          <div className="flex items-baseline justify-between border-b border-slate-900 pb-2.5 mb-0">
-            <h2 className="font-display text-base md:text-lg font-semibold text-slate-900 tracking-[-0.01em] uppercase">
-              {t('dashboard.warningSection')}
-            </h2>
-            <p className="font-mono text-[11px] text-slate-500 tabular-nums">
-              [{String(warningGroups.length).padStart(2, '0')} · {String(totalWarningCount).padStart(2, '0')}]
-            </p>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-red-50 border-b border-red-100 px-4 py-3 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-red-600" />
+            <h2 className="font-bold text-red-900">{t('dashboard.warningSection')}</h2>
+            <span className="ml-auto text-sm text-red-700 font-medium">
+              {t('dashboard.recordsAndDocs', {
+                count: warningGroups.length,
+                records: warningGroups.length,
+                docs: totalWarningCount,
+              })}
+            </span>
           </div>
-          <ul className="divide-y divide-slate-200">
+          <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
             {warningGroups.map((group) => (
-              <li key={`${group.entity}-${group.entityId}`}>
-                <button
-                  onClick={() =>
-                    navigate(
-                      group.entity === 'truck'
-                        ? `/manager/trucks/${group.entityId}`
-                        : `/manager/drivers/${group.entityId}`,
-                    )
-                  }
-                  className="w-full grid grid-cols-[20px_1fr_auto_16px] items-center gap-3.5 py-3 text-left hover:bg-slate-50/70 transition-colors"
-                >
-                  <span className="text-slate-500">
-                    {group.entity === 'truck' ? (
-                      <Truck className="w-4 h-4" strokeWidth={1.75} />
-                    ) : (
-                      <Users className="w-4 h-4" strokeWidth={1.75} />
-                    )}
-                  </span>
-                  <div className="min-w-0">
-                    <p className={`text-sm text-slate-900 truncate ${group.entity === 'truck' ? 'font-mono uppercase tracking-wide' : 'font-medium'}`}>
-                      {group.name}
-                    </p>
-                    <p className="text-[11px] text-slate-500 truncate mt-0.5 font-mono uppercase tracking-wider">
-                      {group.items.map((i) => t(i.labelKey)).join(' · ')}
-                    </p>
-                  </div>
-                  <DayCount value={group.worstDaysLeft} t={t} />
-                  <ChevronRight className="w-4 h-4 text-slate-300" strokeWidth={1.75} />
-                </button>
-              </li>
+              <button
+                key={`${group.entity}-${group.entityId}`}
+                onClick={() =>
+                  navigate(
+                    group.entity === 'truck'
+                      ? `/manager/trucks/${group.entityId}`
+                      : `/manager/drivers/${group.entityId}`
+                  )
+                }
+                className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3"
+              >
+                <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${group.entity === 'truck' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'}`}>
+                  {group.entity === 'truck' ? <Truck className="w-4 h-4" /> : <Users className="w-4 h-4" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-900 truncate">{group.name}</p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {t('dashboard.docsAndList', {
+                      count: group.items.length,
+                      labels: group.items.map((i) => t(i.labelKey)).join(', '),
+                    })}
+                  </p>
+                </div>
+                <DayCount value={group.worstDaysLeft} t={t} />
+                <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+              </button>
             ))}
-          </ul>
-        </section>
+          </div>
+        </div>
       )}
 
-      {/* Empty state — single hairline frame around a centred status block. */}
+      {/* Empty state — soft green tile, like the original. */}
       {warningGroups.length === 0 && !loading && (
-        <section className="border border-slate-200 py-12 text-center">
-          <CheckCircle className="w-7 h-7 text-emerald-600 mx-auto mb-3" strokeWidth={1.5} />
-          <p className="font-display text-lg md:text-xl font-semibold text-slate-900 tracking-[-0.01em]">
-            {t('dashboard.allCurrent')}
-          </p>
-          <p className="text-xs text-slate-500 mt-2 max-w-sm mx-auto leading-relaxed">
-            {t('dashboard.allCurrentSubtitle')}
-          </p>
-        </section>
+        <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
+          <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
+          <p className="text-sm font-medium text-green-900">{t('dashboard.allCurrent')}</p>
+          <p className="text-xs text-green-700 mt-1">{t('dashboard.allCurrentSubtitle')}</p>
+        </div>
       )}
     </div>
   );
@@ -299,16 +274,15 @@ interface DayCountProps {
   t: ReturnType<typeof useTranslation>['t'];
 }
 
-/** Tabular monospaced day counter — colour shifts by urgency.
- *  Negative = expired (red), 0 = today (red), 1–7 = critical (red),
- *  8–30 = warning (amber), null = missing date (slate). */
+/** Day-counter pill with urgency colour ladder. Plain text (no mono) so
+ *  it matches the rest of the utilitarian-corporate page voice. */
 const DayCount = ({ value, t }: DayCountProps) => {
   const tone =
-    value === null ? 'text-slate-500'
+    value === null ? 'text-gray-600'
     : value < 0   ? 'text-red-700'
     : value === 0 ? 'text-red-700'
     : value <= 7  ? 'text-red-700'
-    :               'text-amber-600';
+    :               'text-orange-600';
 
   const label =
     value === null ? t('common.dateMissing')
@@ -317,7 +291,7 @@ const DayCount = ({ value, t }: DayCountProps) => {
     :               t('common.daysRemaining', { count: value });
 
   return (
-    <span className={`font-mono text-xs tabular-nums whitespace-nowrap ${tone}`}>
+    <span className={`text-xs font-bold whitespace-nowrap ${tone}`}>
       {label}
     </span>
   );
