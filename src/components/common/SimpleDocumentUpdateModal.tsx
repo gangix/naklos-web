@@ -33,7 +33,7 @@ const SimpleDocumentUpdateModal = ({
   relatedType,
   relatedId,
   relatedName,
-  currentExpiryDate,
+  currentExpiryDate: _currentExpiryDate,
   onUpdate,
 }: SimpleDocumentUpdateModalProps) => {
   const { t } = useTranslation();
@@ -55,11 +55,11 @@ const SimpleDocumentUpdateModal = ({
   const loadDocuments = async () => {
     setLoadingDocs(true);
     try {
-      const allDocs = relatedType === 'driver'
+      const allDocs = (relatedType === 'driver'
         ? await driverApi.getDocuments(relatedId)
-        : await truckApi.getDocuments(relatedId);
+        : await truckApi.getDocuments(relatedId)) as TruckDocument[];
       // Filter documents by category
-      const filtered = allDocs.filter((doc: TruckDocument) => doc.documentType === category);
+      const filtered = allDocs.filter((doc) => doc.documentType === category);
       setDocuments(filtered);
     } catch (err) {
       console.error('Error loading documents:', err);

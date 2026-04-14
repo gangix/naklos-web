@@ -115,18 +115,6 @@ const DriverDetailPage = () => {
     }
   };
 
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'available':
-        return t('driver.available');
-      case 'on-trip':
-        return t('driver.onTrip');
-      case 'off-duty':
-        return t('driver.offDuty');
-      default:
-        return status;
-    }
-  };
 
   const fullName = `${driver.firstName} ${driver.lastName}`;
 

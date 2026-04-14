@@ -1,4 +1,5 @@
 import keycloak from '../auth/keycloak';
+import type { Client, Driver, Fleet, Truck } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8080/api';
 
@@ -83,8 +84,8 @@ export const fleetApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-  getMy: () => apiCall<any>('/fleets/my'),
-  getById: (id: string) => apiCall(`/fleets/${id}`),
+  getMy: () => apiCall<Fleet>('/fleets/my'),
+  getById: (id: string) => apiCall<Fleet>(`/fleets/${id}`),
   update: (id: string, data: { name: string; address: any; email: string; phone: string }) =>
     apiCall(`/fleets/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   changeCurrency: (id: string, currency: string) =>
@@ -110,12 +111,12 @@ export const clientApi = {
       body: JSON.stringify(data),
     }),
   getByFleet: (page = 0, size = 20) =>
-    apiCall<PageResponse<any>>(`/clients?page=${page}&size=${size}`),
-  getById: (id: string) => apiCall(`/clients/${id}`),
+    apiCall<PageResponse<Client>>(`/clients?page=${page}&size=${size}`),
+  getById: (id: string) => apiCall<Client>(`/clients/${id}`),
   update: (id: string, data: { email: string; phone: string; address: any }) =>
-    apiCall(`/clients/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    apiCall<Client>(`/clients/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   updatePaymentTerms: (id: string, paymentTerms: string) =>
-    apiCall(`/clients/${id}/payment-terms`, { method: 'PUT', body: JSON.stringify({ paymentTerms }) }),
+    apiCall<Client>(`/clients/${id}/payment-terms`, { method: 'PUT', body: JSON.stringify({ paymentTerms }) }),
   delete: (id: string) =>
     apiCall(`/clients/${id}`, { method: 'DELETE' }),
 };
@@ -141,21 +142,21 @@ export const driverApi = {
       body: JSON.stringify(data),
     }),
   getByFleet: (page = 0, size = 20) =>
-    apiCall<PageResponse<any>>(`/drivers?page=${page}&size=${size}`),
+    apiCall<PageResponse<Driver>>(`/drivers?page=${page}&size=${size}`),
   getAvailable: (page = 0, size = 20) =>
-    apiCall<PageResponse<any>>(`/drivers?status=AVAILABLE&page=${page}&size=${size}`),
+    apiCall<PageResponse<Driver>>(`/drivers?status=AVAILABLE&page=${page}&size=${size}`),
   bulkImport: (rows: any[]) =>
     apiCall<BulkImportResult>('/drivers/bulk', {
       method: 'POST',
       body: JSON.stringify(rows),
     }),
-  getById: (id: string) => apiCall(`/drivers/${id}`),
+  getById: (id: string) => apiCall<Driver>(`/drivers/${id}`),
   update: (id: string, data: { firstName?: string; lastName?: string; phone?: string; email?: string; status?: string }) =>
-    apiCall(`/drivers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    apiCall<Driver>(`/drivers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   updateEmergencyContact: (id: string, data: { name: string; phone: string; relationship: string }) =>
-    apiCall(`/drivers/${id}/emergency-contact`, { method: 'PUT', body: JSON.stringify(data) }),
+    apiCall<Driver>(`/drivers/${id}/emergency-contact`, { method: 'PUT', body: JSON.stringify(data) }),
   updateLicense: (id: string, expiryDate: string) =>
-    apiCall(`/drivers/${id}/license`, {
+    apiCall<Driver>(`/drivers/${id}/license`, {
       method: 'PUT',
       body: JSON.stringify({ expiryDate }),
     }),
@@ -165,12 +166,12 @@ export const driverApi = {
     issueDate: string;
     expiryDate: string;
   }) =>
-    apiCall(`/drivers/${id}/certificates`, {
+    apiCall<Driver>(`/drivers/${id}/certificates`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
   removeCertificate: (driverId: string, certificateId: string) =>
-    apiCall(`/drivers/${driverId}/certificates/${certificateId}`, {
+    apiCall<Driver>(`/drivers/${driverId}/certificates/${certificateId}`, {
       method: 'DELETE',
     }),
   uploadDocument: (driverId: string, file: File, documentType: string, expiryDate?: string) => {
@@ -223,17 +224,17 @@ export const truckApi = {
       body: JSON.stringify(data),
     }),
   getByFleet: (page = 0, size = 20) =>
-    apiCall<PageResponse<any>>(`/trucks?page=${page}&size=${size}`),
+    apiCall<PageResponse<Truck>>(`/trucks?page=${page}&size=${size}`),
   getAvailable: (page = 0, size = 20) =>
-    apiCall<PageResponse<any>>(`/trucks?status=AVAILABLE&page=${page}&size=${size}`),
+    apiCall<PageResponse<Truck>>(`/trucks?status=AVAILABLE&page=${page}&size=${size}`),
   bulkImport: (rows: any[]) =>
     apiCall<BulkImportResult>('/trucks/bulk', {
       method: 'POST',
       body: JSON.stringify(rows),
     }),
-  getById: (id: string) => apiCall(`/trucks/${id}`),
+  getById: (id: string) => apiCall<Truck>(`/trucks/${id}`),
   updateDocuments: (id: string, data: any) =>
-    apiCall(`/trucks/${id}/documents`, {
+    apiCall<Truck>(`/trucks/${id}/documents`, {
       method: 'PUT',
       body: JSON.stringify(data),
     }),
@@ -272,16 +273,16 @@ export const truckApi = {
       method: 'DELETE',
     }),
   assignDriver: (truckId: string, driverId: string) =>
-    apiCall(`/trucks/${truckId}/assign-driver`, {
+    apiCall<Truck>(`/trucks/${truckId}/assign-driver`, {
       method: 'POST',
       body: JSON.stringify({ driverId }),
     }),
   unassignDriver: (truckId: string) =>
-    apiCall(`/trucks/${truckId}/unassign-driver`, {
+    apiCall<Truck>(`/trucks/${truckId}/unassign-driver`, {
       method: 'POST',
     }),
   updateStatus: (id: string, status: string) =>
-    apiCall(`/trucks/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
+    apiCall<Truck>(`/trucks/${id}`, { method: 'PUT', body: JSON.stringify({ status }) }),
   getMyTruck: () => apiCall<any>('/trucks/my-truck'),
   getMyTruckDocuments: () => apiCall<any[]>('/trucks/my-truck/documents'),
   uploadMyTruckDocument: (file: File, documentType: string, expiryDate?: string) => {

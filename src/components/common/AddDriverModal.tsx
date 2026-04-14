@@ -9,7 +9,7 @@ interface AddDriverModalProps {
 }
 
 const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => {
-  const { fleetId } = useFleet();
+  useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({

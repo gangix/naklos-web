@@ -51,7 +51,7 @@ const MorePage = () => {
       setFleetName(data.name || '');
       setFleetEmail(data.email || '');
       setFleetPhone(data.phone || '');
-      setFleetCurrency(data.currency || 'TRY');
+      setFleetCurrency((data as { defaultCurrency?: string }).defaultCurrency || 'TRY');
     } catch (error) {
       console.error('Error loading fleet:', error);
     }

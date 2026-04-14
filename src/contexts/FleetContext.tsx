@@ -53,9 +53,10 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
 
     setIsLoading(true);
     fleetApi.getMy()
-      .then((data: Fleet) => {
-        setFleetId(data.id);
-        setFleet(data);
+      .then((data) => {
+        const fleet = data as unknown as Fleet;
+        setFleetId(fleet.id);
+        setFleet(fleet);
         setIsLoading(false);
       })
       .catch(() => {
@@ -71,8 +72,8 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
 
     setIsLoading(true);
     fleetApi.getById(fleetId)
-      .then((data: Fleet) => {
-        setFleet(data);
+      .then((data) => {
+        setFleet(data as unknown as Fleet);
         setIsLoading(false);
       })
       .catch(err => {
