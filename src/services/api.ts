@@ -312,6 +312,69 @@ export const adminApi = {
     }),
 };
 
+// Fuel import format API — UC-1a (admin-only during pilot).
+// fleetId is in the path so admins can operate on any fleet.
+export const fuelFormatApi = {
+  list: (fleetId: string) =>
+    apiCall<import('../types/fuel').FuelImportFormatDto[]>(`/fleets/${fleetId}/fuel-formats`),
+  suggestMapping: (fleetId: string, file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return multipartCall<import('../types/fuel').SuggestedMappingDto>(
+      `/fleets/${fleetId}/fuel-formats/suggest-mapping`, formData);
+  },
+  clone: (fleetId: string, starterId: string, name: string) =>
+    apiCall<import('../types/fuel').FuelImportFormatDto>(
+      `/fleets/${fleetId}/fuel-formats/clone`,
+      { method: 'POST', body: JSON.stringify({ starterId, name }) }),
+  create: (
+    fleetId: string,
+    payload: {
+      provider: import('../types/fuel').FuelProvider;
+      name: string;
+      columnMapping: Record<string, string>;
+      sampleHeaders: string[];
+    },
+  ) =>
+    apiCall<import('../types/fuel').FuelImportFormatDto>(
+      `/fleets/${fleetId}/fuel-formats`,
+      { method: 'POST', body: JSON.stringify(payload) }),
+  newVersion: (
+    fleetId: string,
+    formatId: string,
+    payload: { columnMapping: Record<string, string>; sampleHeaders: string[] },
+  ) =>
+    apiCall<import('../types/fuel').FuelImportFormatDto>(
+      `/fleets/${fleetId}/fuel-formats/${formatId}/new-version`,
+      { method: 'POST', body: JSON.stringify(payload) }),
+  deactivate: (fleetId: string, formatId: string) =>
+    apiCall<void>(
+      `/fleets/${fleetId}/fuel-formats/${formatId}/deactivate`,
+      { method: 'PUT' }),
+};
+
+// Fuel import API — UC-1b preview/commit (admin-only during pilot).
+export const fuelImportApi = {
+  preview: (fleetId: string, formatId: string, file: File) => {
+    const formData = new FormData();
+    formData.append('formatId', formatId);
+    formData.append('file', file);
+    return multipartCall<import('../types/fuel').DraftPreview>(
+      `/fleets/${fleetId}/fuel-imports/preview`, formData);
+  },
+  commit: (
+    fleetId: string,
+    draftId: string,
+    overrides: import('../types/fuel').CommitOverride[],
+  ) =>
+    apiCall<import('../types/fuel').FuelImportBatchDto>(
+      `/fleets/${fleetId}/fuel-imports/commit/${draftId}`,
+      { method: 'POST', body: JSON.stringify({ overrides }) }),
+  getBatch: (fleetId: string, batchId: string) =>
+    apiCall<import('../types/fuel').FuelImportBatchDto>(
+      `/fleets/${fleetId}/fuel-imports/${batchId}`),
+};
+
 // Invoice API — fleet is derived from JWT
 export const invoiceApi = {
   getByFleet: (page = 0, size = 20) =>

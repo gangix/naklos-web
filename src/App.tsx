@@ -23,6 +23,10 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminFleetDetailPage from './pages/AdminFleetDetailPage';
+import FuelFormatsPage from './pages/FuelFormatsPage';
+import FuelFormatCreatePage from './pages/FuelFormatCreatePage';
+import FuelImportPage from './pages/FuelImportPage';
+import FuelImportBatchDetailPage from './pages/FuelImportBatchDetailPage';
 import CookieBanner from './components/common/CookieBanner';
 import ContactButton from './components/common/ContactButton';
 
@@ -187,6 +191,10 @@ function App() {
             <Route path="/admin">
               <Route index element={<AdminDashboardPage />} />
               <Route path="fleets/:fleetId" element={<AdminFleetDetailPage />} />
+              <Route path="fleets/:fleetId/fuel-formats" element={<FuelFormatsPage />} />
+              <Route path="fleets/:fleetId/fuel-formats/new" element={<FuelFormatCreatePage />} />
+              <Route path="fleets/:fleetId/fuel-imports" element={<FuelImportPage />} />
+              <Route path="fleets/:fleetId/fuel-imports/:batchId" element={<FuelImportBatchDetailPage />} />
             </Route>
           )}
 
