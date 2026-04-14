@@ -849,5 +849,47 @@
     "postalCode": "Posta Kodu",
     "postalCodePlaceholder": "34000",
     "regionPlaceholder": "Marmara"
+  },
+  "addDriver": {
+    "title": "Yeni Sürücü Ekle",
+    "errorAddingDriver": "Sürücü eklenirken hata oluştu",
+    "lastNamePlaceholder": "Yılmaz",
+    "licenseClass": "Ehliyet Sınıfı *",
+    "classC1": "C1 (Küçük Kamyon)",
+    "classCE": "CE (Kamyon + Römork)",
+    "classC1E": "C1E (Küçük Kamyon + Römork)",
+    "classD": "D (Otobüs)",
+    "classDE": "DE (Otobüs + Römork)",
+    "tempPassword": "Geçici Şifre",
+    "tempPasswordHint": "Sürücü ilk girişte şifresini değiştirecek. Boş bırakılırsa hesap oluşturulmaz.",
+    "addingDriver": "Ekleniyor...",
+    "addDriverButton": "Sürücü Ekle"
+  },
+  "addTruck": {
+    "title": "Yeni Araç Ekle",
+    "errorAddingTruck": "Araç eklenirken hata oluştu",
+    "truckType": "Araç Tipi *",
+    "addingTruck": "Ekleniyor...",
+    "addTruckButton": "Araç Ekle",
+    "typeSmallTruck": "Küçük Kamyon (3.5 ton)",
+    "typeLargeTruck": "Büyük Kamyon (24 ton)",
+    "typeTir": "TIR (Çekici)",
+    "typeFlatbed": "Açık Kasa",
+    "typeRefrigerated": "Soğutuculu Kamyon"
+  },
+  "addClient": {
+    "title": "Yeni Müşteri Ekle",
+    "errorAddingClient": "Müşteri eklenirken hata oluştu",
+    "companyName": "Şirket Adı *",
+    "companyNamePlaceholder": "ABC Lojistik A.Ş.",
+    "taxId": "Vergi Numarası *",
+    "cityPlaceholder": "Şehir",
+    "paymentTerms": "Ödeme Vadesi *",
+    "termCash": "Nakit (Anında)",
+    "term30": "30 Gün",
+    "term60": "60 Gün",
+    "term90": "90 Gün",
+    "addingClient": "Ekleniyor...",
+    "addClientButton": "Müşteri Ekle"
   }
 }

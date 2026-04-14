@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { clientApi } from '../../services/api';
 
@@ -9,6 +10,7 @@ interface AddClientModalProps {
 }
 
 const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => {
+  const { t } = useTranslation();
   const { fleetId, fleet } = useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
       onClose();
     } catch (err) {
       console.error('Error creating client:', err);
-      setError(err instanceof Error ? err.message : 'Müşteri eklenirken hata oluştu');
+      setError(err instanceof Error ? err.message : t('addClient.errorAddingClient'));
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
       <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Yeni Müşteri Ekle</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('addClient.title')}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
@@ -90,7 +92,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Şirket Adı *
+                {t('addClient.companyName')}
               </label>
               <input
                 type="text"
@@ -98,13 +100,13 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
                 value={formData.companyName}
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="ABC Lojistik A.Ş."
+                placeholder={t('addClient.companyNamePlaceholder')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Vergi Numarası *
+                {t('addClient.taxId')}
               </label>
               <input
                 type="text"
@@ -170,7 +172,7 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
                     address: { ...formData.address, city: e.target.value }
                   })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Şehir"
+                  placeholder={t('addClient.cityPlaceholder')}
                 />
                 <input
                   type="text"
@@ -187,17 +189,17 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Ödeme Vadesi *
+                {t('addClient.paymentTerms')}
               </label>
               <select
                 value={formData.paymentTerms}
                 onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
-                <option value="NET_0">Nakit (Anında)</option>
-                <option value="NET_30">30 Gün</option>
-                <option value="NET_60">60 Gün</option>
-                <option value="NET_90">90 Gün</option>
+                <option value="NET_0">{t('addClient.termCash')}</option>
+                <option value="NET_30">{t('addClient.term30')}</option>
+                <option value="NET_60">{t('addClient.term60')}</option>
+                <option value="NET_90">{t('addClient.term90')}</option>
               </select>
             </div>
 
@@ -223,14 +225,14 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
                 onClick={onClose}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                İptal
+                {t('common.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={loading}
                 className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Ekleniyor...' : 'Müşteri Ekle'}
+                {loading ? t('addClient.addingClient') : t('addClient.addClientButton')}
               </button>
             </div>
           </form>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
 
@@ -9,6 +10,7 @@ interface AddDriverModalProps {
 }
 
 const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => {
+  const { t } = useTranslation();
   useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
       onClose();
     } catch (err) {
       console.error('Error creating driver:', err);
-      setError(err instanceof Error ? err.message : 'Sürücü eklenirken hata oluştu');
+      setError(err instanceof Error ? err.message : t('addDriver.errorAddingDriver'));
     } finally {
       setLoading(false);
     }
@@ -60,7 +62,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
       <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Yeni Sürücü Ekle</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('addDriver.title')}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
@@ -100,7 +102,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Yılmaz"
+                  placeholder={t('addDriver.lastNamePlaceholder')}
                 />
               </div>
             </div>
@@ -149,7 +151,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Ehliyet Sınıfı *
+                {t('addDriver.licenseClass')}
               </label>
               <select
                 value={formData.licenseClass}
@@ -158,17 +160,17 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
               >
                 <option value="B">B (Otomobil)</option>
                 <option value="C">C (Kamyon)</option>
-                <option value="C1">C1 (Küçük Kamyon)</option>
-                <option value="CE">CE (Kamyon + Römork)</option>
-                <option value="C1E">C1E (Küçük Kamyon + Römork)</option>
-                <option value="D">D (Otobüs)</option>
-                <option value="DE">DE (Otobüs + Römork)</option>
+                <option value="C1">{t('addDriver.classC1')}</option>
+                <option value="CE">{t('addDriver.classCE')}</option>
+                <option value="C1E">{t('addDriver.classC1E')}</option>
+                <option value="D">{t('addDriver.classD')}</option>
+                <option value="DE">{t('addDriver.classDE')}</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Geçici Şifre
+                {t('addDriver.tempPassword')}
               </label>
               <input
                 type="password"
@@ -179,7 +181,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
                 placeholder="En az 8 karakter"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Sürücü ilk girişte şifresini değiştirecek. Boş bırakılırsa hesap oluşturulmaz.
+                {t('addDriver.tempPasswordHint')}
               </p>
             </div>
 
@@ -189,14 +191,14 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
                 onClick={onClose}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                İptal
+                {t('common.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={loading}
                 className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Ekleniyor...' : 'Sürücü Ekle'}
+                {loading ? t('addDriver.addingDriver') : t('addDriver.addDriverButton')}
               </button>
             </div>
           </form>

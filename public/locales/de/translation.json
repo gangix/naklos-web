@@ -850,5 +850,47 @@
     "postalCode": "Postleitzahl",
     "postalCodePlaceholder": "34000",
     "regionPlaceholder": "Marmara"
+  },
+  "addDriver": {
+    "title": "Neuen Fahrer hinzufügen",
+    "errorAddingDriver": "Fehler beim Hinzufügen des Fahrers",
+    "lastNamePlaceholder": "Müller",
+    "licenseClass": "Führerscheinklasse *",
+    "classC1": "C1 (Kleiner Lkw)",
+    "classCE": "CE (Lkw + Anhänger)",
+    "classC1E": "C1E (Kleiner Lkw + Anhänger)",
+    "classD": "D (Bus)",
+    "classDE": "DE (Bus + Anhänger)",
+    "tempPassword": "Temporäres Passwort",
+    "tempPasswordHint": "Der Fahrer ändert sein Passwort bei der ersten Anmeldung. Leer lassen, um kein Konto zu erstellen.",
+    "addingDriver": "Wird hinzugefügt…",
+    "addDriverButton": "Fahrer hinzufügen"
+  },
+  "addTruck": {
+    "title": "Neues Fahrzeug hinzufügen",
+    "errorAddingTruck": "Fehler beim Hinzufügen des Fahrzeugs",
+    "truckType": "Fahrzeugtyp *",
+    "addingTruck": "Wird hinzugefügt…",
+    "addTruckButton": "Fahrzeug hinzufügen",
+    "typeSmallTruck": "Kleiner Lkw (3,5 t)",
+    "typeLargeTruck": "Großer Lkw (24 t)",
+    "typeTir": "Sattelzug (TIR)",
+    "typeFlatbed": "Pritschenwagen",
+    "typeRefrigerated": "Kühlfahrzeug"
+  },
+  "addClient": {
+    "title": "Neuen Kunden hinzufügen",
+    "errorAddingClient": "Fehler beim Hinzufügen des Kunden",
+    "companyName": "Unternehmensname *",
+    "companyNamePlaceholder": "ABC Logistik GmbH",
+    "taxId": "Steuernummer *",
+    "cityPlaceholder": "Stadt",
+    "paymentTerms": "Zahlungsbedingungen *",
+    "termCash": "Bar (Sofort)",
+    "term30": "30 Tage",
+    "term60": "60 Tage",
+    "term90": "90 Tage",
+    "addingClient": "Wird hinzugefügt…",
+    "addClientButton": "Kunde hinzufügen"
   }
 }

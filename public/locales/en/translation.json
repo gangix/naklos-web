@@ -850,5 +850,47 @@
     "postalCode": "Postal Code",
     "postalCodePlaceholder": "34000",
     "regionPlaceholder": "Marmara"
+  },
+  "addDriver": {
+    "title": "Add New Driver",
+    "errorAddingDriver": "Failed to add driver",
+    "lastNamePlaceholder": "Smith",
+    "licenseClass": "License Class *",
+    "classC1": "C1 (Small Truck)",
+    "classCE": "CE (Truck + Trailer)",
+    "classC1E": "C1E (Small Truck + Trailer)",
+    "classD": "D (Bus)",
+    "classDE": "DE (Bus + Trailer)",
+    "tempPassword": "Temporary Password",
+    "tempPasswordHint": "The driver will change their password on first sign-in. Leave blank to skip account creation.",
+    "addingDriver": "Adding…",
+    "addDriverButton": "Add Driver"
+  },
+  "addTruck": {
+    "title": "Add New Truck",
+    "errorAddingTruck": "Failed to add truck",
+    "truckType": "Truck Type *",
+    "addingTruck": "Adding…",
+    "addTruckButton": "Add Truck",
+    "typeSmallTruck": "Small Truck (3.5 t)",
+    "typeLargeTruck": "Large Truck (24 t)",
+    "typeTir": "Articulated TIR (Tractor)",
+    "typeFlatbed": "Flatbed",
+    "typeRefrigerated": "Refrigerated Truck"
+  },
+  "addClient": {
+    "title": "Add New Client",
+    "errorAddingClient": "Failed to add client",
+    "companyName": "Company Name *",
+    "companyNamePlaceholder": "ABC Logistics Ltd.",
+    "taxId": "Tax ID *",
+    "cityPlaceholder": "City",
+    "paymentTerms": "Payment Terms *",
+    "termCash": "Cash (Immediate)",
+    "term30": "30 Days",
+    "term60": "60 Days",
+    "term90": "90 Days",
+    "addingClient": "Adding…",
+    "addClientButton": "Add Client"
   }
 }

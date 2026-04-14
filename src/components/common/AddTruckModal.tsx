@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { truckApi } from '../../services/api';
 
@@ -8,20 +9,23 @@ interface AddTruckModalProps {
   onSuccess: () => void;
 }
 
+// Labels resolved via t(`truckType.${value}`) at render so they follow the
+// active language. Capacity ton values come from shared/enums/TruckType.java.
 const truckTypes = [
-  { value: 'VAN', label: 'Van', capacity: 1500 },
-  { value: 'PICKUP', label: 'Kamyonet', capacity: 1000 },
-  { value: 'SMALL_TRUCK', label: 'Küçük Kamyon (3.5 ton)', capacity: 3500 },
-  { value: 'MEDIUM_TRUCK', label: 'Orta Boy Kamyon (7.5 ton)', capacity: 7500 },
-  { value: 'LARGE_TRUCK', label: 'Büyük Kamyon (24 ton)', capacity: 24000 },
-  { value: 'TIR', label: 'TIR (Çekici)', capacity: 40000 },
-  { value: 'FLATBED', label: 'Açık Kasa', capacity: 20000 },
-  { value: 'TIPPER', label: 'Damperli Kamyon', capacity: 25000 },
-  { value: 'REFRIGERATED', label: 'Soğutuculu Kamyon', capacity: 20000 },
-  { value: 'TANKER', label: 'Tanker', capacity: 30000 },
+  { value: 'VAN',           capacity: 1500 },
+  { value: 'PICKUP',        capacity: 1000 },
+  { value: 'SMALL_TRUCK',   capacity: 3500 },
+  { value: 'MEDIUM_TRUCK',  capacity: 7500 },
+  { value: 'LARGE_TRUCK',   capacity: 24000 },
+  { value: 'TIR',           capacity: 40000 },
+  { value: 'FLATBED',       capacity: 20000 },
+  { value: 'TIPPER',        capacity: 25000 },
+  { value: 'REFRIGERATED',  capacity: 20000 },
+  { value: 'TANKER',        capacity: 30000 },
 ];
 
 const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
+  const { t } = useTranslation();
   const { fleetId } = useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +58,7 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
       onClose();
     } catch (err) {
       console.error('Error creating truck:', err);
-      setError(err instanceof Error ? err.message : 'Araç eklenirken hata oluştu');
+      setError(err instanceof Error ? err.message : t('addTruck.errorAddingTruck'));
     } finally {
       setLoading(false);
     }
@@ -76,7 +80,7 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
       <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-gray-900">Yeni Araç Ekle</h2>
+            <h2 className="text-xl font-bold text-gray-900">{t('addTruck.title')}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600"
@@ -108,7 +112,7 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Araç Tipi *
+                {t('addTruck.truckType')}
               </label>
               <select
                 value={formData.type}
@@ -117,7 +121,7 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
               >
                 {truckTypes.map((type) => (
                   <option key={type.value} value={type.value}>
-                    {type.label}
+                    {t(`truckType.${type.value}`)}
                   </option>
                 ))}
               </select>
@@ -157,14 +161,14 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
                 onClick={onClose}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
               >
-                İptal
+                {t('common.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={loading}
                 className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Ekleniyor...' : 'Araç Ekle'}
+                {loading ? t('addTruck.addingTruck') : t('addTruck.addTruckButton')}
               </button>
             </div>
           </form>
