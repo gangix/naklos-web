@@ -104,6 +104,9 @@ function App() {
   }
 
   const isSystemAdmin = user?.keycloakRoles?.includes('system_admin') ?? false;
+  // Default-on in dev (`vite dev`); off in prod unless VITE_FEATURE_FUEL_TRACKING=true.
+  const fuelTrackingEnabled =
+    (import.meta.env.VITE_FEATURE_FUEL_TRACKING ?? (import.meta.env.DEV ? 'true' : 'false')) === 'true';
   const hasRole = isSystemAdmin || isDriver || isFleetManager;
 
   // For role-less authenticated users: check if they're a pre-registered
@@ -191,10 +194,6 @@ function App() {
             <Route path="/admin">
               <Route index element={<AdminDashboardPage />} />
               <Route path="fleets/:fleetId" element={<AdminFleetDetailPage />} />
-              <Route path="fleets/:fleetId/fuel-formats" element={<FuelFormatsPage />} />
-              <Route path="fleets/:fleetId/fuel-formats/new" element={<FuelFormatCreatePage />} />
-              <Route path="fleets/:fleetId/fuel-imports" element={<FuelImportPage />} />
-              <Route path="fleets/:fleetId/fuel-imports/:batchId" element={<FuelImportBatchDetailPage />} />
             </Route>
           )}
 
@@ -217,6 +216,14 @@ function App() {
             <Route path="clients" element={<ClientsPage />} />
             <Route path="clients/:clientId" element={<ClientDetailPage />} />
             <Route path="more" element={<MorePage />} />
+            {fuelTrackingEnabled && (
+              <>
+                <Route path="fuel-formats" element={<FuelFormatsPage />} />
+                <Route path="fuel-formats/new" element={<FuelFormatCreatePage />} />
+                <Route path="fuel-imports" element={<FuelImportPage />} />
+                <Route path="fuel-imports/:batchId" element={<FuelImportBatchDetailPage />} />
+              </>
+            )}
           </Route>
 
           <Route

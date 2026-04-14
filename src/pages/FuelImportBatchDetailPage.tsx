@@ -3,15 +3,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 import { fuelImportApi } from '../services/api';
+import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportBatchDto } from '../types/fuel';
 
 const FuelImportBatchDetailPage = () => {
-  const { fleetId = '', batchId = '' } = useParams();
+  const { batchId = '' } = useParams();
+  const { fleetId } = useFleet();
   const navigate = useNavigate();
   const [batch, setBatch] = useState<FuelImportBatchDto | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!fleetId) return;
     (async () => {
       try {
         setLoading(true);
@@ -32,7 +35,7 @@ const FuelImportBatchDetailPage = () => {
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-imports`)}
+          onClick={() => navigate(`/manager/fuel-imports`)}
           className="p-2 hover:bg-gray-100 rounded"
         >
           <ArrowLeft className="w-5 h-5" />

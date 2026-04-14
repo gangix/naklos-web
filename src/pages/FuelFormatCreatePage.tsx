@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft, Upload } from 'lucide-react';
 import { fuelFormatApi } from '../services/api';
+import { useFleet } from '../contexts/FleetContext';
 import { SEMANTIC_FIELDS, REQUIRED_SEMANTIC_FIELDS } from '../types/fuel';
 import type { FuelProvider, SuggestedMappingDto } from '../types/fuel';
 
 const PROVIDERS: FuelProvider[] = ['GENERIC', 'OPET', 'SHELL', 'BP', 'PETROL_OFISI'];
 
 const FuelFormatCreatePage = () => {
-  const { fleetId = '' } = useParams();
+  const { fleetId } = useFleet();
   const navigate = useNavigate();
 
   const [provider, setProvider] = useState<FuelProvider>('GENERIC');
@@ -20,6 +21,7 @@ const FuelFormatCreatePage = () => {
   const [saving, setSaving] = useState(false);
 
   const handleSample = async (file: File) => {
+    if (!fleetId) return;
     try {
       setUploading(true);
       const result = await fuelFormatApi.suggestMapping(fleetId, file);
@@ -35,6 +37,7 @@ const FuelFormatCreatePage = () => {
   const missingRequired = REQUIRED_SEMANTIC_FIELDS.filter((f) => !mapping[f]);
 
   const save = async () => {
+    if (!fleetId) return;
     if (!name.trim()) {
       toast.error('Ad gerekli');
       return;
@@ -52,7 +55,7 @@ const FuelFormatCreatePage = () => {
         sampleHeaders: suggested?.sampleHeaders ?? [],
       });
       toast.success('Format oluşturuldu');
-      navigate(`/admin/fleets/${fleetId}/fuel-formats`);
+      navigate(`/manager/fuel-formats`);
     } catch (err: any) {
       toast.error(err.message ?? 'Kaydetme başarısız');
     } finally {
@@ -79,7 +82,7 @@ const FuelFormatCreatePage = () => {
     <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-formats`)}
+          onClick={() => navigate(`/manager/fuel-formats`)}
           className="p-2 hover:bg-gray-100 rounded"
         >
           <ArrowLeft className="w-5 h-5" />
@@ -183,7 +186,7 @@ const FuelFormatCreatePage = () => {
 
         <div className="flex justify-end gap-2">
           <button
-            onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-formats`)}
+            onClick={() => navigate(`/manager/fuel-formats`)}
             className="px-4 py-2 border rounded"
           >
             İptal

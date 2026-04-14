@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ArrowLeft, Copy, Plus, Power, Upload } from 'lucide-react';
+import { Copy, Plus, Power, Upload } from 'lucide-react';
 import { fuelFormatApi } from '../services/api';
+import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportFormatDto } from '../types/fuel';
 
 const FuelFormatsPage = () => {
-  const { fleetId = '' } = useParams();
+  const { fleetId } = useFleet();
   const navigate = useNavigate();
   const [formats, setFormats] = useState<FuelImportFormatDto[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = async () => {
+    if (!fleetId) return;
     try {
       setLoading(true);
       const data = await fuelFormatApi.list(fleetId);
@@ -29,6 +31,7 @@ const FuelFormatsPage = () => {
   }, [fleetId]);
 
   const clone = async (starter: FuelImportFormatDto) => {
+    if (!fleetId) return;
     const name = window.prompt(`"${starter.name}" için yeni ad:`, `${starter.name} (Kopya)`);
     if (!name) return;
     try {
@@ -41,6 +44,7 @@ const FuelFormatsPage = () => {
   };
 
   const deactivate = async (f: FuelImportFormatDto) => {
+    if (!fleetId) return;
     if (!window.confirm(`"${f.name}" pasifleştirilsin mi?`)) return;
     try {
       await fuelFormatApi.deactivate(fleetId, f.id);
@@ -56,26 +60,18 @@ const FuelFormatsPage = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate(`/admin/fleets/${fleetId}`)}
-          className="p-2 hover:bg-gray-100 rounded"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-2xl font-semibold">Yakıt İçe Aktarma Formatları</h1>
-      </div>
+      <h1 className="text-2xl font-semibold">Yakıt İçe Aktarma Formatları</h1>
 
       <div className="flex gap-2">
         <button
-          onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-formats/new`)}
+          onClick={() => navigate(`/manager/fuel-formats/new`)}
           className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
           <Plus className="w-4 h-4" />
           Yeni Format
         </button>
         <button
-          onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-imports`)}
+          onClick={() => navigate(`/manager/fuel-imports`)}
           className="inline-flex items-center gap-2 bg-white border px-4 py-2 rounded hover:bg-gray-50"
         >
           <Upload className="w-4 h-4" />

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ArrowLeft, Upload, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { Upload, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
+import { useFleet } from '../contexts/FleetContext';
 import type {
   CommitOverride,
   DraftPreview,
@@ -20,7 +21,7 @@ const classificationBadge = (c: PreviewRow['classification'], errorMessage: stri
 };
 
 const FuelImportPage = () => {
-  const { fleetId = '' } = useParams();
+  const { fleetId } = useFleet();
   const navigate = useNavigate();
 
   const [formats, setFormats] = useState<FuelImportFormatDto[]>([]);
@@ -32,6 +33,7 @@ const FuelImportPage = () => {
   const [committing, setCommitting] = useState(false);
 
   useEffect(() => {
+    if (!fleetId) return;
     (async () => {
       try {
         const all = await fuelFormatApi.list(fleetId);
@@ -45,6 +47,7 @@ const FuelImportPage = () => {
   }, [fleetId]);
 
   const runPreview = async () => {
+    if (!fleetId) return;
     if (!file || !formatId) {
       toast.error('Format ve dosya seçin');
       return;
@@ -62,7 +65,7 @@ const FuelImportPage = () => {
   };
 
   const commit = async () => {
-    if (!preview) return;
+    if (!fleetId || !preview) return;
     const overrideList: CommitOverride[] = Object.entries(overrides).map(([rowIndex, action]) => ({
       rowIndex: Number(rowIndex),
       action,
@@ -71,7 +74,7 @@ const FuelImportPage = () => {
       setCommitting(true);
       const batch = await fuelImportApi.commit(fleetId, preview.draftId, overrideList);
       toast.success('İçe aktarma tamamlandı');
-      navigate(`/admin/fleets/${fleetId}/fuel-imports/${batch.id}`);
+      navigate(`/manager/fuel-imports/${batch.id}`);
     } catch (err: any) {
       toast.error(err.message ?? 'Commit başarısız');
     } finally {
@@ -92,15 +95,7 @@ const FuelImportPage = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-formats`)}
-          className="p-2 hover:bg-gray-100 rounded"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-2xl font-semibold">Yakıt Statement İçe Aktar</h1>
-      </div>
+      <h1 className="text-2xl font-semibold">Yakıt Statement İçe Aktar</h1>
 
       <div className="bg-white border rounded p-4 space-y-3">
         <div className="grid grid-cols-2 gap-4">

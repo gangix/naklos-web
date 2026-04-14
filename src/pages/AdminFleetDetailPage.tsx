@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Truck, Users, Fuel } from 'lucide-react';
+import { ArrowLeft, Truck, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
@@ -158,26 +158,6 @@ const AdminFleetDetailPage = () => {
               <option value="ENTERPRISE">{t('admin.planEnterprise')}</option>
             </select>
           </div>
-        </div>
-      </div>
-
-      {/* Fuel tracking — admin-only pilot */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 flex items-center gap-3">
-        <Fuel className="w-5 h-5 text-gray-600" />
-        <span className="font-medium text-gray-900">Yakıt Takibi (Admin Pilot)</span>
-        <div className="ml-auto flex gap-2">
-          <button
-            onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-formats`)}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Formatlar
-          </button>
-          <button
-            onClick={() => navigate(`/admin/fleets/${fleetId}/fuel-imports`)}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            İçe Aktar
-          </button>
         </div>
       </div>
 

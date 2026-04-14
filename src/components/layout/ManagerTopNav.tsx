@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, Building2, Settings, LogOut, Menu, X } from 'lucide-react';
+import { Home, Truck, Users, Building2, Settings, LogOut, Menu, X, Fuel } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
@@ -11,11 +11,18 @@ const ManagerTopNav = () => {
   const warningCount = useDocumentWarnings();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Default-on in dev (`vite dev`); off in prod unless VITE_FEATURE_FUEL_TRACKING=true.
+  const fuelTrackingEnabled =
+    (import.meta.env.VITE_FEATURE_FUEL_TRACKING ?? (import.meta.env.DEV ? 'true' : 'false')) === 'true';
+
   const menuItems = [
     { path: '/manager/dashboard', label: 'Ana Sayfa', icon: Home },
     { path: '/manager/trucks', label: 'Araçlar', icon: Truck },
     { path: '/manager/drivers', label: 'Sürücüler', icon: Users },
     { path: '/manager/clients', label: 'Müşteriler', icon: Building2 },
+    ...(fuelTrackingEnabled
+      ? [{ path: '/manager/fuel-imports', label: 'Yakıt', icon: Fuel }]
+      : []),
     { path: '/manager/more', label: 'Ayarlar', icon: Settings },
   ];
 
