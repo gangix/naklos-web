@@ -376,7 +376,7 @@ const TrucksPage = () => {
               </div>
             )}
             {filteredTrucks.length === 0 && trucks.length > 0 && (
-              <div className="bg-white rounded-lg p-6 text-center text-gray-500">
+              <div className="bg-white rounded-xl p-6 text-center text-gray-500">
                 {t('trucksPage.noFilterResult')}
               </div>
             )}
@@ -386,7 +386,7 @@ const TrucksPage = () => {
                 <Link
                   key={truck.id}
                   to={`/manager/trucks/${truck.id}`}
-                  className={`block bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
+                  className={`block bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow ${
                     hasWarning ? 'border-2 border-red-500' : 'border border-gray-100'
                   }`}
                 >
@@ -463,7 +463,7 @@ const TrucksPage = () => {
       {tab === 'pending' && (
         <div className="space-y-4">
           {pendingSubmissions.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg">
+            <div className="text-center py-12 bg-white rounded-xl">
               <CheckCircle className="w-14 h-14 text-green-400 mx-auto mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">{t('trucksPage.noPendingDoc')}</p>
               <p className="text-sm text-gray-600">{t('trucksPage.allChecked')}</p>
@@ -479,7 +479,7 @@ const TrucksPage = () => {
                       <button
                         key={submission.id}
                         onClick={() => handleReviewClick(submission)}
-                        className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all text-left border-2 border-transparent hover:border-primary-500"
+                        className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all text-left border-2 border-transparent hover:border-primary-500"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
@@ -517,7 +517,7 @@ const TrucksPage = () => {
                       <button
                         key={submission.id}
                         onClick={() => handleReviewClick(submission)}
-                        className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-all text-left border-2 border-transparent hover:border-primary-500"
+                        className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all text-left border-2 border-transparent hover:border-primary-500"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
@@ -554,7 +554,7 @@ const TrucksPage = () => {
       {tab === 'history' && (
         <div className="space-y-3">
           {completedSubmissions.length === 0 ? (
-            <div className="text-center py-12 bg-white rounded-lg">
+            <div className="text-center py-12 bg-white rounded-xl">
               <ClipboardList className="w-14 h-14 text-gray-300 mx-auto mb-4" />
               <p className="text-lg font-medium text-gray-900 mb-2">{t('trucksPage.noHistory')}</p>
               <p className="text-sm text-gray-600">{t('trucksPage.historyHint')}</p>
@@ -563,7 +563,7 @@ const TrucksPage = () => {
             completedSubmissions.map((submission) => (
               <div
                 key={submission.id}
-                className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 opacity-60"
+                className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 opacity-60"
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">

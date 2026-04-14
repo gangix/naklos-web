@@ -191,7 +191,7 @@ const ClientDetailPage = () => {
       </div>
 
       {/* Client Info Card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('clientDetail.clientInfo')}</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
@@ -214,7 +214,7 @@ const ClientDetailPage = () => {
       </div>
 
       {/* Payment Terms Card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('clientDetail.paymentTerms')}</h2>
         <select
           value={clientPaymentTerms}

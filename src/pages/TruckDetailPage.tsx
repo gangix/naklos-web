@@ -218,7 +218,7 @@ const TruckDetailPage = () => {
       </div>
 
       {/* Basic info card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
         <div className="space-y-2">
           <div className="flex items-center justify-between">
@@ -297,7 +297,7 @@ const TruckDetailPage = () => {
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
         <div className="space-y-3">
           {/* Compulsory Insurance */}
-          <div className="bg-white rounded-lg p-4 shadow-sm">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-bold text-gray-900">{t('truck.compulsoryInsurance')}</h3>
               <button
@@ -314,7 +314,7 @@ const TruckDetailPage = () => {
           </div>
 
           {/* Comprehensive Insurance */}
-          <div className="bg-white rounded-lg p-4 shadow-sm">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-bold text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
               <button
@@ -331,7 +331,7 @@ const TruckDetailPage = () => {
           </div>
 
           {/* Inspection */}
-          <div className="bg-white rounded-lg p-4 shadow-sm">
+          <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-sm font-bold text-gray-900">{t('truck.inspection')}</h3>
               <button
@@ -353,7 +353,7 @@ const TruckDetailPage = () => {
       {documents.length > 0 && (
         <div className="mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truckDetail.documentHistory')}</h2>
-          <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+          <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
             {documents.map((doc) => (
               <div key={doc.id} className="p-3">
                 <div className="flex items-center justify-between">
@@ -389,7 +389,7 @@ const TruckDetailPage = () => {
 
       {/* Location card */}
       {truck.lastPosition && (
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.location')}</h2>
           <div className="flex items-center gap-2">
             <MapPin className="w-6 h-6 text-primary-600" />

@@ -78,7 +78,7 @@ const ClientsPage = () => {
             </button>
           </div>
         ) : filteredClients.length === 0 && clients.length > 0 ? (
-          <div className="bg-white rounded-lg p-6 text-center text-gray-500">
+          <div className="bg-white rounded-xl p-6 text-center text-gray-500">
             {t('clientsPage.noFilterResult')}
           </div>
         ) : (
@@ -86,7 +86,7 @@ const ClientsPage = () => {
             <button
               key={client.id}
               onClick={() => navigate(`/manager/clients/${client.id}`)}
-              className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
+              className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-left"
             >
               <p className="font-bold text-gray-900">{client.name || client.companyName}</p>
               {client.city && (

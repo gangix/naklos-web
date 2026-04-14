@@ -327,7 +327,7 @@ const DriverDetailPage = () => {
       </div>
 
       {/* Contact info card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{t('driver.contactInfo')}</h2>
           {!editingContact && (
@@ -386,7 +386,7 @@ const DriverDetailPage = () => {
       </div>
 
       {/* Emergency contact card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{t('driver.emergencyContact')}</h2>
           {!editingEmergency && (
@@ -445,7 +445,7 @@ const DriverDetailPage = () => {
       </div>
 
       {/* License info card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{t('driver.license')}</h2>
           <button
@@ -566,7 +566,7 @@ const DriverDetailPage = () => {
         {driver.certificates && driver.certificates.length > 0 && (
           <div className="space-y-3">
             {driver.certificates.map((cert, index) => (
-              <div key={index} className="bg-white rounded-lg p-4 shadow-sm">
+              <div key={index} className="bg-white rounded-xl p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-bold text-gray-900">
                     {cert.type === 'SRC' ? t('driver.srcCertificate') : t('driver.cpcCertificate')}
@@ -604,7 +604,7 @@ const DriverDetailPage = () => {
 
       {/* Assigned truck card */}
       {driver.assignedTruckPlate && (
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-2">{t('driver.assignedTruck')}</h2>
           <p className="text-sm font-medium text-gray-900">{driver.assignedTruckPlate}</p>
         </div>
@@ -649,7 +649,7 @@ const DriverDetailPage = () => {
       {documents.length > 0 && (
         <div className="mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverDetail.documentHistory')}</h2>
-          <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+          <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
             {documents.map((doc) => (
               <div key={doc.id} className="p-3">
                 <div className="flex items-center justify-between">

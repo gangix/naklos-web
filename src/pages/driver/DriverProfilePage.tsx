@@ -130,7 +130,7 @@ const DriverProfilePage = () => {
 
         {/* Developer Login Panel — only in development */}
         {showDriverList && import.meta.env.DEV && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
               <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
               <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devLoginHint')}</p>
@@ -245,7 +245,7 @@ const DriverProfilePage = () => {
 
       {/* Developer Login Panel — only in development */}
       {showDriverList && import.meta.env.DEV && (
-        <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
             <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
@@ -308,7 +308,7 @@ const DriverProfilePage = () => {
       )}
 
       {/* Personal Info Card */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{t('profile.personalInfo')}</h2>
           {!isEditing && (
@@ -389,7 +389,7 @@ const DriverProfilePage = () => {
 
       {/* Emergency Contact Card */}
       {driver.emergencyContact && (
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driver.emergencyContact')}</h2>
           <div className="space-y-3">
             <div>
@@ -413,7 +413,7 @@ const DriverProfilePage = () => {
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('profile.documents')}</h2>
 
         {/* Driver's License */}
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-bold text-gray-900">{t('driver.license')}</h3>
             <button
@@ -440,7 +440,7 @@ const DriverProfilePage = () => {
         {(() => {
           const srcCert = driver.certificates?.find((c: any) => c.type === 'SRC');
           return (
-            <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+            <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm font-bold text-gray-900">{t('driver.srcCertificate')}</h3>
                 <button
@@ -473,7 +473,7 @@ const DriverProfilePage = () => {
         {(() => {
           const cpcCert = driver.certificates?.find((c: any) => c.type === 'CPC');
           return (
-            <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+            <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-sm font-bold text-gray-900">{t('driver.cpcCertificate')}</h3>
                 <button
@@ -507,7 +507,7 @@ const DriverProfilePage = () => {
       {myDocuments.length > 0 && (
         <div className="mb-4">
           <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverProfile.documentHistory')}</h2>
-          <div className="bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+          <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
             {myDocuments.map((doc) => (
               <div key={doc.id} className="p-3">
                 <div className="flex items-center justify-between">

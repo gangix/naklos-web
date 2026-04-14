@@ -120,7 +120,7 @@ const MorePage = () => {
   ];
 
   return (
-    <div className="p-4 pb-20">
+    <div>
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('morePage.title')}</h1>
@@ -142,7 +142,7 @@ const MorePage = () => {
 
       {/* Fleet Settings */}
       {fleetData && (
-        <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900">{t('morePage.fleetSettings')}</h2>
           </div>
@@ -215,7 +215,7 @@ const MorePage = () => {
 
       {/* Developer Login Panel — only in development */}
       {showDriverList && import.meta.env.DEV && (
-        <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> {t('morePage.developerLogin')}</h2>
             <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
@@ -285,7 +285,7 @@ const MorePage = () => {
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className="w-full bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow text-left"
+            className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-left border border-gray-100"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -304,7 +304,7 @@ const MorePage = () => {
       </div>
 
       {/* App Info */}
-      <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+      <div className="mt-8 p-4 bg-gray-50 rounded-xl">
         <p className="text-xs text-gray-600 text-center">
           {t('morePage.appInfo')}
         </p>

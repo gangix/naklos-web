@@ -6,8 +6,8 @@
     "invoices": "Payments",
     "drivers": "Drivers",
     "clients": "Clients",
-    "more": "More",
-    "settings": "More",
+    "more": "Settings",
+    "settings": "Settings",
     "fuel": "Fuel"
   },
   "dashboard": {
@@ -700,7 +700,7 @@
     "noFilterResult": "No results found for this filter"
   },
   "morePage": {
-    "title": "More",
+    "title": "Settings",
     "loggedIn": "Logged In",
     "role": "Role",
     "roleDriver": "Driver",

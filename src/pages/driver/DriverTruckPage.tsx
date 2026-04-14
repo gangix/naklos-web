@@ -92,7 +92,7 @@ const DriverTruckPage = () => {
     <div className="p-4 pb-20">
       <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{t('driverTruck.title')}</h1>
 
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
         <div className="space-y-3">
           <div>
@@ -107,7 +107,7 @@ const DriverTruckPage = () => {
       </div>
 
       {/* Location status (controls are in bottom nav) */}
-      <div className="bg-white rounded-lg p-4 shadow-sm mb-4 border-l-4 border-l-primary-500">
+      <div className="bg-white rounded-xl p-4 shadow-sm mb-4 border-l-4 border-l-primary-500">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-sm font-bold text-gray-900">{t('location.status')}</h2>
           <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full ${
@@ -150,7 +150,7 @@ const DriverTruckPage = () => {
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-bold text-gray-900">{t('truck.compulsoryInsurance')}</h3>
             <button
@@ -163,7 +163,7 @@ const DriverTruckPage = () => {
           <ExpiryBadge label={t('truck.expiryDate')} date={assignedTruck.compulsoryInsuranceExpiry} />
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-bold text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
             <button
@@ -176,7 +176,7 @@ const DriverTruckPage = () => {
           <ExpiryBadge label={t('truck.expiryDate')} date={assignedTruck.comprehensiveInsuranceExpiry} />
         </div>
 
-        <div className="bg-white rounded-lg p-4 shadow-sm mb-3">
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-bold text-gray-900">{t('truck.inspection')}</h3>
             <button

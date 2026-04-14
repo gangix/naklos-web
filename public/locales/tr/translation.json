@@ -6,8 +6,8 @@
     "invoices": "Ödemeler",
     "drivers": "Sürücüler",
     "clients": "Müşteriler",
-    "more": "Daha Fazla",
-    "settings": "Daha Fazla",
+    "more": "Ayarlar",
+    "settings": "Ayarlar",
     "fuel": "Yakıt"
   },
   "dashboard": {
@@ -700,7 +700,7 @@
     "noFilterResult": "Bu filtreye uygun sonuç bulunamadı"
   },
   "morePage": {
-    "title": "Diğer",
+    "title": "Ayarlar",
     "loggedIn": "Giriş",
     "role": "Rol",
     "roleDriver": "Sürücü",
