@@ -116,7 +116,7 @@ const ClientDetailPage = () => {
 
   const handleDelete = async () => {
     if (!clientId || !client) return;
-    if (!confirm(`"${client.companyName}" müşterisini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.`)) {
+    if (!confirm(t('clientDetail.confirmDelete', { name: client.companyName }))) {
       return;
     }
     try {
@@ -153,7 +153,7 @@ const ClientDetailPage = () => {
           onClick={() => navigate('/manager/clients')}
           className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
         >
-          Geri Dön
+          {t('common.back')}
         </button>
       </div>
     );
@@ -179,7 +179,7 @@ const ClientDetailPage = () => {
           onClick={handleEditOpen}
           className="px-3 py-2 bg-primary-600 text-white text-sm rounded-lg hover:bg-primary-700 transition-colors"
         >
-          Düzenle
+          {t('common.edit')}
         </button>
         <button
           onClick={handleDelete}
@@ -222,10 +222,10 @@ const ClientDetailPage = () => {
           disabled={updatingTerms}
           className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
         >
-          <option value="NET_0">NET 0 - Peşin</option>
-          <option value="NET_30">NET 30 - 30 Gün</option>
-          <option value="NET_60">NET 60 - 60 Gün</option>
-          <option value="NET_90">NET 90 - 90 Gün</option>
+          <option value="NET_0">{t('paymentTerms.NET_0')}</option>
+          <option value="NET_30">{t('paymentTerms.NET_30')}</option>
+          <option value="NET_60">{t('paymentTerms.NET_60')}</option>
+          <option value="NET_90">{t('paymentTerms.NET_90')}</option>
         </select>
         {updatingTerms && (
           <p className="text-xs text-gray-500 mt-1">{t('clientDetail.updating')}</p>
@@ -276,7 +276,7 @@ const ClientDetailPage = () => {
                         setEditForm((f) => ({ ...f, address: { ...f.address, street: e.target.value } }))
                       }
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Örn: Atatürk Cad. No:1"
+                      placeholder={t('clientDetail.placeholderStreet')}
                     />
                   </div>
                   <div>
@@ -288,7 +288,7 @@ const ClientDetailPage = () => {
                         setEditForm((f) => ({ ...f, address: { ...f.address, city: e.target.value } }))
                       }
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Örn: İstanbul"
+                      placeholder={t('clientDetail.placeholderCity')}
                     />
                   </div>
                   <div>
@@ -300,7 +300,7 @@ const ClientDetailPage = () => {
                         setEditForm((f) => ({ ...f, address: { ...f.address, postalCode: e.target.value } }))
                       }
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Örn: 34000"
+                      placeholder={t('clientDetail.placeholderPostalCode')}
                     />
                   </div>
                   <div>
@@ -312,7 +312,7 @@ const ClientDetailPage = () => {
                         setEditForm((f) => ({ ...f, address: { ...f.address, region: e.target.value } }))
                       }
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Örn: Kadıköy"
+                      placeholder={t('clientDetail.placeholderRegion')}
                     />
                   </div>
                   <div>
@@ -324,7 +324,7 @@ const ClientDetailPage = () => {
                         setEditForm((f) => ({ ...f, address: { ...f.address, country: e.target.value } }))
                       }
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="Örn: Türkiye"
+                      placeholder={t('clientDetail.placeholderCountry')}
                     />
                   </div>
                 </div>
@@ -344,7 +344,7 @@ const ClientDetailPage = () => {
                 disabled={saving}
                 className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                İptal
+                {t('common.cancel')}
               </button>
             </div>
           </div>

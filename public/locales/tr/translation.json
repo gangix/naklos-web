@@ -503,7 +503,13 @@
     "country": "Ülke",
     "notFound": "Müşteri bulunamadı",
     "goBack": "Geri Dön",
-    "loadError": "Müşteri yüklenirken hata oluştu"
+    "loadError": "Müşteri yüklenirken hata oluştu",
+    "confirmDelete": "\"{{name}}\" müşterisini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+    "placeholderStreet": "Örn: Atatürk Cad. No:1",
+    "placeholderCity": "Örn: İstanbul",
+    "placeholderPostalCode": "Örn: 34000",
+    "placeholderRegion": "Örn: Kadıköy",
+    "placeholderCountry": "Örn: Türkiye"
   },
   "driverDetail": {
     "loadError": "Sürücü yüklenirken hata oluştu",
@@ -685,7 +691,7 @@
     "rejected": "Reddedildi"
   },
   "clientsPage": {
-    "addClient": "+ Müşteri Ekle",
+    "addClient": "Müşteri Ekle",
     "searchPlaceholder": "Müşteri ara...",
     "emptyTitle": "Henüz müşteri eklenmemiş",
     "emptyHint": "İlk müşterinizi ekleyerek başlayın",
@@ -788,5 +794,11 @@
     "TIPPER": "Damperli",
     "REFRIGERATED": "Frigorifik",
     "TANKER": "Tanker"
+  },
+  "paymentTerms": {
+    "NET_0": "NET 0 - Peşin",
+    "NET_30": "NET 30 - 30 Gün",
+    "NET_60": "NET 60 - 60 Gün",
+    "NET_90": "NET 90 - 90 Gün"
   }
 }

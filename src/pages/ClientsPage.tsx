@@ -74,7 +74,7 @@ const ClientsPage = () => {
               onClick={() => maxClients !== -1 && clients.length >= maxClients ? setUpgradeModalOpen(true) : setAddClientModalOpen(true)}
               className="px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
             >
-              Müşteri Ekle
+              {t('clientsPage.addClient')}
             </button>
           </div>
         ) : filteredClients.length === 0 && clients.length > 0 ? (
@@ -109,7 +109,7 @@ const ClientsPage = () => {
       <UpgradeModal
         isOpen={upgradeModalOpen}
         onClose={() => setUpgradeModalOpen(false)}
-        resource="müşteri"
+        resource={t('resource.client')}
         currentPlan={plan}
       />
     </div>

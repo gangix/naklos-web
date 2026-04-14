@@ -503,7 +503,13 @@
     "country": "Land",
     "notFound": "Kunde nicht gefunden",
     "goBack": "Zurück",
-    "loadError": "Fehler beim Laden des Kunden"
+    "loadError": "Fehler beim Laden des Kunden",
+    "confirmDelete": "Möchten Sie \"{{name}}\" wirklich löschen? Dies kann nicht rückgängig gemacht werden.",
+    "placeholderStreet": "z. B. Hauptstraße 1",
+    "placeholderCity": "z. B. Istanbul",
+    "placeholderPostalCode": "z. B. 34000",
+    "placeholderRegion": "z. B. Kadıköy",
+    "placeholderCountry": "z. B. Türkei"
   },
   "driverDetail": {
     "loadError": "Fehler beim Laden des Fahrers",
@@ -685,7 +691,7 @@
     "rejected": "Abgelehnt"
   },
   "clientsPage": {
-    "addClient": "+ Kunde hinzufügen",
+    "addClient": "Kunde hinzufügen",
     "searchPlaceholder": "Kunde suchen...",
     "emptyTitle": "Noch keine Kunden hinzugefügt",
     "emptyHint": "Beginnen Sie damit, Ihren ersten Kunden hinzuzufügen",
@@ -788,5 +794,11 @@
     "TIPPER": "Kipper",
     "REFRIGERATED": "Kühlfahrzeug",
     "TANKER": "Tankwagen"
+  },
+  "paymentTerms": {
+    "NET_0": "NET 0 - Sofort",
+    "NET_30": "NET 30 - 30 Tage",
+    "NET_60": "NET 60 - 60 Tage",
+    "NET_90": "NET 90 - 90 Tage"
   }
 }
