@@ -28,7 +28,7 @@ const ClientsPage = () => {
 
   if (clientsLoading) {
     return (
-      <div className="p-4">
+      <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{t('client.title')}</h1>
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
@@ -38,7 +38,7 @@ const ClientsPage = () => {
   }
 
   return (
-    <div className="p-4 pb-20">
+    <div className="pb-16">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
           {t('client.title')}

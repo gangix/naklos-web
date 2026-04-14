@@ -239,7 +239,7 @@ const DriversPage = () => {
   // Show loading state
   if (driversLoading) {
     return (
-      <div className="p-4">
+      <div>
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{t('driver.title')}</h1>
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
@@ -252,7 +252,7 @@ const DriversPage = () => {
   }
 
   return (
-    <div className="p-4">
+    <div>
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
           {t('driver.title')}

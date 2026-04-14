@@ -141,7 +141,7 @@ const DashboardPage = () => {
 
   if (error) {
     return (
-      <div className="p-4 pb-20 max-w-4xl mx-auto">
+      <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.myFleet')}</h1>
         <div className="bg-white rounded-xl shadow-sm border border-red-200 p-8 text-center">
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
@@ -172,7 +172,7 @@ const DashboardPage = () => {
   const fullDate = today.toLocaleDateString(localeTag, { day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div className="pb-20 max-w-4xl mx-auto px-4 md:px-6 pt-5 md:pt-6">
+    <div>
       {/* Header — date micro-line above the title, no border above. Tight
           margin to the KPI cards (less empty space than before). */}
       <div className="mb-5">

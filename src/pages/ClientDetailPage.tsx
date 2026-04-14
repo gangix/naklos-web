@@ -134,7 +134,7 @@ const ClientDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="p-4">
+      <div >
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600 mx-auto mb-4" />
@@ -147,7 +147,7 @@ const ClientDetailPage = () => {
 
   if (error || !client) {
     return (
-      <div className="p-4">
+      <div >
         <p className="text-center text-red-600">{error || t('clientDetail.notFound')}</p>
         <button
           onClick={() => navigate('/manager/clients')}
@@ -162,7 +162,7 @@ const ClientDetailPage = () => {
   const clientPaymentTerms: PaymentTerms = (client as any).paymentTerms ?? 'NET_30';
 
   return (
-    <div className="p-4 pb-20">
+    <div className="pb-16">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
