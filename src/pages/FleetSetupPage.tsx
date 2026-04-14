@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useAuth } from '../contexts/AuthContext';
 import { fleetApi } from '../services/api';
@@ -9,6 +10,7 @@ import keycloak from '../auth/keycloak';
 const TERMS_VERSION = '2026-04-11';
 
 const FleetSetupPage = () => {
+  const { t } = useTranslation();
   const { setFleetId } = useFleet();
   const { user, logout } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,7 @@ const FleetSetupPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!termsAccepted) {
-      setError('Devam etmek için Kullanım Şartları ve Gizlilik Politikasını kabul etmelisiniz');
+      setError(t('fleetSetup.mustAcceptTerms'));
       return;
     }
     setLoading(true);
@@ -61,20 +63,20 @@ const FleetSetupPage = () => {
       <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1 text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Naklos'a Hoş Geldiniz</h1>
-            <p className="text-gray-600">Filo şirketinizi oluşturarak başlayın</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('fleetSetup.welcome')}</h1>
+            <p className="text-gray-600">{t('fleetSetup.subtitle')}</p>
             {user?.name && (
-              <p className="text-xs text-gray-500 mt-2">Giriş: {user.name}</p>
+              <p className="text-xs text-gray-500 mt-2">{t('fleetSetup.loggedInAs', { name: user.name })}</p>
             )}
           </div>
           <button
             type="button"
             onClick={logout}
             className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-            title="Çıkış Yap"
+            title={t('fleetSetup.logoutAriaLabel')}
           >
             <LogOut className="w-4 h-4" />
-            <span>Çıkış</span>
+            <span>{t('common.logout')}</span>
           </button>
         </div>
 
@@ -87,11 +89,11 @@ const FleetSetupPage = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Company Info */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Şirket Bilgileri</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('fleetSetup.companyInfo')}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Şirket Adı *
+                  {t('fleetSetup.companyName')}
                 </label>
                 <input
                   type="text"
@@ -99,13 +101,13 @@ const FleetSetupPage = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Örn: ABC Lojistik A.Ş."
+                  placeholder={t('fleetSetup.companyNamePlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Vergi Numarası *
+                  {t('fleetSetup.taxId')}
                 </label>
                 <input
                   type="text"
@@ -113,14 +115,14 @@ const FleetSetupPage = () => {
                   value={formData.taxId}
                   onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="10 haneli vergi numarası"
+                  placeholder={t('fleetSetup.taxIdPlaceholder')}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    E-posta *
+                    {t('fleetSetup.email')}
                   </label>
                   <input
                     type="email"
@@ -128,13 +130,13 @@ const FleetSetupPage = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="info@sirket.com"
+                    placeholder={t('fleetSetup.emailPlaceholder')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Telefon *
+                    {t('fleetSetup.phone')}
                   </label>
                   <input
                     type="tel"
@@ -142,14 +144,14 @@ const FleetSetupPage = () => {
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="+90 555 123 4567"
+                    placeholder={t('fleetSetup.phonePlaceholder')}
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Para Birimi *
+                  {t('fleetSetup.currency')}
                 </label>
                 <select
                   value={formData.defaultCurrency}
@@ -167,11 +169,11 @@ const FleetSetupPage = () => {
 
           {/* Address */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Adres Bilgileri</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('fleetSetup.addressInfo')}</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Sokak/Cadde
+                  {t('fleetSetup.street')}
                 </label>
                 <input
                   type="text"
@@ -181,14 +183,14 @@ const FleetSetupPage = () => {
                     address: { ...formData.address, street: e.target.value }
                   })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Atatürk Caddesi No:123"
+                  placeholder={t('fleetSetup.streetPlaceholder')}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Şehir
+                    {t('fleetSetup.city')}
                   </label>
                   <input
                     type="text"
@@ -198,13 +200,13 @@ const FleetSetupPage = () => {
                       address: { ...formData.address, city: e.target.value }
                     })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="İstanbul"
+                    placeholder={t('fleetSetup.cityPlaceholder')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Posta Kodu
+                    {t('fleetSetup.postalCode')}
                   </label>
                   <input
                     type="text"
@@ -214,13 +216,13 @@ const FleetSetupPage = () => {
                       address: { ...formData.address, postalCode: e.target.value }
                     })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="34000"
+                    placeholder={t('fleetSetup.postalCodePlaceholder')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Bölge
+                    {t('fleetSetup.region')}
                   </label>
                   <input
                     type="text"
@@ -230,7 +232,7 @@ const FleetSetupPage = () => {
                       address: { ...formData.address, region: e.target.value }
                     })}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder="Marmara"
+                    placeholder={t('fleetSetup.regionPlaceholder')}
                   />
                 </div>
               </div>
@@ -248,13 +250,13 @@ const FleetSetupPage = () => {
               />
               <span className="text-sm text-gray-700 leading-relaxed">
                 <Link to="/terms" target="_blank" className="text-primary-600 font-medium underline">
-                  Kullanım Şartları
+                  {t('fleetSetup.termsOfService')}
                 </Link>
-                {' '}ve{' '}
+                {' '}&{' '}
                 <Link to="/privacy" target="_blank" className="text-primary-600 font-medium underline">
-                  Gizlilik Politikası
+                  {t('fleetSetup.privacyPolicy')}
                 </Link>
-                'nı okudum ve kabul ediyorum. *
+                {t('fleetSetup.agreementSuffix')}
               </span>
             </label>
           </div>
@@ -264,13 +266,13 @@ const FleetSetupPage = () => {
             disabled={loading || !termsAccepted}
             className="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            {loading ? 'Oluşturuluyor...' : 'Filo Şirketini Oluştur'}
+            {loading ? t('fleetSetup.creating') : t('fleetSetup.createButton')}
           </button>
         </form>
 
         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
-            <strong>💡 İpucu:</strong> Filo şirketinizi oluşturduktan sonra araçlarınızı, sürücülerinizi ve müşterilerinizi ekleyebilirsiniz.
+            {t('fleetSetup.tip')}
           </p>
         </div>
       </div>

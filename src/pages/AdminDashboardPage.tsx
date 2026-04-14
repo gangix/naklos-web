@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Building2, Truck, Users, ChevronRight, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { adminApi } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { formatDate } from '../utils/format';
@@ -31,6 +32,7 @@ interface FleetSummary {
 
 const AdminDashboardPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [fleets, setFleets] = useState<FleetSummary[]>([]);
@@ -76,22 +78,22 @@ const AdminDashboardPage = () => {
   }
 
   const statCards = [
-    { label: 'Toplam Filo', count: stats?.totalFleets ?? 0, icon: Building2, color: 'blue' },
-    { label: 'Toplam Araç', count: stats?.totalTrucks ?? 0, icon: Truck, color: 'green' },
-    { label: 'Toplam Sürücü', count: stats?.totalDrivers ?? 0, icon: Users, color: 'orange' },
-    { label: 'Toplam Müşteri', count: stats?.totalClients ?? 0, icon: Building2, color: 'purple' },
+    { label: t('adminDashboard.totalFleets'), count: stats?.totalFleets ?? 0, icon: Building2, color: 'blue' },
+    { label: t('adminDashboard.totalTrucks'), count: stats?.totalTrucks ?? 0, icon: Truck, color: 'green' },
+    { label: t('adminDashboard.totalDrivers'), count: stats?.totalDrivers ?? 0, icon: Users, color: 'orange' },
+    { label: t('adminDashboard.totalClients'), count: stats?.totalClients ?? 0, icon: Building2, color: 'purple' },
   ];
 
   return (
     <div className="p-4 pb-20 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Yönetim Paneli</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('adminDashboard.title')}</h1>
         <button
           onClick={logout}
           className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
         >
           <LogOut className="w-4 h-4" />
-          <span>Çıkış</span>
+          <span>{t('common.logout')}</span>
         </button>
       </div>
 
@@ -116,26 +118,26 @@ const AdminDashboardPage = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="bg-gray-50 border-b border-gray-200 px-4 py-3 flex items-center gap-2">
           <Building2 className="w-5 h-5 text-gray-600" />
-          <h2 className="font-bold text-gray-900">Tum Filolar</h2>
+          <h2 className="font-bold text-gray-900">{t('adminDashboard.allFleets')}</h2>
           <span className="ml-auto text-sm text-gray-500 font-medium">
-            {fleets.length} filo
+            {t('adminDashboard.fleetCount', { count: fleets.length })}
           </span>
         </div>
 
         {fleets.length === 0 ? (
           <div className="p-6 text-center text-gray-500 text-sm">
-            Henuz kayitli filo yok.
+            {t('adminDashboard.noFleetsYet')}
           </div>
         ) : (
           <div className="divide-y divide-gray-100">
             {/* Desktop header */}
             <div className="hidden md:grid md:grid-cols-6 gap-4 px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <span>Filo Adi</span>
-              <span>Vergi No</span>
-              <span>E-posta</span>
-              <span className="text-center">Arac</span>
-              <span className="text-center">Surucu</span>
-              <span>Oluşturulma</span>
+              <span>{t('adminDashboard.fleetName')}</span>
+              <span>{t('adminDashboard.taxNumber')}</span>
+              <span>{t('adminDashboard.email')}</span>
+              <span className="text-center">{t('adminDashboard.truck')}</span>
+              <span className="text-center">{t('adminDashboard.driver')}</span>
+              <span>{t('adminDashboard.createdAt')}</span>
             </div>
             {fleets.map((fleet) => (
               <button

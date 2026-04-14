@@ -217,7 +217,7 @@ const MorePage = () => {
       {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
+            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> {t('morePage.developerLogin')}</h2>
             <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
           </div>
 

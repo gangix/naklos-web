@@ -720,7 +720,8 @@
     "clientsMenu": "Müşteriler",
     "clientsDesc": "Müşteri listesi",
     "appInfo": "Naklos Filo Yönetimi",
-    "version": "Versiyon 1.0.0 (Development Mode)"
+    "version": "Versiyon 1.0.0 (Development Mode)",
+    "developerLogin": "Geliştirici Girişi"
   },
   "driverProfile": {
     "notFoundTitle": "Sürücü Profili Bulunamadı",
@@ -800,5 +801,53 @@
     "NET_30": "NET 30 - 30 Gün",
     "NET_60": "NET 60 - 60 Gün",
     "NET_90": "NET 90 - 90 Gün"
+  },
+  "adminDashboard": {
+    "title": "Yönetim Paneli",
+    "totalTrucks": "Toplam Araç",
+    "totalDrivers": "Toplam Sürücü",
+    "totalClients": "Toplam Müşteri",
+    "createdAt": "Oluşturulma",
+    "totalFleets": "Toplam Filo",
+    "allFleets": "Tüm Filolar",
+    "fleetCount": "{{count}} filo",
+    "noFleetsYet": "Henüz kayıtlı filo yok.",
+    "fleetName": "Filo Adı",
+    "taxNumber": "Vergi No",
+    "email": "E-posta",
+    "truck": "Araç",
+    "driver": "Sürücü"
+  },
+  "fleetSetup": {
+    "mustAcceptTerms": "Devam etmek için Kullanım Şartları ve Gizlilik Politikasını kabul etmelisiniz",
+    "welcome": "Naklos'a Hoş Geldiniz",
+    "subtitle": "Filo şirketinizi oluşturarak başlayın",
+    "loggedInAs": "Giriş: {{name}}",
+    "logoutAriaLabel": "Çıkış Yap",
+    "companyInfo": "Şirket Bilgileri",
+    "companyName": "Şirket Adı *",
+    "companyNamePlaceholder": "Örn: ABC Lojistik A.Ş.",
+    "taxId": "Vergi Numarası *",
+    "taxIdPlaceholder": "10 haneli vergi numarası",
+    "streetPlaceholder": "Atatürk Caddesi No:123",
+    "city": "Şehir",
+    "cityPlaceholder": "İstanbul",
+    "region": "Bölge",
+    "termsOfService": "Kullanım Şartları",
+    "privacyPolicy": "Gizlilik Politikası",
+    "agreementSuffix": "'nı okudum ve kabul ediyorum. *",
+    "creating": "Oluşturuluyor...",
+    "createButton": "Filo Şirketini Oluştur",
+    "tip": "💡 İpucu: Filo şirketinizi oluşturduktan sonra araçlarınızı, sürücülerinizi ve müşterilerinizi ekleyebilirsiniz.",
+    "email": "E-posta *",
+    "emailPlaceholder": "info@sirket.com",
+    "phone": "Telefon *",
+    "phonePlaceholder": "+90 555 123 4567",
+    "currency": "Para Birimi *",
+    "addressInfo": "Adres Bilgileri",
+    "street": "Sokak/Cadde",
+    "postalCode": "Posta Kodu",
+    "postalCodePlaceholder": "34000",
+    "regionPlaceholder": "Marmara"
   }
 }
