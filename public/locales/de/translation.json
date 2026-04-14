@@ -18,7 +18,17 @@
     "profit": "Nettogewinn",
     "activeTrips": "Aktive Fahrten",
     "availableTrucks": "Verfügbare Fahrzeuge",
-    "availableDrivers": "Verfügbare Fahrer"
+    "availableDrivers": "Verfügbare Fahrer",
+    "myFleet": "Meine Flotte",
+    "loadErrorTitle": "Daten konnten nicht geladen werden",
+    "loadErrorDescription": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "warningSection": "Dokumente, die Aufmerksamkeit benötigen",
+    "recordsAndDocs_one": "{{records}} Eintrag · {{docs}} Dokument",
+    "recordsAndDocs_other": "{{records}} Einträge · {{docs}} Dokumente",
+    "docsAndList_one": "{{count}} Dokument · {{labels}}",
+    "docsAndList_other": "{{count}} Dokumente · {{labels}}",
+    "allCurrent": "Alle Dokumente sind aktuell",
+    "allCurrentSubtitle": "Keine Dokumente müssen in den nächsten 30 Tagen erneuert werden"
   },
   "truck": {
     "title": "Fahrzeuge",
@@ -163,7 +173,15 @@
     "currency": "₺",
     "days": "Tage",
     "language": "Sprache",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "retry": "Erneut versuchen",
+    "today": "Heute",
+    "dateMissing": "Datum fehlt",
+    "daysExpired_one": "Seit {{count}} Tag überfällig",
+    "daysExpired_other": "Seit {{count}} Tagen überfällig",
+    "daysRemaining_one": "Noch {{count}} Tag",
+    "daysRemaining_other": "Noch {{count}} Tage",
+    "localeTag": "de-DE"
   },
   "document": {
     "title": "Dokumente",
@@ -717,5 +735,13 @@
       "title": "Tarif upgraden",
       "limitReached": "Tariflimit erreicht"
     }
+  },
+  "doc": {
+    "compulsoryInsurance": "Pflichtversicherung",
+    "comprehensiveInsurance": "Vollkasko",
+    "inspection": "Hauptuntersuchung",
+    "license": "Führerschein",
+    "src": "SRC-Bescheinigung",
+    "cpc": "CPC-Bescheinigung"
   }
 }

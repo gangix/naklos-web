@@ -18,7 +18,17 @@
     "profit": "Net Kâr",
     "activeTrips": "Aktif Seferler",
     "availableTrucks": "Müsait Araçlar",
-    "availableDrivers": "Müsait Sürücüler"
+    "availableDrivers": "Müsait Sürücüler",
+    "myFleet": "Filom",
+    "loadErrorTitle": "Veriler yüklenemedi",
+    "loadErrorDescription": "Bir hata oluştu. Lütfen tekrar deneyin.",
+    "warningSection": "Dikkat Gereken Belgeler",
+    "recordsAndDocs_one": "{{records}} kayıt · {{docs}} belge",
+    "recordsAndDocs_other": "{{records}} kayıt · {{docs}} belge",
+    "docsAndList_one": "{{count}} belge · {{labels}}",
+    "docsAndList_other": "{{count}} belge · {{labels}}",
+    "allCurrent": "Tüm belgeler güncel",
+    "allCurrentSubtitle": "Son 30 gün içinde yenilenmesi gereken belge yok"
   },
   "truck": {
     "title": "Araçlar",
@@ -163,7 +173,15 @@
     "currency": "₺",
     "days": "gün",
     "language": "Dil",
-    "logout": "Çıkış"
+    "logout": "Çıkış",
+    "retry": "Tekrar Dene",
+    "today": "Bugün",
+    "dateMissing": "Tarih eksik",
+    "daysExpired_one": "{{count}} gün geçti",
+    "daysExpired_other": "{{count}} gün geçti",
+    "daysRemaining_one": "{{count}} gün kaldı",
+    "daysRemaining_other": "{{count}} gün kaldı",
+    "localeTag": "tr-TR"
   },
   "document": {
     "title": "Belgeler",
@@ -717,5 +735,13 @@
       "title": "Planınızı Yükseltin",
       "limitReached": "Plan Limitine Ulaştınız"
     }
+  },
+  "doc": {
+    "compulsoryInsurance": "Zorunlu Trafik Sigortası",
+    "comprehensiveInsurance": "Kasko",
+    "inspection": "Muayene",
+    "license": "Ehliyet",
+    "src": "SRC Belgesi",
+    "cpc": "CPC Belgesi"
   }
 }

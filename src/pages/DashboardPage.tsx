@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Truck, Users, Building2, AlertTriangle, CheckCircle, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { truckApi, driverApi, clientApi } from '../services/api';
 import type { Truck as TruckType, Driver, Client } from '../types';
 
 interface ExpiringItem {
-  label: string;
+  /** i18n key for the document type label (e.g. 'doc.compulsoryInsurance') */
+  labelKey: string;
   daysLeft: number | null;
 }
 
@@ -28,6 +30,7 @@ const daysUntil = (dateStr: string | null | undefined): number | null => {
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [trucks, setTrucks] = useState<TruckType[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
@@ -70,14 +73,14 @@ const DashboardPage = () => {
       checks: Array<[string | null | undefined, string]>
     ) => {
       const items: ExpiringItem[] = [];
-      for (const [date, label] of checks) {
+      for (const [date, labelKey] of checks) {
         if (!date) {
-          items.push({ label, daysLeft: null });
+          items.push({ labelKey, daysLeft: null });
           continue;
         }
         const days = daysUntil(date);
         if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-          items.push({ label, daysLeft: days });
+          items.push({ labelKey, daysLeft: days });
         }
       }
       if (items.length === 0) return;
@@ -96,21 +99,21 @@ const DashboardPage = () => {
 
     for (const truck of trucks) {
       collectItems('truck', truck.id, truck.plateNumber, [
-        [truck.compulsoryInsuranceExpiry, 'Zorunlu Trafik Sigortası'],
-        [truck.comprehensiveInsuranceExpiry, 'Kasko'],
-        [truck.inspectionExpiry, 'Muayene'],
+        [truck.compulsoryInsuranceExpiry, 'doc.compulsoryInsurance'],
+        [truck.comprehensiveInsuranceExpiry, 'doc.comprehensiveInsurance'],
+        [truck.inspectionExpiry, 'doc.inspection'],
       ]);
     }
 
     for (const driver of drivers) {
       const checks: Array<[string | null | undefined, string]> = [
-        [driver.licenseExpiryDate, 'Ehliyet'],
+        [driver.licenseExpiryDate, 'doc.license'],
       ];
       // SRC and CPC certificates — flag if missing entirely or if expiring soon
       const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
       const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
-      checks.push([srcCert?.expiryDate, 'SRC Belgesi']);
-      checks.push([cpcCert?.expiryDate, 'CPC Belgesi']);
+      checks.push([srcCert?.expiryDate, 'doc.src']);
+      checks.push([cpcCert?.expiryDate, 'doc.cpc']);
 
       collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, checks);
     }
@@ -139,16 +142,16 @@ const DashboardPage = () => {
   if (error) {
     return (
       <div className="p-4 pb-20 max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Filom</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.myFleet')}</h1>
         <div className="bg-white rounded-xl shadow-sm border border-red-200 p-8 text-center">
           <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">Veriler yüklenemedi</h3>
-          <p className="text-sm text-gray-500 mb-6">Bir hata oluştu. Lütfen tekrar deneyin.</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('dashboard.loadErrorTitle')}</h3>
+          <p className="text-sm text-gray-500 mb-6">{t('dashboard.loadErrorDescription')}</p>
           <button
             onClick={loadAll}
             className="px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
           >
-            Tekrar Dene
+            {t('common.retry')}
           </button>
         </div>
       </div>
@@ -156,16 +159,27 @@ const DashboardPage = () => {
   }
 
   const cards = [
-    { label: 'Araçlar', count: trucks.length, icon: Truck, accent: 'bg-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', path: '/manager/trucks' },
-    { label: 'Sürücüler', count: drivers.length, icon: Users, accent: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-600', path: '/manager/drivers' },
-    { label: 'Müşteriler', count: clients.length, icon: Building2, accent: 'bg-violet-500', bg: 'bg-violet-50', text: 'text-violet-600', path: '/manager/clients' },
+    { label: t('nav.trucks'), count: trucks.length, icon: Truck, accent: 'bg-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', path: '/manager/trucks' },
+    { label: t('nav.drivers'), count: drivers.length, icon: Users, accent: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-600', path: '/manager/drivers' },
+    { label: t('nav.clients'), count: clients.length, icon: Building2, accent: 'bg-violet-500', bg: 'bg-violet-50', text: 'text-violet-600', path: '/manager/clients' },
   ];
+
+  // Locale tag for date formatting — falls back to en-US if the language file
+  // doesn't define one.
+  const localeTag = t('common.localeTag', { defaultValue: 'en-US' });
 
   return (
     <div className="pb-20 max-w-4xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Filom</h1>
-        <p className="text-sm text-gray-500 mt-1">{new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          {new Date().toLocaleDateString(localeTag, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          })}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -196,9 +210,13 @@ const DashboardPage = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-red-50 border-b border-red-100 px-4 py-3 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-red-600" />
-            <h2 className="font-bold text-red-900">Dikkat Gereken Belgeler</h2>
+            <h2 className="font-bold text-red-900">{t('dashboard.warningSection')}</h2>
             <span className="ml-auto text-sm text-red-700 font-medium">
-              {warningGroups.length} kayıt · {totalWarningCount} belge
+              {t('dashboard.recordsAndDocs', {
+                count: warningGroups.length,
+                records: warningGroups.length,
+                docs: totalWarningCount,
+              })}
             </span>
           </div>
           <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
@@ -226,21 +244,24 @@ const DashboardPage = () => {
                     {group.name}
                   </p>
                   <p className="text-xs text-gray-500 truncate">
-                    {group.items.length} belge · {group.items.map((i) => i.label).join(', ')}
+                    {t('dashboard.docsAndList', {
+                      count: group.items.length,
+                      labels: group.items.map((i) => t(i.labelKey)).join(', '),
+                    })}
                   </p>
                 </div>
                 <div className="text-right flex-shrink-0">
                   {group.worstDaysLeft === null ? (
-                    <span className="text-xs font-bold text-gray-600 whitespace-nowrap">Tarih eksik</span>
+                    <span className="text-xs font-bold text-gray-600 whitespace-nowrap">{t('common.dateMissing')}</span>
                   ) : group.worstDaysLeft < 0 ? (
                     <span className="text-xs font-bold text-red-700 whitespace-nowrap">
-                      {Math.abs(group.worstDaysLeft)} gün geçti
+                      {t('common.daysExpired', { count: Math.abs(group.worstDaysLeft) })}
                     </span>
                   ) : group.worstDaysLeft === 0 ? (
-                    <span className="text-xs font-bold text-red-700 whitespace-nowrap">Bugün</span>
+                    <span className="text-xs font-bold text-red-700 whitespace-nowrap">{t('common.today')}</span>
                   ) : (
                     <span className="text-xs font-bold text-orange-600 whitespace-nowrap">
-                      {group.worstDaysLeft} gün kaldı
+                      {t('common.daysRemaining', { count: group.worstDaysLeft })}
                     </span>
                   )}
                 </div>
@@ -255,9 +276,9 @@ const DashboardPage = () => {
         <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
           <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
           <p className="text-sm font-medium text-green-900">
-            Tüm belgeler güncel
+            {t('dashboard.allCurrent')}
           </p>
-          <p className="text-xs text-green-700 mt-1">Son 30 gün içinde yenilenmesi gereken belge yok</p>
+          <p className="text-xs text-green-700 mt-1">{t('dashboard.allCurrentSubtitle')}</p>
         </div>
       )}
     </div>

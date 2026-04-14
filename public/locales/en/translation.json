@@ -18,7 +18,17 @@
     "profit": "Net Profit",
     "activeTrips": "Active Trips",
     "availableTrucks": "Available Trucks",
-    "availableDrivers": "Available Drivers"
+    "availableDrivers": "Available Drivers",
+    "myFleet": "My Fleet",
+    "loadErrorTitle": "Could not load data",
+    "loadErrorDescription": "An error occurred. Please try again.",
+    "warningSection": "Documents Needing Attention",
+    "recordsAndDocs_one": "{{records}} record · {{docs}} document",
+    "recordsAndDocs_other": "{{records}} records · {{docs}} documents",
+    "docsAndList_one": "{{count}} document · {{labels}}",
+    "docsAndList_other": "{{count}} documents · {{labels}}",
+    "allCurrent": "All documents up to date",
+    "allCurrentSubtitle": "No documents need renewal in the next 30 days"
   },
   "truck": {
     "title": "Trucks",
@@ -163,7 +173,15 @@
     "currency": "₺",
     "days": "days",
     "language": "Language",
-    "logout": "Log out"
+    "logout": "Log out",
+    "retry": "Try Again",
+    "today": "Today",
+    "dateMissing": "Date missing",
+    "daysExpired_one": "{{count}} day overdue",
+    "daysExpired_other": "{{count}} days overdue",
+    "daysRemaining_one": "{{count}} day remaining",
+    "daysRemaining_other": "{{count}} days remaining",
+    "localeTag": "en-US"
   },
   "document": {
     "title": "Documents",
@@ -717,5 +735,13 @@
       "title": "Upgrade Your Plan",
       "limitReached": "Plan Limit Reached"
     }
+  },
+  "doc": {
+    "compulsoryInsurance": "Compulsory Insurance",
+    "comprehensiveInsurance": "Comprehensive Insurance",
+    "inspection": "Inspection",
+    "license": "Driver's License",
+    "src": "SRC Certificate",
+    "cpc": "CPC Certificate"
   }
 }
