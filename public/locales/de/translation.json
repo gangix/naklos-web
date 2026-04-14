@@ -6,7 +6,9 @@
     "invoices": "Zahlungen",
     "drivers": "Fahrer",
     "clients": "Kunden",
-    "more": "Mehr"
+    "more": "Mehr",
+    "settings": "Mehr",
+    "fuel": "Kraftstoff"
   },
   "dashboard": {
     "title": "Kontrollzentrum",
@@ -159,7 +161,9 @@
     "error": "Ein Fehler ist aufgetreten",
     "success": "Erfolgreich",
     "currency": "₺",
-    "days": "Tage"
+    "days": "Tage",
+    "language": "Sprache",
+    "logout": "Abmelden"
   },
   "document": {
     "title": "Dokumente",
@@ -705,7 +709,7 @@
     "inspection": "Fahrzeuginspektion/TÜV"
   },
   "plan": {
-    "free": "Starter",
+    "free": "Kostenlos",
     "professional": "Professional",
     "business": "Business",
     "enterprise": "Enterprise",

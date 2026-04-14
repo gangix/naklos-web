@@ -6,7 +6,9 @@
     "invoices": "Ödemeler",
     "drivers": "Sürücüler",
     "clients": "Müşteriler",
-    "more": "Daha Fazla"
+    "more": "Daha Fazla",
+    "settings": "Daha Fazla",
+    "fuel": "Yakıt"
   },
   "dashboard": {
     "title": "Kontrol Paneli",
@@ -159,7 +161,9 @@
     "error": "Bir hata oluştu",
     "success": "Başarılı",
     "currency": "₺",
-    "days": "gün"
+    "days": "gün",
+    "language": "Dil",
+    "logout": "Çıkış"
   },
   "document": {
     "title": "Belgeler",

@@ -6,7 +6,9 @@
     "invoices": "Payments",
     "drivers": "Drivers",
     "clients": "Clients",
-    "more": "More"
+    "more": "More",
+    "settings": "More",
+    "fuel": "Fuel"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -159,7 +161,9 @@
     "error": "An error occurred",
     "success": "Success",
     "currency": "₺",
-    "days": "days"
+    "days": "days",
+    "language": "Language",
+    "logout": "Log out"
   },
   "document": {
     "title": "Documents",
@@ -705,7 +709,7 @@
     "inspection": "Vehicle Inspection"
   },
   "plan": {
-    "free": "Starter",
+    "free": "Free",
     "professional": "Professional",
     "business": "Business",
     "enterprise": "Enterprise",

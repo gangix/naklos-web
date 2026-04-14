@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Home, Truck, Users, Building2, Settings, LogOut, Menu, X, Fuel } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
+import LanguageSwitcher from '../common/LanguageSwitcher';
 
 const ManagerTopNav = () => {
+  const { t } = useTranslation();
   const { logout } = useAuth();
   const { plan } = useFleet();
   const warningCount = useDocumentWarnings();
@@ -16,15 +19,23 @@ const ManagerTopNav = () => {
     (import.meta.env.VITE_FEATURE_FUEL_TRACKING ?? (import.meta.env.DEV ? 'true' : 'false')) === 'true';
 
   const menuItems = [
-    { path: '/manager/dashboard', label: 'Ana Sayfa', icon: Home },
-    { path: '/manager/trucks', label: 'Araçlar', icon: Truck },
-    { path: '/manager/drivers', label: 'Sürücüler', icon: Users },
-    { path: '/manager/clients', label: 'Müşteriler', icon: Building2 },
+    { path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
+    { path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
+    { path: '/manager/drivers', label: t('nav.drivers'), icon: Users },
+    { path: '/manager/clients', label: t('nav.clients'), icon: Building2 },
     ...(fuelTrackingEnabled
-      ? [{ path: '/manager/fuel-imports', label: 'Yakıt', icon: Fuel }]
+      ? [{ path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
       : []),
-    { path: '/manager/more', label: 'Ayarlar', icon: Settings },
+    { path: '/manager/more', label: t('nav.more'), icon: Settings },
   ];
+
+  const planLabel = t(`plan.${(plan ?? 'FREE').toLowerCase()}`, {
+    defaultValue:
+      plan === 'PROFESSIONAL' ? 'Profesyonel'
+      : plan === 'BUSINESS' ? 'İşletme'
+      : plan === 'ENTERPRISE' ? 'Kurumsal'
+      : 'Başlangıç',
+  });
 
   return (
     <header className="fixed top-0 left-0 right-0 z-30 bg-slate-900">
@@ -41,9 +52,7 @@ const ManagerTopNav = () => {
             plan === 'ENTERPRISE' ? 'bg-amber-500/20 text-amber-300' :
             'bg-white/10 text-slate-400'
           }`}>
-            {plan === 'PROFESSIONAL' ? 'Profesyonel' :
-             plan === 'BUSINESS' ? 'İşletme' :
-             plan === 'ENTERPRISE' ? 'Kurumsal' : 'Başlangıç'}
+            {planLabel}
           </span>
         </div>
 
@@ -78,13 +87,16 @@ const ManagerTopNav = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
           <div className="hidden md:block w-px h-6 bg-slate-700 mx-1" />
           <button
             onClick={logout}
             className="hidden md:flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-white/10 rounded-lg transition-colors font-medium"
           >
             <LogOut className="w-4 h-4" />
-            <span>Çıkış</span>
+            <span>{t('common.logout', { defaultValue: 'Çıkış' })}</span>
           </button>
 
           {/* Mobile hamburger */}
@@ -127,12 +139,15 @@ const ManagerTopNav = () => {
               </NavLink>
             );
           })}
+          <div className="px-3 py-3">
+            <LanguageSwitcher />
+          </div>
           <button
             onClick={logout}
             className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-white/10 transition-colors mt-1"
           >
             <LogOut className="w-5 h-5" />
-            <span>Çıkış Yap</span>
+            <span>{t('common.logout', { defaultValue: 'Çıkış Yap' })}</span>
           </button>
         </nav>
       )}
