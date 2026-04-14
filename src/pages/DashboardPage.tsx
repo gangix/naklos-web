@@ -159,129 +159,160 @@ const DashboardPage = () => {
   }
 
   const cards = [
-    { label: t('nav.trucks'), count: trucks.length, icon: Truck, accent: 'bg-blue-500', bg: 'bg-blue-50', text: 'text-blue-600', path: '/manager/trucks' },
-    { label: t('nav.drivers'), count: drivers.length, icon: Users, accent: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-600', path: '/manager/drivers' },
-    { label: t('nav.clients'), count: clients.length, icon: Building2, accent: 'bg-violet-500', bg: 'bg-violet-50', text: 'text-violet-600', path: '/manager/clients' },
+    { label: t('nav.trucks'),  count: trucks.length,  icon: Truck,      path: '/manager/trucks',  hint: t('truck.title') },
+    { label: t('nav.drivers'), count: drivers.length, icon: Users,      path: '/manager/drivers', hint: t('driver.title') },
+    { label: t('nav.clients'), count: clients.length, icon: Building2,  path: '/manager/clients', hint: t('client.title') },
   ];
 
   // Locale tag for date formatting — falls back to en-US if the language file
   // doesn't define one.
   const localeTag = t('common.localeTag', { defaultValue: 'en-US' });
+  const today = new Date();
 
   return (
-    <div className="pb-20 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          {new Date().toLocaleDateString(localeTag, {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-          })}
+    <div className="pb-20 max-w-5xl mx-auto px-4 md:px-6 pt-6 md:pt-10">
+      {/* Editorial header — display serif italic for the page title, tracked
+          microlabel above, big breathing date below. */}
+      <header className="mb-10 md:mb-14">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-400 mb-3">
+          {today.toLocaleDateString(localeTag, { weekday: 'long' })}
+          <span className="mx-2 text-slate-300">·</span>
+          <span className="font-mono text-slate-500 normal-case tracking-normal">
+            {today.toLocaleDateString(localeTag, { day: '2-digit', month: '2-digit', year: 'numeric' })}
+          </span>
         </p>
-      </div>
+        <h1
+          className="font-display text-5xl md:text-6xl text-slate-900 leading-[1.04] tracking-[-0.02em] italic"
+          style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30' }}
+        >
+          {t('dashboard.myFleet')}
+        </h1>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        {cards.map((card) => {
+      {/* KPI strip — three slabs with hairline divider, big mono numbers,
+          uppercase microlabels. Architectural rather than card-y. */}
+      <div className="grid grid-cols-3 border-y border-slate-200 mb-12 md:mb-16">
+        {cards.map((card, i) => {
           const Icon = card.icon;
           return (
             <button
               key={card.path}
               onClick={() => navigate(card.path)}
-              className="bg-white rounded-xl hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200 p-5 text-left border border-gray-100 group hover:-translate-y-0.5 overflow-hidden relative"
+              className={`group flex flex-col items-start gap-2 py-6 md:py-8 px-4 md:px-6 text-left transition-colors hover:bg-slate-50 ${
+                i > 0 ? 'border-l border-slate-200' : ''
+              }`}
             >
-              <div className={`absolute left-0 top-0 bottom-0 w-1 ${card.accent} rounded-l-xl`} />
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{card.count}</p>
-                  <p className="text-sm text-gray-500 mt-0.5 font-medium">{card.label}</p>
-                </div>
-                <div className={`w-10 h-10 rounded-lg ${card.bg} ${card.text} flex items-center justify-center`}>
-                  <Icon className="w-5 h-5" />
-                </div>
+              <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-600 transition-colors">
+                <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.18em]">{card.label}</span>
               </div>
+              <p className="font-mono text-4xl md:text-5xl font-medium text-slate-900 tabular-nums tracking-tight leading-none">
+                {card.count}
+              </p>
             </button>
           );
         })}
       </div>
 
+      {/* Warnings — newspaper-style section header with a hairline rule,
+          flush-left rows that align the day-count in monospace tabular nums. */}
       {warningGroups.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="bg-red-50 border-b border-red-100 px-4 py-3 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-            <h2 className="font-bold text-red-900">{t('dashboard.warningSection')}</h2>
-            <span className="ml-auto text-sm text-red-700 font-medium">
+        <section>
+          <div className="flex items-baseline justify-between border-b border-slate-900/90 pb-3 mb-1">
+            <h2 className="font-display text-xl md:text-2xl text-slate-900 italic"
+                style={{ fontVariationSettings: '"opsz" 36, "SOFT" 20' }}>
+              {t('dashboard.warningSection')}
+            </h2>
+            <p className="font-mono text-xs text-slate-500 tabular-nums">
               {t('dashboard.recordsAndDocs', {
                 count: warningGroups.length,
                 records: warningGroups.length,
                 docs: totalWarningCount,
               })}
-            </span>
+            </p>
           </div>
-          <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+          <ul className="divide-y divide-slate-100">
             {warningGroups.map((group) => (
-              <button
-                key={`${group.entity}-${group.entityId}`}
-                onClick={() =>
-                  navigate(
-                    group.entity === 'truck'
-                      ? `/manager/trucks/${group.entityId}`
-                      : `/manager/drivers/${group.entityId}`
-                  )
-                }
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3"
-              >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${group.entity === 'truck' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'}`}>
-                  {group.entity === 'truck' ? (
-                    <Truck className="w-4 h-4" />
-                  ) : (
-                    <Users className="w-4 h-4" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
-                    {group.name}
-                  </p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {t('dashboard.docsAndList', {
-                      count: group.items.length,
-                      labels: group.items.map((i) => t(i.labelKey)).join(', '),
-                    })}
-                  </p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  {group.worstDaysLeft === null ? (
-                    <span className="text-xs font-bold text-gray-600 whitespace-nowrap">{t('common.dateMissing')}</span>
-                  ) : group.worstDaysLeft < 0 ? (
-                    <span className="text-xs font-bold text-red-700 whitespace-nowrap">
-                      {t('common.daysExpired', { count: Math.abs(group.worstDaysLeft) })}
-                    </span>
-                  ) : group.worstDaysLeft === 0 ? (
-                    <span className="text-xs font-bold text-red-700 whitespace-nowrap">{t('common.today')}</span>
-                  ) : (
-                    <span className="text-xs font-bold text-orange-600 whitespace-nowrap">
-                      {t('common.daysRemaining', { count: group.worstDaysLeft })}
-                    </span>
-                  )}
-                </div>
-                <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
-              </button>
+              <li key={`${group.entity}-${group.entityId}`}>
+                <button
+                  onClick={() =>
+                    navigate(
+                      group.entity === 'truck'
+                        ? `/manager/trucks/${group.entityId}`
+                        : `/manager/drivers/${group.entityId}`,
+                    )
+                  }
+                  className="w-full grid grid-cols-[auto_1fr_auto_auto] items-center gap-4 py-3.5 text-left hover:bg-slate-50/70 transition-colors"
+                >
+                  <span className="text-slate-400">
+                    {group.entity === 'truck' ? (
+                      <Truck className="w-4 h-4" strokeWidth={1.75} />
+                    ) : (
+                      <Users className="w-4 h-4" strokeWidth={1.75} />
+                    )}
+                  </span>
+                  <div className="min-w-0">
+                    <p className={`text-sm text-slate-900 truncate ${group.entity === 'truck' ? 'font-mono uppercase tracking-wide' : 'font-medium'}`}>
+                      {group.name}
+                    </p>
+                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      {group.items.map((i) => t(i.labelKey)).join(' · ')}
+                    </p>
+                  </div>
+                  <DayCount value={group.worstDaysLeft} t={t} />
+                  <ChevronRight className="w-4 h-4 text-slate-300" strokeWidth={1.75} />
+                </button>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+        </section>
       )}
 
+      {/* Empty state — generous, single illustration, editorial italic */}
       {warningGroups.length === 0 && !loading && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-          <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
-          <p className="text-sm font-medium text-green-900">
+        <section className="border-t border-b border-slate-200 py-16 text-center">
+          <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-4" strokeWidth={1.5} />
+          <p
+            className="font-display text-2xl md:text-3xl text-slate-900 italic"
+            style={{ fontVariationSettings: '"opsz" 72, "SOFT" 50' }}
+          >
             {t('dashboard.allCurrent')}
           </p>
-          <p className="text-xs text-green-700 mt-1">{t('dashboard.allCurrentSubtitle')}</p>
-        </div>
+          <p className="text-xs text-slate-500 mt-3 max-w-sm mx-auto leading-relaxed">
+            {t('dashboard.allCurrentSubtitle')}
+          </p>
+        </section>
       )}
     </div>
+  );
+};
+
+interface DayCountProps {
+  value: number | null;
+  t: ReturnType<typeof useTranslation>['t'];
+}
+
+/** Tabular monospaced day counter — colour shifts by urgency.
+ *  Negative = expired (red), 0 = today (red), 1–7 = critical (red),
+ *  8–30 = warning (amber), null = missing date (slate). */
+const DayCount = ({ value, t }: DayCountProps) => {
+  const tone =
+    value === null ? 'text-slate-500'
+    : value < 0   ? 'text-red-700'
+    : value === 0 ? 'text-red-700'
+    : value <= 7  ? 'text-red-700'
+    :               'text-amber-600';
+
+  const label =
+    value === null ? t('common.dateMissing')
+    : value < 0   ? t('common.daysExpired', { count: Math.abs(value) })
+    : value === 0 ? t('common.today')
+    :               t('common.daysRemaining', { count: value });
+
+  return (
+    <span className={`font-mono text-xs tabular-nums whitespace-nowrap ${tone}`}>
+      {label}
+    </span>
   );
 };
 
