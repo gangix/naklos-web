@@ -29,6 +29,7 @@ import FuelImportPage from './pages/FuelImportPage';
 import FuelImportBatchDetailPage from './pages/FuelImportBatchDetailPage';
 import CookieBanner from './components/common/CookieBanner';
 import ContactButton from './components/common/ContactButton';
+import { useLanguage } from './hooks/useLanguage';
 
 // Driver pages
 import DriverProfilePage from './pages/driver/DriverProfilePage';
@@ -87,6 +88,10 @@ function NotFoundPage() {
 }
 
 function App() {
+  // Initialise language once at app root (reads localStorage / Keycloak token,
+  // pushes to i18n, syncs document.lang).
+  useLanguage();
+
   const { fleetId } = useFleet();
   const { isDriver, isFleetManager, authenticated, user } = useAuth();
   const [checkingDriver, setCheckingDriver] = useState(true);
