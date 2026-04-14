@@ -146,69 +146,73 @@ const MorePage = () => {
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
             <h2 className="font-bold text-gray-900">{t('morePage.fleetSettings')}</h2>
           </div>
-          <div className="p-4 space-y-3">
+          <div className="p-5 space-y-4">
             <div>
-              <label className="block text-xs text-gray-500 mb-1">{t('morePage.fleetName')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.fleetName')}</label>
               <input
                 type="text"
                 value={fleetName}
                 onChange={(e) => setFleetName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">{t('morePage.fleetEmail')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.fleetEmail')}</label>
               <input
                 type="email"
                 value={fleetEmail}
                 onChange={(e) => setFleetEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 mt-1.5">
                 {t('morePage.fleetEmailHint')}
               </p>
             </div>
             <div>
-              <label className="block text-xs text-gray-500 mb-1">{t('morePage.phone')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.phone')}</label>
               <input
                 type="tel"
                 value={fleetPhone}
                 onChange={(e) => setFleetPhone(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">{t('morePage.currency')}</label>
-              <select
-                value={fleetCurrency}
-                onChange={(e) => setFleetCurrency(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="TRY">TRY</option>
-                <option value="EUR">EUR</option>
-                <option value="USD">USD</option>
-                <option value="GBP">GBP</option>
-              </select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.currency')}</label>
+                <select
+                  value={fleetCurrency}
+                  onChange={(e) => setFleetCurrency(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="TRY">TRY (₺)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="GBP">GBP (£)</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.language')}</label>
+                <select
+                  value={i18n.language}
+                  onChange={(e) => handleLanguageChange(e.target.value)}
+                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="tr">Türkçe</option>
+                  <option value="en">English</option>
+                  <option value="de">Deutsch</option>
+                </select>
+              </div>
             </div>
-            <div>
-              <label className="block text-xs text-gray-500 mb-1">{t('morePage.language')}</label>
-              <select
-                value={i18n.language}
-                onChange={(e) => handleLanguageChange(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+            <div className="pt-2">
+              <button
+                onClick={handleFleetSave}
+                disabled={fleetSaving}
+                className="w-full py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 text-sm"
               >
-                <option value="tr">Türkçe</option>
-                <option value="en">English</option>
-                <option value="de">Deutsch</option>
-              </select>
+                {fleetSaving ? t('morePage.saving') : t('morePage.save')}
+              </button>
             </div>
-            <button
-              onClick={handleFleetSave}
-              disabled={fleetSaving}
-              className="w-full py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 text-sm"
-            >
-              {fleetSaving ? t('morePage.saving') : t('morePage.save')}
-            </button>
           </div>
         </div>
       )}
