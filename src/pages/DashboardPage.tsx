@@ -181,10 +181,7 @@ const DashboardPage = () => {
             {today.toLocaleDateString(localeTag, { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </span>
         </p>
-        <h1
-          className="font-display text-5xl md:text-6xl text-slate-900 leading-[1.04] tracking-[-0.02em] italic"
-          style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30' }}
-        >
+        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-[1.05] tracking-[-0.025em]">
           {t('dashboard.myFleet')}
         </h1>
       </header>
@@ -219,8 +216,7 @@ const DashboardPage = () => {
       {warningGroups.length > 0 && (
         <section>
           <div className="flex items-baseline justify-between border-b border-slate-900/90 pb-3 mb-1">
-            <h2 className="font-display text-xl md:text-2xl text-slate-900 italic"
-                style={{ fontVariationSettings: '"opsz" 36, "SOFT" 20' }}>
+            <h2 className="text-lg md:text-xl font-bold text-slate-900 tracking-[-0.01em]">
               {t('dashboard.warningSection')}
             </h2>
             <p className="font-mono text-xs text-slate-500 tabular-nums">
@@ -272,10 +268,7 @@ const DashboardPage = () => {
       {warningGroups.length === 0 && !loading && (
         <section className="border-t border-b border-slate-200 py-16 text-center">
           <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-4" strokeWidth={1.5} />
-          <p
-            className="font-display text-2xl md:text-3xl text-slate-900 italic"
-            style={{ fontVariationSettings: '"opsz" 72, "SOFT" 50' }}
-          >
+          <p className="text-xl md:text-2xl font-bold text-slate-900 tracking-[-0.015em]">
             {t('dashboard.allCurrent')}
           </p>
           <p className="text-xs text-slate-500 mt-3 max-w-sm mx-auto leading-relaxed">
