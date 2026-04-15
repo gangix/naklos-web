@@ -12,7 +12,7 @@ export default function FuelReviewPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <FuelSectionNav />
-      <h1 className="text-2xl font-semibold">Yakıt İncelemesi</h1>
+      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yakıt İncelemesi</h1>
       <FuelReviewTabs fleetId={fleetId} batchId={batchId} initialTab={tab} />
     </div>
   );

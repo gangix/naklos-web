@@ -6,6 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
 import LanguageSwitcher from '../common/LanguageSwitcher';
+import UserMenu from './UserMenu';
 
 const ManagerTopNav = () => {
   const { t } = useTranslation();
@@ -20,6 +21,8 @@ const ManagerTopNav = () => {
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = forceOn || (plan !== 'FREE' && plan !== undefined);
 
+  // Core nav is reserved for primary work surfaces. Settings + logout live in
+  // the UserMenu dropdown (top-right, avatar-triggered).
   const menuItems = [
     { path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
     { path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
@@ -28,7 +31,6 @@ const ManagerTopNav = () => {
     ...(fuelTrackingEnabled
       ? [{ path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
       : []),
-    { path: '/manager/settings', label: t('nav.more'), icon: Settings },
   ];
 
   const planLabel = t(`plan.${(plan ?? 'FREE').toLowerCase()}`, {
@@ -93,13 +95,9 @@ const ManagerTopNav = () => {
             <LanguageSwitcher />
           </div>
           <div className="hidden md:block w-px h-6 bg-slate-700 mx-1" />
-          <button
-            onClick={logout}
-            className="hidden md:flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:text-red-400 hover:bg-white/10 rounded-lg transition-colors font-medium"
-          >
-            <LogOut className="w-4 h-4" />
-            <span>{t('common.logout', { defaultValue: 'Çıkış' })}</span>
-          </button>
+          <div className="hidden md:block">
+            <UserMenu />
+          </div>
 
           {/* Mobile hamburger */}
           <button
@@ -141,6 +139,17 @@ const ManagerTopNav = () => {
               </NavLink>
             );
           })}
+          <NavLink
+            to="/manager/settings"
+            onClick={() => setMobileOpen(false)}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors ${
+                isActive ? 'bg-white/15 text-white' : 'text-slate-400 hover:bg-white/10 hover:text-white'
+              }`
+            }>
+            <Settings className="w-5 h-5" />
+            <span>{t('nav.settings', { defaultValue: 'Ayarlar' })}</span>
+          </NavLink>
           <div className="px-3 py-3">
             <LanguageSwitcher />
           </div>

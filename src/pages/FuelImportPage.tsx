@@ -100,7 +100,7 @@ const FuelImportPage = () => {
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <FuelSectionNav />
-      <h1 className="text-2xl font-semibold">Yakıt Statement İçe Aktar</h1>
+      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yakıt Statement İçe Aktar</h1>
 
       <div className="bg-white border rounded p-4 space-y-3">
         <div className="grid grid-cols-2 gap-4">

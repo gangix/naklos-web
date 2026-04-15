@@ -4,12 +4,12 @@ import { NavLink } from 'react-router-dom';
  *  the fuel section has four related pages — flattening them into the top nav
  *  would crowd it for users who don't care about fuel. */
 export default function FuelSectionNav() {
-  const baseClass = 'px-3 py-1.5 text-sm font-medium rounded transition-colors';
-  const active = 'bg-primary-100 text-primary-700';
-  const idle = 'text-gray-600 hover:bg-gray-100 hover:text-gray-900';
+  const baseClass = 'px-4 py-2 text-sm font-medium rounded-lg transition-colors';
+  const active = 'bg-primary-600 text-white shadow-sm';
+  const idle = 'text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300';
 
   return (
-    <nav className="flex gap-1 mb-4">
+    <nav className="flex gap-2 mb-5">
       <NavLink
         to="/manager/fuel-imports"
         end

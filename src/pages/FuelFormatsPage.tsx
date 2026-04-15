@@ -62,7 +62,7 @@ const FuelFormatsPage = () => {
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <FuelSectionNav />
-      <h1 className="text-2xl font-semibold">Yakıt İçe Aktarma Formatları</h1>
+      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yakıt İçe Aktarma Formatları</h1>
 
       <div className="flex gap-2">
         <button

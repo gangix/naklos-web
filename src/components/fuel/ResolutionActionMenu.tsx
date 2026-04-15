@@ -65,12 +65,14 @@ export default function ResolutionActionMenu(
     }
   };
 
+  // Canonical button classes lifted from TrucksPage so the fuel surface reads
+  // the same as the rest of the manager area.
   const btnPrimary =
-    "px-3 py-1.5 text-sm font-medium rounded bg-primary-600 text-white hover:bg-primary-700 shadow-sm";
+    "px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all";
   const btnSecondary =
-    "px-3 py-1.5 text-sm font-medium rounded bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 shadow-sm";
+    "px-4 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors";
   const btnGhost =
-    "px-3 py-1.5 text-sm font-medium rounded border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-300";
+    "px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors";
 
   return (
     <div className="flex gap-2 flex-wrap items-center">

@@ -43,23 +43,33 @@ export default function DuplicateComparisonCard({ fleetId, pair, onResolved }: P
   };
 
   return (
-    <div className="border rounded-lg p-4 bg-white">
-      <div className="text-xs text-gray-500 mb-2">Parti: {pair.batchFileName ?? '—'}</div>
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+      <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wider mb-3">
+        Parti: {pair.batchFileName ?? '—'}
+      </div>
       <div className="grid grid-cols-2 gap-4">
-        <div className="border-r pr-4">
-          <div className="text-xs text-amber-700 font-semibold mb-1">İŞARETLENEN</div>
+        <div className="border-r border-gray-200 pr-4">
+          <div className="text-[11px] text-amber-700 font-bold uppercase tracking-wider mb-2">
+            İşaretlenen
+          </div>
           <EntryCell entry={pair.flaggedEntry} />
         </div>
         <div>
-          <div className="text-xs text-gray-500 font-semibold mb-1">ORİJİNAL (ŞÜPHELİ)</div>
+          <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2">
+            Orijinal (şüpheli)
+          </div>
           <EntryCell entry={pair.suspectedOriginal} />
         </div>
       </div>
-      <div className="flex justify-end gap-2 mt-4">
-        <button className="px-3 py-1 text-sm border rounded" onClick={dismissDupe}>
+      <div className="flex justify-end gap-2 mt-4 pt-4 border-t border-gray-100">
+        <button
+          className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+          onClick={dismissDupe}>
           Yineleme değil
         </button>
-        <button className="px-3 py-1 text-sm bg-red-600 text-white rounded" onClick={confirmDupe}>
+        <button
+          className="px-4 py-2 text-sm font-semibold rounded-lg bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/20 transition-all"
+          onClick={confirmDupe}>
           Yinelemeyi onayla
         </button>
       </div>

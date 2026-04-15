@@ -42,7 +42,7 @@ const FuelImportBatchDetailPage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-semibold">İçe Aktarma Özeti</h1>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">İçe Aktarma Özeti</h1>
       </div>
 
       <div className="bg-white border rounded p-4 space-y-2 text-sm">
