@@ -81,15 +81,15 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <TextInput
-                label="Ad"
+                label={t('addDriver.firstName')}
                 required
                 type="text"
                 value={formData.firstName}
                 onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                placeholder="Ahmet"
+                placeholder={t('addDriver.firstNamePlaceholder')}
               />
               <TextInput
-                label="Soyad"
+                label={t('addDriver.lastName')}
                 required
                 type="text"
                 value={formData.lastName}
@@ -99,30 +99,30 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
             </div>
 
             <TextInput
-              label="Telefon"
+              label={t('addDriver.phone')}
               required
               type="tel"
               value={formData.phone}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              placeholder="+90 555 123 4567"
+              placeholder={t('addDriver.phonePlaceholder')}
             />
 
             <TextInput
-              label="E-posta"
+              label={t('addDriver.email')}
               required
               type="email"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              placeholder="ahmet@example.com"
+              placeholder={t('addDriver.emailPlaceholder')}
             />
 
             <TextInput
-              label="Ehliyet No"
+              label={t('addDriver.licenseNumber')}
               required
               type="text"
               value={formData.licenseNumber}
               onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-              placeholder="12345678901"
+              placeholder={t('addDriver.licenseNumberPlaceholder')}
             />
 
             <Select
@@ -130,8 +130,8 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
               value={formData.licenseClass}
               onChange={(e) => setFormData({ ...formData, licenseClass: e.target.value })}
             >
-              <option value="B">B (Otomobil)</option>
-              <option value="C">C (Kamyon)</option>
+              <option value="B">{t('addDriver.classB')}</option>
+              <option value="C">{t('addDriver.classC')}</option>
               <option value="C1">{t('addDriver.classC1')}</option>
               <option value="CE">{t('addDriver.classCE')}</option>
               <option value="C1E">{t('addDriver.classC1E')}</option>
@@ -145,7 +145,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
               minLength={8}
               value={formData.temporaryPassword}
               onChange={(e) => setFormData({ ...formData, temporaryPassword: e.target.value })}
-              placeholder="En az 8 karakter"
+              placeholder={t('addDriver.tempPasswordPlaceholder')}
               hint={t('addDriver.tempPasswordHint')}
             />
 
