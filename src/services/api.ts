@@ -376,6 +376,53 @@ export const fuelImportApi = {
       `/fleets/${fleetId}/fuel-imports/${batchId}`),
 };
 
+// Fuel review API — UC-2 unmatched plates and duplicate detection.
+export const fuelReviewApi = {
+  counts: (fleetId: string) =>
+    apiCall<import('../types/fuel').ReviewCounts>(
+      `/fleets/${fleetId}/fuel-review/counts`),
+
+  listUnmatched: (fleetId: string, batchId?: string) =>
+    apiCall<import('../types/fuel').UnmatchedPlateGroup[]>(
+      `/fleets/${fleetId}/fuel-review/unmatched-plates${batchId ? `?batchId=${batchId}` : ''}`),
+
+  createTruck: (fleetId: string, normalizedPlate: string, body: {
+    plateNumber: string; type: string; capacityKg: number; cargoVolumeM3: number;
+  }) =>
+    apiCall<{ truck: unknown; relinkedFuelEntryCount: number }>(
+      `/fleets/${fleetId}/fuel-review/unmatched-plates/${encodeURIComponent(normalizedPlate)}/create-truck`,
+      { method: 'POST', body: JSON.stringify({ ...body, fleetId }) }),
+
+  alias: (fleetId: string, normalizedPlate: string, canonicalPlate: string) =>
+    apiCall<{ relinkedCount: number }>(
+      `/fleets/${fleetId}/fuel-review/unmatched-plates/${encodeURIComponent(normalizedPlate)}/alias`,
+      { method: 'POST', body: JSON.stringify({ canonicalPlate }) }),
+
+  subcontractor: (fleetId: string, normalizedPlate: string) =>
+    apiCall<{ affectedCount: number }>(
+      `/fleets/${fleetId}/fuel-review/unmatched-plates/${encodeURIComponent(normalizedPlate)}/subcontractor`,
+      { method: 'POST' }),
+
+  dismiss: (fleetId: string, normalizedPlate: string, batchId: string) =>
+    apiCall<{ affectedCount: number }>(
+      `/fleets/${fleetId}/fuel-review/unmatched-plates/${encodeURIComponent(normalizedPlate)}/dismiss?batchId=${batchId}`,
+      { method: 'POST' }),
+
+  listDuplicates: (fleetId: string, batchId?: string) =>
+    apiCall<import('../types/fuel').PossibleDuplicatePair[]>(
+      `/fleets/${fleetId}/fuel-review/possible-duplicates${batchId ? `?batchId=${batchId}` : ''}`),
+
+  confirmDuplicate: (fleetId: string, entryId: string) =>
+    apiCall<void>(
+      `/fleets/${fleetId}/fuel-review/possible-duplicates/${entryId}/confirm`,
+      { method: 'POST' }),
+
+  dismissDuplicate: (fleetId: string, entryId: string) =>
+    apiCall<void>(
+      `/fleets/${fleetId}/fuel-review/possible-duplicates/${entryId}/dismiss`,
+      { method: 'POST' }),
+};
+
 // Invoice API — fleet is derived from JWT
 export const invoiceApi = {
   getByFleet: (page = 0, size = 20) =>
