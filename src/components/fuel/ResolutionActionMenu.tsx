@@ -130,7 +130,7 @@ export default function ResolutionActionMenu(
           bullets={[
             <>Bu plakanın geçmiş ve gelecek kayıtları <strong>filo analizlerinden dışlanır</strong>.</>,
             <>Bu plaka için araç oluşturulmaz.</>,
-            <>Kararı geri almak için veritabanından manuel düzenleme gerekir.</>,
+            <>Geri alma işlemi şu an desteklenmiyor — dikkatli ilerleyin.</>,
           ]}
           confirmLabel="Taşeron olarak işaretle"
           onConfirm={confirmSubcontractor}

@@ -81,8 +81,8 @@ export default function DuplicateComparisonCard({ fleetId, pair, onResolved }: P
           title="Yinelemeyi onayla"
           description={<>İşaretlenen kayıt yinelenmiş olarak onaylanacak ve silinecek.</>}
           bullets={[
-            <>Kayıt <strong>soft-delete</strong> edilir — veritabanında kalır ancak sorgulardan ve analizlerden çıkarılır.</>,
-            <>Kararı geri almak için veritabanından manuel düzenleme gerekir.</>,
+            <>Kayıt silinmiş olarak işaretlenir — sorgulardan ve filo analizlerinden çıkarılır.</>,
+            <>Geri alma işlemi şu an desteklenmiyor — dikkatli ilerleyin.</>,
           ]}
           confirmLabel="Yinelemeyi onayla ve sil"
           tone="danger"
