@@ -14,9 +14,11 @@ const ManagerTopNav = () => {
   const warningCount = useDocumentWarnings();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Default-on in dev (`vite dev`); off in prod unless VITE_FEATURE_FUEL_TRACKING=true.
-  const fuelTrackingEnabled =
-    (import.meta.env.VITE_FEATURE_FUEL_TRACKING ?? (import.meta.env.DEV ? 'true' : 'false')) === 'true';
+  // Visible to paid plans only. FREE plans don't see the Yakıt nav entry —
+  // PlanLimits.bulkImport on the backend matches this gate (FREE → 403).
+  // Dev override via VITE_FEATURE_FUEL_TRACKING=true forces visible regardless of plan.
+  const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
+  const fuelTrackingEnabled = forceOn || (plan !== 'FREE' && plan !== undefined);
 
   const menuItems = [
     { path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },

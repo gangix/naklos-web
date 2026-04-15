@@ -87,3 +87,45 @@ export const SEMANTIC_FIELDS = [
 ] as const;
 
 export const REQUIRED_SEMANTIC_FIELDS = ['plate', 'date', 'liters', 'totalPrice'] as const;
+
+export interface UnmatchedPlateGroup {
+  normalizedPlate: string;
+  displayPlate: string;
+  entryCount: number;
+  totalLiters: string;     // BigDecimal arrives as string in Jackson defaults
+  totalPriceTl: string;
+  firstOccurredAt: string; // ISO-8601
+  lastOccurredAt: string;
+  batches: UnmatchedBatchBreakdown[];
+}
+
+export interface UnmatchedBatchBreakdown {
+  batchId: string;
+  batchFileName: string;
+  entryCount: number;
+}
+
+export interface PossibleDuplicatePair {
+  flaggedEntry: FuelEntryDto;
+  suspectedOriginal: FuelEntryDto | null;
+  batchId: string | null;
+  batchFileName: string | null;
+}
+
+export interface FuelEntryDto {
+  id: string;
+  plateTextRaw: string;
+  occurredAt: string;
+  liters: string;
+  totalPrice: string;
+  stationName: string | null;
+  transactionId: string | null;
+  fingerprint: string;
+  matchStatus: 'MATCHED' | 'UNMATCHED' | 'AMBIGUOUS' | 'SUBCONTRACTOR' | 'DISMISSED';
+  reviewStatus: 'NONE' | 'POSSIBLE_DUPLICATE_PENDING' | 'POSSIBLE_DUPLICATE_CONFIRMED' | 'POSSIBLE_DUPLICATE_DISMISSED';
+}
+
+export interface ReviewCounts {
+  unmatchedPlateGroups: number;
+  pendingDuplicates: number;
+}

@@ -906,6 +906,19 @@
     "priceBusiness": "999 ₺/ay",
     "priceEnterprise": "Özel fiyat"
   },
+  "fuelReview": {
+    "pageTitle": "Yakıt İncelemesi",
+    "tabs": { "unmatched": "Eşleşmeyen plakalar", "duplicates": "Olası yineleme" },
+    "empty": { "unmatched": "Eşleşmeyen plaka yok.", "duplicates": "Bekleyen olası yineleme yok." },
+    "actions": {
+      "createTruck": "Araç oluştur",
+      "alias": "Takma ad",
+      "subcontractor": "Taşeron",
+      "dismiss": "Yoksay",
+      "confirmDuplicate": "Yinelemeyi onayla",
+      "dismissDuplicate": "Yineleme değil"
+    }
+  },
   "cookie": {
     "message": "🍪 Naklos yalnızca oturum yönetimi için zorunlu çerezler kullanır.",
     "usingPlatform": "Platformu kullanarak",
