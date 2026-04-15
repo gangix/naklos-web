@@ -1004,7 +1004,8 @@
     "plateRow": {
       "entries": "{{count}} Einträge",
       "first": "Erstes",
-      "last": "Letztes"
+      "last": "Letztes",
+      "fromBatches": "Batch"
     },
     "actions": {
       "createTruck": "LKW erstellen",
@@ -1076,7 +1077,10 @@
     },
     "createTruckPrompts": {
       "successToast": "LKW erstellt. {{count}} historische Einträge verknüpft."
-    }
+    },
+    "filteredByBatch": "Es werden nur Einträge aus dem ausgewählten Batch angezeigt.",
+    "viewBatch": "Batch-Details →",
+    "showAll": "Alle anzeigen"
   },
   "cookie": {
     "message": "🍪 Naklos verwendet nur unverzichtbare Sitzungscookies.",

@@ -1004,7 +1004,8 @@
     "plateRow": {
       "entries": "{{count}} entries",
       "first": "First",
-      "last": "Last"
+      "last": "Last",
+      "fromBatches": "Batch"
     },
     "actions": {
       "createTruck": "Create truck",
@@ -1076,7 +1077,10 @@
     },
     "createTruckPrompts": {
       "successToast": "Truck created. {{count}} historical entries linked."
-    }
+    },
+    "filteredByBatch": "Showing only entries from the selected batch.",
+    "viewBatch": "View batch →",
+    "showAll": "Show all"
   },
   "cookie": {
     "message": "🍪 Naklos uses only essential session cookies.",

@@ -77,17 +77,21 @@ export default function ResolutionActionMenu(
         title={t('fuelReview.tooltips.subcontractor')}>
         {t('fuelReview.actions.subcontractor')}
       </button>
-      {batches.map(b => {
-        const shortBatch = (b.batchFileName ?? '').replace(/\.[^.]+$/, '').slice(0, 14);
+      {batches.map((b, i) => {
+        // When the same plate appears in multiple batches, label each Yoksay
+        // with an ordinal so users can disambiguate even when filenames share
+        // a long prefix (e.g. "naklos-fuel-sample-jan.xlsx" / "...feb.xlsx").
+        // Full filename lives in the title tooltip + the batch links above.
+        const label = showBatch
+          ? `${t('fuelReview.actions.dismiss')} #${i + 1}`
+          : t('fuelReview.actions.dismiss');
         return (
           <button
             key={b.batchId}
             className={btnGhost}
             onClick={() => setDismissBatch(b)}
             title={t('fuelReview.tooltips.dismiss', { count: b.entryCount, batch: b.batchFileName })}>
-            {showBatch
-              ? t('fuelReview.actions.dismissInBatch', { batch: shortBatch })
-              : t('fuelReview.actions.dismiss')}
+            {label}
           </button>
         );
       })}

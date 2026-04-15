@@ -1003,7 +1003,8 @@
     "plateRow": {
       "entries": "{{count}} kayıt",
       "first": "İlk",
-      "last": "Son"
+      "last": "Son",
+      "fromBatches": "Parti"
     },
     "actions": {
       "createTruck": "Araç oluştur",
@@ -1075,7 +1076,10 @@
     },
     "createTruckPrompts": {
       "successToast": "Araç oluşturuldu. {{count}} geçmiş kayıt bağlandı."
-    }
+    },
+    "filteredByBatch": "Yalnızca seçili partideki kayıtlar gösteriliyor.",
+    "viewBatch": "Parti detayı →",
+    "showAll": "Tümünü göster"
   },
   "cookie": {
     "message": "🍪 Naklos yalnızca oturum yönetimi için zorunlu çerezler kullanır.",
