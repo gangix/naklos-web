@@ -565,6 +565,11 @@
     "expiryDate": "Son Geçerlilik Tarihi *"
   },
   "truckDetail": {
+    "tabs": {
+      "genel": "Genel",
+      "yakit": "Yakıt",
+      "belgeler": "Belgeler"
+    },
     "loadError": "Araç yüklenirken hata oluştu",
     "notFound": "Araç bulunamadı",
     "goBack": "Geri Dön",

@@ -565,6 +565,11 @@
     "expiryDate": "Expiry date *"
   },
   "truckDetail": {
+    "tabs": {
+      "genel": "General",
+      "yakit": "Fuel",
+      "belgeler": "Documents"
+    },
     "loadError": "An error occurred while loading truck",
     "notFound": "Truck not found",
     "goBack": "Go Back",

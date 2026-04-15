@@ -565,6 +565,11 @@
     "expiryDate": "Ablaufdatum *"
   },
   "truckDetail": {
+    "tabs": {
+      "genel": "Allgemein",
+      "yakit": "Kraftstoff",
+      "belgeler": "Dokumente"
+    },
     "loadError": "Fehler beim Laden des Fahrzeugs",
     "notFound": "Fahrzeug nicht gefunden",
     "goBack": "Zurück",

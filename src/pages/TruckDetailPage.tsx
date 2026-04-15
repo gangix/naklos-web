@@ -11,7 +11,11 @@ import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdate
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
+import TruckFuelTab from '../components/fuel/TruckFuelTab';
 import type { DocumentCategory, Truck, Driver } from '../types';
+import type { TruckFuelEntryDto } from '../types/fuel';
+
+type Tab = 'genel' | 'yakit' | 'belgeler';
 
 const TruckDetailPage = () => {
   const { t } = useTranslation();
@@ -22,6 +26,7 @@ const TruckDetailPage = () => {
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<Tab>('genel');
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
@@ -179,10 +184,23 @@ const TruckDetailPage = () => {
     }
   };
 
+  // Map Truck type's fuelType field to the UC-4 union if available
+  const truckPrimaryFuelType = (truck as any).primaryFuelType as TruckFuelEntryDto['fuelType'] | undefined;
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'genel', label: t('truckDetail.tabs.genel') },
+    { id: 'yakit', label: t('truckDetail.tabs.yakit') },
+    { id: 'belgeler', label: t('truckDetail.tabs.belgeler') },
+  ];
+
+  // Receipts uploaded via UC-4 manual fuel entries live in truck_documents with document_type='fuel-receipt';
+  // hide them here so they don't clutter the compliance docs view.
+  const complianceDocs = documents.filter((doc) => doc.documentType !== 'fuel-receipt');
+
   return (
     <div className="p-4 pb-20">
       {/* Header with back button */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <button
           onClick={() => navigate(-1)}
           className="text-2xl text-gray-600 hover:text-gray-900 transition-colors"
@@ -195,204 +213,241 @@ const TruckDetailPage = () => {
         </div>
       </div>
 
-      {/* Basic info card */}
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{t('truck.status')}</span>
-            {(() => {
-              const status = deriveTruckStatus(truck);
-              const badge = STATUS_BADGE[status];
-              return (
-                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold ${badge.bg} ${badge.text}`}>
-                  {t(`derivedStatus.${status}`)}
-                </span>
-              );
-            })()}
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">{t('truck.driver')}</span>
-            <div className="flex items-center gap-2">
-              {truck.currentDriverId ? (
-                <>
-                  <span className="text-sm font-medium text-gray-900">
-                    {truck.assignedDriverName}
-                  </span>
-                  <button
-                    onClick={() => setConfirmAction('unassign')}
-                    disabled={assigningDriver}
-                    className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
-                  >
-                    {t('common.remove')}
-                  </button>
-                </>
-              ) : (
-                <>
-                  {!showDriverSelect ? (
-                    <button
-                      onClick={() => setShowDriverSelect(true)}
-                      className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-                    >
-                      {t('truckDetail.assignDriver')}
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      <Select
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            handleAssignDriver(e.target.value);
-                          }
-                        }}
-                        disabled={assigningDriver}
-                        defaultValue=""
-                      >
-                        <option value="">{t('truckDetail.selectDriver')}</option>
-                        {drivers.map((driver) => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.firstName} {driver.lastName}
-                          </option>
-                        ))}
-                      </Select>
+      {/* Tab bar */}
+      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-4">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+              activeTab === tab.id
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Genel tab */}
+      {activeTab === 'genel' && (
+        <>
+          {/* Basic info card */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">{t('truck.status')}</span>
+                {(() => {
+                  const status = deriveTruckStatus(truck);
+                  const badge = STATUS_BADGE[status];
+                  return (
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold ${badge.bg} ${badge.text}`}>
+                      {t(`derivedStatus.${status}`)}
+                    </span>
+                  );
+                })()}
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">{t('truck.driver')}</span>
+                <div className="flex items-center gap-2">
+                  {truck.currentDriverId ? (
+                    <>
+                      <span className="text-sm font-medium text-gray-900">
+                        {truck.assignedDriverName}
+                      </span>
                       <button
-                        onClick={() => setShowDriverSelect(false)}
-                        className="text-xs text-gray-600 hover:text-gray-700"
+                        onClick={() => setConfirmAction('unassign')}
+                        disabled={assigningDriver}
+                        className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                       >
-                        {t('common.cancel')}
+                        {t('common.remove')}
                       </button>
-                    </div>
+                    </>
+                  ) : (
+                    <>
+                      {!showDriverSelect ? (
+                        <button
+                          onClick={() => setShowDriverSelect(true)}
+                          className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                        >
+                          {t('truckDetail.assignDriver')}
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <Select
+                            onChange={(e) => {
+                              if (e.target.value) {
+                                handleAssignDriver(e.target.value);
+                              }
+                            }}
+                            disabled={assigningDriver}
+                            defaultValue=""
+                          >
+                            <option value="">{t('truckDetail.selectDriver')}</option>
+                            {drivers.map((driver) => (
+                              <option key={driver.id} value={driver.id}>
+                                {driver.firstName} {driver.lastName}
+                              </option>
+                            ))}
+                          </Select>
+                          <button
+                            onClick={() => setShowDriverSelect(false)}
+                            className="text-xs text-gray-600 hover:text-gray-700"
+                          >
+                            {t('common.cancel')}
+                          </button>
+                        </div>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Document expiry section */}
-      <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
-        <div className="space-y-3">
-          {/* Compulsory Insurance */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{t('truck.compulsoryInsurance')}</h3>
-              <button
-                onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                {t('common.update')}
-              </button>
-            </div>
-            <ExpiryBadge
-              label=""
-              date={truck.compulsoryInsuranceExpiry}
-            />
-          </div>
-
-          {/* Comprehensive Insurance */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
-              <button
-                onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                {t('common.update')}
-              </button>
-            </div>
-            <ExpiryBadge
-              label=""
-              date={truck.comprehensiveInsuranceExpiry}
-            />
-          </div>
-
-          {/* Inspection */}
-          <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-bold text-gray-900">{t('truck.inspection')}</h3>
-              <button
-                onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                {t('common.update')}
-              </button>
-            </div>
-            <ExpiryBadge
-              label=""
-              date={truck.inspectionExpiry}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Document upload history (audit trail) */}
-      {documents.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truckDetail.documentHistory')}</h2>
-          <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
-            {documents.map((doc) => (
-              <div key={doc.id} className="p-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-gray-900">
-                    {documentTypeLabel(doc.documentType)}
-                  </p>
-                  <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
-                </div>
-                <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
-                <div className="flex items-center justify-between mt-1">
-                  <p className="text-xs text-gray-500">
-                    {t('truckDetail.uploadedBy')}: {doc.uploadedByName || '-'}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    {doc.expiryDate && (
-                      <p className="text-xs text-gray-500">
-                        {t('truckDetail.expiryLabel')}: {formatDate(doc.expiryDate)}
-                      </p>
-                    )}
-                    <button
-                      onClick={() => truckApi.downloadDocument(doc.id)}
-                      className="text-xs text-primary-600 font-medium hover:text-primary-700"
-                    >
-                      {t('common.download')}
-                    </button>
-                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Location card */}
-      {truck.lastPosition && (
-        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.location')}</h2>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-6 h-6 text-primary-600" />
-            <div>
-              <p className="text-sm font-medium text-gray-900">{truck.lastPosition.city}</p>
-              <p className="text-xs text-gray-500">
-                {truck.lastPosition.lat.toFixed(4)}, {truck.lastPosition.lng.toFixed(4)}
-              </p>
             </div>
           </div>
-        </div>
+
+          {/* Location card */}
+          {truck.lastPosition && (
+            <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.location')}</h2>
+              <div className="flex items-center gap-2">
+                <MapPin className="w-6 h-6 text-primary-600" />
+                <div>
+                  <p className="text-sm font-medium text-gray-900">{truck.lastPosition.city}</p>
+                  <p className="text-xs text-gray-500">
+                    {truck.lastPosition.lat.toFixed(4)}, {truck.lastPosition.lng.toFixed(4)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Performance metrics — hidden until trip + fuel modules ship.
+              Restoring this needs both: trip data populates revenue/tripCount,
+              fuel data feeds utilization. */}
+
+          {/* Delete truck */}
+          <div className="mt-6">
+            <button
+              onClick={() => setConfirmAction('delete')}
+              className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+            >
+              {t('truckDetail.deleteTruck')}
+            </button>
+          </div>
+        </>
       )}
 
-      {/* Performance metrics — hidden until trip + fuel modules ship.
-          Restoring this needs both: trip data populates revenue/tripCount,
-          fuel data feeds utilization. */}
+      {/* Yakıt tab */}
+      {activeTab === 'yakit' && fleetId && (
+        <TruckFuelTab
+          fleetId={fleetId}
+          truckId={truck.id}
+          truckPlate={truck.plateNumber}
+          truckPrimaryFuelType={truckPrimaryFuelType}
+        />
+      )}
 
-      {/* Delete truck */}
-      <div className="mt-6">
-        <button
-          onClick={() => setConfirmAction('delete')}
-          className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
-        >
-          {t('truckDetail.deleteTruck')}
-        </button>
-      </div>
+      {/* Belgeler tab */}
+      {activeTab === 'belgeler' && (
+        <>
+          {/* Document expiry section */}
+          <div className="mb-4">
+            <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
+            <div className="space-y-3">
+              {/* Compulsory Insurance */}
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-bold text-gray-900">{t('truck.compulsoryInsurance')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('common.update')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={truck.compulsoryInsuranceExpiry}
+                />
+              </div>
+
+              {/* Comprehensive Insurance */}
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-bold text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('common.update')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={truck.comprehensiveInsuranceExpiry}
+                />
+              </div>
+
+              {/* Inspection */}
+              <div className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-bold text-gray-900">{t('truck.inspection')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('common.update')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={truck.inspectionExpiry}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Document upload history (audit trail) — fuel-receipt docs filtered out */}
+          {complianceDocs.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truckDetail.documentHistory')}</h2>
+              <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+                {complianceDocs.map((doc) => (
+                  <div key={doc.id} className="p-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-gray-900">
+                        {documentTypeLabel(doc.documentType)}
+                      </p>
+                      <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-xs text-gray-500">
+                        {t('truckDetail.uploadedBy')}: {doc.uploadedByName || '-'}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        {doc.expiryDate && (
+                          <p className="text-xs text-gray-500">
+                            {t('truckDetail.expiryLabel')}: {formatDate(doc.expiryDate)}
+                          </p>
+                        )}
+                        <button
+                          onClick={() => truckApi.downloadDocument(doc.id)}
+                          className="text-xs text-primary-600 font-medium hover:text-primary-700"
+                        >
+                          {t('common.download')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Document Update Modal */}
       {uploadModalOpen && uploadCategory && (
