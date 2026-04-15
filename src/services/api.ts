@@ -421,6 +421,15 @@ export const fuelReviewApi = {
     apiCall<void>(
       `/fleets/${fleetId}/fuel-review/possible-duplicates/${entryId}/dismiss`,
       { method: 'POST' }),
+
+  listResolutions: (fleetId: string) =>
+    apiCall<import('../types/fuel').PlateResolutionDto[]>(
+      `/fleets/${fleetId}/fuel-review/resolutions`),
+
+  deleteResolution: (fleetId: string, normalizedPlate: string) =>
+    apiCall<void>(
+      `/fleets/${fleetId}/fuel-review/resolutions/${encodeURIComponent(normalizedPlate)}`,
+      { method: 'DELETE' }),
 };
 
 // Invoice API — fleet is derived from JWT

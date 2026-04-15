@@ -920,7 +920,26 @@
     "nav": {
       "imports": "İçe Aktar",
       "formats": "Formatlar",
-      "review": "İnceleme"
+      "review": "İnceleme",
+      "resolutions": "Çözümler"
+    },
+    "resolutions": {
+      "title": "Plaka Çözümleri",
+      "description": "Daha önce işaretlediğiniz plakalar (takma ad veya taşeron). Silindiğinde, gelecekteki içe aktarımlar artık bu kuralı uygulamaz; geçmiş kayıtlar değişmez.",
+      "empty": "Henüz kayıtlı bir plaka çözümünüz yok.",
+      "colPlate": "Plaka",
+      "colKind": "Tür",
+      "colCanonical": "Yönlendirilen",
+      "colCreated": "Oluşturma",
+      "delete": "Sil",
+      "deleted": "Çözüm silindi.",
+      "deleteError": "Silme başarısız.",
+      "loadError": "Çözümler yüklenemedi.",
+      "confirmDelete": "<strong>{{plate}}</strong> için çözüm silinsin mi? Gelecekteki içe aktarımlar artık bu kuralı uygulamayacak.",
+      "kind": {
+        "ALIAS": "Plaka düzeltme",
+        "SUBCONTRACTOR": "Taşeron"
+      }
     },
     "loading": "Yükleniyor…",
     "empty": {
@@ -991,7 +1010,7 @@
     "dismissModal": {
       "title": "Bu partide yoksay",
       "description": "<strong>{{plate}}</strong> plakasının <strong>{{batch}}</strong> partisindeki <strong>{{count}}</strong> kaydı incelemeden kaldırılacak.",
-      "bullet1": "Kayıtlar silinmez, sadece bu inceleme listesinden gizlenir.",
+      "bullet1": "Kayıtlar silinmez ama filo analizlerinden ve incelemeden çıkarılır.",
       "bullet2": "Aynı plaka başka bir partide tekrar eşleşmezse orada yeniden görünür.",
       "confirm": "Yoksay",
       "successToast": "{{count}} kayıt yoksayıldı (bu partide).",

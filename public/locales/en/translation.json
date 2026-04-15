@@ -1,6 +1,6 @@
 {
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Home",
     "trucks": "Trucks",
     "trips": "Trips",
     "invoices": "Payments",
@@ -921,7 +921,26 @@
     "nav": {
       "imports": "Import",
       "formats": "Formats",
-      "review": "Review"
+      "review": "Review",
+      "resolutions": "Resolutions"
+    },
+    "resolutions": {
+      "title": "Plate Resolutions",
+      "description": "Plates you've previously marked as an alias or subcontractor. Deleting a resolution means future imports will no longer apply this rule; past entries remain unchanged.",
+      "empty": "No plate resolutions yet.",
+      "colPlate": "Plate",
+      "colKind": "Type",
+      "colCanonical": "Redirected to",
+      "colCreated": "Created",
+      "delete": "Delete",
+      "deleted": "Resolution deleted.",
+      "deleteError": "Couldn't delete.",
+      "loadError": "Couldn't load resolutions.",
+      "confirmDelete": "Delete resolution for <strong>{{plate}}</strong>? Future imports will no longer apply this rule.",
+      "kind": {
+        "ALIAS": "Plate fix",
+        "SUBCONTRACTOR": "Subcontractor"
+      }
     },
     "loading": "Loading…",
     "empty": {
@@ -992,7 +1011,7 @@
     "dismissModal": {
       "title": "Dismiss in this batch",
       "description": "<strong>{{count}}</strong> entries of <strong>{{plate}}</strong> in the <strong>{{batch}}</strong> batch will be removed from review.",
-      "bullet1": "Entries are not deleted, just hidden from this review list.",
+      "bullet1": "Entries are not deleted but excluded from fleet analytics and from review.",
       "bullet2": "If the same plate isn't matched in another batch, it will reappear there.",
       "confirm": "Dismiss",
       "successToast": "{{count}} entries dismissed (in this batch).",

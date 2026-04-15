@@ -129,3 +129,10 @@ export interface ReviewCounts {
   unmatchedPlateGroups: number;
   pendingDuplicates: number;
 }
+
+export interface PlateResolutionDto {
+  normalizedPlate: string;
+  kind: 'ALIAS' | 'SUBCONTRACTOR';
+  canonicalPlate: string | null;
+  createdAt: string;
+}

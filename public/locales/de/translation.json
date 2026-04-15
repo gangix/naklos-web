@@ -1,6 +1,6 @@
 {
   "nav": {
-    "dashboard": "Übersicht",
+    "dashboard": "Startseite",
     "trucks": "Fahrzeuge",
     "trips": "Fahrten",
     "invoices": "Zahlungen",
@@ -921,7 +921,26 @@
     "nav": {
       "imports": "Import",
       "formats": "Formate",
-      "review": "Überprüfung"
+      "review": "Überprüfung",
+      "resolutions": "Auflösungen"
+    },
+    "resolutions": {
+      "title": "Kennzeichen-Auflösungen",
+      "description": "Kennzeichen, die Sie zuvor als Alias oder Subunternehmer markiert haben. Beim Löschen einer Auflösung wird diese Regel bei zukünftigen Importen nicht mehr angewendet; vergangene Einträge bleiben unverändert.",
+      "empty": "Noch keine Kennzeichen-Auflösungen.",
+      "colPlate": "Kennzeichen",
+      "colKind": "Typ",
+      "colCanonical": "Weitergeleitet zu",
+      "colCreated": "Erstellt",
+      "delete": "Löschen",
+      "deleted": "Auflösung gelöscht.",
+      "deleteError": "Löschen fehlgeschlagen.",
+      "loadError": "Konnten Auflösungen nicht laden.",
+      "confirmDelete": "Auflösung für <strong>{{plate}}</strong> löschen? Zukünftige Importe werden diese Regel nicht mehr anwenden.",
+      "kind": {
+        "ALIAS": "Kennzeichen-Korrektur",
+        "SUBCONTRACTOR": "Subunternehmer"
+      }
     },
     "loading": "Laden…",
     "empty": {
@@ -992,7 +1011,7 @@
     "dismissModal": {
       "title": "In diesem Batch verwerfen",
       "description": "<strong>{{count}}</strong> Einträge von <strong>{{plate}}</strong> im Batch <strong>{{batch}}</strong> werden aus der Überprüfung entfernt.",
-      "bullet1": "Einträge werden nicht gelöscht, nur aus dieser Überprüfungsliste ausgeblendet.",
+      "bullet1": "Die Einträge werden nicht gelöscht, aber aus der Flottenanalyse und der Überprüfung ausgeschlossen.",
       "bullet2": "Wird dasselbe Kennzeichen in einem anderen Batch nicht zugeordnet, erscheint es dort erneut.",
       "confirm": "Verwerfen",
       "successToast": "{{count}} Einträge verworfen (in diesem Batch).",

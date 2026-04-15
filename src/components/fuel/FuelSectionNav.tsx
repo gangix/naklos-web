@@ -30,6 +30,12 @@ export default function FuelSectionNav() {
         className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
         {t('fuelReview.nav.review')}
       </NavLink>
+      <NavLink
+        to="/manager/fuel-resolutions"
+        end
+        className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
+        {t('fuelReview.nav.resolutions')}
+      </NavLink>
     </nav>
   );
 }
