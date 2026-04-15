@@ -939,7 +939,7 @@
     },
     "resolutions": {
       "title": "Plate Resolutions",
-      "description": "Plates you've previously marked as an alias or subcontractor. Deleting a resolution means future imports will no longer apply this rule; past entries remain unchanged.",
+      "description": "These rules apply automatically on every new import — the Subcontractor button excludes plates from analytics, the Fix Plate button redirects misread plates to the correct ones. Deleting a rule only affects future imports; past entries remain unchanged.",
       "empty": "No plate resolutions yet.",
       "colPlate": "Plate",
       "colKind": "Type",

@@ -939,7 +939,7 @@
     },
     "resolutions": {
       "title": "Kennzeichen-Auflösungen",
-      "description": "Kennzeichen, die Sie zuvor als Alias oder Subunternehmer markiert haben. Beim Löschen einer Auflösung wird diese Regel bei zukünftigen Importen nicht mehr angewendet; vergangene Einträge bleiben unverändert.",
+      "description": "Diese Regeln werden bei jedem neuen Import automatisch angewendet — die Schaltfläche „Subunternehmer\" schließt Kennzeichen aus der Analyse aus, die Schaltfläche „Kennzeichen korrigieren\" leitet falsch gelesene Kennzeichen auf die richtigen um. Das Löschen einer Regel betrifft nur zukünftige Importe; vergangene Einträge bleiben unverändert.",
       "empty": "Noch keine Kennzeichen-Auflösungen.",
       "colPlate": "Kennzeichen",
       "colKind": "Typ",

@@ -938,7 +938,7 @@
     },
     "resolutions": {
       "title": "Plaka Çözümleri",
-      "description": "Daha önce işaretlediğiniz plakalar (takma ad veya taşeron). Silindiğinde, gelecekteki içe aktarımlar artık bu kuralı uygulamaz; geçmiş kayıtlar değişmez.",
+      "description": "Bu kurallar, her yeni içe aktarımda otomatik olarak uygulanır — Taşeron butonu plakaları analiz dışında bırakır, Plaka Düzelt butonu ise yanlış yazılmış plakaları doğru olanlara yönlendirir. Bir kuralın silinmesi yalnızca gelecekteki içe aktarımları etkiler; geçmiş kayıtlar değişmeden kalır.",
       "empty": "Henüz kayıtlı bir plaka çözümünüz yok.",
       "colPlate": "Plaka",
       "colKind": "Tür",
