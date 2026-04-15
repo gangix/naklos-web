@@ -16,7 +16,7 @@ import DriversPage from './pages/DriversPage';
 import DriverDetailPage from './pages/DriverDetailPage';
 import ClientsPage from './pages/ClientsPage';
 import ClientDetailPage from './pages/ClientDetailPage';
-import MorePage from './pages/MorePage';
+import SettingsPage from './pages/SettingsPage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
@@ -220,7 +220,7 @@ function App() {
             <Route path="drivers/:driverId" element={<DriverDetailPage />} />
             <Route path="clients" element={<ClientsPage />} />
             <Route path="clients/:clientId" element={<ClientDetailPage />} />
-            <Route path="more" element={<MorePage />} />
+            <Route path="settings" element={<SettingsPage />} />
             {fuelTrackingEnabled && (
               <>
                 <Route path="fuel-formats" element={<FuelFormatsPage />} />

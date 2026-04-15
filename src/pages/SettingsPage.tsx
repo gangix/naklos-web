@@ -7,7 +7,7 @@ import { useFleet } from '../contexts/FleetContext';
 import { driverApi, fleetApi } from '../services/api';
 import { Select, TextInput } from '../components/common/FormField';
 
-const MorePage = () => {
+const SettingsPage = () => {
   const { t, i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager } = useAuth();
   const { fleetId } = useFleet();
@@ -266,4 +266,4 @@ const MorePage = () => {
   );
 };
 
-export default MorePage;
+export default SettingsPage;

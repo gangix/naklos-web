@@ -26,7 +26,7 @@ const ManagerTopNav = () => {
     ...(fuelTrackingEnabled
       ? [{ path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
       : []),
-    { path: '/manager/more', label: t('nav.more'), icon: Settings },
+    { path: '/manager/settings', label: t('nav.more'), icon: Settings },
   ];
 
   const planLabel = t(`plan.${(plan ?? 'FREE').toLowerCase()}`, {
