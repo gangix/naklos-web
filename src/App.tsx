@@ -94,7 +94,7 @@ function App() {
   // pushes to i18n, syncs document.lang).
   useLanguage();
 
-  const { fleetId, plan } = useFleet();
+  const { fleetId, plan, isLoading: fleetLoading } = useFleet();
   const { isDriver, isFleetManager, authenticated, user } = useAuth();
   const [checkingDriver, setCheckingDriver] = useState(true);
   const [isPreRegisteredDriver, setIsPreRegisteredDriver] = useState(false);
@@ -116,7 +116,10 @@ function App() {
   // is a UX gate, not a security gate. VITE_FEATURE_FUEL_TRACKING=true forces
   // them on for local dev regardless of plan.
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
-  const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
+  // While the fleet is still loading, fall through `plan` defaults to 'FREE' and
+  // would un-register fuel routes — causing a 404 flash on direct refresh of a
+  // fuel URL. Treat routes as available during load; backend 403s for FREE.
+  const fuelTrackingEnabled = forceOn || fleetLoading || (plan && plan !== 'FREE');
   const hasRole = isSystemAdmin || isDriver || isFleetManager;
 
   // For role-less authenticated users: check if they're a pre-registered
