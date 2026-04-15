@@ -1086,6 +1086,62 @@
     "privacyPolicy": "Gizlilik Politikamızı",
     "terms": "Kullanım Şartlarımızı"
   },
+  "fuelEntry": {
+    "tab": {
+      "title": "Yakıt"
+    },
+    "empty": "Henüz yakıt kaydı yok.",
+    "loadError": "Yakıt kayıtları yüklenemedi.",
+    "summary": {
+      "totalLiters": "Toplam litre",
+      "totalPrice": "Toplam tutar",
+      "fillCount": "Dolum sayısı",
+      "last30Days": "Son 30 gün"
+    },
+    "add": {
+      "button": "Yakıt ekle",
+      "title": "Yakıt kaydı ekle",
+      "submit": "Kaydet"
+    },
+    "edit": {
+      "title": "Yakıt kaydını düzenle",
+      "submit": "Güncelle"
+    },
+    "delete": {
+      "title": "Yakıt kaydını sil",
+      "description": "{{date}} tarihli {{liters}} L kayıt silinecek.",
+      "confirm": "Sil"
+    },
+    "field": {
+      "occurredAt": "Tarih ve saat",
+      "fuelType": "Yakıt türü",
+      "liters": "Litre",
+      "totalPrice": "Toplam tutar",
+      "pricePerLiter": "Birim fiyat",
+      "stationName": "İstasyon",
+      "odometerKm": "Kilometre",
+      "notes": "Not",
+      "photo": "Fotoğraf",
+      "photoRequired": "Fotoğraf zorunlu (kanıt için)",
+      "photoChange": "Yeni fotoğraf seç",
+      "optional": "İsteğe bağlı"
+    },
+    "error": {
+      "duplicate": "Bu kayıt zaten var. Mevcut kaydı görüntüle →",
+      "photoRequired": "Lütfen fişin fotoğrafını yükleyin.",
+      "photoTooLarge": "Fotoğraf 10 MB'dan büyük.",
+      "photoBadType": "Yalnızca JPG, PNG veya WebP yükleyin.",
+      "saveFailed": "Kaydedilemedi.",
+      "deleteFailed": "Silinemedi."
+    },
+    "viewAll": "Tüm yakıt kayıtları →",
+    "editPhotoHint": "Fotoğrafı değiştirmek için kaydı silip yeniden ekleyin.",
+    "source": {
+      "MANUAL": "Manuel",
+      "FUEL_CARD_IMPORT": "İçe aktarma",
+      "DRIVER_RECEIPT": "Şoför fişi"
+    }
+  },
   "fuelImport": {
     "field": {
       "plate": "Plaka",

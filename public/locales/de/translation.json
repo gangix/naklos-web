@@ -1087,6 +1087,62 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "terms": "Nutzungsbedingungen"
   },
+  "fuelEntry": {
+    "tab": {
+      "title": "Kraftstoff"
+    },
+    "empty": "Noch keine Kraftstoffeinträge.",
+    "loadError": "Kraftstoffeinträge konnten nicht geladen werden.",
+    "summary": {
+      "totalLiters": "Gesamtliter",
+      "totalPrice": "Gesamtkosten",
+      "fillCount": "Tankvorgänge",
+      "last30Days": "Letzte 30 Tage"
+    },
+    "add": {
+      "button": "Kraftstoff hinzufügen",
+      "title": "Kraftstoffeintrag hinzufügen",
+      "submit": "Speichern"
+    },
+    "edit": {
+      "title": "Kraftstoffeintrag bearbeiten",
+      "submit": "Aktualisieren"
+    },
+    "delete": {
+      "title": "Kraftstoffeintrag löschen",
+      "description": "Eintrag vom {{date}} ({{liters}} L) wird gelöscht.",
+      "confirm": "Löschen"
+    },
+    "field": {
+      "occurredAt": "Datum und Uhrzeit",
+      "fuelType": "Kraftstoffart",
+      "liters": "Liter",
+      "totalPrice": "Gesamtkosten",
+      "pricePerLiter": "Einzelpreis",
+      "stationName": "Tankstelle",
+      "odometerKm": "Kilometerstand",
+      "notes": "Notiz",
+      "photo": "Foto",
+      "photoRequired": "Foto erforderlich (als Nachweis)",
+      "photoChange": "Neues Foto wählen",
+      "optional": "Optional"
+    },
+    "error": {
+      "duplicate": "Dieser Eintrag existiert bereits. Anzeigen →",
+      "photoRequired": "Bitte das Belegfoto hochladen.",
+      "photoTooLarge": "Foto ist größer als 10 MB.",
+      "photoBadType": "Nur JPG, PNG oder WebP erlaubt.",
+      "saveFailed": "Konnte nicht gespeichert werden.",
+      "deleteFailed": "Konnte nicht gelöscht werden."
+    },
+    "viewAll": "Alle Kraftstoffeinträge →",
+    "editPhotoHint": "Zum Ändern des Fotos den Eintrag löschen und neu erstellen.",
+    "source": {
+      "MANUAL": "Manuell",
+      "FUEL_CARD_IMPORT": "Importiert",
+      "DRIVER_RECEIPT": "Fahrerbeleg"
+    }
+  },
   "fuelImport": {
     "field": {
       "plate": "Kennzeichen",

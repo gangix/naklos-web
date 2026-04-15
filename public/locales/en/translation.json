@@ -1087,6 +1087,62 @@
     "privacyPolicy": "Privacy Policy",
     "terms": "Terms of Service"
   },
+  "fuelEntry": {
+    "tab": {
+      "title": "Fuel"
+    },
+    "empty": "No fuel records yet.",
+    "loadError": "Couldn't load fuel records.",
+    "summary": {
+      "totalLiters": "Total liters",
+      "totalPrice": "Total cost",
+      "fillCount": "Fill-ups",
+      "last30Days": "Last 30 days"
+    },
+    "add": {
+      "button": "Add fuel",
+      "title": "Add fuel record",
+      "submit": "Save"
+    },
+    "edit": {
+      "title": "Edit fuel record",
+      "submit": "Update"
+    },
+    "delete": {
+      "title": "Delete fuel record",
+      "description": "Record from {{date}} ({{liters}} L) will be deleted.",
+      "confirm": "Delete"
+    },
+    "field": {
+      "occurredAt": "Date and time",
+      "fuelType": "Fuel type",
+      "liters": "Liters",
+      "totalPrice": "Total cost",
+      "pricePerLiter": "Unit price",
+      "stationName": "Station",
+      "odometerKm": "Odometer (km)",
+      "notes": "Note",
+      "photo": "Photo",
+      "photoRequired": "Photo required (as proof)",
+      "photoChange": "Choose new photo",
+      "optional": "Optional"
+    },
+    "error": {
+      "duplicate": "This entry already exists. View existing →",
+      "photoRequired": "Please upload the receipt photo.",
+      "photoTooLarge": "Photo is larger than 10 MB.",
+      "photoBadType": "Only JPG, PNG or WebP allowed.",
+      "saveFailed": "Couldn't save.",
+      "deleteFailed": "Couldn't delete."
+    },
+    "viewAll": "All fuel records →",
+    "editPhotoHint": "To change the photo, delete this entry and add a new one.",
+    "source": {
+      "MANUAL": "Manual",
+      "FUEL_CARD_IMPORT": "Imported",
+      "DRIVER_RECEIPT": "Driver receipt"
+    }
+  },
   "fuelImport": {
     "field": {
       "plate": "Plate",
