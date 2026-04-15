@@ -153,3 +153,41 @@ export interface ResolutionEntryView {
   matchStatus: 'MATCHED' | 'UNMATCHED' | 'AMBIGUOUS' | 'SUBCONTRACTOR' | 'DISMISSED';
   importBatchId: string | null;
 }
+
+// UC-4 manual entry types — separate from FuelEntryDto used by the
+// review surface so we can evolve them without churning that one.
+
+export interface ManualFuelEntryInput {
+  occurredAt: string;       // ISO-8601
+  fuelType: 'DIESEL' | 'GASOLINE' | 'LPG' | 'ADBLUE' | 'OTHER';
+  liters: number;
+  totalPrice: number;
+  pricePerLiter?: number | null;
+  stationName?: string | null;
+  odometerKm?: number | null;
+  notes?: string | null;
+}
+
+export interface TruckFuelEntryDto {
+  id: string;
+  truckId: string;
+  plateTextRaw: string;
+  occurredAt: string;
+  fuelType: ManualFuelEntryInput['fuelType'];
+  liters: number;
+  totalPrice: number;
+  pricePerLiter: number | null;
+  stationName: string | null;
+  odometerKm: number | null;
+  notes: string | null;
+  receiptDocumentId: string | null;
+  source: 'FUEL_CARD_IMPORT' | 'DRIVER_RECEIPT' | 'MANUAL';
+  matchStatus: 'MATCHED' | 'UNMATCHED' | 'AMBIGUOUS' | 'SUBCONTRACTOR' | 'DISMISSED';
+}
+
+export interface TruckFuelSummary {
+  totalLiters: number;
+  totalPrice: number;
+  fillCount: number;
+  rangeDays: number;
+}
