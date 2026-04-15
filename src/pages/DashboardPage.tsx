@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, Building2, AlertTriangle, CheckCircle, ChevronRight } from 'lucide-react';
+import { Truck, Users, Building2, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { truckApi, driverApi, clientApi } from '../services/api';
+import { useFleet } from '../contexts/FleetContext';
 import type { Truck as TruckType, Driver, Client } from '../types';
 
 interface ExpiringItem {
@@ -31,6 +32,10 @@ const daysUntil = (dateStr: string | null | undefined): number | null => {
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { plan } = useFleet();
+  // Same gate ManagerTopNav uses — fuel surface is paid-only in prod.
+  const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
+  const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
   const [trucks, setTrucks] = useState<TruckType[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
@@ -175,13 +180,39 @@ const DashboardPage = () => {
     <div>
       {/* Header — date micro-line above the title, no border above. Tight
           margin to the KPI cards (less empty space than before). */}
-      <div className="mb-5">
-        <p className="text-xs text-gray-500 mb-1">
-          <span className="font-medium text-gray-600">{weekday}</span>
-          <span className="mx-1.5 text-gray-300">·</span>
-          <span>{fullDate}</span>
-        </p>
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
+      <div className="mb-5 flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-xs text-gray-500 mb-1">
+            <span className="font-medium text-gray-600">{weekday}</span>
+            <span className="mx-1.5 text-gray-300">·</span>
+            <span>{fullDate}</span>
+          </p>
+          <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
+        </div>
+        {/* Quick actions — one click to the most common tasks. The KPI cards
+            below are about state; these buttons are about action. */}
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={() => navigate('/manager/trucks')}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all">
+            <Plus className="w-4 h-4" />
+            {t('dashboard.quickActions.addTruck', { defaultValue: 'Araç ekle' })}
+          </button>
+          <button
+            onClick={() => navigate('/manager/drivers')}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
+            <UserPlus className="w-4 h-4" />
+            {t('dashboard.quickActions.inviteDriver', { defaultValue: 'Sürücü davet et' })}
+          </button>
+          {fuelTrackingEnabled && (
+            <button
+              onClick={() => navigate('/manager/fuel-imports')}
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
+              <Fuel className="w-4 h-4" />
+              {t('dashboard.quickActions.importFuel', { defaultValue: 'Yakıt içe aktar' })}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* KPI cards — soft shadow, rounded-xl, colour-coded accent strip,

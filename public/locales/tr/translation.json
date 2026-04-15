@@ -28,7 +28,12 @@
     "docsAndList_one": "{{count}} belge · {{labels}}",
     "docsAndList_other": "{{count}} belge · {{labels}}",
     "allCurrent": "Tüm belgeler güncel",
-    "allCurrentSubtitle": "Son 30 gün içinde yenilenmesi gereken belge yok"
+    "allCurrentSubtitle": "Son 30 gün içinde yenilenmesi gereken belge yok",
+    "quickActions": {
+      "addTruck": "Araç ekle",
+      "inviteDriver": "Sürücü davet et",
+      "importFuel": "Yakıt içe aktar"
+    }
   },
   "truck": {
     "title": "Araçlar",
@@ -908,21 +913,47 @@
   },
   "fuelReview": {
     "pageTitle": "Yakıt İncelemesi",
-    "tabs": { "unmatched": "Eşleşmeyen plakalar", "duplicates": "Olası yineleme" },
-    "nav": { "imports": "İçe Aktar", "formats": "Formatlar", "review": "İnceleme" },
+    "tabs": {
+      "unmatched": "Eşleşmeyen plakalar",
+      "duplicates": "Olası yineleme"
+    },
+    "nav": {
+      "imports": "İçe Aktar",
+      "formats": "Formatlar",
+      "review": "İnceleme"
+    },
     "loading": "Yükleniyor…",
     "empty": {
-      "unmatched": { "title": "Tüm plakalar eşleşmiş durumda.", "subtitle": "İçe aktarılan yakıt kayıtları mevcut araçlarınıza bağlandı." },
+      "unmatched": {
+        "title": "Tüm plakalar eşleşmiş durumda.",
+        "subtitle": "İçe aktarılan yakıt kayıtları mevcut araçlarınıza bağlandı."
+      },
       "duplicates": "Bekleyen olası yineleme yok."
     },
     "banner": {
       "lead": "Bu plakalar bir araca bağlanamadı. Her plaka için dört seçeneğiniz var:",
-      "createTruck": { "label": "Araç oluştur", "desc": "Bu plaka size ait, henüz araç olarak eklenmemiş." },
-      "alias": { "label": "Plaka düzelt", "desc": "Statement'teki plaka yanlış yazılmış. Doğrusuna yönlendir." },
-      "subcontractor": { "label": "Taşeron", "desc": "Taşerona ait, filo analizlerinden dışla." },
-      "dismiss": { "label": "Yoksay", "desc": "Bu partide görmezden gel (başka partide tekrar görünebilir)." }
+      "createTruck": {
+        "label": "Araç oluştur",
+        "desc": "Bu plaka size ait, henüz araç olarak eklenmemiş."
+      },
+      "alias": {
+        "label": "Plaka düzelt",
+        "desc": "Statement'teki plaka yanlış yazılmış. Doğrusuna yönlendir."
+      },
+      "subcontractor": {
+        "label": "Taşeron",
+        "desc": "Taşerona ait, filo analizlerinden dışla."
+      },
+      "dismiss": {
+        "label": "Yoksay",
+        "desc": "Bu partide görmezden gel (başka partide tekrar görünebilir)."
+      }
     },
-    "plateRow": { "entries": "{{count}} kayıt", "first": "İlk", "last": "Son" },
+    "plateRow": {
+      "entries": "{{count}} kayıt",
+      "first": "İlk",
+      "last": "Son"
+    },
     "actions": {
       "createTruck": "Araç oluştur",
       "alias": "Plaka düzelt",

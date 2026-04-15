@@ -28,7 +28,12 @@
     "docsAndList_one": "{{count}} document · {{labels}}",
     "docsAndList_other": "{{count}} documents · {{labels}}",
     "allCurrent": "All documents up to date",
-    "allCurrentSubtitle": "No documents need renewal in the next 30 days"
+    "allCurrentSubtitle": "No documents need renewal in the next 30 days",
+    "quickActions": {
+      "addTruck": "Add truck",
+      "inviteDriver": "Invite driver",
+      "importFuel": "Import fuel"
+    }
   },
   "truck": {
     "title": "Trucks",
@@ -909,21 +914,47 @@
   },
   "fuelReview": {
     "pageTitle": "Fuel Review",
-    "tabs": { "unmatched": "Unmatched plates", "duplicates": "Possible duplicates" },
-    "nav": { "imports": "Import", "formats": "Formats", "review": "Review" },
+    "tabs": {
+      "unmatched": "Unmatched plates",
+      "duplicates": "Possible duplicates"
+    },
+    "nav": {
+      "imports": "Import",
+      "formats": "Formats",
+      "review": "Review"
+    },
     "loading": "Loading…",
     "empty": {
-      "unmatched": { "title": "All plates are matched.", "subtitle": "Imported fuel entries are linked to your trucks." },
+      "unmatched": {
+        "title": "All plates are matched.",
+        "subtitle": "Imported fuel entries are linked to your trucks."
+      },
       "duplicates": "No pending duplicates."
     },
     "banner": {
       "lead": "These plates couldn't be linked to a truck. You have four options per plate:",
-      "createTruck": { "label": "Create truck", "desc": "This plate is yours but hasn't been added as a truck yet." },
-      "alias": { "label": "Fix plate", "desc": "The plate in the statement is misread. Redirect to the correct one." },
-      "subcontractor": { "label": "Subcontractor", "desc": "Belongs to a subcontractor, exclude from fleet analytics." },
-      "dismiss": { "label": "Dismiss", "desc": "Ignore in this batch only (may reappear in another batch)." }
+      "createTruck": {
+        "label": "Create truck",
+        "desc": "This plate is yours but hasn't been added as a truck yet."
+      },
+      "alias": {
+        "label": "Fix plate",
+        "desc": "The plate in the statement is misread. Redirect to the correct one."
+      },
+      "subcontractor": {
+        "label": "Subcontractor",
+        "desc": "Belongs to a subcontractor, exclude from fleet analytics."
+      },
+      "dismiss": {
+        "label": "Dismiss",
+        "desc": "Ignore in this batch only (may reappear in another batch)."
+      }
     },
-    "plateRow": { "entries": "{{count}} entries", "first": "First", "last": "Last" },
+    "plateRow": {
+      "entries": "{{count}} entries",
+      "first": "First",
+      "last": "Last"
+    },
     "actions": {
       "createTruck": "Create truck",
       "alias": "Fix plate",

@@ -45,7 +45,10 @@ const ManagerTopNav = () => {
     <header className="fixed top-0 left-0 right-0 z-30 bg-slate-900">
       {/* Top row: logo + nav + logout */}
       <div className="h-16 px-4 lg:px-6 flex items-center justify-between max-w-6xl mx-auto">
-        <div className="flex items-center gap-2.5">
+        <NavLink
+          to="/manager/dashboard"
+          className="flex items-center gap-2.5 rounded-lg px-1 py-1 -mx-1 hover:bg-white/5 transition-colors"
+          aria-label="Naklos">
           <div className="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
             <Truck className="w-4 h-4 text-white" />
           </div>
@@ -58,7 +61,7 @@ const ManagerTopNav = () => {
           }`}>
             {planLabel}
           </span>
-        </div>
+        </NavLink>
 
         {/* Desktop nav inline */}
         <nav className="hidden md:flex items-center gap-1">

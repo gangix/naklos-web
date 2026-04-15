@@ -28,7 +28,12 @@
     "docsAndList_one": "{{count}} Dokument · {{labels}}",
     "docsAndList_other": "{{count}} Dokumente · {{labels}}",
     "allCurrent": "Alle Dokumente sind aktuell",
-    "allCurrentSubtitle": "Keine Dokumente müssen in den nächsten 30 Tagen erneuert werden"
+    "allCurrentSubtitle": "Keine Dokumente müssen in den nächsten 30 Tagen erneuert werden",
+    "quickActions": {
+      "addTruck": "LKW hinzufügen",
+      "inviteDriver": "Fahrer einladen",
+      "importFuel": "Kraftstoff importieren"
+    }
   },
   "truck": {
     "title": "Fahrzeuge",
@@ -909,21 +914,47 @@
   },
   "fuelReview": {
     "pageTitle": "Kraftstoff-Überprüfung",
-    "tabs": { "unmatched": "Unzugeordnete Kennzeichen", "duplicates": "Mögliche Duplikate" },
-    "nav": { "imports": "Import", "formats": "Formate", "review": "Überprüfung" },
+    "tabs": {
+      "unmatched": "Unzugeordnete Kennzeichen",
+      "duplicates": "Mögliche Duplikate"
+    },
+    "nav": {
+      "imports": "Import",
+      "formats": "Formate",
+      "review": "Überprüfung"
+    },
     "loading": "Laden…",
     "empty": {
-      "unmatched": { "title": "Alle Kennzeichen sind zugeordnet.", "subtitle": "Importierte Kraftstoffeinträge sind Ihren LKWs zugeordnet." },
+      "unmatched": {
+        "title": "Alle Kennzeichen sind zugeordnet.",
+        "subtitle": "Importierte Kraftstoffeinträge sind Ihren LKWs zugeordnet."
+      },
       "duplicates": "Keine ausstehenden Duplikate."
     },
     "banner": {
       "lead": "Diese Kennzeichen konnten keinem LKW zugeordnet werden. Pro Kennzeichen haben Sie vier Optionen:",
-      "createTruck": { "label": "LKW erstellen", "desc": "Dieses Kennzeichen gehört Ihnen, wurde aber noch nicht als LKW hinzugefügt." },
-      "alias": { "label": "Kennzeichen korrigieren", "desc": "Das Kennzeichen im Beleg ist falsch eingelesen. Weiterleitung zur richtigen Variante." },
-      "subcontractor": { "label": "Subunternehmer", "desc": "Gehört einem Subunternehmer, aus Flottenanalysen ausschließen." },
-      "dismiss": { "label": "Verwerfen", "desc": "In diesem Batch ignorieren (kann in einem anderen Batch wieder erscheinen)." }
+      "createTruck": {
+        "label": "LKW erstellen",
+        "desc": "Dieses Kennzeichen gehört Ihnen, wurde aber noch nicht als LKW hinzugefügt."
+      },
+      "alias": {
+        "label": "Kennzeichen korrigieren",
+        "desc": "Das Kennzeichen im Beleg ist falsch eingelesen. Weiterleitung zur richtigen Variante."
+      },
+      "subcontractor": {
+        "label": "Subunternehmer",
+        "desc": "Gehört einem Subunternehmer, aus Flottenanalysen ausschließen."
+      },
+      "dismiss": {
+        "label": "Verwerfen",
+        "desc": "In diesem Batch ignorieren (kann in einem anderen Batch wieder erscheinen)."
+      }
     },
-    "plateRow": { "entries": "{{count}} Einträge", "first": "Erstes", "last": "Letztes" },
+    "plateRow": {
+      "entries": "{{count}} Einträge",
+      "first": "Erstes",
+      "last": "Letztes"
+    },
     "actions": {
       "createTruck": "LKW erstellen",
       "alias": "Kennzeichen korrigieren",
