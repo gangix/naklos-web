@@ -7,6 +7,7 @@ import { fuelReviewApi } from '../services/api';
 import type { PlateResolutionDto } from '../types/fuel';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
+import ResolutionEntriesModal from '../components/fuel/ResolutionEntriesModal';
 
 const KIND_BADGE: Record<PlateResolutionDto['kind'], string> = {
   ALIAS: 'bg-blue-100 text-blue-700',
@@ -19,6 +20,7 @@ export default function FuelResolutionsPage() {
   const [items, setItems] = useState<PlateResolutionDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [pendingDelete, setPendingDelete] = useState<PlateResolutionDto | null>(null);
+  const [entriesFor, setEntriesFor] = useState<PlateResolutionDto | null>(null);
 
   const load = async () => {
     if (!fleetId) return;
@@ -85,6 +87,7 @@ export default function FuelResolutionsPage() {
                   {t('fuelReview.resolutions.colCreated')}
                 </th>
                 <th className="px-4 py-2.5"></th>
+                <th className="px-4 py-2.5"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -100,6 +103,13 @@ export default function FuelResolutionsPage() {
                   <td className="px-4 py-3 text-gray-600">{new Date(r.createdAt).toLocaleDateString('tr-TR')}</td>
                   <td className="px-4 py-3 text-right">
                     <button
+                      onClick={() => setEntriesFor(r)}
+                      className="text-xs font-medium text-primary-600 hover:text-primary-700 hover:underline">
+                      {t('fuelReview.resolutions.viewEntries')}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
                       onClick={() => setPendingDelete(r)}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 transition-colors">
                       <Trash2 className="w-3.5 h-3.5" />
@@ -111,6 +121,14 @@ export default function FuelResolutionsPage() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {entriesFor && (
+        <ResolutionEntriesModal
+          fleetId={fleetId}
+          resolution={entriesFor}
+          onClose={() => setEntriesFor(null)}
+        />
       )}
 
       {pendingDelete && (

@@ -951,6 +951,23 @@
       "kind": {
         "ALIAS": "Plaka düzeltme",
         "SUBCONTRACTOR": "Taşeron"
+      },
+      "viewEntries": "Kayıtları gör"
+    },
+    "resolutionEntries": {
+      "title": "{{plate}} için kayıtlar",
+      "count": "{{count}} kayıt",
+      "empty": "Bu plaka için kayıt yok.",
+      "prev": "Önceki",
+      "next": "Sonraki",
+      "pageOf": "Sayfa {{current}} / {{total}}",
+      "loadError": "Kayıtlar yüklenemedi.",
+      "matchStatus": {
+        "MATCHED": "Eşleşti",
+        "SUBCONTRACTOR": "Taşeron",
+        "UNMATCHED": "Eşleşmedi",
+        "DISMISSED": "Yoksayıldı",
+        "AMBIGUOUS": "Belirsiz"
       }
     },
     "loading": "Yükleniyor…",

@@ -952,6 +952,23 @@
       "kind": {
         "ALIAS": "Kennzeichen-Korrektur",
         "SUBCONTRACTOR": "Subunternehmer"
+      },
+      "viewEntries": "Einträge anzeigen"
+    },
+    "resolutionEntries": {
+      "title": "Einträge für {{plate}}",
+      "count": "{{count}} Einträge",
+      "empty": "Keine Einträge für dieses Kennzeichen.",
+      "prev": "Zurück",
+      "next": "Weiter",
+      "pageOf": "Seite {{current}} von {{total}}",
+      "loadError": "Konnten Einträge nicht laden.",
+      "matchStatus": {
+        "MATCHED": "Zugeordnet",
+        "SUBCONTRACTOR": "Subunternehmer",
+        "UNMATCHED": "Nicht zugeordnet",
+        "DISMISSED": "Verworfen",
+        "AMBIGUOUS": "Mehrdeutig"
       }
     },
     "loading": "Laden…",

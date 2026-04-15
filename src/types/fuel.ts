@@ -136,3 +136,15 @@ export interface PlateResolutionDto {
   canonicalPlate: string | null;
   createdAt: string;
 }
+
+export interface ResolutionEntryView {
+  id: string;
+  plateTextRaw: string;
+  occurredAt: string;
+  liters: string;
+  totalPrice: string;
+  stationName: string | null;
+  transactionId: string | null;
+  matchStatus: 'MATCHED' | 'UNMATCHED' | 'AMBIGUOUS' | 'SUBCONTRACTOR' | 'DISMISSED';
+  importBatchId: string | null;
+}
