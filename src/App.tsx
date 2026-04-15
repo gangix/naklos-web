@@ -92,7 +92,7 @@ function App() {
   // pushes to i18n, syncs document.lang).
   useLanguage();
 
-  const { fleetId } = useFleet();
+  const { fleetId, plan } = useFleet();
   const { isDriver, isFleetManager, authenticated, user } = useAuth();
   const [checkingDriver, setCheckingDriver] = useState(true);
   const [isPreRegisteredDriver, setIsPreRegisteredDriver] = useState(false);
@@ -109,9 +109,12 @@ function App() {
   }
 
   const isSystemAdmin = user?.keycloakRoles?.includes('system_admin') ?? false;
-  // Default-on in dev (`vite dev`); off in prod unless VITE_FEATURE_FUEL_TRACKING=true.
-  const fuelTrackingEnabled =
-    (import.meta.env.VITE_FEATURE_FUEL_TRACKING ?? (import.meta.env.DEV ? 'true' : 'false')) === 'true';
+  // Fuel routes are visible to paid plans; FREE hides them. The backend enforces
+  // PlanLimits.bulkImport so unauthenticated URL guessers get 403 anyway — this
+  // is a UX gate, not a security gate. VITE_FEATURE_FUEL_TRACKING=true forces
+  // them on for local dev regardless of plan.
+  const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
+  const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
   const hasRole = isSystemAdmin || isDriver || isFleetManager;
 
   // For role-less authenticated users: check if they're a pre-registered
