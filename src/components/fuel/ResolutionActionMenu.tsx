@@ -65,27 +65,28 @@ export default function ResolutionActionMenu(
     }
   };
 
+  const btnPrimary =
+    "px-3 py-1.5 text-sm font-medium rounded bg-primary-600 text-white hover:bg-primary-700 shadow-sm";
+  const btnSecondary =
+    "px-3 py-1.5 text-sm font-medium rounded bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 shadow-sm";
+  const btnGhost =
+    "px-3 py-1.5 text-sm font-medium rounded border border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-300";
+
   return (
     <div className="flex gap-2 flex-wrap items-center">
-      <button
-        className="px-3 py-1 text-sm bg-primary-600 text-white rounded hover:bg-primary-700"
-        onClick={createTruck}>
+      <button className={btnPrimary} onClick={createTruck}>
         Araç oluştur
       </button>
-      <button
-        className="px-3 py-1 text-sm border rounded hover:bg-gray-50"
-        onClick={() => setAliasOpen(true)}>
+      <button className={btnSecondary} onClick={() => setAliasOpen(true)}>
         Takma ad
       </button>
-      <button
-        className="px-3 py-1 text-sm border rounded hover:bg-gray-50"
-        onClick={markSubcontractor}>
+      <button className={btnSecondary} onClick={markSubcontractor}>
         Taşeron
       </button>
       {batches.map(b => (
         <button
           key={b.batchId}
-          className="px-3 py-1 text-sm text-gray-600 hover:text-gray-900"
+          className={btnGhost}
           onClick={() => dismiss(b.batchId)}
           title={`${b.batchFileName} içinde yoksay`}>
           Yoksay ({b.entryCount})
