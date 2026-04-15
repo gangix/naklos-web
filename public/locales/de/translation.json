@@ -992,11 +992,11 @@
       },
       "subcontractor": {
         "label": "Subunternehmer",
-        "desc": "Gehört einem Subunternehmer, aus Flottenanalysen ausschließen."
+        "desc": "Gehört einem Subunternehmer, aus der Flottenanalyse ausschließen."
       },
       "dismiss": {
         "label": "Verwerfen",
-        "desc": "In diesem Batch ignorieren (kann in einem anderen Batch wieder erscheinen)."
+        "desc": "In diesem Batch ausblenden und aus der Analyse ausschließen — kann in einem anderen Batch wieder erscheinen."
       }
     },
     "plateRow": {

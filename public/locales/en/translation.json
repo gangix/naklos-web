@@ -992,11 +992,11 @@
       },
       "subcontractor": {
         "label": "Subcontractor",
-        "desc": "Belongs to a subcontractor, exclude from fleet analytics."
+        "desc": "Subcontractor's plate, exclude from fleet analytics."
       },
       "dismiss": {
         "label": "Dismiss",
-        "desc": "Ignore in this batch only (may reappear in another batch)."
+        "desc": "Hide from this batch and exclude from analytics — may reappear in another batch."
       }
     },
     "plateRow": {

@@ -995,7 +995,7 @@
       },
       "dismiss": {
         "label": "Yoksay",
-        "desc": "Bu partide görmezden gel (başka partide tekrar görünebilir)."
+        "desc": "Bu partide gizle ve analizlerden dışla — başka partide tekrar görünebilir."
       }
     },
     "plateRow": {
