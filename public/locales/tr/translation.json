@@ -1086,6 +1086,30 @@
     "privacyPolicy": "Gizlilik Politikamızı",
     "terms": "Kullanım Şartlarımızı"
   },
+  "fuelImport": {
+    "field": {
+      "plate": "Plaka",
+      "date": "Tarih",
+      "liters": "Litre",
+      "totalPrice": "Tutar",
+      "pricePerLiter": "Birim fiyat",
+      "odometerKm": "Kilometre"
+    },
+    "error": {
+      "generic": "{{message}}",
+      "dateCellMissing": "Tarih hücresi bulunamadı.",
+      "dateBlank": "Tarih boş.",
+      "dateUnrecognized": "Tarih okunamadı: {{value}}. Kabul edilen biçimler: GG.AA.YYYY, GG/AA/YYYY, YYYY-AA-GG.",
+      "dateTooOld": "Tarih 2020 yılından önce olamaz: {{value}}.",
+      "dateInFuture": "Tarih ileride olamaz: {{value}}.",
+      "fieldRequired": "{{field}} alanı zorunlu.",
+      "decimalUnparseable": "{{field}} sayı olarak okunamadı: {{value}}.",
+      "numberNotPositive": "{{field}} sıfırdan büyük olmalı. Okunan: {{value}}.",
+      "numberNegative": "{{field}} negatif olamaz. Okunan: {{value}}.",
+      "numberTooLarge": "{{field}} çok büyük: {{value}}.",
+      "integerHasDecimals": "{{field}} tam sayı olmalı: {{value}}."
+    }
+  },
   "fuelBatch": {
     "outcome": {
       "cleanSuccess": {

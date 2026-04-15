@@ -1087,6 +1087,30 @@
     "privacyPolicy": "Privacy Policy",
     "terms": "Terms of Service"
   },
+  "fuelImport": {
+    "field": {
+      "plate": "Plate",
+      "date": "Date",
+      "liters": "Liters",
+      "totalPrice": "Total price",
+      "pricePerLiter": "Unit price",
+      "odometerKm": "Odometer"
+    },
+    "error": {
+      "generic": "{{message}}",
+      "dateCellMissing": "Date cell is missing.",
+      "dateBlank": "Date is empty.",
+      "dateUnrecognized": "Couldn't read date: {{value}}. Accepted formats: DD.MM.YYYY, DD/MM/YYYY, YYYY-MM-DD.",
+      "dateTooOld": "Date can't be before 2020: {{value}}.",
+      "dateInFuture": "Date can't be in the future: {{value}}.",
+      "fieldRequired": "{{field}} is required.",
+      "decimalUnparseable": "{{field}} isn't a number: {{value}}.",
+      "numberNotPositive": "{{field}} must be greater than zero. Got: {{value}}.",
+      "numberNegative": "{{field}} can't be negative. Got: {{value}}.",
+      "numberTooLarge": "{{field}} is too large: {{value}}.",
+      "integerHasDecimals": "{{field}} must be a whole number: {{value}}."
+    }
+  },
   "fuelBatch": {
     "outcome": {
       "cleanSuccess": {

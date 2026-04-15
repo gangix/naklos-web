@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { toast } from 'sonner';
 import { Upload, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
@@ -13,17 +15,34 @@ import type {
   PreviewRow,
 } from '../types/fuel';
 
-const classificationBadge = (c: PreviewRow['classification'], errorMessage: string | null) => {
-  if (errorMessage) return { cls: 'bg-red-100 text-red-700', label: 'Hata', icon: <XCircle className="w-3 h-3" /> };
+const classificationBadge = (c: PreviewRow['classification'], hasError: boolean) => {
+  if (hasError) return { cls: 'bg-red-100 text-red-700', label: 'Hata', icon: <XCircle className="w-3 h-3" /> };
   switch (c) {
     case 'NEW':       return { cls: 'bg-green-100 text-green-700', label: 'Yeni', icon: <CheckCircle2 className="w-3 h-3" /> };
     case 'DUPLICATE': return { cls: 'bg-gray-200 text-gray-700', label: 'Yinelenen', icon: null };
   }
 };
 
+// Resolve a structured row error to a localized message. Backend sends
+// errorCode + errorParams; the {field} param itself is also an i18n key
+// (semantic field name) that we translate before interpolation.
+const renderRowError = (row: PreviewRow, t: TFunction): string | null => {
+  if (!row.errorCode && !row.errorMessage) return null;
+  if (!row.errorCode) return row.errorMessage;
+  const params: Record<string, string | number> = { ...(row.errorParams ?? {}) };
+  if (typeof params.field === 'string') {
+    params.field = t(`fuelImport.field.${params.field}`, { defaultValue: params.field as string });
+  }
+  return t(`fuelImport.error.${row.errorCode}`, {
+    ...params,
+    defaultValue: row.errorMessage ?? row.errorCode,
+  });
+};
+
 const FuelImportPage = () => {
   const { fleetId } = useFleet();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formats, setFormats] = useState<FuelImportFormatDto[]>([]);
   const [formatId, setFormatId] = useState('');
@@ -175,7 +194,8 @@ const FuelImportPage = () => {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {preview.rows.map((r) => {
-                  const b = classificationBadge(r.classification, r.errorMessage);
+                  const errorText = renderRowError(r, t);
+                  const b = classificationBadge(r.classification, errorText !== null);
                   return (
                     <tr key={r.rowIndex} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-gray-500">{r.rowIndex}</td>
@@ -188,7 +208,7 @@ const FuelImportPage = () => {
                         <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded ${b.cls}`}>
                           {b.icon}{b.label}
                         </span>
-                        {r.errorMessage && <span className="block text-xs text-red-600">{r.errorMessage}</span>}
+                        {errorText && <span className="block text-xs text-red-600">{errorText}</span>}
                       </td>
                       <td className="px-4 py-3">
                         {r.matchedTruckId

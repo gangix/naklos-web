@@ -36,6 +36,11 @@ export interface PreviewRow {
   classification: DedupClassification;
   matchedTruckId: string | null;
   matchedExistingEntryId: string | null;
+  /** i18n key suffix under fuelImport.error.* — null on success. */
+  errorCode: string | null;
+  /** Interpolation values for the localized error message. */
+  errorParams: Record<string, string | number> | null;
+  /** English fallback for unknown error codes / missing translations. */
   errorMessage: string | null;
 }
 

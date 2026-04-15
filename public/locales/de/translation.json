@@ -1087,6 +1087,30 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "terms": "Nutzungsbedingungen"
   },
+  "fuelImport": {
+    "field": {
+      "plate": "Kennzeichen",
+      "date": "Datum",
+      "liters": "Liter",
+      "totalPrice": "Gesamtpreis",
+      "pricePerLiter": "Einzelpreis",
+      "odometerKm": "Kilometerstand"
+    },
+    "error": {
+      "generic": "{{message}}",
+      "dateCellMissing": "Datumszelle fehlt.",
+      "dateBlank": "Datum ist leer.",
+      "dateUnrecognized": "Datum nicht erkannt: {{value}}. Akzeptierte Formate: TT.MM.JJJJ, TT/MM/JJJJ, JJJJ-MM-TT.",
+      "dateTooOld": "Datum darf nicht vor 2020 liegen: {{value}}.",
+      "dateInFuture": "Datum darf nicht in der Zukunft liegen: {{value}}.",
+      "fieldRequired": "{{field}} ist erforderlich.",
+      "decimalUnparseable": "{{field}} ist keine Zahl: {{value}}.",
+      "numberNotPositive": "{{field}} muss größer als null sein. Wert: {{value}}.",
+      "numberNegative": "{{field}} darf nicht negativ sein. Wert: {{value}}.",
+      "numberTooLarge": "{{field}} ist zu groß: {{value}}.",
+      "integerHasDecimals": "{{field}} muss eine ganze Zahl sein: {{value}}."
+    }
+  },
   "fuelBatch": {
     "outcome": {
       "cleanSuccess": {
