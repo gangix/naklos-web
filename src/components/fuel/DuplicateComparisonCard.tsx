@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { fuelReviewApi } from '../../services/api';
 import type { FuelEntryDto, PossibleDuplicatePair } from '../../types/fuel';
+import ConfirmActionModal from './ConfirmActionModal';
 import { toast } from 'sonner';
 
 interface Props {
@@ -22,11 +24,12 @@ function EntryCell({ entry }: { entry: FuelEntryDto | null }) {
 }
 
 export default function DuplicateComparisonCard({ fleetId, pair, onResolved }: Props) {
-  const confirmDupe = async () => {
-    if (!window.confirm('Bu kayıt yinelenmiş olarak onaylanıp silinsin mi?')) return;
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const runConfirm = async () => {
     try {
       await fuelReviewApi.confirmDuplicate(fleetId, pair.flaggedEntry.id);
       toast.success('Yineleme onaylandı ve kayıt silindi.');
+      setConfirmOpen(false);
       onResolved();
     } catch (e: any) {
       toast.error(e?.message ?? 'Onaylama başarısız.');
@@ -69,10 +72,24 @@ export default function DuplicateComparisonCard({ fleetId, pair, onResolved }: P
         </button>
         <button
           className="px-4 py-2 text-sm font-semibold rounded-lg bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/20 transition-all"
-          onClick={confirmDupe}>
+          onClick={() => setConfirmOpen(true)}>
           Yinelemeyi onayla
         </button>
       </div>
+      {confirmOpen && (
+        <ConfirmActionModal
+          title="Yinelemeyi onayla"
+          description={<>İşaretlenen kayıt yinelenmiş olarak onaylanacak ve silinecek.</>}
+          bullets={[
+            <>Kayıt <strong>soft-delete</strong> edilir — veritabanında kalır ancak sorgulardan ve analizlerden çıkarılır.</>,
+            <>Kararı geri almak için veritabanından manuel düzenleme gerekir.</>,
+          ]}
+          confirmLabel="Yinelemeyi onayla ve sil"
+          tone="danger"
+          onConfirm={runConfirm}
+          onClose={() => setConfirmOpen(false)}
+        />
+      )}
     </div>
   );
 }
