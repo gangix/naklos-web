@@ -6,12 +6,14 @@ import { useDrivers } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
 import { formatDate } from '../utils/format';
+import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
+import type { DerivedStatus } from '../utils/derivedStatus';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import TruckAssignmentModal from '../components/common/TruckAssignmentModal';
 import AddDriverModal from '../components/common/AddDriverModal';
 import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
-import type { DriverStatus, DocumentSubmission, TruckAssignmentRequest } from '../types';
+import type { DocumentSubmission, TruckAssignmentRequest } from '../types';
 
 const DriversPage = () => {
   const { t } = useTranslation();
@@ -21,7 +23,7 @@ const DriversPage = () => {
   const maxDrivers = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
-  const [filter, setFilter] = useState<DriverStatus | 'all'>('all');
+  const [filter, setFilter] = useState<DerivedStatus | 'all'>('all');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
   const [assignmentModalOpen, setAssignmentModalOpen] = useState(false);
@@ -160,9 +162,22 @@ const DriversPage = () => {
     );
   };
 
+  // Memoize derived status per driver to avoid repeated deriveDriverStatus calls
+  const statusByDriverId = useMemo(() => {
+    const map = new Map<string, DerivedStatus>();
+    for (const d of drivers) map.set(d.id, deriveDriverStatus(d));
+    return map;
+  }, [drivers]);
+
+  const statusCounts = useMemo<Record<DerivedStatus, number>>(() => {
+    const acc: Record<DerivedStatus, number> = { ACTIVE: 0, READY: 0, MISSING_DOCS: 0 };
+    for (const s of statusByDriverId.values()) acc[s]++;
+    return acc;
+  }, [statusByDriverId]);
+
   // Filter and sort drivers (warnings to the top)
   const filteredDrivers = useMemo(() => {
-    let filtered = filter === 'all' ? drivers : drivers.filter((driver) => driver.status === filter);
+    let filtered = filter === 'all' ? drivers : drivers.filter((driver) => statusByDriverId.get(driver.id) === filter);
 
     // Sort drivers with warnings to the top
     return filtered.sort((a, b) => {
@@ -173,33 +188,7 @@ const DriversPage = () => {
       if (!aHasWarning && bHasWarning) return 1;
       return 0;
     });
-  }, [filter, warnings, drivers]);
-
-  const getStatusColor = (status: DriverStatus) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-700';
-      case 'on-trip':
-        return 'bg-blue-100 text-blue-700';
-      case 'off-duty':
-        return 'bg-gray-100 text-gray-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  const getStatusLabel = (status: DriverStatus) => {
-    switch (status) {
-      case 'available':
-        return t('driver.available');
-      case 'on-trip':
-        return t('driver.onTrip');
-      case 'off-duty':
-        return t('driver.offDuty');
-      default:
-        return status;
-    }
-  };
+  }, [filter, warnings, drivers, statusByDriverId]);
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
@@ -325,26 +314,24 @@ const DriversPage = () => {
         <>
           {/* Filter chips */}
           <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
-            <button
-              onClick={() => setFilter('all')}
-              className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'all'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              {t('driver.all')} ({drivers.length})
-            </button>
-            <button
-              onClick={() => setFilter('available')}
-              className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'available'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
-            >
-              {t('driver.available')} ({drivers.filter((d) => d.status === 'available').length})
-            </button>
+            {([
+              { key: 'all', label: t('driver.all'), count: drivers.length },
+              { key: 'ACTIVE' as DerivedStatus, label: t('derivedStatus.ACTIVE'), count: statusCounts.ACTIVE },
+              { key: 'READY' as DerivedStatus, label: t('derivedStatus.READY'), count: statusCounts.READY },
+              { key: 'MISSING_DOCS' as DerivedStatus, label: t('derivedStatus.MISSING_DOCS'), count: statusCounts.MISSING_DOCS },
+            ] as Array<{ key: DerivedStatus | 'all'; label: string; count: number }>).map(({ key, label, count }) => (
+              <button
+                key={key}
+                onClick={() => setFilter(key)}
+                className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
+                  filter === key
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-gray-100 text-gray-700'
+                }`}
+              >
+                {label} ({count})
+              </button>
+            ))}
           </div>
 
           {/* Driver list */}
@@ -408,16 +395,20 @@ const DriversPage = () => {
                         </div>
                       )}
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(driver.status)}`}>
-                      {getStatusLabel(driver.status)}
-                    </span>
+                    {(() => {
+                      const ds = statusByDriverId.get(driver.id)!;
+                      const badge = STATUS_BADGE[ds];
+                      return (
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}>
+                          {t(`derivedStatus.${ds}`)}
+                        </span>
+                      );
+                    })()}
                   </div>
                   {driver.assignedTruckPlate && (
-                    <div className="text-sm text-gray-600">
-                      <p>
-                        {t('driver.assignedTruck')}: {driver.assignedTruckPlate}
-                      </p>
-                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {t('driver.assignedTruck')}: {driver.assignedTruckPlate}
+                    </p>
                   )}
 
                   {driver.inviteStatus === 'FAILED' && (

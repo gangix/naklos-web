@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, Building2, Settings, LogOut, Menu, X, Fuel } from 'lucide-react';
+import { Home, Truck, Users, Settings, LogOut, Menu, X, Fuel } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
@@ -27,7 +27,6 @@ const ManagerTopNav = () => {
     { path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
     { path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
     { path: '/manager/drivers', label: t('nav.drivers'), icon: Users },
-    { path: '/manager/clients', label: t('nav.clients'), icon: Building2 },
     ...(fuelTrackingEnabled
       ? [{ path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
       : []),

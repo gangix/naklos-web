@@ -32,6 +32,7 @@
     "quickActions": {
       "addTruck": "Araç ekle",
       "inviteDriver": "Sürücü davet et",
+      "addDriver": "Sürücü ekle",
       "importFuel": "Yakıt içe aktar"
     }
   },
@@ -1143,5 +1144,10 @@
       "title": "Sürücüyü kaldır",
       "description": "Bu araçtan sürücü ataması kaldırılacak."
     }
+  },
+  "derivedStatus": {
+    "MISSING_DOCS": "Eksik belgeler",
+    "READY": "Hazır",
+    "ACTIVE": "Aktif"
   }
 }

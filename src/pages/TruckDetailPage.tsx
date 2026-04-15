@@ -10,6 +10,7 @@ import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
+import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import type { DocumentCategory, Truck, Driver } from '../types';
 
 const TruckDetailPage = () => {
@@ -100,19 +101,6 @@ const TruckDetailPage = () => {
     );
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-700';
-      case 'in-transit':
-        return 'bg-blue-100 text-blue-700';
-      case 'maintenance':
-        return 'bg-orange-100 text-orange-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
   const documentTypeLabel = (type: string) => {
     switch (type) {
       case 'compulsory-insurance': return t('truck.compulsoryInsurance');
@@ -179,17 +167,6 @@ const TruckDetailPage = () => {
     setTruck(updatedTruck);
   };
 
-  const handleStatusChange = async (newStatus: string) => {
-    if (!truckId) return;
-    try {
-      const updatedTruck = await truckApi.updateStatus(truckId, newStatus);
-      setTruck(updatedTruck);
-    } catch (err) {
-      console.error('Error updating status:', err);
-      toast.error(t('toast.error.updateStatus'));
-    }
-  };
-
   const runDeleteTruck = async () => {
     if (!truckId) return;
     try {
@@ -224,15 +201,15 @@ const TruckDetailPage = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">{t('truck.status')}</span>
-            <select
-              value={truck.status}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className={`px-3 py-1 rounded-full text-xs font-medium border-0 focus:outline-none focus:ring-2 focus:ring-primary-500 cursor-pointer ${getStatusColor(truck.status)}`}
-            >
-              <option value="available">{t('truckDetail.statusAvailable')}</option>
-              <option value="in-transit">{t('truckDetail.statusInTransit')}</option>
-              <option value="maintenance">{t('truckDetail.statusMaintenance')}</option>
-            </select>
+            {(() => {
+              const status = deriveTruckStatus(truck);
+              const badge = STATUS_BADGE[status];
+              return (
+                <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold ${badge.bg} ${badge.text}`}>
+                  {t(`derivedStatus.${status}`)}
+                </span>
+              );
+            })()}
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">{t('truck.driver')}</span>

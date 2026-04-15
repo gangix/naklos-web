@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, Building2, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel } from 'lucide-react';
+import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { truckApi, driverApi, clientApi } from '../services/api';
+import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
-import type { Truck as TruckType, Driver, Client } from '../types';
+import type { Truck as TruckType, Driver } from '../types';
+import { deriveTruckStatus, deriveDriverStatus, STATUS_BADGE, type DerivedStatus } from '../utils/derivedStatus';
 
 interface ExpiringItem {
   /** i18n key for the document type label (e.g. 'doc.compulsoryInsurance') */
@@ -38,7 +39,6 @@ const DashboardPage = () => {
   const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
   const [trucks, setTrucks] = useState<TruckType[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -46,14 +46,12 @@ const DashboardPage = () => {
     try {
       setLoading(true);
       setError(false);
-      const [trucksPage, driversPage, clientsPage] = await Promise.all([
+      const [trucksPage, driversPage] = await Promise.all([
         truckApi.getByFleet(0, 1000),
         driverApi.getByFleet(0, 1000),
-        clientApi.getByFleet(0, 1000),
       ]);
       setTrucks(trucksPage.content as TruckType[]);
       setDrivers(driversPage.content as Driver[]);
-      setClients(clientsPage.content as Client[]);
     } catch (err) {
       console.error('Error loading dashboard data:', err);
       setError(true);
@@ -136,6 +134,18 @@ const DashboardPage = () => {
 
   const totalWarningCount = warningGroups.reduce((sum, g) => sum + g.items.length, 0);
 
+  const truckCounts = useMemo(
+    () => trucks.reduce<Record<DerivedStatus, number>>(
+      (acc, t) => { acc[deriveTruckStatus(t)]++; return acc; },
+      { ACTIVE: 0, READY: 0, MISSING_DOCS: 0 }),
+    [trucks]);
+
+  const driverCounts = useMemo(
+    () => drivers.reduce<Record<DerivedStatus, number>>(
+      (acc, d) => { acc[deriveDriverStatus(d)]++; return acc; },
+      { ACTIVE: 0, READY: 0, MISSING_DOCS: 0 }),
+    [drivers]);
+
   if (loading) {
     return (
       <div className="p-4 flex items-center justify-center min-h-[50vh]">
@@ -162,12 +172,6 @@ const DashboardPage = () => {
       </div>
     );
   }
-
-  const cards = [
-    { label: t('nav.trucks'),  count: trucks.length,  icon: Truck,     accent: 'bg-blue-500',    bg: 'bg-blue-50',    text: 'text-blue-600',    path: '/manager/trucks' },
-    { label: t('nav.drivers'), count: drivers.length, icon: Users,     accent: 'bg-emerald-500', bg: 'bg-emerald-50', text: 'text-emerald-600', path: '/manager/drivers' },
-    { label: t('nav.clients'), count: clients.length, icon: Building2, accent: 'bg-violet-500',  bg: 'bg-violet-50',  text: 'text-violet-600',  path: '/manager/clients' },
-  ];
 
   // Locale tag for date formatting — falls back to en-US if the language file
   // doesn't define one.
@@ -202,7 +206,7 @@ const DashboardPage = () => {
             onClick={() => navigate('/manager/drivers')}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
             <UserPlus className="w-4 h-4" />
-            {t('dashboard.quickActions.inviteDriver', { defaultValue: 'Sürücü davet et' })}
+            {t('dashboard.quickActions.addDriver', { defaultValue: 'Sürücü ekle' })}
           </button>
           {fuelTrackingEnabled && (
             <button
@@ -215,30 +219,29 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* KPI cards — soft shadow, rounded-xl, colour-coded accent strip,
-          tinted icon chip. Tighter mb than the original. */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {cards.map((card) => {
-          const Icon = card.icon;
-          return (
-            <button
-              key={card.path}
-              onClick={() => navigate(card.path)}
-              className="bg-white rounded-xl hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200 p-5 text-left border border-gray-100 group hover:-translate-y-0.5 overflow-hidden relative"
-            >
-              <div className={`absolute left-0 top-0 bottom-0 w-1 ${card.accent} rounded-l-xl`} />
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{card.count}</p>
-                  <p className="text-sm text-gray-500 mt-0.5 font-medium">{card.label}</p>
-                </div>
-                <div className={`w-10 h-10 rounded-lg ${card.bg} ${card.text} flex items-center justify-center`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-              </div>
-            </button>
-          );
-        })}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <KpiCard
+          label={t('nav.trucks')}
+          icon={Truck}
+          accentBar="bg-blue-500"
+          iconBg="bg-blue-50 text-blue-600"
+          counts={truckCounts}
+          activeLabel={t('derivedStatus.ACTIVE')}
+          readyLabel={t('derivedStatus.READY')}
+          missingLabel={t('derivedStatus.MISSING_DOCS')}
+          onClick={() => navigate('/manager/trucks')}
+        />
+        <KpiCard
+          label={t('nav.drivers')}
+          icon={Users}
+          accentBar="bg-emerald-500"
+          iconBg="bg-emerald-50 text-emerald-600"
+          counts={driverCounts}
+          activeLabel={t('derivedStatus.ACTIVE')}
+          readyLabel={t('derivedStatus.READY')}
+          missingLabel={t('derivedStatus.MISSING_DOCS')}
+          onClick={() => navigate('/manager/drivers')}
+        />
       </div>
 
       {/* Warnings — soft white card with a red-tinted header strip. */}
@@ -327,5 +330,51 @@ const DayCount = ({ value, t }: DayCountProps) => {
     </span>
   );
 };
+
+interface KpiCardProps {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  accentBar: string;
+  iconBg: string;
+  counts: Record<DerivedStatus, number>;
+  activeLabel: string;
+  readyLabel: string;
+  missingLabel: string;
+  onClick: () => void;
+}
+
+const KpiCard = ({
+  label, icon: Icon, accentBar, iconBg, counts,
+  activeLabel, readyLabel, missingLabel, onClick,
+}: KpiCardProps) => (
+  <button
+    onClick={onClick}
+    className="bg-white rounded-xl hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200 p-5 text-left border border-gray-100 group hover:-translate-y-0.5 overflow-hidden relative"
+  >
+    <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${accentBar}`} />
+    <div className="flex items-center justify-between mb-3">
+      <p className="text-sm text-gray-500 font-medium">{label}</p>
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${iconBg}`}>
+        <Icon className="w-5 h-5" />
+      </div>
+    </div>
+    <div className="flex items-baseline gap-3 flex-wrap">
+      <span>
+        <span className={`text-2xl font-extrabold tracking-tight tabular-nums ${STATUS_BADGE.ACTIVE.text}`}>{counts.ACTIVE}</span>
+        {' '}<span className="text-xs text-gray-500 font-medium">{activeLabel}</span>
+      </span>
+      <span>
+        <span className={`text-2xl font-extrabold tracking-tight tabular-nums ${STATUS_BADGE.READY.text}`}>{counts.READY}</span>
+        {' '}<span className="text-xs text-gray-500 font-medium">{readyLabel}</span>
+      </span>
+      {counts.MISSING_DOCS > 0 && (
+        <span>
+          <span className={`text-2xl font-extrabold tracking-tight tabular-nums ${STATUS_BADGE.MISSING_DOCS.text}`}>{counts.MISSING_DOCS}</span>
+          {' '}<span className="text-xs text-red-600 font-medium">{missingLabel}</span>
+        </span>
+      )}
+    </div>
+  </button>
+);
 
 export default DashboardPage;

@@ -9,6 +9,7 @@ import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select, TextInput } from '../components/common/FormField';
 import { Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
+import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import type { DocumentCategory, Driver } from '../types';
 
 const DriverDetailPage = () => {
@@ -105,20 +106,6 @@ const DriverDetailPage = () => {
       </div>
     );
   }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-700';
-      case 'on-trip':
-        return 'bg-blue-100 text-blue-700';
-      case 'off-duty':
-        return 'bg-gray-100 text-gray-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
 
   const fullName = `${driver.firstName} ${driver.lastName}`;
 
@@ -275,17 +262,6 @@ const DriverDetailPage = () => {
     }
   };
 
-  const handleStatusChange = async (newStatus: string) => {
-    if (!driverId) return;
-    try {
-      await driverApi.update(driverId, { status: newStatus });
-      const updated = await driverApi.getById(driverId);
-      setDriver(updated);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('toast.error.updateStatus'));
-    }
-  };
-
   const runDeleteDriver = async () => {
     if (!driverId) return;
     try {
@@ -314,15 +290,15 @@ const DriverDetailPage = () => {
         </button>
         <div className="flex-1">
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{fullName}</h1>
-          <select
-            value={driver.status}
-            onChange={(e) => handleStatusChange(e.target.value)}
-            className={`mt-2 px-3 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${getStatusColor(driver.status)}`}
-          >
-            <option value="AVAILABLE">{t('driverDetail.statusAvailable')}</option>
-            <option value="ON_TRIP">{t('driverDetail.statusOnTrip')}</option>
-            <option value="OFF_DUTY">{t('driverDetail.statusOffDuty')}</option>
-          </select>
+          {(() => {
+            const status = deriveDriverStatus(driver);
+            const badge = STATUS_BADGE[status];
+            return (
+              <span className={`mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold ${badge.bg} ${badge.text}`}>
+                {t(`derivedStatus.${status}`)}
+              </span>
+            );
+          })()}
         </div>
       </div>
 

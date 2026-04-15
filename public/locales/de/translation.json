@@ -32,6 +32,7 @@
     "quickActions": {
       "addTruck": "LKW hinzufügen",
       "inviteDriver": "Fahrer einladen",
+      "addDriver": "Fahrer hinzufügen",
       "importFuel": "Kraftstoff importieren"
     }
   },
@@ -1144,5 +1145,10 @@
       "title": "Fahrer entfernen",
       "description": "Fahrerzuordnung wird von diesem LKW entfernt."
     }
+  },
+  "derivedStatus": {
+    "MISSING_DOCS": "Fehlende Dokumente",
+    "READY": "Bereit",
+    "ACTIVE": "Aktiv"
   }
 }

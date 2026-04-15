@@ -32,6 +32,7 @@
     "quickActions": {
       "addTruck": "Add truck",
       "inviteDriver": "Invite driver",
+      "addDriver": "Add driver",
       "importFuel": "Import fuel"
     }
   },
@@ -1144,5 +1145,10 @@
       "title": "Unassign driver",
       "description": "Driver assignment will be removed from this truck."
     }
+  },
+  "derivedStatus": {
+    "MISSING_DOCS": "Missing documents",
+    "READY": "Ready",
+    "ACTIVE": "Active"
   }
 }

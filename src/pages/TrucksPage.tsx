@@ -6,11 +6,13 @@ import { useTrucks } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
 import { formatDate, formatRelativeTime } from '../utils/format';
+import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
+import type { DerivedStatus } from '../utils/derivedStatus';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import AddTruckModal from '../components/common/AddTruckModal';
 import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
-import type { TruckStatus, DocumentSubmission } from '../types';
+import type { DocumentSubmission } from '../types';
 
 const TrucksPage = () => {
   const { t } = useTranslation();
@@ -20,7 +22,7 @@ const TrucksPage = () => {
   const maxTrucks = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
   const [searchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
-  const [filter, setFilter] = useState<TruckStatus | 'all'>('all');
+  const [filter, setFilter] = useState<DerivedStatus | 'all'>('all');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState<DocumentSubmission | null>(null);
   const [addTruckModalOpen, setAddTruckModalOpen] = useState(false);
@@ -141,9 +143,22 @@ const TrucksPage = () => {
     );
   };
 
+  // Memoize derived status per truck to avoid repeated deriveTruckStatus calls
+  const statusByTruckId = useMemo(() => {
+    const map = new Map<string, DerivedStatus>();
+    for (const t of trucks) map.set(t.id, deriveTruckStatus(t));
+    return map;
+  }, [trucks]);
+
+  const statusCounts = useMemo<Record<DerivedStatus, number>>(() => {
+    const acc: Record<DerivedStatus, number> = { ACTIVE: 0, READY: 0, MISSING_DOCS: 0 };
+    for (const s of statusByTruckId.values()) acc[s]++;
+    return acc;
+  }, [statusByTruckId]);
+
   // Filter and sort trucks (warnings to the top)
   const filteredTrucks = useMemo(() => {
-    let filtered = filter === 'all' ? trucks : trucks.filter((truck) => truck.status === filter);
+    let filtered = filter === 'all' ? trucks : trucks.filter((truck) => statusByTruckId.get(truck.id) === filter);
 
     // Sort trucks with warnings to the top
     return filtered.sort((a, b) => {
@@ -154,33 +169,7 @@ const TrucksPage = () => {
       if (!aHasWarning && bHasWarning) return 1;
       return 0;
     });
-  }, [filter, warnings, trucks]);
-
-  const getStatusColor = (status: TruckStatus) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-700';
-      case 'in-transit':
-        return 'bg-blue-100 text-blue-700';
-      case 'maintenance':
-        return 'bg-orange-100 text-orange-700';
-      default:
-        return 'bg-gray-100 text-gray-700';
-    }
-  };
-
-  const getStatusLabel = (status: TruckStatus) => {
-    switch (status) {
-      case 'available':
-        return t('truck.available');
-      case 'in-transit':
-        return t('truck.inTransit');
-      case 'maintenance':
-        return t('truck.maintenance');
-      default:
-        return status;
-    }
-  };
+  }, [filter, warnings, trucks, statusByTruckId]);
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
@@ -323,24 +312,34 @@ const TrucksPage = () => {
               {t('truck.all')} ({trucks.length})
             </button>
             <button
-              onClick={() => setFilter('available')}
+              onClick={() => setFilter('ACTIVE')}
               className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'available'
+                filter === 'ACTIVE'
                   ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {t('truck.available')} ({trucks.filter((t) => t.status === 'available').length})
+              {t('derivedStatus.ACTIVE')} ({statusCounts.ACTIVE})
             </button>
             <button
-              onClick={() => setFilter('maintenance')}
+              onClick={() => setFilter('READY')}
               className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-                filter === 'maintenance'
+                filter === 'READY'
                   ? 'bg-primary-600 text-white'
                   : 'bg-gray-100 text-gray-700'
               }`}
             >
-              {t('truck.maintenance')} ({trucks.filter((t) => t.status === 'maintenance').length})
+              {t('derivedStatus.READY')} ({statusCounts.READY})
+            </button>
+            <button
+              onClick={() => setFilter('MISSING_DOCS')}
+              className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
+                filter === 'MISSING_DOCS'
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {t('derivedStatus.MISSING_DOCS')} ({statusCounts.MISSING_DOCS})
             </button>
           </div>
 
@@ -403,9 +402,15 @@ const TrucksPage = () => {
                         </div>
                       )}
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(truck.status)}`}>
-                      {getStatusLabel(truck.status)}
-                    </span>
+                    {(() => {
+                      const ds = statusByTruckId.get(truck.id)!;
+                      const badge = STATUS_BADGE[ds];
+                      return (
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${badge.bg} ${badge.text}`}>
+                          {t(`derivedStatus.${ds}`)}
+                        </span>
+                      );
+                    })()}
                   </div>
                   <div className="text-sm text-gray-600">
                     <p>
