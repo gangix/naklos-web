@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileInput } from '../components/common/FormField';
 import { toast } from 'sonner';
@@ -7,6 +7,7 @@ import { fuelFormatApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { SEMANTIC_FIELDS, REQUIRED_SEMANTIC_FIELDS } from '../types/fuel';
 import type { FuelProvider, SuggestedMappingDto } from '../types/fuel';
+import { consumePendingSample } from '../state/pendingSampleFile';
 
 const PROVIDERS: FuelProvider[] = ['GENERIC', 'OPET', 'SHELL', 'BP', 'PETROL_OFISI'];
 
@@ -21,6 +22,20 @@ const FuelFormatCreatePage = () => {
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
+
+  // If we arrived here via the FuelImportPage recovery banner, a sample file
+  // was stashed in the in-memory pending cache. Auto-attach + auto-suggest so
+  // the user lands on a pre-populated mapping.
+  const handledPendingRef = useRef(false);
+  useEffect(() => {
+    if (handledPendingRef.current || !fleetId) return;
+    const pending = consumePendingSample();
+    if (pending) {
+      handledPendingRef.current = true;
+      void handleSample(pending);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fleetId]);
 
   const handleSample = async (file: File) => {
     if (!fleetId) return;

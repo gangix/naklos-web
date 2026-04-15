@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Upload, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
+import { Upload, AlertTriangle, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { Checkbox, FileInput } from '../components/common/FormField';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
+import { setPendingSample } from '../state/pendingSampleFile';
 import type {
   CommitOverride,
   DraftPreview,
@@ -138,6 +139,36 @@ const FuelImportPage = () => {
 
       {preview && summary && (
         <>
+          {/* Format mismatch recovery — when every row failed parsing, the format
+              clearly doesn't fit the file. Offer one-click escape hatch. */}
+          {summary.total > 0 && summary.errorCount === summary.total && (
+            <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-5">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center flex-shrink-0">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-base font-extrabold text-amber-900 tracking-tight">
+                    Bu dosya seçtiğiniz formata uymuyor
+                  </h3>
+                  <p className="text-sm text-amber-800 mt-1">
+                    Sütun isimleri tanınmadı. Endişelenmeyin — dosyanızı bir saniyede tanıyalım. Tek tıkla dosyanıza özel bir format oluşturalım, kolonları otomatik eşleştireceğiz.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (file) setPendingSample(file);
+                      navigate('/manager/fuel-formats/new');
+                    }}
+                    className="mt-3 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-amber-600 text-white hover:bg-amber-700 hover:shadow-lg hover:shadow-amber-500/20 transition-all">
+                    <Sparkles className="w-4 h-4" />
+                    Dosyama özel format oluştur
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-5 gap-2">
             <StatCard label="Toplam" value={summary.total} />
             <StatCard label="Yeni" value={summary.newCount} highlight="green" />
