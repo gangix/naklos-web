@@ -1,16 +1,146 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, AlertTriangle, Info } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportBatchDto } from '../types/fuel';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 
+// ── Outcome types ────────────────────────────────────────────────────────────
+
+type Outcome = {
+  kind: 'cleanSuccess' | 'partialSuccess' | 'mixedWithErrors' | 'allDuplicates' | 'allErrors' | 'mixed';
+  tone: 'green' | 'amber' | 'red' | 'gray';
+  values: Record<string, number>;
+};
+
+function selectOutcome(b: FuelImportBatchDto): Outcome {
+  const total = b.rowCountTotal;
+  const imported = b.rowCountImported;
+  const skippedDup = b.rowCountSkippedDuplicate;
+  const skippedPossibleDup = b.rowCountSkippedPossibleDup;
+  const unmatched = b.rowCountUnmatched;
+  const error = b.rowCountError;
+  const duplicates = skippedDup + skippedPossibleDup;
+
+  // Empty file (no rows parsed at all) — treat as a hard failure.
+  if (total === 0) {
+    return { kind: 'allErrors', tone: 'red', values: {} };
+  }
+  if (error === total) {
+    return { kind: 'allErrors', tone: 'red', values: {} };
+  }
+  if (imported === total && error === 0 && unmatched === 0) {
+    return { kind: 'cleanSuccess', tone: 'green', values: { count: imported } };
+  }
+  if (imported > 0 && error > 0) {
+    return { kind: 'mixedWithErrors', tone: 'red', values: { imported, error } };
+  }
+  if (imported > 0 && unmatched > 0 && error === 0) {
+    return { kind: 'partialSuccess', tone: 'amber', values: { imported, unmatched } };
+  }
+  if (imported === 0 && duplicates === total) {
+    return { kind: 'allDuplicates', tone: 'gray', values: {} };
+  }
+  return { kind: 'mixed', tone: 'gray', values: { imported, duplicates } };
+}
+
+// ── Tone maps ────────────────────────────────────────────────────────────────
+
+const TONE_BG: Record<Outcome['tone'], string> = {
+  green: 'bg-green-50 border border-green-200 text-green-900',
+  amber: 'bg-amber-50 border border-amber-200 text-amber-900',
+  red:   'bg-red-50 border border-red-200 text-red-900',
+  gray:  'bg-gray-50 border border-gray-200 text-gray-900',
+};
+const TONE_ICON: Record<Outcome['tone'], string> = {
+  green: 'text-green-600',
+  amber: 'text-amber-600',
+  red:   'text-red-600',
+  gray:  'text-gray-500',
+};
+const TONE_BORDER_DIVIDER: Record<Outcome['tone'], string> = {
+  green: 'border-green-200/60',
+  amber: 'border-amber-200/60',
+  red:   'border-red-200/60',
+  gray:  'border-gray-200/60',
+};
+
+const CHIP_TONE_CLS: Record<'neutral' | 'green' | 'amber' | 'red', string> = {
+  neutral: 'bg-gray-50 border border-gray-200 text-gray-700',
+  green:   'bg-green-50 border border-green-200 text-green-700',
+  amber:   'bg-amber-50 border border-amber-200 text-amber-700',
+  red:     'bg-red-50 border border-red-200 text-red-700',
+};
+
+const reviewUrl = (batchId: string, tab: 'unmatched' | 'duplicates') =>
+  `/manager/fuel-review?batchId=${batchId}&tab=${tab}`;
+
+// ── OutcomeBanner ────────────────────────────────────────────────────────────
+
+function OutcomeBanner({ batch, outcome }: { batch: FuelImportBatchDto; outcome: Outcome }) {
+  const { t } = useTranslation();
+  const Icon =
+    outcome.tone === 'green' ? CheckCircle2 :
+    outcome.tone === 'gray'  ? Info :
+    AlertTriangle;
+  const showReviewLink =
+    outcome.kind === 'partialSuccess' ||
+    (outcome.kind === 'mixedWithErrors' && batch.rowCountUnmatched > 0);
+
+  return (
+    <div className={`rounded-xl p-5 ${TONE_BG[outcome.tone]}`}>
+      <div className="flex items-start gap-3">
+        <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${TONE_ICON[outcome.tone]}`} />
+        <div className="flex-1">
+          <h2 className="text-lg font-extrabold tracking-tight">
+            {t(`fuelBatch.outcome.${outcome.kind}.title`, outcome.values)}
+          </h2>
+          <p className="text-sm mt-1 opacity-80">
+            {t(`fuelBatch.outcome.${outcome.kind}.body`)}
+          </p>
+        </div>
+      </div>
+      {showReviewLink && (
+        <div className={`mt-3 pt-3 border-t flex justify-end ${TONE_BORDER_DIVIDER[outcome.tone]}`}>
+          <Link
+            to={reviewUrl(batch.id, 'unmatched')}
+            className="text-sm font-semibold hover:underline">
+            {t('fuelBatch.outcome.reviewLink')}
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Chip ─────────────────────────────────────────────────────────────────────
+
+function Chip({ label, count, tone, to }: {
+  label: string;
+  count: number;
+  tone: 'neutral' | 'green' | 'amber' | 'red';
+  to?: string;
+}) {
+  const cls = CHIP_TONE_CLS[tone];
+  const inner = (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium ${cls}`}>
+      <span>{label}</span>
+      <span className="font-bold tabular-nums">{count}</span>
+    </span>
+  );
+  return to ? <Link to={to} className="hover:opacity-80 transition-opacity">{inner}</Link> : inner;
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
 const FuelImportBatchDetailPage = () => {
   const { batchId = '' } = useParams();
   const { fleetId } = useFleet();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [batch, setBatch] = useState<FuelImportBatchDto | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -29,8 +159,10 @@ const FuelImportBatchDetailPage = () => {
     })();
   }, [fleetId, batchId]);
 
-  if (loading) return <p className="p-6 text-gray-500">Yükleniyor…</p>;
-  if (!batch) return <p className="p-6 text-gray-500">Kayıt bulunamadı.</p>;
+  if (loading) return <p className="p-6 text-gray-500">{t('common.loading')}</p>;
+  if (!batch) return <p className="p-6 text-gray-500">{t('common.notFound')}</p>;
+
+  const outcome = selectOutcome(batch);
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -53,15 +185,15 @@ const FuelImportBatchDetailPage = () => {
         {batch.completedAt && <Row k="Tamamlanma" v={new Date(batch.completedAt).toLocaleString('tr-TR')} />}
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        <Stat label="Toplam Satır" value={batch.rowCountTotal} />
-        <Stat label="Aktarıldı" value={batch.rowCountImported} tone="green" />
-        <Stat label="Eşleşmeyen (aktarıldı)" value={batch.rowCountUnmatched} tone="yellow"
-              linkTo={batch.rowCountUnmatched > 0 ? `/manager/fuel-review?batchId=${batch.id}&tab=unmatched` : undefined} />
-        <Stat label="Yinelenen" value={batch.rowCountSkippedDuplicate} tone="gray" />
-        <Stat label="Olası yinelenen" value={batch.rowCountSkippedPossibleDup} tone="yellow"
-              linkTo={batch.rowCountSkippedPossibleDup > 0 ? `/manager/fuel-review?batchId=${batch.id}&tab=duplicates` : undefined} />
-        <Stat label="Hata" value={batch.rowCountError} tone="red" />
+      <OutcomeBanner batch={batch} outcome={outcome} />
+
+      <div className="flex flex-wrap gap-2">
+        <Chip label={t('fuelBatch.chip.total')} count={batch.rowCountTotal} tone="neutral" />
+        {batch.rowCountImported > 0 && <Chip label={t('fuelBatch.chip.imported')} count={batch.rowCountImported} tone="green" />}
+        {batch.rowCountUnmatched > 0 && <Chip label={t('fuelBatch.chip.unmatched')} count={batch.rowCountUnmatched} tone="amber" to={reviewUrl(batch.id, 'unmatched')} />}
+        {batch.rowCountSkippedDuplicate > 0 && <Chip label={t('fuelBatch.chip.duplicate')} count={batch.rowCountSkippedDuplicate} tone="neutral" />}
+        {batch.rowCountSkippedPossibleDup > 0 && <Chip label={t('fuelBatch.chip.possibleDuplicate')} count={batch.rowCountSkippedPossibleDup} tone="neutral" to={reviewUrl(batch.id, 'duplicates')} />}
+        {batch.rowCountError > 0 && <Chip label={t('fuelBatch.chip.error')} count={batch.rowCountError} tone="red" />}
       </div>
     </div>
   );
@@ -73,26 +205,5 @@ const Row = ({ k, v }: { k: string; v: string }) => (
     <span className="font-medium">{v}</span>
   </div>
 );
-
-const Stat = ({ label, value, tone, linkTo }: { label: string; value: number; tone?: 'green' | 'red' | 'yellow' | 'gray'; linkTo?: string }) => {
-  const cls =
-    tone === 'green'  ? 'border-green-200 bg-green-50' :
-    tone === 'red'    ? 'border-red-200 bg-red-50' :
-    tone === 'yellow' ? 'border-yellow-200 bg-yellow-50' :
-    tone === 'gray'   ? 'border-gray-200 bg-gray-50' :
-    'border-gray-200 bg-white';
-  return (
-    <div className={`border rounded p-3 ${cls}`}>
-      <p className="text-xs text-gray-600">{label}</p>
-      {linkTo ? (
-        <Link to={linkTo} className="text-xl font-semibold underline text-primary-600 hover:text-primary-700">
-          {value}
-        </Link>
-      ) : (
-        <p className="text-xl font-semibold">{value}</p>
-      )}
-    </div>
-  );
-};
 
 export default FuelImportBatchDetailPage;

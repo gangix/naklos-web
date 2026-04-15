@@ -192,7 +192,8 @@
     "update": "Aktualisieren",
     "download": "Herunterladen",
     "resend": "Erneut senden",
-    "close": "Schließen"
+    "close": "Schließen",
+    "notFound": "Nicht gefunden."
   },
   "document": {
     "title": "Dokumente",
@@ -1088,5 +1089,42 @@
     "understood": "Verstanden",
     "privacyPolicy": "Datenschutzrichtlinie",
     "terms": "Nutzungsbedingungen"
+  },
+  "fuelBatch": {
+    "outcome": {
+      "cleanSuccess": {
+        "title": "{{count}} Einträge importiert",
+        "body": "Alle Zeilen erfolgreich importiert."
+      },
+      "partialSuccess": {
+        "title": "{{imported}} importiert, {{unmatched}} unzugeordnet",
+        "body": "Unzugeordnete Kennzeichen warten auf Überprüfung."
+      },
+      "mixedWithErrors": {
+        "title": "{{imported}} importiert, {{error}} Fehler",
+        "body": "Fehlerhafte Zeilen erneut prüfen."
+      },
+      "allDuplicates": {
+        "title": "Keine neuen Einträge importiert",
+        "body": "Alle Zeilen aus der hochgeladenen Datei sind bereits vorhanden."
+      },
+      "allErrors": {
+        "title": "Keine Einträge konnten importiert werden",
+        "body": "Datei erneut überprüfen."
+      },
+      "mixed": {
+        "title": "{{imported}} importiert, {{duplicates}} bereits vorhanden",
+        "body": "Einige Zeilen wurden als Duplikate übersprungen."
+      },
+      "reviewLink": "Überprüfen →"
+    },
+    "chip": {
+      "total": "Gesamt",
+      "imported": "Importiert",
+      "unmatched": "Unzugeordnet",
+      "duplicate": "Duplikat",
+      "possibleDuplicate": "Mögliches Duplikat",
+      "error": "Fehler"
+    }
   }
 }

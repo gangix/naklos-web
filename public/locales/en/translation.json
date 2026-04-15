@@ -192,7 +192,8 @@
     "update": "Update",
     "download": "Download",
     "resend": "Resend",
-    "close": "Close"
+    "close": "Close",
+    "notFound": "Not found."
   },
   "document": {
     "title": "Documents",
@@ -1088,5 +1089,42 @@
     "understood": "Got it",
     "privacyPolicy": "Privacy Policy",
     "terms": "Terms of Service"
+  },
+  "fuelBatch": {
+    "outcome": {
+      "cleanSuccess": {
+        "title": "{{count}} entries imported",
+        "body": "All rows imported successfully."
+      },
+      "partialSuccess": {
+        "title": "{{imported}} imported, {{unmatched}} plates unmatched",
+        "body": "Unmatched plates waiting for review."
+      },
+      "mixedWithErrors": {
+        "title": "{{imported}} imported, {{error}} errors",
+        "body": "Re-check the failed rows."
+      },
+      "allDuplicates": {
+        "title": "No new entries imported",
+        "body": "Every row in the uploaded file is already present."
+      },
+      "allErrors": {
+        "title": "No entries could be imported",
+        "body": "Re-review the file."
+      },
+      "mixed": {
+        "title": "{{imported}} imported, {{duplicates}} already exist",
+        "body": "Some rows were skipped as duplicates."
+      },
+      "reviewLink": "Review →"
+    },
+    "chip": {
+      "total": "Total",
+      "imported": "Imported",
+      "unmatched": "Unmatched",
+      "duplicate": "Duplicate",
+      "possibleDuplicate": "Possible duplicate",
+      "error": "Error"
+    }
   }
 }

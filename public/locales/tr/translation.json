@@ -192,7 +192,8 @@
     "update": "Güncelle",
     "download": "İndir",
     "resend": "Tekrar Gönder",
-    "close": "Kapat"
+    "close": "Kapat",
+    "notFound": "Kayıt bulunamadı."
   },
   "document": {
     "title": "Belgeler",
@@ -1087,5 +1088,42 @@
     "understood": "Anladım",
     "privacyPolicy": "Gizlilik Politikamızı",
     "terms": "Kullanım Şartlarımızı"
+  },
+  "fuelBatch": {
+    "outcome": {
+      "cleanSuccess": {
+        "title": "{{count}} kayıt aktarıldı",
+        "body": "Tüm satırlar başarıyla içe aktarıldı."
+      },
+      "partialSuccess": {
+        "title": "{{imported}} kayıt aktarıldı, {{unmatched}} plaka eşleşmedi",
+        "body": "Eşleşmeyen plakalar inceleme bekliyor."
+      },
+      "mixedWithErrors": {
+        "title": "{{imported}} aktarıldı, {{error}} hata",
+        "body": "Hatalı satırları tekrar kontrol edin."
+      },
+      "allDuplicates": {
+        "title": "Hiçbir yeni kayıt aktarılmadı",
+        "body": "Yüklediğiniz dosyadaki tüm satırlar zaten mevcut."
+      },
+      "allErrors": {
+        "title": "Hiçbir kayıt aktarılamadı",
+        "body": "Dosyayı tekrar gözden geçirin."
+      },
+      "mixed": {
+        "title": "{{imported}} aktarıldı, {{duplicates}} zaten mevcut",
+        "body": "Bazı satırlar yinelenen olarak atlandı."
+      },
+      "reviewLink": "İncele →"
+    },
+    "chip": {
+      "total": "Toplam",
+      "imported": "Aktarıldı",
+      "unmatched": "Eşleşmeyen",
+      "duplicate": "Yinelenen",
+      "possibleDuplicate": "Olası yineleme",
+      "error": "Hata"
+    }
   }
 }
