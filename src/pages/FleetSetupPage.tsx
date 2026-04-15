@@ -6,6 +6,7 @@ import { useFleet } from '../contexts/FleetContext';
 import { useAuth } from '../contexts/AuthContext';
 import { fleetApi } from '../services/api';
 import keycloak from '../auth/keycloak';
+import { Select, TextInput } from '../components/common/FormField';
 
 const TERMS_VERSION = '2026-04-11';
 
@@ -91,79 +92,51 @@ const FleetSetupPage = () => {
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('fleetSetup.companyInfo')}</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('fleetSetup.companyName')}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder={t('fleetSetup.companyNamePlaceholder')}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('fleetSetup.taxId')}
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.taxId}
-                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder={t('fleetSetup.taxIdPlaceholder')}
-                />
-              </div>
-
+              <TextInput
+                label={t('fleetSetup.companyName')}
+                required
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder={t('fleetSetup.companyNamePlaceholder')}
+              />
+              <TextInput
+                label={t('fleetSetup.taxId')}
+                required
+                type="text"
+                value={formData.taxId}
+                onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                placeholder={t('fleetSetup.taxIdPlaceholder')}
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('fleetSetup.email')}
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder={t('fleetSetup.emailPlaceholder')}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('fleetSetup.phone')}
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder={t('fleetSetup.phonePlaceholder')}
-                  />
-                </div>
+                <TextInput
+                  label={t('fleetSetup.email')}
+                  required
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  placeholder={t('fleetSetup.emailPlaceholder')}
+                />
+                <TextInput
+                  label={t('fleetSetup.phone')}
+                  required
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  placeholder={t('fleetSetup.phonePlaceholder')}
+                />
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('fleetSetup.currency')}
-                </label>
-                <select
-                  value={formData.defaultCurrency}
-                  onChange={(e) => setFormData({ ...formData, defaultCurrency: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                >
-                  <option value="TRY">TRY (₺)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="USD">USD ($)</option>
-                  <option value="GBP">GBP (£)</option>
-                </select>
-              </div>
+              <Select
+                label={t('fleetSetup.currency')}
+                required
+                value={formData.defaultCurrency}
+                onChange={(e) => setFormData({ ...formData, defaultCurrency: e.target.value })}
+              >
+                <option value="TRY">TRY (₺)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="USD">USD ($)</option>
+                <option value="GBP">GBP (£)</option>
+              </Select>
             </div>
           </div>
 
@@ -171,70 +144,47 @@ const FleetSetupPage = () => {
           <div>
             <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('fleetSetup.addressInfo')}</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('fleetSetup.street')}
-                </label>
-                <input
+              <TextInput
+                label={t('fleetSetup.street')}
+                type="text"
+                value={formData.address.street}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  address: { ...formData.address, street: e.target.value }
+                })}
+                placeholder={t('fleetSetup.streetPlaceholder')}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <TextInput
+                  label={t('fleetSetup.city')}
                   type="text"
-                  value={formData.address.street}
+                  value={formData.address.city}
                   onChange={(e) => setFormData({
                     ...formData,
-                    address: { ...formData.address, street: e.target.value }
+                    address: { ...formData.address, city: e.target.value }
                   })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder={t('fleetSetup.streetPlaceholder')}
+                  placeholder={t('fleetSetup.cityPlaceholder')}
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('fleetSetup.city')}
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address.city}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      address: { ...formData.address, city: e.target.value }
-                    })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder={t('fleetSetup.cityPlaceholder')}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('fleetSetup.postalCode')}
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address.postalCode}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      address: { ...formData.address, postalCode: e.target.value }
-                    })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder={t('fleetSetup.postalCodePlaceholder')}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('fleetSetup.region')}
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.address.region}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      address: { ...formData.address, region: e.target.value }
-                    })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    placeholder={t('fleetSetup.regionPlaceholder')}
-                  />
-                </div>
+                <TextInput
+                  label={t('fleetSetup.postalCode')}
+                  type="text"
+                  value={formData.address.postalCode}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    address: { ...formData.address, postalCode: e.target.value }
+                  })}
+                  placeholder={t('fleetSetup.postalCodePlaceholder')}
+                />
+                <TextInput
+                  label={t('fleetSetup.region')}
+                  type="text"
+                  value={formData.address.region}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    address: { ...formData.address, region: e.target.value }
+                  })}
+                  placeholder={t('fleetSetup.regionPlaceholder')}
+                />
               </div>
             </div>
           </div>

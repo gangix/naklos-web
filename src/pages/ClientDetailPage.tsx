@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { clientApi } from '../services/api';
+import { Select, TextInput } from '../components/common/FormField';
 import type { Client } from '../types';
 
 type PaymentTerms = 'NET_0' | 'NET_30' | 'NET_60' | 'NET_90';
@@ -216,17 +217,16 @@ const ClientDetailPage = () => {
       {/* Payment Terms Card */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('clientDetail.paymentTerms')}</h2>
-        <select
+        <Select
           value={clientPaymentTerms}
           onChange={handlePaymentTermsChange}
           disabled={updatingTerms}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:opacity-50"
         >
           <option value="NET_0">{t('paymentTerms.NET_0')}</option>
           <option value="NET_30">{t('paymentTerms.NET_30')}</option>
           <option value="NET_60">{t('paymentTerms.NET_60')}</option>
           <option value="NET_90">{t('paymentTerms.NET_90')}</option>
-        </select>
+        </Select>
         {updatingTerms && (
           <p className="text-xs text-gray-500 mt-1">{t('clientDetail.updating')}</p>
         )}
@@ -242,91 +242,70 @@ const ClientDetailPage = () => {
             <h2 className="text-lg font-bold text-gray-900 mb-4">{t('clientDetail.clientDetail')}</h2>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.email')}</label>
-                <input
-                  type="email"
-                  value={editForm.email}
-                  onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="ornek@sirket.com"
-                />
-              </div>
+              <TextInput
+                label={t('clientDetail.email')}
+                type="email"
+                value={editForm.email}
+                onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                placeholder="ornek@sirket.com"
+              />
 
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.phone')}</label>
-                <input
-                  type="tel"
-                  value={editForm.phone}
-                  onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                  placeholder="+90 5xx xxx xx xx"
-                />
-              </div>
+              <TextInput
+                label={t('clientDetail.phone')}
+                type="tel"
+                value={editForm.phone}
+                onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
+                placeholder="+90 5xx xxx xx xx"
+              />
 
               <div className="border-t border-gray-100 pt-4">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{t('clientDetail.address')}</p>
                 <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.street')}</label>
-                    <input
-                      type="text"
-                      value={editForm.address.street}
-                      onChange={(e) =>
-                        setEditForm((f) => ({ ...f, address: { ...f.address, street: e.target.value } }))
-                      }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={t('clientDetail.placeholderStreet')}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.city')}</label>
-                    <input
-                      type="text"
-                      value={editForm.address.city}
-                      onChange={(e) =>
-                        setEditForm((f) => ({ ...f, address: { ...f.address, city: e.target.value } }))
-                      }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={t('clientDetail.placeholderCity')}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.postalCode')}</label>
-                    <input
-                      type="text"
-                      value={editForm.address.postalCode}
-                      onChange={(e) =>
-                        setEditForm((f) => ({ ...f, address: { ...f.address, postalCode: e.target.value } }))
-                      }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={t('clientDetail.placeholderPostalCode')}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.region')}</label>
-                    <input
-                      type="text"
-                      value={editForm.address.region}
-                      onChange={(e) =>
-                        setEditForm((f) => ({ ...f, address: { ...f.address, region: e.target.value } }))
-                      }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={t('clientDetail.placeholderRegion')}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">{t('clientDetail.country')}</label>
-                    <input
-                      type="text"
-                      value={editForm.address.country}
-                      onChange={(e) =>
-                        setEditForm((f) => ({ ...f, address: { ...f.address, country: e.target.value } }))
-                      }
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder={t('clientDetail.placeholderCountry')}
-                    />
-                  </div>
+                  <TextInput
+                    label={t('clientDetail.street')}
+                    type="text"
+                    value={editForm.address.street}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, address: { ...f.address, street: e.target.value } }))
+                    }
+                    placeholder={t('clientDetail.placeholderStreet')}
+                  />
+                  <TextInput
+                    label={t('clientDetail.city')}
+                    type="text"
+                    value={editForm.address.city}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, address: { ...f.address, city: e.target.value } }))
+                    }
+                    placeholder={t('clientDetail.placeholderCity')}
+                  />
+                  <TextInput
+                    label={t('clientDetail.postalCode')}
+                    type="text"
+                    value={editForm.address.postalCode}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, address: { ...f.address, postalCode: e.target.value } }))
+                    }
+                    placeholder={t('clientDetail.placeholderPostalCode')}
+                  />
+                  <TextInput
+                    label={t('clientDetail.region')}
+                    type="text"
+                    value={editForm.address.region}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, address: { ...f.address, region: e.target.value } }))
+                    }
+                    placeholder={t('clientDetail.placeholderRegion')}
+                  />
+                  <TextInput
+                    label={t('clientDetail.country')}
+                    type="text"
+                    value={editForm.address.country}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, address: { ...f.address, country: e.target.value } }))
+                    }
+                    placeholder={t('clientDetail.placeholderCountry')}
+                  />
                 </div>
               </div>
             </div>

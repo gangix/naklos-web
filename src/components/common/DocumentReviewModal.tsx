@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useData } from '../../contexts/DataContext';
+import { Textarea, TextInput } from './FormField';
 import type { DocumentSubmission } from '../../types';
 
 interface DocumentReviewModalProps {
@@ -153,18 +154,14 @@ const DocumentReviewModal = ({ isOpen, onClose, submission }: DocumentReviewModa
 
               {/* Expiry date confirmation */}
               <div className="bg-white rounded-lg border-2 border-primary-500 p-4 mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('approval.confirmDate')} *
-                </label>
-                <input
+                <TextInput
+                  label={t('approval.confirmDate')}
+                  required
                   type="date"
                   value={confirmedDate}
                   onChange={(e) => setConfirmedDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  hint={t('docReview.expiryConfirmHint')}
                 />
-                <p className="text-xs text-gray-500 mt-1">
-                  {t('docReview.expiryConfirmHint')}
-                </p>
               </div>
 
               {/* Action Buttons */}
@@ -215,18 +212,13 @@ const DocumentReviewModal = ({ isOpen, onClose, submission }: DocumentReviewModa
                 </div>
 
                 {/* Optional note (required for "other") */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t('approval.rejectionNote')} {rejectionReason === 'other' && '*'}
-                  </label>
-                  <textarea
-                    value={rejectionNote}
-                    onChange={(e) => setRejectionNote(e.target.value)}
-                    placeholder={t('docReview.driverExplanation')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                    rows={3}
-                  />
-                </div>
+                <Textarea
+                  label={<>{t('approval.rejectionNote')} {rejectionReason === 'other' && '*'}</>}
+                  value={rejectionNote}
+                  onChange={(e) => setRejectionNote(e.target.value)}
+                  placeholder={t('docReview.driverExplanation')}
+                  rows={3}
+                />
               </div>
 
               {/* Rejection Action Buttons */}

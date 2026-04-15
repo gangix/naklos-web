@@ -6,6 +6,7 @@ import { useClients } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import AddClientModal from '../components/common/AddClientModal';
 import UpgradeModal from '../components/common/UpgradeModal';
+import { TextInput } from '../components/common/FormField';
 
 const ClientsPage = () => {
   const { t } = useTranslation();
@@ -54,15 +55,13 @@ const ClientsPage = () => {
         </button>
       </div>
 
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder={t('clientsPage.searchPlaceholder')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-        />
-      </div>
+      <TextInput
+        type="text"
+        placeholder={t('clientsPage.searchPlaceholder')}
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        wrapperClassName="mb-4"
+      />
 
       <div className="space-y-3">
         {filteredClients.length === 0 && clients.length === 0 ? (

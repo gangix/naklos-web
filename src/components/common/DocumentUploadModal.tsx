@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { driverApi, truckApi } from '../../services/api';
 import FileUpload from './FileUpload';
+import { TextInput } from './FormField';
 import type { Document, DocumentCategory } from '../../types';
 
 interface DocumentUploadModalProps {
@@ -142,20 +143,13 @@ const DocumentUploadModal = ({
           </div>
 
           {/* Expiry date input */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('docUploadModal.newExpiryDate')}
-            </label>
-            <input
-              type="date"
-              value={suggestedExpiryDate}
-              onChange={(e) => setSuggestedExpiryDate(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              {t('docUploadModal.expiryHint')}
-            </p>
-          </div>
+          <TextInput
+            label={t('docUploadModal.newExpiryDate')}
+            type="date"
+            value={suggestedExpiryDate}
+            onChange={(e) => setSuggestedExpiryDate(e.target.value)}
+            hint={t('docUploadModal.expiryHint')}
+          />
 
           {/* Info note */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">

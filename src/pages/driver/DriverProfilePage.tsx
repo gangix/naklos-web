@@ -8,6 +8,7 @@ import { driverApi } from '../../services/api';
 
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
+import { TextInput, Select } from '../../components/common/FormField';
 import { formatDate } from '../../utils/format';
 import type { DocumentCategory } from '../../types';
 
@@ -231,15 +232,14 @@ const DriverProfilePage = () => {
           </div>
         </div>
         <div className="mt-3">
-          <select
+          <Select
             value={i18n.language}
             onChange={(e) => handleLanguageChange(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
           >
             <option value="tr">Türkçe</option>
             <option value="en">English</option>
             <option value="de">Deutsch</option>
-          </select>
+          </Select>
         </div>
       </div>
 
@@ -332,11 +332,10 @@ const DriverProfilePage = () => {
           <div>
             <p className="text-xs text-gray-600 mb-1">{t('driver.phone')}</p>
             {isEditing ? (
-              <input
+              <TextInput
                 type="tel"
                 value={editPhone}
                 onChange={(e) => setEditPhone(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             ) : (
               <p className="text-sm font-medium text-gray-900">{driver.phone}</p>
@@ -346,11 +345,10 @@ const DriverProfilePage = () => {
           <div>
             <p className="text-xs text-gray-600 mb-1">{t('driver.email')}</p>
             {isEditing ? (
-              <input
+              <TextInput
                 type="email"
                 value={editEmail}
                 onChange={(e) => setEditEmail(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             ) : (
               <p className="text-sm font-medium text-gray-900">{driver.email || '-'}</p>

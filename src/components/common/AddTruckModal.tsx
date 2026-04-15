@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { truckApi } from '../../services/api';
+import { Select, TextInput } from './FormField';
 
 interface AddTruckModalProps {
   isOpen: boolean;
@@ -96,64 +97,44 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Plaka *
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.plateNumber}
-                onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value.toUpperCase() })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="34 ABC 123"
-              />
-            </div>
+            <TextInput
+              label="Plaka"
+              required
+              type="text"
+              value={formData.plateNumber}
+              onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value.toUpperCase() })}
+              placeholder="34 ABC 123"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('addTruck.truckType')}
-              </label>
-              <select
-                value={formData.type}
-                onChange={(e) => handleTypeChange(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              >
-                {truckTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {t(`truckType.${type.value}`)}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <Select
+              label={t('addTruck.truckType')}
+              value={formData.type}
+              onChange={(e) => handleTypeChange(e.target.value)}
+            >
+              {truckTypes.map((type) => (
+                <option key={type.value} value={type.value}>
+                  {t(`truckType.${type.value}`)}
+                </option>
+              ))}
+            </Select>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Kapasite (kg) *
-              </label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.capacityKg}
-                onChange={(e) => setFormData({ ...formData, capacityKg: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
+            <TextInput
+              label="Kapasite (kg)"
+              required
+              type="number"
+              min="1"
+              value={formData.capacityKg}
+              onChange={(e) => setFormData({ ...formData, capacityKg: Number(e.target.value) })}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Hacim (m³)
-              </label>
-              <input
-                type="number"
-                min="1"
-                step="0.1"
-                value={formData.cargoVolumeM3}
-                onChange={(e) => setFormData({ ...formData, cargoVolumeM3: Number(e.target.value) })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
-            </div>
+            <TextInput
+              label="Hacim (m³)"
+              type="number"
+              min="1"
+              step="0.1"
+              value={formData.cargoVolumeM3}
+              onChange={(e) => setFormData({ ...formData, cargoVolumeM3: Number(e.target.value) })}
+            />
 
             <div className="flex gap-3 pt-4">
               <button

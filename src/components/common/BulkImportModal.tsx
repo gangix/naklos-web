@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { truckApi, driverApi, type BulkImportResult } from '../../services/api';
+import { Select } from './FormField';
 
 type EntityType = 'truck' | 'driver';
 
@@ -383,10 +384,10 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                                 {field.required && <span className="text-red-600 ml-1">*</span>}
                               </p>
                             </div>
-                            <select
+                            <Select
                               value={mapping[field.field] || ''}
                               onChange={(e) => setFieldMapping(field.field, e.target.value)}
-                              className="flex-1 px-3 py-1.5 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500 focus:border-transparent min-w-0"
+                              wrapperClassName="flex-1 min-w-0"
                             >
                               <option value="">{t('bulkImport.selectColumn')}</option>
                               {headers.map((h) => (
@@ -394,7 +395,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                                   {h}
                                 </option>
                               ))}
-                            </select>
+                            </Select>
                           </div>
                         );
                       })}

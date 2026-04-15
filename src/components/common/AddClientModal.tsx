@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { clientApi } from '../../services/api';
+import { Select, TextInput } from './FormField';
 
 interface AddClientModalProps {
   isOpen: boolean;
@@ -90,134 +91,103 @@ const AddClientModal = ({ isOpen, onClose, onSuccess }: AddClientModalProps) => 
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('addClient.companyName')}
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.companyName}
-                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder={t('addClient.companyNamePlaceholder')}
-              />
-            </div>
+            <TextInput
+              label={t('addClient.companyName')}
+              required
+              type="text"
+              value={formData.companyName}
+              onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+              placeholder={t('addClient.companyNamePlaceholder')}
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('addClient.taxId')}
-              </label>
-              <input
-                type="text"
-                required
-                value={formData.taxId}
-                onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="1234567890"
-              />
-            </div>
+            <TextInput
+              label={t('addClient.taxId')}
+              required
+              type="text"
+              value={formData.taxId}
+              onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+              placeholder="1234567890"
+            />
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  E-posta *
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="info@firma.com"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Telefon *
-                </label>
-                <input
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="+90 555 123 4567"
-                />
-              </div>
+              <TextInput
+                label="E-posta"
+                required
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="info@firma.com"
+              />
+              <TextInput
+                label="Telefon"
+                required
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="+90 555 123 4567"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Adres *
               </label>
-              <input
-                type="text"
+              <TextInput
                 required
+                type="text"
                 value={formData.address.street}
                 onChange={(e) => setFormData({
                   ...formData,
                   address: { ...formData.address, street: e.target.value }
                 })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 mb-2"
                 placeholder="Sokak/Cadde"
+                wrapperClassName="mb-2"
               />
               <div className="grid grid-cols-2 gap-2">
-                <input
-                  type="text"
+                <TextInput
                   required
+                  type="text"
                   value={formData.address.city}
                   onChange={(e) => setFormData({
                     ...formData,
                     address: { ...formData.address, city: e.target.value }
                   })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   placeholder={t('addClient.cityPlaceholder')}
                 />
-                <input
+                <TextInput
                   type="text"
                   value={formData.address.postalCode}
                   onChange={(e) => setFormData({
                     ...formData,
                     address: { ...formData.address, postalCode: e.target.value }
                   })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   placeholder="Posta Kodu"
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('addClient.paymentTerms')}
-              </label>
-              <select
-                value={formData.paymentTerms}
-                onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="NET_0">{t('addClient.termCash')}</option>
-                <option value="NET_30">{t('addClient.term30')}</option>
-                <option value="NET_60">{t('addClient.term60')}</option>
-                <option value="NET_90">{t('addClient.term90')}</option>
-              </select>
-            </div>
+            <Select
+              label={t('addClient.paymentTerms')}
+              value={formData.paymentTerms}
+              onChange={(e) => setFormData({ ...formData, paymentTerms: e.target.value })}
+            >
+              <option value="NET_0">{t('addClient.termCash')}</option>
+              <option value="NET_30">{t('addClient.term30')}</option>
+              <option value="NET_60">{t('addClient.term60')}</option>
+              <option value="NET_90">{t('addClient.term90')}</option>
+            </Select>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Para Birimi *
-              </label>
-              <select
-                value={formData.preferredCurrency}
-                onChange={(e) => setFormData({ ...formData, preferredCurrency: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="TRY">TRY (₺)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="USD">USD ($)</option>
-                <option value="GBP">GBP (£)</option>
-              </select>
-            </div>
+            <Select
+              label="Para Birimi"
+              required
+              value={formData.preferredCurrency}
+              onChange={(e) => setFormData({ ...formData, preferredCurrency: e.target.value })}
+            >
+              <option value="TRY">TRY (₺)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="USD">USD ($)</option>
+              <option value="GBP">GBP (£)</option>
+            </Select>
 
             <div className="flex gap-3 pt-4">
               <button

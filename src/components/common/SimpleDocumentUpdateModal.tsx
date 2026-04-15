@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { FileText, Pencil, Upload } from 'lucide-react';
 import { truckApi, driverApi } from '../../services/api';
+import { TextInput } from './FormField';
 import type { DocumentCategory } from '../../types';
 
 interface TruckDocument {
@@ -248,17 +249,12 @@ const SimpleDocumentUpdateModal = ({
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('simpleDocUpdate.expiryDate')}
-              </label>
-              <input
-                type="date"
-                value={expiryDate}
-                onChange={(e) => setExpiryDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
+            <TextInput
+              label={t('simpleDocUpdate.expiryDate')}
+              type="date"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(e.target.value)}
+            />
 
             <button
               onClick={handleUpload}

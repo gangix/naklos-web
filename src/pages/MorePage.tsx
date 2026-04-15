@@ -1,14 +1,13 @@
-import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { User, Users, Wrench } from 'lucide-react';
+import { Wrench } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useFleet } from '../contexts/FleetContext';
 import { driverApi, fleetApi } from '../services/api';
+import { Select, TextInput } from '../components/common/FormField';
 
 const MorePage = () => {
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager } = useAuth();
   const { fleetId } = useFleet();
@@ -102,23 +101,6 @@ const MorePage = () => {
     alert('Fleet Manager');
   };
 
-  const menuItems = [
-    {
-      icon: <User className="w-6 h-6 text-green-600" />,
-      title: t('morePage.driversMenu'),
-      description: t('morePage.driversDesc'),
-      path: '/manager/drivers',
-      color: 'bg-green-100',
-    },
-    {
-      icon: <Users className="w-6 h-6 text-blue-600" />,
-      title: t('morePage.clientsMenu'),
-      description: t('morePage.clientsDesc'),
-      path: '/manager/clients',
-      color: 'bg-blue-100',
-    },
-  ];
-
   return (
     <div>
       {/* Header */}
@@ -147,62 +129,45 @@ const MorePage = () => {
             <h2 className="font-bold text-gray-900">{t('morePage.fleetSettings')}</h2>
           </div>
           <div className="p-5 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.fleetName')}</label>
-              <input
-                type="text"
-                value={fleetName}
-                onChange={(e) => setFleetName(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.fleetEmail')}</label>
-              <input
-                type="email"
-                value={fleetEmail}
-                onChange={(e) => setFleetEmail(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-              <p className="text-xs text-gray-500 mt-1.5">
-                {t('morePage.fleetEmailHint')}
-              </p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.phone')}</label>
-              <input
-                type="tel"
-                value={fleetPhone}
-                onChange={(e) => setFleetPhone(e.target.value)}
-                className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
+            <TextInput
+              label={t('morePage.fleetName')}
+              type="text"
+              value={fleetName}
+              onChange={(e) => setFleetName(e.target.value)}
+            />
+            <TextInput
+              label={t('morePage.fleetEmail')}
+              type="email"
+              value={fleetEmail}
+              onChange={(e) => setFleetEmail(e.target.value)}
+              hint={t('morePage.fleetEmailHint')}
+            />
+            <TextInput
+              label={t('morePage.phone')}
+              type="tel"
+              value={fleetPhone}
+              onChange={(e) => setFleetPhone(e.target.value)}
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.currency')}</label>
-                <select
-                  value={fleetCurrency}
-                  onChange={(e) => setFleetCurrency(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="TRY">TRY (₺)</option>
-                  <option value="EUR">EUR (€)</option>
-                  <option value="USD">USD ($)</option>
-                  <option value="GBP">GBP (£)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('morePage.language')}</label>
-                <select
-                  value={i18n.language}
-                  onChange={(e) => handleLanguageChange(e.target.value)}
-                  className="w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="tr">Türkçe</option>
-                  <option value="en">English</option>
-                  <option value="de">Deutsch</option>
-                </select>
-              </div>
+              <Select
+                label={t('morePage.currency')}
+                value={fleetCurrency}
+                onChange={(e) => setFleetCurrency(e.target.value)}
+              >
+                <option value="TRY">TRY (₺)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="USD">USD ($)</option>
+                <option value="GBP">GBP (£)</option>
+              </Select>
+              <Select
+                label={t('morePage.language')}
+                value={i18n.language}
+                onChange={(e) => handleLanguageChange(e.target.value)}
+              >
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+              </Select>
             </div>
             <div className="pt-2">
               <button
@@ -282,30 +247,6 @@ const MorePage = () => {
           </div>
         </div>
       )}
-
-      {/* Menu Items */}
-      <div className="space-y-3">
-        {menuItems.map((item) => (
-          <button
-            key={item.path}
-            onClick={() => navigate(item.path)}
-            className="w-full bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow text-left border border-gray-100"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className={`w-12 h-12 ${item.color} rounded-lg flex items-center justify-center`}>
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="font-bold text-gray-900">{item.title}</p>
-                  <p className="text-sm text-gray-600">{item.description}</p>
-                </div>
-              </div>
-              <span className="text-gray-400 text-xl">›</span>
-            </div>
-          </button>
-        ))}
-      </div>
 
       {/* App Info */}
       <div className="mt-8 p-4 bg-gray-50 rounded-xl">

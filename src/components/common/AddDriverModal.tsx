@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
+import { Select, TextInput } from './FormField';
 
 interface AddDriverModalProps {
   isOpen: boolean;
@@ -79,111 +80,74 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Ad *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Ahmet"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Soyad *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder={t('addDriver.lastNamePlaceholder')}
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Telefon *
-              </label>
-              <input
-                type="tel"
+              <TextInput
+                label="Ad"
                 required
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="+90 555 123 4567"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                E-posta *
-              </label>
-              <input
-                type="email"
-                required
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="ahmet@example.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Ehliyet No *
-              </label>
-              <input
                 type="text"
+                value={formData.firstName}
+                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                placeholder="Ahmet"
+              />
+              <TextInput
+                label="Soyad"
                 required
-                value={formData.licenseNumber}
-                onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="12345678901"
+                type="text"
+                value={formData.lastName}
+                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                placeholder={t('addDriver.lastNamePlaceholder')}
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('addDriver.licenseClass')}
-              </label>
-              <select
-                value={formData.licenseClass}
-                onChange={(e) => setFormData({ ...formData, licenseClass: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              >
-                <option value="B">B (Otomobil)</option>
-                <option value="C">C (Kamyon)</option>
-                <option value="C1">{t('addDriver.classC1')}</option>
-                <option value="CE">{t('addDriver.classCE')}</option>
-                <option value="C1E">{t('addDriver.classC1E')}</option>
-                <option value="D">{t('addDriver.classD')}</option>
-                <option value="DE">{t('addDriver.classDE')}</option>
-              </select>
-            </div>
+            <TextInput
+              label="Telefon"
+              required
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              placeholder="+90 555 123 4567"
+            />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                {t('addDriver.tempPassword')}
-              </label>
-              <input
-                type="password"
-                minLength={8}
-                value={formData.temporaryPassword}
-                onChange={(e) => setFormData({ ...formData, temporaryPassword: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="En az 8 karakter"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {t('addDriver.tempPasswordHint')}
-              </p>
-            </div>
+            <TextInput
+              label="E-posta"
+              required
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              placeholder="ahmet@example.com"
+            />
+
+            <TextInput
+              label="Ehliyet No"
+              required
+              type="text"
+              value={formData.licenseNumber}
+              onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
+              placeholder="12345678901"
+            />
+
+            <Select
+              label={t('addDriver.licenseClass')}
+              value={formData.licenseClass}
+              onChange={(e) => setFormData({ ...formData, licenseClass: e.target.value })}
+            >
+              <option value="B">B (Otomobil)</option>
+              <option value="C">C (Kamyon)</option>
+              <option value="C1">{t('addDriver.classC1')}</option>
+              <option value="CE">{t('addDriver.classCE')}</option>
+              <option value="C1E">{t('addDriver.classC1E')}</option>
+              <option value="D">{t('addDriver.classD')}</option>
+              <option value="DE">{t('addDriver.classDE')}</option>
+            </Select>
+
+            <TextInput
+              label={t('addDriver.tempPassword')}
+              type="password"
+              minLength={8}
+              value={formData.temporaryPassword}
+              onChange={(e) => setFormData({ ...formData, temporaryPassword: e.target.value })}
+              placeholder="En az 8 karakter"
+              hint={t('addDriver.tempPasswordHint')}
+            />
 
             <div className="flex gap-3 pt-4">
               <button

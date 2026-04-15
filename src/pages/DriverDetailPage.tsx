@@ -5,6 +5,7 @@ import { driverApi } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
+import { Select, TextInput } from '../components/common/FormField';
 import { Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import type { DocumentCategory, Driver } from '../types';
@@ -338,26 +339,30 @@ const DriverDetailPage = () => {
         </div>
         {editingContact ? (
           <div className="space-y-3">
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driverDetail.firstName')}</label>
-              <input type="text" value={editFirstName} onChange={(e) => setEditFirstName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driverDetail.lastName')}</label>
-              <input type="text" value={editLastName} onChange={(e) => setEditLastName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driver.phone')}</label>
-              <input type="tel" value={editPhone} onChange={(e) => setEditPhone(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driver.email')}</label>
-              <input type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
+            <TextInput
+              label={t('driverDetail.firstName')}
+              type="text"
+              value={editFirstName}
+              onChange={(e) => setEditFirstName(e.target.value)}
+            />
+            <TextInput
+              label={t('driverDetail.lastName')}
+              type="text"
+              value={editLastName}
+              onChange={(e) => setEditLastName(e.target.value)}
+            />
+            <TextInput
+              label={t('driver.phone')}
+              type="tel"
+              value={editPhone}
+              onChange={(e) => setEditPhone(e.target.value)}
+            />
+            <TextInput
+              label={t('driver.email')}
+              type="email"
+              value={editEmail}
+              onChange={(e) => setEditEmail(e.target.value)}
+            />
             <div className="flex gap-2 pt-1">
               <button onClick={handleSaveContact} disabled={saving}
                 className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
@@ -397,22 +402,25 @@ const DriverDetailPage = () => {
         </div>
         {editingEmergency ? (
           <div className="space-y-3">
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driver.contactName')}</label>
-              <input type="text" value={emergencyName} onChange={(e) => setEmergencyName(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driver.contactPhone')}</label>
-              <input type="tel" value={emergencyPhone} onChange={(e) => setEmergencyPhone(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
-            <div>
-              <label className="block text-xs text-gray-600 mb-1">{t('driver.relationship')}</label>
-              <input type="text" value={emergencyRelationship} onChange={(e) => setEmergencyRelationship(e.target.value)}
-                placeholder=""
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
-            </div>
+            <TextInput
+              label={t('driver.contactName')}
+              type="text"
+              value={emergencyName}
+              onChange={(e) => setEmergencyName(e.target.value)}
+            />
+            <TextInput
+              label={t('driver.contactPhone')}
+              type="tel"
+              value={emergencyPhone}
+              onChange={(e) => setEmergencyPhone(e.target.value)}
+            />
+            <TextInput
+              label={t('driver.relationship')}
+              type="text"
+              value={emergencyRelationship}
+              onChange={(e) => setEmergencyRelationship(e.target.value)}
+              placeholder=""
+            />
             <div className="flex gap-2 pt-1">
               <button onClick={handleSaveEmergency} disabled={saving}
                 className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
@@ -488,57 +496,36 @@ const DriverDetailPage = () => {
           <div className="bg-primary-50 border-2 border-primary-200 rounded-lg p-4 mb-3">
             <h3 className="text-sm font-bold text-gray-900 mb-3">{t('driverDetail.newCertificate')}</h3>
             <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  Sertifika Tipi *
-                </label>
-                <select
-                  value={certificateType}
-                  onChange={(e) => setCertificateType(e.target.value as 'SRC' | 'CPC')}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                >
-                  <option value="SRC">{t('driverDetail.srcMandatory')}</option>
-                  <option value="CPC">{t('driverDetail.cpcProfessional')}</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  {t('driverDetail.certificateNumber')}
-                </label>
-                <input
-                  type="text"
-                  value={certificateNumber}
-                  onChange={(e) => setCertificateNumber(e.target.value)}
-                  placeholder=""
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  {t('driverDetail.issueDate')}
-                </label>
-                <input
-                  type="date"
-                  value={certificateIssueDate}
-                  onChange={(e) => setCertificateIssueDate(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  {t('driverDetail.expiryDate')}
-                </label>
-                <input
-                  type="date"
-                  value={certificateExpiryDate}
-                  onChange={(e) => setCertificateExpiryDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  ⚠️ {t('driverDetail.expiryFutureWarning')}
-                </p>
-              </div>
+              <Select
+                label="Sertifika Tipi"
+                required
+                value={certificateType}
+                onChange={(e) => setCertificateType(e.target.value as 'SRC' | 'CPC')}
+              >
+                <option value="SRC">{t('driverDetail.srcMandatory')}</option>
+                <option value="CPC">{t('driverDetail.cpcProfessional')}</option>
+              </Select>
+              <TextInput
+                label={t('driverDetail.certificateNumber')}
+                type="text"
+                value={certificateNumber}
+                onChange={(e) => setCertificateNumber(e.target.value)}
+                placeholder=""
+              />
+              <TextInput
+                label={t('driverDetail.issueDate')}
+                type="date"
+                value={certificateIssueDate}
+                onChange={(e) => setCertificateIssueDate(e.target.value)}
+              />
+              <TextInput
+                label={t('driverDetail.expiryDate')}
+                type="date"
+                value={certificateExpiryDate}
+                onChange={(e) => setCertificateExpiryDate(e.target.value)}
+                min={new Date().toISOString().split('T')[0]}
+                hint={<>⚠️ {t('driverDetail.expiryFutureWarning')}</>}
+              />
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={handleAddCertificate}

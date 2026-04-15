@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
+import { Select } from '../components/common/FormField';
 import type { DocumentCategory, Truck, Driver } from '../types';
 
 const TruckDetailPage = () => {
@@ -260,14 +261,13 @@ const TruckDetailPage = () => {
                     </button>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <select
+                      <Select
                         onChange={(e) => {
                           if (e.target.value) {
                             handleAssignDriver(e.target.value);
                           }
                         }}
                         disabled={assigningDriver}
-                        className="text-sm border border-gray-300 rounded px-2 py-1 disabled:opacity-50"
                         defaultValue=""
                       >
                         <option value="">{t('truckDetail.selectDriver')}</option>
@@ -276,7 +276,7 @@ const TruckDetailPage = () => {
                             {driver.firstName} {driver.lastName}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                       <button
                         onClick={() => setShowDriverSelect(false)}
                         className="text-xs text-gray-600 hover:text-gray-700"
