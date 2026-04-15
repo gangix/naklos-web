@@ -1100,7 +1100,7 @@
       "generic": "{{message}}",
       "dateCellMissing": "Date cell is missing.",
       "dateBlank": "Date is empty.",
-      "dateUnrecognized": "Couldn't read date: {{value}}. Accepted formats: DD.MM.YYYY, DD/MM/YYYY, YYYY-MM-DD.",
+      "dateUnrecognized": "Couldn't read date: {{value}}. Accepted formats: DD.MM.YYYY, DD/MM/YYYY, YYYY-MM-DD (with optional time, e.g. 14.04.2026 08:35). Including the time helps us tell apart multiple fill-ups on the same day.",
       "dateTooOld": "Date can't be before 2020: {{value}}.",
       "dateInFuture": "Date can't be in the future: {{value}}.",
       "fieldRequired": "{{field}} is required.",

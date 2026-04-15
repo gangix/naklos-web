@@ -1099,7 +1099,7 @@
       "generic": "{{message}}",
       "dateCellMissing": "Tarih hücresi bulunamadı.",
       "dateBlank": "Tarih boş.",
-      "dateUnrecognized": "Tarih okunamadı: {{value}}. Kabul edilen biçimler: GG.AA.YYYY, GG/AA/YYYY, YYYY-AA-GG.",
+      "dateUnrecognized": "Tarih okunamadı: {{value}}. Kabul edilen biçimler: GG.AA.YYYY, GG/AA/YYYY, YYYY-AA-GG (saat ile birlikte de olabilir, örn. 14.04.2026 08:35). Mümkünse saati de dahil edin — aynı gün içindeki birden fazla yakıt alımını birbirinden ayırt etmemize yardımcı olur.",
       "dateTooOld": "Tarih 2020 yılından önce olamaz: {{value}}.",
       "dateInFuture": "Tarih ileride olamaz: {{value}}.",
       "fieldRequired": "{{field}} alanı zorunlu.",

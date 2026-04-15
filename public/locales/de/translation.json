@@ -1100,7 +1100,7 @@
       "generic": "{{message}}",
       "dateCellMissing": "Datumszelle fehlt.",
       "dateBlank": "Datum ist leer.",
-      "dateUnrecognized": "Datum nicht erkannt: {{value}}. Akzeptierte Formate: TT.MM.JJJJ, TT/MM/JJJJ, JJJJ-MM-TT.",
+      "dateUnrecognized": "Datum nicht erkannt: {{value}}. Akzeptierte Formate: TT.MM.JJJJ, TT/MM/JJJJ, JJJJ-MM-TT (auch mit Uhrzeit, z. B. 14.04.2026 08:35). Wenn möglich Uhrzeit mit angeben — so können wir mehrere Tankvorgänge am selben Tag unterscheiden.",
       "dateTooOld": "Datum darf nicht vor 2020 liegen: {{value}}.",
       "dateInFuture": "Datum darf nicht in der Zukunft liegen: {{value}}.",
       "fieldRequired": "{{field}} ist erforderlich.",
