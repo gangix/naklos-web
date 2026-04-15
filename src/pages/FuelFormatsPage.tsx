@@ -5,6 +5,7 @@ import { Copy, Plus, Power, Upload } from 'lucide-react';
 import { fuelFormatApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportFormatDto } from '../types/fuel';
+import FuelSectionNav from '../components/fuel/FuelSectionNav';
 
 const FuelFormatsPage = () => {
   const { fleetId } = useFleet();
@@ -60,6 +61,7 @@ const FuelFormatsPage = () => {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <FuelSectionNav />
       <h1 className="text-2xl font-semibold">Yakıt İçe Aktarma Formatları</h1>
 
       <div className="flex gap-2">

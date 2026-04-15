@@ -5,6 +5,7 @@ import { Upload, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { Checkbox, FileInput } from '../components/common/FormField';
+import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import type {
   CommitOverride,
   DraftPreview,
@@ -38,8 +39,10 @@ const FuelImportPage = () => {
     (async () => {
       try {
         const all = await fuelFormatApi.list(fleetId);
-        // only active fleet-scoped formats are importable
-        const importable = all.filter((f) => f.active && !f.global);
+        // Active formats — both fleet-scoped and the read-only global starters
+        // (e.g. GENERIC). Users can import with a starter directly; cloning
+        // is only needed when they want to customize the mapping.
+        const importable = all.filter((f) => f.active);
         setFormats(importable);
       } catch (err: any) {
         toast.error(err.message ?? 'Formatlar yüklenemedi');
@@ -96,6 +99,7 @@ const FuelImportPage = () => {
 
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
+      <FuelSectionNav />
       <h1 className="text-2xl font-semibold">Yakıt Statement İçe Aktar</h1>
 
       <div className="bg-white border rounded p-4 space-y-3">

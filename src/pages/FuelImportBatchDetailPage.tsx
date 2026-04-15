@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportBatchDto } from '../types/fuel';
+import FuelSectionNav from '../components/fuel/FuelSectionNav';
 
 const FuelImportBatchDetailPage = () => {
   const { batchId = '' } = useParams();
@@ -33,6 +34,7 @@ const FuelImportBatchDetailPage = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <FuelSectionNav />
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(`/manager/fuel-imports`)}
