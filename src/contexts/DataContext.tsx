@@ -176,7 +176,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
           : req
       )
     );
-    // TODO: Update actual driver.assignedTruckId and truck.assignedDriverId
+    // TODO: Update actual driver.assignedTruckId and truck.currentDriverId
     // TODO: Send push notification to driver
   };
 

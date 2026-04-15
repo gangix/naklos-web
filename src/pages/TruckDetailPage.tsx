@@ -237,7 +237,7 @@ const TruckDetailPage = () => {
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">{t('truck.driver')}</span>
             <div className="flex items-center gap-2">
-              {truck.assignedDriverId ? (
+              {truck.currentDriverId ? (
                 <>
                   <span className="text-sm font-medium text-gray-900">
                     {truck.assignedDriverName}

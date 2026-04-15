@@ -25,7 +25,7 @@ export interface Truck {
   plateNumber: string;
   type: string;
   status: TruckStatus;
-  assignedDriverId: string | null;
+  currentDriverId: string | null;
   assignedDriverName?: string;
   currentTripId: string | null;
   lastPosition?: {

@@ -28,7 +28,7 @@ const TruckAssignmentModal = ({ isOpen, onClose, request }: TruckAssignmentModal
 
   if (!isOpen) return null;
 
-  const availableTrucks = allTrucks.filter((t) => !t.assignedDriverId);
+  const availableTrucks = allTrucks.filter((t) => !t.currentDriverId);
   const preferredTruck = allTrucks.find((t) => t.id === request.preferredTruckId);
   const selectedTruck = allTrucks.find((t) => t.id === selectedTruckId);
 
