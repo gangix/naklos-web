@@ -936,10 +936,10 @@
       "imports": "Import",
       "formats": "Formats",
       "review": "Pending",
-      "resolutions": "Resolutions"
+      "resolutions": "Rules"
     },
     "resolutions": {
-      "title": "Plate Resolutions",
+      "title": "Plate Rules",
       "description": "These rules apply automatically on every new import — the Subcontractor button excludes plates from analytics, the Fix Plate button redirects misread plates to the correct ones. Deleting a rule only affects future imports; past entries remain unchanged.",
       "empty": "No plate resolutions yet.",
       "colPlate": "Plate",
@@ -1035,7 +1035,7 @@
       "description": "<strong>{{plate}}</strong> will be marked as a subcontractor's plate.",
       "bullet1": "Past and future records for this plate are excluded from fleet analytics.",
       "bullet2": "Future imports automatically mark this plate as subcontractor.",
-      "bullet3": "You can delete the rule anytime from the <strong>Resolutions</strong> tab.",
+      "bullet3": "You can delete the rule anytime from the <strong>Rules</strong> tab.",
       "confirm": "Mark as subcontractor",
       "successToast": "{{count}} entries marked as subcontractor.",
       "errorDefault": "Couldn't mark as subcontractor."

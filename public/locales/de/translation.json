@@ -936,10 +936,10 @@
       "imports": "Import",
       "formats": "Formate",
       "review": "Offen",
-      "resolutions": "Auflösungen"
+      "resolutions": "Regeln"
     },
     "resolutions": {
-      "title": "Kennzeichen-Auflösungen",
+      "title": "Kennzeichen-Regeln",
       "description": "Diese Regeln werden bei jedem neuen Import automatisch angewendet — die Schaltfläche „Subunternehmer\" schließt Kennzeichen aus der Analyse aus, die Schaltfläche „Kennzeichen korrigieren\" leitet falsch gelesene Kennzeichen auf die richtigen um. Das Löschen einer Regel betrifft nur zukünftige Importe; vergangene Einträge bleiben unverändert.",
       "empty": "Noch keine Kennzeichen-Auflösungen.",
       "colPlate": "Kennzeichen",
@@ -1035,7 +1035,7 @@
       "description": "<strong>{{plate}}</strong> wird als Kennzeichen eines Subunternehmers markiert.",
       "bullet1": "Vergangene und zukünftige Einträge für dieses Kennzeichen sind von der Flottenanalyse ausgeschlossen.",
       "bullet2": "Zukünftige Importe markieren dieses Kennzeichen automatisch als Subunternehmer.",
-      "bullet3": "Sie können die Regel jederzeit unter <strong>Auflösungen</strong> löschen.",
+      "bullet3": "Sie können die Regel jederzeit unter <strong>Regeln</strong> löschen.",
       "confirm": "Als Subunternehmer markieren",
       "successToast": "{{count}} Einträge als Subunternehmer markiert.",
       "errorDefault": "Markierung als Subunternehmer fehlgeschlagen."
