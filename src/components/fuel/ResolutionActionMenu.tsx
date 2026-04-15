@@ -76,13 +76,22 @@ export default function ResolutionActionMenu(
 
   return (
     <div className="flex gap-2 flex-wrap items-center">
-      <button className={btnPrimary} onClick={createTruck}>
+      <button
+        className={btnPrimary}
+        onClick={createTruck}
+        title="Bu plakayı yeni araç olarak kaydet. Geçmiş kayıtlar otomatik olarak yeni araca bağlanır.">
         Araç oluştur
       </button>
-      <button className={btnSecondary} onClick={() => setAliasOpen(true)}>
-        Takma ad
+      <button
+        className={btnSecondary}
+        onClick={() => setAliasOpen(true)}
+        title="Yanlış yazılmış plakayı doğrusuna yönlendir (ör. 34A8C123 → 34ABC123). Bu ve gelecekteki kayıtlar doğru araca bağlanır.">
+        Plaka düzelt
       </button>
-      <button className={btnSecondary} onClick={markSubcontractor}>
+      <button
+        className={btnSecondary}
+        onClick={markSubcontractor}
+        title="Bu plaka taşerona ait. Filo analizlerinden dışlanır, araç oluşturulmaz.">
         Taşeron
       </button>
       {batches.map(b => (
@@ -90,7 +99,7 @@ export default function ResolutionActionMenu(
           key={b.batchId}
           className={btnGhost}
           onClick={() => dismiss(b.batchId)}
-          title={`${b.batchFileName} içinde yoksay`}>
+          title={`"${b.batchFileName}" partisindeki ${b.entryCount} kaydı incelemeden kaldır. Aynı plaka başka bir partide tekrar görünebilir.`}>
           Yoksay ({b.entryCount})
         </button>
       ))}
@@ -100,7 +109,7 @@ export default function ResolutionActionMenu(
           normalizedPlate={normalizedPlate}
           onClose={() => setAliasOpen(false)}
           onSuccess={(count) => {
-            toast.success(`Takma ad kaydedildi. ${count} kayıt bağlandı.`);
+            toast.success(`Plaka düzeltildi. ${count} kayıt bağlandı.`);
             setAliasOpen(false);
             onResolved();
           }}
