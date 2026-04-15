@@ -927,15 +927,14 @@
     "priceEnterprise": "Özel fiyat"
   },
   "fuelReview": {
-    "pageTitle": "Yakıt İncelemesi",
+    "pageTitle": "Bekleyen Kayıtlar",
     "tabs": {
-      "unmatched": "Eşleşmeyen plakalar",
-      "duplicates": "Olası yineleme"
+      "unmatched": "Eşleşmeyen plakalar"
     },
     "nav": {
       "imports": "İçe Aktar",
       "formats": "Formatlar",
-      "review": "İnceleme",
+      "review": "Bekleyenler",
       "resolutions": "Çözümler"
     },
     "resolutions": {
@@ -1123,7 +1122,6 @@
       "imported": "Aktarıldı",
       "unmatched": "Eşleşmeyen",
       "duplicate": "Yinelenen",
-      "possibleDuplicate": "Olası yineleme",
       "error": "Hata"
     }
   },

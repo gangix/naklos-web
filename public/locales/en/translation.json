@@ -928,15 +928,14 @@
     "priceEnterprise": "Custom pricing"
   },
   "fuelReview": {
-    "pageTitle": "Fuel Review",
+    "pageTitle": "Pending entries",
     "tabs": {
-      "unmatched": "Unmatched plates",
-      "duplicates": "Possible duplicates"
+      "unmatched": "Unmatched plates"
     },
     "nav": {
       "imports": "Import",
       "formats": "Formats",
-      "review": "Review",
+      "review": "Pending",
       "resolutions": "Resolutions"
     },
     "resolutions": {
@@ -1124,7 +1123,6 @@
       "imported": "Imported",
       "unmatched": "Unmatched",
       "duplicate": "Duplicate",
-      "possibleDuplicate": "Possible duplicate",
       "error": "Error"
     }
   },

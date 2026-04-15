@@ -2,7 +2,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Filter, X } from 'lucide-react';
 import { useFleet } from '../contexts/FleetContext';
-import FuelReviewTabs from '../components/fuel/FuelReviewTabs';
+import UnmatchedPlateList from '../components/fuel/UnmatchedPlateList';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 
 export default function FuelReviewPage() {
@@ -10,7 +10,6 @@ export default function FuelReviewPage() {
   const { fleetId } = useFleet();
   const [params] = useSearchParams();
   const batchId = params.get('batchId');
-  const tab = (params.get('tab') ?? 'unmatched') as 'unmatched' | 'duplicates';
   if (!fleetId) return null;
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
@@ -35,7 +34,7 @@ export default function FuelReviewPage() {
           </Link>
         </div>
       )}
-      <FuelReviewTabs fleetId={fleetId} batchId={batchId} initialTab={tab} />
+      <UnmatchedPlateList fleetId={fleetId} batchId={batchId} />
     </div>
   );
 }

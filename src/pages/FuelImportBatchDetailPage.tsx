@@ -21,10 +21,9 @@ function selectOutcome(b: FuelImportBatchDto): Outcome {
   const total = b.rowCountTotal;
   const imported = b.rowCountImported;
   const skippedDup = b.rowCountSkippedDuplicate;
-  const skippedPossibleDup = b.rowCountSkippedPossibleDup;
   const unmatched = b.rowCountUnmatched;
   const error = b.rowCountError;
-  const duplicates = skippedDup + skippedPossibleDup;
+  const duplicates = skippedDup;
 
   // Empty file (no rows parsed at all) — treat as a hard failure.
   if (total === 0) {
@@ -76,8 +75,8 @@ const CHIP_TONE_CLS: Record<'neutral' | 'green' | 'amber' | 'red', string> = {
   red:     'bg-red-50 border border-red-200 text-red-700',
 };
 
-const reviewUrl = (batchId: string, tab: 'unmatched' | 'duplicates') =>
-  `/manager/fuel-review?batchId=${batchId}&tab=${tab}`;
+const reviewUrl = (batchId: string) =>
+  `/manager/fuel-review?batchId=${batchId}`;
 
 // ── OutcomeBanner ────────────────────────────────────────────────────────────
 
@@ -107,7 +106,7 @@ function OutcomeBanner({ batch, outcome }: { batch: FuelImportBatchDto; outcome:
       {showReviewLink && (
         <div className={`mt-3 pt-3 border-t flex justify-end ${TONE_BORDER_DIVIDER[outcome.tone]}`}>
           <Link
-            to={reviewUrl(batch.id, 'unmatched')}
+            to={reviewUrl(batch.id)}
             className="text-sm font-semibold hover:underline">
             {t('fuelBatch.outcome.reviewLink')}
           </Link>
@@ -191,9 +190,8 @@ const FuelImportBatchDetailPage = () => {
       <div className="flex flex-wrap gap-2">
         <Chip label={t('fuelBatch.chip.total')} count={batch.rowCountTotal} tone="neutral" />
         {batch.rowCountImported > 0 && <Chip label={t('fuelBatch.chip.imported')} count={batch.rowCountImported} tone="green" />}
-        {batch.rowCountUnmatched > 0 && <Chip label={t('fuelBatch.chip.unmatched')} count={batch.rowCountUnmatched} tone="amber" to={reviewUrl(batch.id, 'unmatched')} />}
+        {batch.rowCountUnmatched > 0 && <Chip label={t('fuelBatch.chip.unmatched')} count={batch.rowCountUnmatched} tone="amber" to={reviewUrl(batch.id)} />}
         {batch.rowCountSkippedDuplicate > 0 && <Chip label={t('fuelBatch.chip.duplicate')} count={batch.rowCountSkippedDuplicate} tone="neutral" />}
-        {batch.rowCountSkippedPossibleDup > 0 && <Chip label={t('fuelBatch.chip.possibleDuplicate')} count={batch.rowCountSkippedPossibleDup} tone="neutral" to={reviewUrl(batch.id, 'duplicates')} />}
         {batch.rowCountError > 0 && <Chip label={t('fuelBatch.chip.error')} count={batch.rowCountError} tone="red" />}
       </div>
     </div>

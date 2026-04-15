@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Upload, AlertTriangle, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
+import { Upload, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
-import { Checkbox, FileInput } from '../components/common/FormField';
+import { FileInput } from '../components/common/FormField';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import { setPendingSample } from '../state/pendingSampleFile';
 import type {
-  CommitOverride,
   DraftPreview,
   FuelImportFormatDto,
   PreviewRow,
@@ -17,9 +16,8 @@ import type {
 const classificationBadge = (c: PreviewRow['classification'], errorMessage: string | null) => {
   if (errorMessage) return { cls: 'bg-red-100 text-red-700', label: 'Hata', icon: <XCircle className="w-3 h-3" /> };
   switch (c) {
-    case 'NEW':                 return { cls: 'bg-green-100 text-green-700', label: 'Yeni', icon: <CheckCircle2 className="w-3 h-3" /> };
-    case 'DUPLICATE':           return { cls: 'bg-gray-200 text-gray-700',   label: 'Yinelenen', icon: null };
-    case 'POSSIBLE_DUPLICATE':  return { cls: 'bg-yellow-100 text-yellow-800', label: 'Olası yinelenen', icon: <AlertTriangle className="w-3 h-3" /> };
+    case 'NEW':       return { cls: 'bg-green-100 text-green-700', label: 'Yeni', icon: <CheckCircle2 className="w-3 h-3" /> };
+    case 'DUPLICATE': return { cls: 'bg-gray-200 text-gray-700', label: 'Yinelenen', icon: null };
   }
 };
 
@@ -31,7 +29,6 @@ const FuelImportPage = () => {
   const [formatId, setFormatId] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<DraftPreview | null>(null);
-  const [overrides, setOverrides] = useState<Record<number, 'IMPORT'>>({}); // per row: flipped flag
   const [loading, setLoading] = useState(false);
   const [committing, setCommitting] = useState(false);
 
@@ -61,7 +58,6 @@ const FuelImportPage = () => {
       setLoading(true);
       const result = await fuelImportApi.preview(fleetId, formatId, file);
       setPreview(result);
-      setOverrides({});
     } catch (err: any) {
       toast.error(err.message ?? 'Önizleme başarısız');
     } finally {
@@ -71,13 +67,9 @@ const FuelImportPage = () => {
 
   const commit = async () => {
     if (!fleetId || !preview) return;
-    const overrideList: CommitOverride[] = Object.entries(overrides).map(([rowIndex, action]) => ({
-      rowIndex: Number(rowIndex),
-      action,
-    }));
     try {
       setCommitting(true);
-      const batch = await fuelImportApi.commit(fleetId, preview.draftId, overrideList);
+      const batch = await fuelImportApi.commit(fleetId, preview.draftId, []);
       toast.success('İçe aktarma tamamlandı');
       navigate(`/manager/fuel-imports/${batch.id}`);
     } catch (err: any) {
@@ -85,15 +77,6 @@ const FuelImportPage = () => {
     } finally {
       setCommitting(false);
     }
-  };
-
-  const toggleOverride = (rowIndex: number) => {
-    setOverrides((o) => {
-      const next = { ...o };
-      if (next[rowIndex] === 'IMPORT') delete next[rowIndex];
-      else next[rowIndex] = 'IMPORT';
-      return next;
-    });
   };
 
   const summary = preview?.summary;
@@ -169,11 +152,10 @@ const FuelImportPage = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             <StatCard label="Toplam" value={summary.total} />
             <StatCard label="Yeni" value={summary.newCount} highlight="green" />
             <StatCard label="Yinelenen" value={summary.duplicateCount} highlight="gray" />
-            <StatCard label="Olası yinelenen" value={summary.possibleDuplicateCount} highlight="yellow" />
             <StatCard label="Hata / Eşlenmemiş" value={summary.errorCount + summary.unmatchedCount} highlight="red" />
           </div>
 
@@ -189,13 +171,11 @@ const FuelImportPage = () => {
                   <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Tutar</th>
                   <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Durum</th>
                   <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Araç</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">İşlem</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {preview.rows.map((r) => {
                   const b = classificationBadge(r.classification, r.errorMessage);
-                  const overridden = overrides[r.rowIndex] === 'IMPORT';
                   return (
                     <tr key={r.rowIndex} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-gray-500">{r.rowIndex}</td>
@@ -215,15 +195,6 @@ const FuelImportPage = () => {
                           ? <span className="text-xs text-gray-600" title={r.matchedTruckId}>Eşlendi</span>
                           : <span className="text-xs text-amber-700">Eşleşmedi</span>}
                       </td>
-                      <td className="px-4 py-3 text-right">
-                        {r.classification === 'POSSIBLE_DUPLICATE' && (
-                          <Checkbox
-                            checked={overridden}
-                            onChange={() => toggleOverride(r.rowIndex)}
-                            label={<span className="text-xs">Yine de içe aktar</span>}
-                          />
-                        )}
-                      </td>
                     </tr>
                   );
                 })}
@@ -233,7 +204,7 @@ const FuelImportPage = () => {
 
           <div className="flex justify-end gap-2">
             <button
-              onClick={() => { setPreview(null); setOverrides({}); }}
+              onClick={() => setPreview(null)}
               className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
             >
               Vazgeç

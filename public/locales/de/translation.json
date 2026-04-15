@@ -928,15 +928,14 @@
     "priceEnterprise": "Individuelle Preise"
   },
   "fuelReview": {
-    "pageTitle": "Kraftstoff-Überprüfung",
+    "pageTitle": "Offene Einträge",
     "tabs": {
-      "unmatched": "Unzugeordnete Kennzeichen",
-      "duplicates": "Mögliche Duplikate"
+      "unmatched": "Unzugeordnete Kennzeichen"
     },
     "nav": {
       "imports": "Import",
       "formats": "Formate",
-      "review": "Überprüfung",
+      "review": "Offen",
       "resolutions": "Auflösungen"
     },
     "resolutions": {
@@ -1124,7 +1123,6 @@
       "imported": "Importiert",
       "unmatched": "Unzugeordnet",
       "duplicate": "Duplikat",
-      "possibleDuplicate": "Mögliches Duplikat",
       "error": "Fehler"
     }
   },
