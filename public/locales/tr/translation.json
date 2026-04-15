@@ -1127,7 +1127,8 @@
       "optional": "İsteğe bağlı"
     },
     "error": {
-      "duplicate": "Bu kayıt zaten var. Mevcut kaydı görüntüle →",
+      "duplicate": "Bu kayıt zaten var.",
+      "duplicateViewCta": "Mevcut kaydı görüntüle →",
       "photoRequired": "Lütfen fişin fotoğrafını yükleyin.",
       "photoTooLarge": "Fotoğraf 10 MB'dan büyük.",
       "photoBadType": "Yalnızca JPG, PNG veya WebP yükleyin.",

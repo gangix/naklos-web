@@ -1128,7 +1128,8 @@
       "optional": "Optional"
     },
     "error": {
-      "duplicate": "Dieser Eintrag existiert bereits. Anzeigen →",
+      "duplicate": "Dieser Eintrag existiert bereits.",
+      "duplicateViewCta": "Vorhandenen Eintrag anzeigen →",
       "photoRequired": "Bitte das Belegfoto hochladen.",
       "photoTooLarge": "Foto ist größer als 10 MB.",
       "photoBadType": "Nur JPG, PNG oder WebP erlaubt.",

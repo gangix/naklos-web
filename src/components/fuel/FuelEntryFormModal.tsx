@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import { fuelEntryApi, FuelEntryDuplicateError } from '../../services/fuelEntryApi';
 import type { ManualFuelEntryInput, TruckFuelEntryDto } from '../../types/fuel';
+import { TextInput, Select, Textarea } from '../common/FormField';
 
 interface Props {
   fleetId: string;
@@ -270,12 +272,15 @@ export default function FuelEntryFormModal({
             ✕
           </button>
         </div>
-        <p className="text-sm text-gray-500 mb-5 font-mono">{truckPlate}</p>
+        <p className="text-sm text-gray-700 mb-5 font-mono">{truckPlate}</p>
 
         {/* Duplicate banner */}
         {duplicateBanner && (
           <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center justify-between gap-2">
-            <span className="text-amber-800 text-sm">{t('fuelEntry.error.duplicate')}</span>
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <span className="text-amber-800 text-sm">{t('fuelEntry.error.duplicate')}</span>
+            </div>
             <button
               type="button"
               className="text-amber-700 underline text-sm shrink-0 hover:text-amber-900"
@@ -284,98 +289,70 @@ export default function FuelEntryFormModal({
                 onDuplicate?.(duplicateBanner);
               }}
             >
-              {t('fuelEntry.error.duplicate')}
+              {t('fuelEntry.error.duplicateViewCta')}
             </button>
           </div>
         )}
 
         <form onSubmit={handleSubmit} noValidate className="space-y-4">
           {/* occurredAt */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-occurredAt">
-              {t('fuelEntry.field.occurredAt')}
-            </label>
-            <input
-              ref={firstFocusableRef}
-              id="fuel-occurredAt"
-              type="datetime-local"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              value={occurredAt}
-              onChange={e => {
-                setOccurredAt(e.target.value);
-                setErrors(prev => ({ ...prev, occurredAt: undefined }));
-              }}
-              required
-            />
-            {errors.occurredAt && (
-              <p className="mt-1 text-xs text-red-600">{errors.occurredAt}</p>
-            )}
-          </div>
+          <TextInput
+            ref={firstFocusableRef}
+            type="datetime-local"
+            label={t('fuelEntry.field.occurredAt')}
+            required
+            error={errors.occurredAt}
+            value={occurredAt}
+            onChange={e => {
+              setOccurredAt(e.target.value);
+              setErrors(prev => ({ ...prev, occurredAt: undefined }));
+            }}
+          />
 
           {/* fuelType */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-fuelType">
-              {t('fuelEntry.field.fuelType')}
-            </label>
-            <select
-              id="fuel-fuelType"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white"
-              value={fuelType}
-              onChange={e => setFuelType(e.target.value as FuelType)}
-            >
-              {FUEL_TYPES.map(ft => (
-                <option key={ft} value={ft}>{FUEL_TYPE_LABELS[ft]}</option>
-              ))}
-            </select>
-          </div>
+          <Select
+            label={t('fuelEntry.field.fuelType')}
+            required
+            error={errors.fuelType}
+            value={fuelType}
+            onChange={e => setFuelType(e.target.value as FuelType)}
+          >
+            {FUEL_TYPES.map(ft => (
+              <option key={ft} value={ft}>{FUEL_TYPE_LABELS[ft]}</option>
+            ))}
+          </Select>
 
           {/* liters */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-liters">
-              {t('fuelEntry.field.liters')}
-            </label>
-            <input
-              id="fuel-liters"
-              type="number"
-              step="0.01"
-              min="0.01"
-              max="10000"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              value={liters}
-              onChange={e => {
-                setLiters(e.target.value);
-                setErrors(prev => ({ ...prev, liters: undefined }));
-              }}
-              required
-            />
-            {errors.liters && (
-              <p className="mt-1 text-xs text-red-600">{errors.liters}</p>
-            )}
-          </div>
+          <TextInput
+            type="number"
+            step="0.01"
+            min="0.01"
+            max="10000"
+            label={t('fuelEntry.field.liters')}
+            required
+            error={errors.liters}
+            value={liters}
+            onChange={e => {
+              setLiters(e.target.value);
+              setErrors(prev => ({ ...prev, liters: undefined }));
+            }}
+          />
 
           {/* totalPrice */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-totalPrice">
-              {t('fuelEntry.field.totalPrice')}
-            </label>
-            <input
-              id="fuel-totalPrice"
-              type="number"
-              step="0.01"
-              min="0.01"
-              max="1000000"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              value={totalPrice}
-              onChange={e => {
-                setTotalPrice(e.target.value);
-                setErrors(prev => ({ ...prev, totalPrice: undefined }));
-              }}
-              required
-            />
-            {errors.totalPrice && (
-              <p className="mt-1 text-xs text-red-600">{errors.totalPrice}</p>
-            )}
-          </div>
+          <TextInput
+            type="number"
+            step="0.01"
+            min="0.01"
+            max="1000000"
+            label={t('fuelEntry.field.totalPrice')}
+            required
+            error={errors.totalPrice}
+            value={totalPrice}
+            onChange={e => {
+              setTotalPrice(e.target.value);
+              setErrors(prev => ({ ...prev, totalPrice: undefined }));
+            }}
+          />
 
           {/* Photo */}
           {mode === 'add' ? (
@@ -463,7 +440,7 @@ export default function FuelEntryFormModal({
           <div className="border border-gray-200 rounded-lg overflow-hidden">
             <button
               type="button"
-              className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
               onClick={() => setOptionalOpen(prev => !prev)}
               aria-expanded={optionalOpen}
             >
@@ -474,86 +451,56 @@ export default function FuelEntryFormModal({
             {optionalOpen && (
               <div className="px-4 pb-4 space-y-4 border-t border-gray-100 pt-3">
                 {/* pricePerLiter */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-pricePerLiter">
-                    {t('fuelEntry.field.pricePerLiter')}
-                  </label>
-                  <input
-                    id="fuel-pricePerLiter"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    max="1000"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    value={pricePerLiter}
-                    onChange={e => {
-                      setPricePerLiter(e.target.value);
-                      setErrors(prev => ({ ...prev, pricePerLiter: undefined }));
-                    }}
-                  />
-                  {errors.pricePerLiter && (
-                    <p className="mt-1 text-xs text-red-600">{errors.pricePerLiter}</p>
-                  )}
-                </div>
+                <TextInput
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  max="1000"
+                  label={t('fuelEntry.field.pricePerLiter')}
+                  error={errors.pricePerLiter}
+                  value={pricePerLiter}
+                  onChange={e => {
+                    setPricePerLiter(e.target.value);
+                    setErrors(prev => ({ ...prev, pricePerLiter: undefined }));
+                  }}
+                />
 
                 {/* stationName */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-stationName">
-                    {t('fuelEntry.field.stationName')}
-                  </label>
-                  <input
-                    id="fuel-stationName"
-                    type="text"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    value={stationName}
-                    onChange={e => setStationName(e.target.value)}
-                  />
-                </div>
+                <TextInput
+                  type="text"
+                  label={t('fuelEntry.field.stationName')}
+                  value={stationName}
+                  onChange={e => setStationName(e.target.value)}
+                />
 
                 {/* odometerKm */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-odometerKm">
-                    {t('fuelEntry.field.odometerKm')}
-                  </label>
-                  <input
-                    id="fuel-odometerKm"
-                    type="number"
-                    step="1"
-                    min="0"
-                    max="10000000"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    value={odometerKm}
-                    onChange={e => {
-                      setOdometerKm(e.target.value);
-                      setErrors(prev => ({ ...prev, odometerKm: undefined }));
-                    }}
-                  />
-                  {errors.odometerKm && (
-                    <p className="mt-1 text-xs text-red-600">{errors.odometerKm}</p>
-                  )}
-                </div>
+                <TextInput
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="10000000"
+                  label={t('fuelEntry.field.odometerKm')}
+                  error={errors.odometerKm}
+                  value={odometerKm}
+                  onChange={e => {
+                    setOdometerKm(e.target.value);
+                    setErrors(prev => ({ ...prev, odometerKm: undefined }));
+                  }}
+                />
 
                 {/* notes */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5" htmlFor="fuel-notes">
-                    {t('fuelEntry.field.notes')}
-                  </label>
-                  <textarea
-                    id="fuel-notes"
-                    rows={3}
-                    maxLength={1000}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                    value={notes}
-                    onChange={e => {
-                      setNotes(e.target.value);
-                      setErrors(prev => ({ ...prev, notes: undefined }));
-                    }}
-                  />
-                  <p className="text-xs text-gray-400 text-right">{notes.length}/1000</p>
-                  {errors.notes && (
-                    <p className="mt-1 text-xs text-red-600">{errors.notes}</p>
-                  )}
-                </div>
+                <Textarea
+                  rows={3}
+                  maxLength={1000}
+                  label={t('fuelEntry.field.notes')}
+                  error={errors.notes}
+                  value={notes}
+                  onChange={e => {
+                    setNotes(e.target.value);
+                    setErrors(prev => ({ ...prev, notes: undefined }));
+                  }}
+                  hint={`${notes.length}/1000`}
+                />
               </div>
             )}
           </div>

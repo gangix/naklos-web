@@ -1128,7 +1128,8 @@
       "optional": "Optional"
     },
     "error": {
-      "duplicate": "This entry already exists. View existing →",
+      "duplicate": "This entry already exists.",
+      "duplicateViewCta": "View existing entry →",
       "photoRequired": "Please upload the receipt photo.",
       "photoTooLarge": "Photo is larger than 10 MB.",
       "photoBadType": "Only JPG, PNG or WebP allowed.",
