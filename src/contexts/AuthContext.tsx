@@ -18,7 +18,7 @@ interface AuthContextType {
   authenticated: boolean;
   setUser: (user: User | null) => void;
   login: () => void;
-  loginWith: (idpHint: 'google' | 'apple') => void;
+  loginWith: (idpHint: 'google') => void;
   register: () => void;
   loginAsDriver: (driverId: string, driverName: string) => void;
   loginAsManager: () => void;
