@@ -14,10 +14,23 @@ import { Paperclip, Upload } from 'lucide-react';
  *  Changing focus-ring colour, radius, disabled state, etc. happens here —
  *  every form field picks up the change without touching the call sites. */
 
-const INPUT_BASE =
-  'w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors ' +
-  'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ' +
-  'disabled:opacity-60 disabled:bg-gray-50 disabled:cursor-not-allowed';
+/** Focus-ring tone variants for controls that live inside a coloured panel.
+ *  `default` = brand primary. `warning` = amber (edit-mode / sensitive fields). */
+type Tone = 'default' | 'warning';
+
+const TONE_RING: Record<Tone, string> = {
+  default: 'focus:ring-primary-500',
+  warning: 'focus:ring-amber-500',
+};
+
+function inputBase(tone: Tone = 'default'): string {
+  return (
+    'w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg transition-colors ' +
+    'focus:outline-none focus:ring-2 focus:border-transparent ' +
+    `${TONE_RING[tone]} ` +
+    'disabled:opacity-60 disabled:bg-gray-50 disabled:cursor-not-allowed'
+  );
+}
 
 const LABEL = 'block text-sm font-medium text-gray-700 mb-1';
 const HINT = 'text-xs text-gray-500 mt-1.5';
@@ -34,6 +47,9 @@ interface FieldExtras {
   required?: boolean;
   /** Class applied to the outer wrapper div (not the control). */
   wrapperClassName?: string;
+  /** Focus-ring tone. Use 'warning' when the field sits inside an amber
+   *  warning/edit panel so the ring matches the context. */
+  tone?: Tone;
 }
 
 type TextInputProps = InputHTMLAttributes<HTMLInputElement> & FieldExtras;
@@ -45,7 +61,7 @@ function errorBorder(error: ReactNode | undefined): string {
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
-  ({ label, hint, error, required, wrapperClassName, className, ...rest }, ref) => (
+  ({ label, hint, error, required, wrapperClassName, tone, className, ...rest }, ref) => (
     <div className={wrapperClassName}>
       {label && (
         <label className={LABEL}>
@@ -55,7 +71,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
       )}
       <input
         ref={ref}
-        className={`${INPUT_BASE}${errorBorder(error)} ${className ?? ''}`}
+        className={`${inputBase(tone)}${errorBorder(error)} ${className ?? ''}`}
         {...rest}
       />
       {error && <p className={ERROR}>{error}</p>}
@@ -66,7 +82,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
 TextInput.displayName = 'TextInput';
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, hint, error, required, wrapperClassName, className, children, ...rest }, ref) => (
+  ({ label, hint, error, required, wrapperClassName, tone, className, children, ...rest }, ref) => (
     <div className={wrapperClassName}>
       {label && (
         <label className={LABEL}>
@@ -76,7 +92,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       )}
       <select
         ref={ref}
-        className={`${INPUT_BASE}${errorBorder(error)} ${className ?? ''}`}
+        className={`${inputBase(tone)}${errorBorder(error)} ${className ?? ''}`}
         {...rest}
       >
         {children}
@@ -147,12 +163,19 @@ interface FileInputProps extends FieldExtras {
   /** Currently-selected file's name to display next to the button. Pass null
    *  to hide. Caller owns the source of truth. */
   selectedFileName?: string | null;
+  /** 'inline' (default) = compact button + filename display.
+   *  'dropzone' = large dashed-border drop target with big CTA (use for
+   *  primary upload flows like bulk import). */
+  variant?: 'inline' | 'dropzone';
 }
 
-/** Hidden native file input + styled trigger button. Solves the problem
+/** Hidden native file input + styled trigger. Solves the problem
  *  that browsers render `<input type="file">` chrome differently and
  *  ignore most CSS — we replace the native control with a Tailwind button
- *  while keeping accessibility (label still triggers the input). */
+ *  while keeping accessibility (label still triggers the input).
+ *
+ *  Two visual variants share the same file-picking logic — see the
+ *  `variant` prop docs. */
 export function FileInput({
   label,
   hint,
@@ -165,6 +188,7 @@ export function FileInput({
   multiple,
   buttonLabel,
   selectedFileName,
+  variant = 'inline',
 }: FileInputProps) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -174,6 +198,19 @@ export function FileInput({
     onChange(file);
   }
 
+  const nativeInput = (
+    <input
+      ref={inputRef}
+      id={inputId}
+      type="file"
+      accept={accept}
+      disabled={disabled}
+      multiple={multiple}
+      onChange={handleChange}
+      className="hidden"
+    />
+  );
+
   return (
     <div className={wrapperClassName}>
       {label && (
@@ -182,38 +219,56 @@ export function FileInput({
           {required ? ' *' : ''}
         </label>
       )}
-      <div className="flex items-center gap-3 flex-wrap">
-        <button
-          type="button"
-          onClick={() => inputRef.current?.click()}
-          disabled={disabled}
-          className={
-            'inline-flex items-center gap-2 px-3 py-2 text-sm font-medium ' +
-            'bg-white border border-gray-300 rounded-lg transition-colors ' +
-            'hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ' +
-            'disabled:opacity-60 disabled:cursor-not-allowed'
-          }
-        >
-          <Upload className="w-4 h-4" strokeWidth={2} />
-          {buttonLabel ?? 'Dosya Seç'}
-        </button>
-        {selectedFileName && (
-          <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 min-w-0">
-            <Paperclip className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
-            <span className="truncate">{selectedFileName}</span>
-          </span>
-        )}
-        <input
-          ref={inputRef}
-          id={inputId}
-          type="file"
-          accept={accept}
-          disabled={disabled}
-          multiple={multiple}
-          onChange={handleChange}
-          className="hidden"
-        />
-      </div>
+
+      {variant === 'dropzone' ? (
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={disabled}
+            className={
+              'inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold ' +
+              'bg-primary-600 text-white rounded-lg transition-colors ' +
+              'hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ' +
+              'disabled:opacity-60 disabled:cursor-not-allowed'
+            }
+          >
+            <Upload className="w-4 h-4" strokeWidth={2} />
+            {buttonLabel ?? 'Dosya Seç'}
+          </button>
+          {selectedFileName && (
+            <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-gray-600">
+              <Paperclip className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+              <strong className="font-medium">{selectedFileName}</strong>
+            </p>
+          )}
+          {nativeInput}
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={disabled}
+            className={
+              'inline-flex items-center gap-2 px-3 py-2 text-sm font-medium ' +
+              'bg-white border border-gray-300 rounded-lg transition-colors ' +
+              'hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent ' +
+              'disabled:opacity-60 disabled:cursor-not-allowed'
+            }
+          >
+            <Upload className="w-4 h-4" strokeWidth={2} />
+            {buttonLabel ?? 'Dosya Seç'}
+          </button>
+          {selectedFileName && (
+            <span className="inline-flex items-center gap-1.5 text-xs text-gray-600 min-w-0">
+              <Paperclip className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={2} />
+              <span className="truncate">{selectedFileName}</span>
+            </span>
+          )}
+          {nativeInput}
+        </div>
+      )}
       {error && <p className={ERROR}>{error}</p>}
       {!error && hint && <p className={HINT}>{hint}</p>}
     </div>
@@ -225,7 +280,7 @@ export function FileInput({
 // ============================================================================
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, hint, error, required, wrapperClassName, className, ...rest }, ref) => (
+  ({ label, hint, error, required, wrapperClassName, tone, className, ...rest }, ref) => (
     <div className={wrapperClassName}>
       {label && (
         <label className={LABEL}>
@@ -235,7 +290,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       )}
       <textarea
         ref={ref}
-        className={`${INPUT_BASE}${errorBorder(error)} ${className ?? ''}`}
+        className={`${inputBase(tone)}${errorBorder(error)} ${className ?? ''}`}
         {...rest}
       />
       {error && <p className={ERROR}>{error}</p>}

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { Document } from '../../types';
 import { convertFileToDocument, MAX_FILE_SIZE, formatFileSize } from '../../utils/fileUpload';
 
-interface FileUploadProps {
+interface PhotoCaptureProps {
   onFileSelect: (document: Document) => void;
   maxSize?: number;
   disabled?: boolean;
@@ -14,7 +14,7 @@ interface FileUploadProps {
  * Mobile-friendly file upload component with camera capture support
  * Validates file size and type, converts to base64, and provides user feedback
  */
-const FileUpload = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }: FileUploadProps) => {
+const PhotoCapture = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }: PhotoCaptureProps) => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -103,4 +103,4 @@ const FileUpload = ({ onFileSelect, maxSize = MAX_FILE_SIZE, disabled = false }:
   );
 };
 
-export default FileUpload;
+export default PhotoCapture;

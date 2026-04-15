@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { driverApi, truckApi } from '../../services/api';
-import FileUpload from './FileUpload';
+import PhotoCapture from './PhotoCapture';
 import { TextInput } from './FormField';
 import type { Document, DocumentCategory } from '../../types';
 
@@ -138,7 +138,7 @@ const DocumentUploadModal = ({
                 </button>
               </div>
             ) : (
-              <FileUpload onFileSelect={handleFileSelect} />
+              <PhotoCapture onFileSelect={handleFileSelect} />
             )}
           </div>
 

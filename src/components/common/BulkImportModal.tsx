@@ -1,10 +1,10 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Download } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { truckApi, driverApi, type BulkImportResult } from '../../services/api';
-import { Select } from './FormField';
+import { FileInput, Select } from './FormField';
 
 type EntityType = 'truck' | 'driver';
 
@@ -151,7 +151,6 @@ const normalizeTruckType = (value: any): string | null => {
 
 const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportModalProps) => {
   const { t } = useTranslation();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [rawRows, setRawRows] = useState<any[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [mapping, setMapping] = useState<Record<string, string | null>>({});
@@ -225,8 +224,7 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
     XLSX.writeFile(workbook, `naklos-${entityType}-sablon.xlsx`);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const handleFileSelected = (file: File | null) => {
     if (!file) return;
 
     setParseError(null);
@@ -291,7 +289,6 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
     setFileName('');
     setParseError(null);
     setResult(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
     onClose();
   };
 
@@ -329,27 +326,14 @@ const BulkImportModal = ({ isOpen, onClose, onSuccess, entityType }: BulkImportM
                 <Download className="w-5 h-5 inline -mt-0.5" /> {t('bulkImport.downloadTemplate')}
               </button>
 
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".xlsx,.xls,.csv"
-                  onChange={handleFileChange}
-                  className="hidden"
-                  id="bulk-file-input"
-                />
-                <label
-                  htmlFor="bulk-file-input"
-                  className="cursor-pointer inline-block px-6 py-3 bg-primary-600 text-white rounded-lg font-semibold hover:bg-primary-700 transition-colors"
-                >
-                  {fileName ? t('bulkImport.selectDifferentFile') : t('bulkImport.selectFile')}
-                </label>
-                {fileName && (
-                  <p className="mt-3 text-sm text-gray-600">
-                    {t('bulkImport.selected')}: <strong>{fileName}</strong>
-                  </p>
-                )}
-              </div>
+              <FileInput
+                variant="dropzone"
+                accept=".xlsx,.xls,.csv"
+                onChange={handleFileSelected}
+                buttonLabel={fileName ? t('bulkImport.selectDifferentFile') : t('bulkImport.selectFile')}
+                selectedFileName={fileName || null}
+                wrapperClassName="mb-4"
+              />
 
               {parseError && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">

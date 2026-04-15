@@ -280,18 +280,14 @@ const SimpleDocumentUpdateModal = ({
                           <p className="text-sm font-medium text-gray-900">{doc.fileName}</p>
                         </div>
                         <div className="bg-white rounded p-2 border border-yellow-300">
-                          <label className="block text-xs font-medium text-gray-700 mb-1">
-                            {t('simpleDocUpdate.newExpiryDate')}
-                          </label>
-                          <input
+                          <TextInput
+                            label={t('simpleDocUpdate.newExpiryDate')}
                             type="date"
+                            tone="warning"
                             value={editingExpiry}
                             onChange={(e) => setEditingExpiry(e.target.value)}
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500"
+                            hint={`${t('simpleDocUpdate.current')}: ${doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('tr-TR') : t('simpleDocUpdate.notSpecified')}`}
                           />
-                          <p className="text-xs text-gray-600 mt-1">
-                            {t('simpleDocUpdate.current')}: {doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('tr-TR') : t('simpleDocUpdate.notSpecified')}
-                          </p>
                         </div>
                         <div className="flex gap-2">
                           <button
