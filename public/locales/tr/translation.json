@@ -1106,7 +1106,8 @@
     "add": {
       "button": "Yakıt ekle",
       "title": "Yakıt kaydı ekle",
-      "submit": "Kaydet"
+      "submit": "Kaydet",
+      "successToast": "Yakıt kaydedildi."
     },
     "edit": {
       "title": "Yakıt kaydını düzenle",

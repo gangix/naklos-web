@@ -7,6 +7,7 @@ import type { ManualFuelEntryInput, TruckFuelEntryDto } from '../../types/fuel';
 import { TextInput, Select, Textarea } from '../common/FormField';
 
 interface Props {
+  /** Required for the manager flow; ignored when `saveFn` is supplied. */
   fleetId: string;
   truckId: string;
   truckPlate: string;
@@ -16,6 +17,14 @@ interface Props {
   onClose: () => void;
   onSaved: (entry: TruckFuelEntryDto) => void;
   onDuplicate?: (collidingEntryId: string) => void;
+  /**
+   * Optional save override. When provided, replaces the default
+   * fuelEntryApi.addManual / updateManual calls — used by the driver flow
+   * (UC-13-lite) to call the driver-scoped endpoint instead. Photo is
+   * always non-null in `add` mode and null in `edit` mode (we don't allow
+   * photo replacement on edit).
+   */
+  saveFn?: (input: ManualFuelEntryInput, photo: File | null) => Promise<TruckFuelEntryDto>;
 }
 
 type FuelType = ManualFuelEntryInput['fuelType'];
@@ -59,6 +68,7 @@ export default function FuelEntryFormModal({
   onClose,
   onSaved,
   onDuplicate,
+  saveFn,
 }: Props) {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -225,7 +235,9 @@ export default function FuelEntryFormModal({
 
     try {
       let savedEntry: TruckFuelEntryDto;
-      if (mode === 'add') {
+      if (saveFn) {
+        savedEntry = await saveFn(input, mode === 'add' ? photo : null);
+      } else if (mode === 'add') {
         savedEntry = await fuelEntryApi.addManual(fleetId, truckId, input, photo!);
       } else {
         savedEntry = await fuelEntryApi.updateManual(fleetId, initial!.id, input);

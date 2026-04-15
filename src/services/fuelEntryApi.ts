@@ -147,4 +147,30 @@ export const fuelEntryApi = {
    */
   receiptUrl: (fleetId: string, entryId: string): string =>
     `${API_BASE_URL}/fleets/${fleetId}/fuel-entries/${entryId}/receipt`,
+
+  // ── Driver-side endpoints (UC-13-lite) ────────────────────────────────────
+  // The server resolves the driver's assigned truck from the JWT, so callers
+  // don't pass fleetId / truckId here. No edit/delete — drivers can't rewrite
+  // their own history (audit safety).
+
+  /** POST /api/driver/fuel-entries (multipart) */
+  addDriverEntry: (
+    input: ManualFuelEntryInput,
+    photo: File,
+  ): Promise<TruckFuelEntryDto> => {
+    const fd = new FormData();
+    fd.append('data', new Blob([JSON.stringify(input)], { type: 'application/json' }));
+    fd.append('photo', photo);
+    return fuelMultipartCall<TruckFuelEntryDto>('/driver/fuel-entries', fd);
+  },
+
+  /** GET /api/driver/fuel-entries?limit=N */
+  listForDriver: (limit?: number): Promise<TruckFuelEntryDto[]> => {
+    const params = limit !== undefined ? `?limit=${limit}` : '';
+    return fuelApiCall<TruckFuelEntryDto[]>(`/driver/fuel-entries${params}`);
+  },
+
+  /** GET /api/driver/fuel-entries/{entryId}/receipt */
+  driverReceiptUrl: (entryId: string): string =>
+    `${API_BASE_URL}/driver/fuel-entries/${entryId}/receipt`,
 };

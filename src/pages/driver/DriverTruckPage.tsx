@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Truck as TruckIcon } from 'lucide-react';
+import { Truck as TruckIcon, Fuel } from 'lucide-react';
+import { toast } from 'sonner';
 import { driverApi, truckApi } from '../../services/api';
+import { fuelEntryApi } from '../../services/fuelEntryApi';
 import { useTranslation } from 'react-i18next';
 import { formatRelativeTime } from '../../utils/format';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
+import FuelEntryFormModal from '../../components/fuel/FuelEntryFormModal';
 import { useLocationSharing } from '../../contexts/LocationSharingContext';
 import type { Driver, Truck, DocumentCategory } from '../../types';
 
@@ -16,6 +19,7 @@ const DriverTruckPage = () => {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
+  const [fuelModalOpen, setFuelModalOpen] = useState(false);
   const locationSharing = useLocationSharing();
 
   useEffect(() => {
@@ -147,6 +151,18 @@ const DriverTruckPage = () => {
         )}
       </div>
 
+      {/* Fuel entry CTA — UC-13-lite. Only shown when a truck is assigned;
+          driver hits the driver-scoped endpoint which auto-resolves the truck
+          from JWT, so the modal doesn't need fleetId. */}
+      <button
+        type="button"
+        onClick={() => setFuelModalOpen(true)}
+        className="w-full mb-4 inline-flex items-center justify-center gap-2 px-4 py-3 text-sm font-semibold rounded-xl bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
+      >
+        <Fuel className="w-4 h-4" />
+        {t('fuelEntry.add.button')}
+      </button>
+
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
 
@@ -204,6 +220,19 @@ const DriverTruckPage = () => {
           relatedType="truck"
           currentExpiryDate={uploadCurrentExpiry}
           onUploadSuccess={reloadTruck}
+        />
+      )}
+
+      {fuelModalOpen && (
+        <FuelEntryFormModal
+          // fleetId is unused when saveFn overrides the API call.
+          fleetId=""
+          truckId={assignedTruck.id}
+          truckPlate={assignedTruck.plateNumber}
+          mode="add"
+          onClose={() => setFuelModalOpen(false)}
+          onSaved={() => toast.success(t('fuelEntry.add.successToast'))}
+          saveFn={(input, photo) => fuelEntryApi.addDriverEntry(input, photo!)}
         />
       )}
     </div>

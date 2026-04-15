@@ -1107,7 +1107,8 @@
     "add": {
       "button": "Kraftstoff hinzufügen",
       "title": "Kraftstoffeintrag hinzufügen",
-      "submit": "Speichern"
+      "submit": "Speichern",
+      "successToast": "Kraftstoffeintrag gespeichert."
     },
     "edit": {
       "title": "Kraftstoffeintrag bearbeiten",

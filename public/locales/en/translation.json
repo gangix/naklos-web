@@ -1107,7 +1107,8 @@
     "add": {
       "button": "Add fuel",
       "title": "Add fuel record",
-      "submit": "Save"
+      "submit": "Save",
+      "successToast": "Fuel entry saved."
     },
     "edit": {
       "title": "Edit fuel record",
