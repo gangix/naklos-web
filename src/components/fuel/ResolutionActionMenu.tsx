@@ -136,7 +136,6 @@ export default function ResolutionActionMenu(
           bullets={[
             t('fuelReview.subcontractorModal.bullet1'),
             t('fuelReview.subcontractorModal.bullet2'),
-            t('fuelReview.subcontractorModal.bullet3'),
           ]}
           confirmLabel={t('fuelReview.subcontractorModal.confirm')}
           onConfirm={confirmSubcontractor}

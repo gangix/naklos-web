@@ -981,22 +981,22 @@
       "duplicates": "Bekleyen olası yineleme yok."
     },
     "banner": {
-      "lead": "Bu plakalardaki yakıt kayıtları bir araçla eşleşmedi ve eşleşene kadar filo analizlerinden çıkarıldı. Her plaka için 4 seçeneğiniz var:",
+      "lead": "Bu plakalardaki kayıtlar bir araçla eşleşmedi ve analizlere dahil edilmiyor. 4 seçeneğiniz var:",
       "createTruck": {
         "label": "Araç oluştur",
-        "desc": "Plaka size ait. Aracı eklediğinizde tüm kayıtlar bu araca bağlanır ve analize dahil edilir."
+        "desc": "Aracı ekleyin; geçmiş ve yeni kayıtlar bu araca bağlanır ve analize girer."
       },
       "alias": {
         "label": "Plaka düzelt",
-        "desc": "Plaka yanlış yazılmış. Doğrusuna yönlendirin; kayıtlar doğru araca bağlanır ve analize dahil edilir."
+        "desc": "Doğru plakaya yönlendirin; kayıtlar doğru araca bağlanır ve analize girer."
       },
       "subcontractor": {
         "label": "Taşeron",
-        "desc": "Plaka size ait değil. Bu plakanın kayıtları analizden hariç tutulur (kuralı Çözümler sekmesinden silebilirsiniz)."
+        "desc": "Bu plakanın kayıtları analize dahil edilmez. Kuralı 'Kurallar' sekmesinden iptal edebilirsiniz."
       },
       "dismiss": {
         "label": "Yoksay",
-        "desc": "Sadece bu partideki kayıtları bekleyenlerden gizler. Başka bir partide tekrar görünebilir."
+        "desc": "Sadece bu içe aktarımdaki kayıtlar analize dahil edilmez. Başka partide tekrar görünebilir."
       }
     },
     "plateRow": {
@@ -1020,7 +1020,7 @@
     },
     "aliasModal": {
       "title": "Plaka düzelt",
-      "description": "Statement'teki <strong>{{plate}}</strong> plakası yanlış yazılmış. Doğru plakayı yazın — geçmiş ve yeni tüm kayıtlar doğru araca bağlanır ve analize dahil edilir.",
+      "description": "Statement'te <strong>{{plate}}</strong> olarak yazılmış. Doğru plakayı yazın; tüm kayıtlar bu araca bağlanır ve analize girer.",
       "inputLabel": "Doğru plaka",
       "placeholder": "Örn. 34 ABC 123",
       "cancel": "İptal",
@@ -1031,17 +1031,16 @@
     },
     "subcontractorModal": {
       "title": "Taşeron olarak işaretle",
-      "description": "<strong>{{plate}}</strong> plakası taşerona ait olarak işaretlenecek.",
-      "bullet1": "Bu plakanın geçmiş ve yeni kayıtları filo analizlerinden çıkar.",
-      "bullet2": "Yeni içe aktarımlar da otomatik taşeron olarak işaretlenir.",
-      "bullet3": "Kuralı istediğiniz zaman <strong>Kurallar</strong> sekmesinden silebilirsiniz.",
+      "description": "<strong>{{plate}}</strong> taşeron olarak işaretlenecek. Bu plakanın geçmiş kayıtları analize dahil edilmez.",
+      "bullet1": "Yeni içe aktarımlarda da otomatik taşeron işaretlenir; bekleyenlere düşmez.",
+      "bullet2": "Kuralı 'Kurallar' sekmesinden silebilirsiniz.",
       "confirm": "Taşeron olarak işaretle",
       "successToast": "{{count}} kayıt taşeron olarak işaretlendi.",
       "errorDefault": "Taşeron işaretleme başarısız."
     },
     "dismissModal": {
       "title": "Bu partide yoksay",
-      "description": "<strong>{{plate}}</strong> plakasının {{count}} kaydı bu partiden gizlenecek.",
+      "description": "Sadece bu içe aktarımdaki <strong>{{plate}}</strong> kayıtları ({{count}}) analize dahil edilmeyecek.",
       "confirm": "Yoksay",
       "successToast": "{{count}} kayıt yoksayıldı (bu partide).",
       "errorDefault": "Yoksayma başarısız."

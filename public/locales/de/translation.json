@@ -982,22 +982,22 @@
       "duplicates": "Keine ausstehenden Duplikate."
     },
     "banner": {
-      "lead": "Diese Kraftstoffeinträge sind keinem LKW zugeordnet und bis zur Auflösung von der Flottenanalyse ausgeschlossen. Sie haben pro Kennzeichen 4 Optionen:",
+      "lead": "Diese Einträge sind keinem LKW zugeordnet und nicht in der Analyse enthalten. 4 Optionen zur Lösung:",
       "createTruck": {
         "label": "LKW erstellen",
-        "desc": "Das Kennzeichen gehört Ihnen. Mit dem Hinzufügen des LKW werden alle Einträge verknüpft und in die Analyse aufgenommen."
+        "desc": "LKW hinzufügen; vergangene und neue Einträge werden zugeordnet und in die Analyse aufgenommen."
       },
       "alias": {
         "label": "Kennzeichen korrigieren",
-        "desc": "Das Kennzeichen ist falsch geschrieben. Auf das richtige umleiten; Einträge werden korrekt zugeordnet und in die Analyse aufgenommen."
+        "desc": "Auf das richtige Kennzeichen umleiten; Einträge werden dem richtigen LKW zugeordnet und in die Analyse aufgenommen."
       },
       "subcontractor": {
         "label": "Subunternehmer",
-        "desc": "Kennzeichen gehört nicht Ihnen. Einträge werden aus der Analyse ausgeschlossen (Regel jederzeit unter Auflösungen löschbar)."
+        "desc": "Einträge dieses Kennzeichens werden nicht in der Analyse berücksichtigt. Regel jederzeit unter 'Regeln' aufheben."
       },
       "dismiss": {
         "label": "Verwerfen",
-        "desc": "Versteckt Einträge nur in diesem Import. Können in einem anderen Batch wieder erscheinen."
+        "desc": "Einträge aus diesem Import werden nicht in der Analyse berücksichtigt. Können in einem anderen Batch wieder erscheinen."
       }
     },
     "plateRow": {
@@ -1021,7 +1021,7 @@
     },
     "aliasModal": {
       "title": "Kennzeichen korrigieren",
-      "description": "Das Kennzeichen <strong>{{plate}}</strong> im Statement ist falsch geschrieben. Geben Sie das richtige Kennzeichen ein — alle vergangenen und zukünftigen Einträge werden dem richtigen LKW zugeordnet und in die Analyse aufgenommen.",
+      "description": "Im Statement als <strong>{{plate}}</strong> erfasst. Geben Sie das richtige Kennzeichen ein; alle Einträge werden diesem LKW zugeordnet und in die Analyse aufgenommen.",
       "inputLabel": "Richtiges Kennzeichen",
       "placeholder": "z.B. 34 ABC 123",
       "cancel": "Abbrechen",
@@ -1032,17 +1032,16 @@
     },
     "subcontractorModal": {
       "title": "Als Subunternehmer markieren",
-      "description": "<strong>{{plate}}</strong> wird als Kennzeichen eines Subunternehmers markiert.",
-      "bullet1": "Vergangene und zukünftige Einträge für dieses Kennzeichen sind von der Flottenanalyse ausgeschlossen.",
-      "bullet2": "Zukünftige Importe markieren dieses Kennzeichen automatisch als Subunternehmer.",
-      "bullet3": "Sie können die Regel jederzeit unter <strong>Regeln</strong> löschen.",
+      "description": "<strong>{{plate}}</strong> wird als Subunternehmer markiert. Vergangene Einträge dieses Kennzeichens werden nicht in der Analyse berücksichtigt.",
+      "bullet1": "Zukünftige Importe werden automatisch als Subunternehmer markiert; erscheinen nicht in „Offen\".",
+      "bullet2": "Sie können diese Regel jederzeit unter „Regeln\" löschen.",
       "confirm": "Als Subunternehmer markieren",
       "successToast": "{{count}} Einträge als Subunternehmer markiert.",
       "errorDefault": "Markierung als Subunternehmer fehlgeschlagen."
     },
     "dismissModal": {
       "title": "In diesem Batch verwerfen",
-      "description": "{{count}} Einträge von <strong>{{plate}}</strong> in diesem Batch werden ausgeblendet.",
+      "description": "{{count}} Einträge von <strong>{{plate}}</strong> aus diesem Import werden nicht in der Analyse berücksichtigt.",
       "confirm": "Verwerfen",
       "successToast": "{{count}} Einträge verworfen (in diesem Batch).",
       "errorDefault": "Verwerfen fehlgeschlagen."

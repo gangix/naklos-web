@@ -982,22 +982,22 @@
       "duplicates": "No pending duplicates."
     },
     "banner": {
-      "lead": "These fuel records aren't matched to a truck and are excluded from fleet analytics until resolved. You have 4 options per plate:",
+      "lead": "These plates' records aren't matched to a truck and aren't in analytics. 4 ways to resolve:",
       "createTruck": {
         "label": "Create truck",
-        "desc": "The plate is yours. Adding the truck links all records to it and includes them in analytics."
+        "desc": "Add the truck; past and new records link to it and join analytics."
       },
       "alias": {
         "label": "Fix plate",
-        "desc": "The plate is misread. Redirect to the correct one; records link to the right truck and join analytics."
+        "desc": "Redirect to the correct plate; records link to the right truck and join analytics."
       },
       "subcontractor": {
         "label": "Subcontractor",
-        "desc": "Plate isn't yours. Records are excluded from analytics (delete the rule anytime from Resolutions)."
+        "desc": "This plate's records won't count in analytics. Cancel from 'Rules' anytime."
       },
       "dismiss": {
         "label": "Dismiss",
-        "desc": "Hides records from this import only. May reappear in another batch."
+        "desc": "Records from this import won't count in analytics. May reappear in another batch."
       }
     },
     "plateRow": {
@@ -1021,7 +1021,7 @@
     },
     "aliasModal": {
       "title": "Fix plate",
-      "description": "The plate <strong>{{plate}}</strong> in the statement is misread. Enter the correct plate — all past and future records link to the right truck and join analytics.",
+      "description": "Written as <strong>{{plate}}</strong> in the statement. Enter the correct plate; all records link to that truck and join analytics.",
       "inputLabel": "Correct plate",
       "placeholder": "e.g. 34 ABC 123",
       "cancel": "Cancel",
@@ -1032,17 +1032,16 @@
     },
     "subcontractorModal": {
       "title": "Mark as subcontractor",
-      "description": "<strong>{{plate}}</strong> will be marked as a subcontractor's plate.",
-      "bullet1": "Past and future records for this plate are excluded from fleet analytics.",
-      "bullet2": "Future imports automatically mark this plate as subcontractor.",
-      "bullet3": "You can delete the rule anytime from the <strong>Rules</strong> tab.",
+      "description": "<strong>{{plate}}</strong> will be marked as subcontractor. This plate's past records won't count in analytics.",
+      "bullet1": "Future imports are auto-marked subcontractor; won't appear in pending.",
+      "bullet2": "You can delete this rule anytime from 'Rules'.",
       "confirm": "Mark as subcontractor",
       "successToast": "{{count}} entries marked as subcontractor.",
       "errorDefault": "Couldn't mark as subcontractor."
     },
     "dismissModal": {
       "title": "Dismiss in this batch",
-      "description": "{{count}} records of <strong>{{plate}}</strong> in this batch will be hidden.",
+      "description": "{{count}} records of <strong>{{plate}}</strong> from this import won't count in analytics.",
       "confirm": "Dismiss",
       "successToast": "{{count}} entries dismissed (in this batch).",
       "errorDefault": "Couldn't dismiss."
