@@ -7,7 +7,13 @@ import { Select, TextInput } from './FormField';
 interface AddTruckModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess: (result?: { relinkedFuelEntryCount: number }) => void;
+  /** Pre-fill the plate field, locked as read-only. Used by the fuel review
+   *  flow to create a truck for an unmatched plate without re-typing it. */
+  prefillPlate?: string;
+  /** Custom submit handler. When provided, replaces the default
+   *  `truckApi.register` call. The resolved value is passed to onSuccess. */
+  onSubmit?: (data: { plateNumber: string; type: string; capacityKg: number; cargoVolumeM3: number }) => Promise<{ relinkedFuelEntryCount?: number } | void>;
 }
 
 // Labels resolved via t(`truckType.${value}`) at render so they follow the
@@ -25,13 +31,13 @@ const truckTypes = [
   { value: 'TANKER',        capacity: 30000 },
 ];
 
-const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
+const AddTruckModal = ({ isOpen, onClose, onSuccess, prefillPlate, onSubmit }: AddTruckModalProps) => {
   const { t } = useTranslation();
   const { fleetId } = useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    plateNumber: '',
+    plateNumber: prefillPlate ?? '',
     type: 'SMALL_TRUCK',
     capacityKg: 3500,
     cargoVolumeM3: 20,
@@ -43,19 +49,24 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
     setError(null);
 
     try {
-      await truckApi.register({
-        ...formData,
-        fleetId,
-      });
+      if (onSubmit) {
+        const result = await onSubmit(formData);
+        onSuccess(result ? { relinkedFuelEntryCount: result.relinkedFuelEntryCount ?? 0 } : undefined);
+      } else {
+        await truckApi.register({
+          ...formData,
+          fleetId,
+        });
+        onSuccess();
+      }
 
       // Reset form and close
       setFormData({
-        plateNumber: '',
+        plateNumber: prefillPlate ?? '',
         type: 'SMALL_TRUCK',
         capacityKg: 3500,
         cargoVolumeM3: 20,
       });
-      onSuccess();
       onClose();
     } catch (err) {
       console.error('Error creating truck:', err);
@@ -104,6 +115,7 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess }: AddTruckModalProps) => {
               value={formData.plateNumber}
               onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value.toUpperCase() })}
               placeholder="34 ABC 123"
+              disabled={!!prefillPlate}
             />
 
             <Select

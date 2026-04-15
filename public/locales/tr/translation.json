@@ -193,7 +193,8 @@
     "download": "İndir",
     "resend": "Tekrar Gönder",
     "close": "Kapat",
-    "notFound": "Kayıt bulunamadı."
+    "notFound": "Kayıt bulunamadı.",
+    "irreversible": "Bu işlem geri alınamaz."
   },
   "document": {
     "title": "Belgeler",
@@ -1072,12 +1073,7 @@
       "confirm": "Onayla"
     },
     "createTruckPrompts": {
-      "capacity": "Kapasite (kg)?",
-      "type": "Tür? (TIR, KAMYON, KAMYONET)",
-      "volume": "Kargo hacmi (m³)?",
-      "invalidNumeric": "Kapasite veya hacim geçersiz.",
-      "successToast": "Araç oluşturuldu. {{count}} geçmiş kayıt bağlandı.",
-      "errorDefault": "Araç oluşturma başarısız."
+      "successToast": "Araç oluşturuldu. {{count}} geçmiş kayıt bağlandı."
     }
   },
   "cookie": {
@@ -1124,6 +1120,28 @@
       "duplicate": "Yinelenen",
       "possibleDuplicate": "Olası yineleme",
       "error": "Hata"
+    }
+  },
+  "confirmDelete": {
+    "truck": {
+      "title": "Aracı sil",
+      "description": "{{plate}} plakalı araç silinecek."
+    },
+    "driver": {
+      "title": "Sürücüyü sil",
+      "description": "{{name}} adlı sürücü silinecek."
+    },
+    "client": {
+      "title": "Müşteriyi sil",
+      "description": "{{name}} adlı müşteri silinecek."
+    },
+    "document": {
+      "title": "Belgeyi sil",
+      "description": "{{filename}} silinecek."
+    },
+    "unassignDriver": {
+      "title": "Sürücüyü kaldır",
+      "description": "Bu araçtan sürücü ataması kaldırılacak."
     }
   }
 }

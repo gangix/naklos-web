@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { clientApi } from '../services/api';
 import { Select, TextInput } from '../components/common/FormField';
+import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import type { Client } from '../types';
 
 type PaymentTerms = 'NET_0' | 'NET_30' | 'NET_60' | 'NET_90';
@@ -29,6 +30,7 @@ const ClientDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   // Edit state
   const [editing, setEditing] = useState(false);
@@ -115,15 +117,13 @@ const ClientDetailPage = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const runDeleteClient = async () => {
     if (!clientId || !client) return;
-    if (!confirm(t('clientDetail.confirmDelete', { name: client.companyName }))) {
-      return;
-    }
     try {
       setDeleting(true);
       await clientApi.delete(clientId);
       toast.success(t('toast.success.clientDeleted'));
+      setConfirmDelete(false);
       navigate('/manager/clients');
     } catch (err) {
       console.error('Error deleting client:', err);
@@ -183,7 +183,7 @@ const ClientDetailPage = () => {
           {t('common.edit')}
         </button>
         <button
-          onClick={handleDelete}
+          onClick={() => setConfirmDelete(true)}
           disabled={deleting}
           className="px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
         >
@@ -328,6 +328,18 @@ const ClientDetailPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {confirmDelete && client && (
+        <ConfirmActionModal
+          title={t('confirmDelete.client.title')}
+          description={t('confirmDelete.client.description', { name: client.companyName })}
+          bullets={[t('common.irreversible')]}
+          confirmLabel={t('common.delete')}
+          tone="danger"
+          onConfirm={runDeleteClient}
+          onClose={() => setConfirmDelete(false)}
+        />
       )}
     </div>
   );

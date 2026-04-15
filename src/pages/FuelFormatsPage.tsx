@@ -67,14 +67,14 @@ const FuelFormatsPage = () => {
       <div className="flex gap-2">
         <button
           onClick={() => navigate(`/manager/fuel-formats/new`)}
-          className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
         >
           <Plus className="w-4 h-4" />
           Yeni Format
         </button>
         <button
           onClick={() => navigate(`/manager/fuel-imports`)}
-          className="inline-flex items-center gap-2 bg-white border px-4 py-2 rounded hover:bg-gray-50"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
         >
           <Upload className="w-4 h-4" />
           Statement İçe Aktar
@@ -115,33 +115,33 @@ interface TableProps {
 }
 
 const FormatTable = ({ rows, onClone, onDeactivate }: TableProps) => (
-  <div className="border rounded overflow-x-auto">
+  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
     <table className="w-full text-sm">
       <thead className="bg-gray-50 text-left">
         <tr>
-          <th className="px-3 py-2">Provider</th>
-          <th className="px-3 py-2">Ad</th>
-          <th className="px-3 py-2">Sürüm</th>
-          <th className="px-3 py-2">Alan Sayısı</th>
-          <th className="px-3 py-2">Durum</th>
-          <th className="px-3 py-2 text-right">İşlem</th>
+          <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Provider</th>
+          <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Ad</th>
+          <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Sürüm</th>
+          <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Alan Sayısı</th>
+          <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Durum</th>
+          <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">İşlem</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody className="divide-y divide-gray-100">
         {rows.map((f) => (
-          <tr key={f.id} className="border-t">
-            <td className="px-3 py-2">{f.provider}</td>
-            <td className="px-3 py-2">{f.name}</td>
-            <td className="px-3 py-2">v{f.version}</td>
-            <td className="px-3 py-2">{Object.keys(f.columnMapping).length}</td>
-            <td className="px-3 py-2">
+          <tr key={f.id} className="hover:bg-gray-50">
+            <td className="px-4 py-3">{f.provider}</td>
+            <td className="px-4 py-3">{f.name}</td>
+            <td className="px-4 py-3">v{f.version}</td>
+            <td className="px-4 py-3">{Object.keys(f.columnMapping).length}</td>
+            <td className="px-4 py-3">
               {f.active ? (
                 <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs">Aktif</span>
               ) : (
                 <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs">Pasif</span>
               )}
             </td>
-            <td className="px-3 py-2 text-right space-x-2">
+            <td className="px-4 py-3 text-right space-x-2">
               {onClone && (
                 <button
                   onClick={() => onClone(f)}

@@ -7,6 +7,7 @@ import { fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportBatchDto } from '../types/fuel';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
+import { formatDateTime } from '../utils/format';
 
 // ── Outcome types ────────────────────────────────────────────────────────────
 
@@ -177,12 +178,12 @@ const FuelImportBatchDetailPage = () => {
         <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">İçe Aktarma Özeti</h1>
       </div>
 
-      <div className="bg-white border rounded p-4 space-y-2 text-sm">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-2 text-sm">
         <Row k="Dosya" v={batch.fileName} />
         <Row k="Provider" v={batch.provider} />
         <Row k="Durum" v={batch.status} />
-        <Row k="Yüklenme" v={new Date(batch.uploadedAt).toLocaleString('tr-TR')} />
-        {batch.completedAt && <Row k="Tamamlanma" v={new Date(batch.completedAt).toLocaleString('tr-TR')} />}
+        <Row k="Yüklenme" v={formatDateTime(batch.uploadedAt)} />
+        {batch.completedAt && <Row k="Tamamlanma" v={formatDateTime(batch.completedAt)} />}
       </div>
 
       <OutcomeBanner batch={batch} outcome={outcome} />

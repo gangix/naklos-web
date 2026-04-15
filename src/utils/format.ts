@@ -14,6 +14,14 @@ export const formatDate = (dateString: string): string => {
   }).format(date);
 };
 
+export const formatDateTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat(i18n.language, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+};
+
 /**
  * "3 dk önce", "2 saat önce", "5 gün önce"
  */

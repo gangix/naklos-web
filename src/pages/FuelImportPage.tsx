@@ -103,7 +103,7 @@ const FuelImportPage = () => {
       <FuelSectionNav />
       <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yakıt Statement İçe Aktar</h1>
 
-      <div className="bg-white border rounded p-4 space-y-3">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-3">
         <div className="grid grid-cols-2 gap-4">
           <label className="block">
             <span className="text-sm font-medium">Format</span>
@@ -129,7 +129,7 @@ const FuelImportPage = () => {
           <button
             onClick={runPreview}
             disabled={!file || !formatId || loading}
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all disabled:opacity-50"
           >
             <Upload className="w-4 h-4" />
             Önizle
@@ -177,45 +177,45 @@ const FuelImportPage = () => {
             <StatCard label="Hata / Eşlenmemiş" value={summary.errorCount + summary.unmatchedCount} highlight="red" />
           </div>
 
-          <div className="border rounded overflow-x-auto">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-left">
                 <tr>
-                  <th className="px-3 py-2">#</th>
-                  <th className="px-3 py-2">Plaka</th>
-                  <th className="px-3 py-2">Tarih</th>
-                  <th className="px-3 py-2">Yakıt</th>
-                  <th className="px-3 py-2 text-right">Litre</th>
-                  <th className="px-3 py-2 text-right">Tutar</th>
-                  <th className="px-3 py-2">Durum</th>
-                  <th className="px-3 py-2">Araç</th>
-                  <th className="px-3 py-2 text-right">İşlem</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">#</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Plaka</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tarih</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Yakıt</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Litre</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Tutar</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Durum</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Araç</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">İşlem</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-100">
                 {preview.rows.map((r) => {
                   const b = classificationBadge(r.classification, r.errorMessage);
                   const overridden = overrides[r.rowIndex] === 'IMPORT';
                   return (
-                    <tr key={r.rowIndex} className="border-t">
-                      <td className="px-3 py-2 text-gray-500">{r.rowIndex}</td>
-                      <td className="px-3 py-2">{r.plate ?? '—'}</td>
-                      <td className="px-3 py-2">{r.occurredAt ?? '—'}</td>
-                      <td className="px-3 py-2">{r.fuelType ?? '—'}</td>
-                      <td className="px-3 py-2 text-right">{r.liters ?? '—'}</td>
-                      <td className="px-3 py-2 text-right">{r.totalPrice ?? '—'}</td>
-                      <td className="px-3 py-2">
+                    <tr key={r.rowIndex} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-500">{r.rowIndex}</td>
+                      <td className="px-4 py-3">{r.plate ?? '—'}</td>
+                      <td className="px-4 py-3">{r.occurredAt ?? '—'}</td>
+                      <td className="px-4 py-3">{r.fuelType ?? '—'}</td>
+                      <td className="px-4 py-3 text-right">{r.liters ?? '—'}</td>
+                      <td className="px-4 py-3 text-right">{r.totalPrice ?? '—'}</td>
+                      <td className="px-4 py-3">
                         <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded ${b.cls}`}>
                           {b.icon}{b.label}
                         </span>
                         {r.errorMessage && <span className="block text-xs text-red-600">{r.errorMessage}</span>}
                       </td>
-                      <td className="px-3 py-2">
+                      <td className="px-4 py-3">
                         {r.matchedTruckId
                           ? <span className="text-xs text-gray-600" title={r.matchedTruckId}>Eşlendi</span>
                           : <span className="text-xs text-amber-700">Eşleşmedi</span>}
                       </td>
-                      <td className="px-3 py-2 text-right">
+                      <td className="px-4 py-3 text-right">
                         {r.classification === 'POSSIBLE_DUPLICATE' && (
                           <Checkbox
                             checked={overridden}
@@ -234,14 +234,14 @@ const FuelImportPage = () => {
           <div className="flex justify-end gap-2">
             <button
               onClick={() => { setPreview(null); setOverrides({}); }}
-              className="px-4 py-2 border rounded"
+              className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
             >
               Vazgeç
             </button>
             <button
               onClick={commit}
               disabled={committing}
-              className="px-4 py-2 bg-green-600 text-white rounded disabled:opacity-50"
+              className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all disabled:opacity-50"
             >
               {committing ? 'Aktarılıyor…' : 'Onayla ve Aktar'}
             </button>
@@ -260,7 +260,7 @@ const StatCard = ({ label, value, highlight }: { label: string; value: number; h
     highlight === 'gray'   ? 'border-gray-200 bg-gray-50' :
     'border-gray-200 bg-white';
   return (
-    <div className={`border rounded p-3 ${cls}`}>
+    <div className={`rounded-xl shadow-sm border p-3 ${cls}`}>
       <p className="text-xs text-gray-600">{label}</p>
       <p className="text-xl font-semibold">{value}</p>
     </div>

@@ -111,10 +111,10 @@ const FuelFormatCreatePage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-semibold">Yeni Yakıt Formatı</h1>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yeni Yakıt Formatı</h1>
       </div>
 
-      <div className="bg-white border rounded p-4 space-y-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <label className="block">
             <span className="text-sm font-medium">Provider</span>
@@ -157,24 +157,24 @@ const FuelFormatCreatePage = () => {
           <p className="text-sm text-gray-500 mb-2">
             Zorunlu alanlar: {REQUIRED_SEMANTIC_FIELDS.join(', ')}
           </p>
-          <div className="border rounded overflow-x-auto">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-left">
                 <tr>
-                  <th className="px-3 py-2">Alan</th>
-                  <th className="px-3 py-2">Kaynak Kolon</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Alan</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Kaynak Kolon</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-100">
                 {SEMANTIC_FIELDS.map((field) => (
-                  <tr key={field} className="border-t">
-                    <td className="px-3 py-2">
+                  <tr key={field} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">
                       {field}
                       {(REQUIRED_SEMANTIC_FIELDS as readonly string[]).includes(field) && (
                         <span className="text-red-500 ml-1">*</span>
                       )}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="px-4 py-3">
                       {suggested && suggested.sampleHeaders.length > 0 ? (
                         <select
                           className="border rounded px-2 py-1 w-full"
@@ -205,14 +205,14 @@ const FuelFormatCreatePage = () => {
         <div className="flex justify-end gap-2">
           <button
             onClick={() => navigate(`/manager/fuel-formats`)}
-            className="px-4 py-2 border rounded"
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
           >
             İptal
           </button>
           <button
             onClick={save}
             disabled={saving || missingRequired.length > 0}
-            className="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50 inline-flex items-center gap-2"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all disabled:opacity-50"
           >
             <Upload className="w-4 h-4" />
             Kaydet

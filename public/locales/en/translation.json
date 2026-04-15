@@ -193,7 +193,8 @@
     "download": "Download",
     "resend": "Resend",
     "close": "Close",
-    "notFound": "Not found."
+    "notFound": "Not found.",
+    "irreversible": "This action cannot be undone."
   },
   "document": {
     "title": "Documents",
@@ -1073,12 +1074,7 @@
       "confirm": "Confirm"
     },
     "createTruckPrompts": {
-      "capacity": "Capacity (kg)?",
-      "type": "Type? (TIR, KAMYON, KAMYONET)",
-      "volume": "Cargo volume (m³)?",
-      "invalidNumeric": "Capacity or volume is invalid.",
-      "successToast": "Truck created. {{count}} historical entries linked.",
-      "errorDefault": "Couldn't create truck."
+      "successToast": "Truck created. {{count}} historical entries linked."
     }
   },
   "cookie": {
@@ -1125,6 +1121,28 @@
       "duplicate": "Duplicate",
       "possibleDuplicate": "Possible duplicate",
       "error": "Error"
+    }
+  },
+  "confirmDelete": {
+    "truck": {
+      "title": "Delete truck",
+      "description": "Truck with plate {{plate}} will be deleted."
+    },
+    "driver": {
+      "title": "Delete driver",
+      "description": "Driver {{name}} will be deleted."
+    },
+    "client": {
+      "title": "Delete client",
+      "description": "Client {{name}} will be deleted."
+    },
+    "document": {
+      "title": "Delete document",
+      "description": "{{filename}} will be deleted."
+    },
+    "unassignDriver": {
+      "title": "Unassign driver",
+      "description": "Driver assignment will be removed from this truck."
     }
   }
 }

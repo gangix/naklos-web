@@ -193,7 +193,8 @@
     "download": "Herunterladen",
     "resend": "Erneut senden",
     "close": "Schließen",
-    "notFound": "Nicht gefunden."
+    "notFound": "Nicht gefunden.",
+    "irreversible": "Diese Aktion kann nicht rückgängig gemacht werden."
   },
   "document": {
     "title": "Dokumente",
@@ -1073,12 +1074,7 @@
       "confirm": "Bestätigen"
     },
     "createTruckPrompts": {
-      "capacity": "Kapazität (kg)?",
-      "type": "Typ? (TIR, KAMYON, KAMYONET)",
-      "volume": "Ladevolumen (m³)?",
-      "invalidNumeric": "Kapazität oder Volumen ist ungültig.",
-      "successToast": "LKW erstellt. {{count}} historische Einträge verknüpft.",
-      "errorDefault": "LKW konnte nicht erstellt werden."
+      "successToast": "LKW erstellt. {{count}} historische Einträge verknüpft."
     }
   },
   "cookie": {
@@ -1125,6 +1121,28 @@
       "duplicate": "Duplikat",
       "possibleDuplicate": "Mögliches Duplikat",
       "error": "Fehler"
+    }
+  },
+  "confirmDelete": {
+    "truck": {
+      "title": "LKW löschen",
+      "description": "LKW mit Kennzeichen {{plate}} wird gelöscht."
+    },
+    "driver": {
+      "title": "Fahrer löschen",
+      "description": "Fahrer {{name}} wird gelöscht."
+    },
+    "client": {
+      "title": "Kunde löschen",
+      "description": "Kunde {{name}} wird gelöscht."
+    },
+    "document": {
+      "title": "Dokument löschen",
+      "description": "{{filename}} wird gelöscht."
+    },
+    "unassignDriver": {
+      "title": "Fahrer entfernen",
+      "description": "Fahrerzuordnung wird von diesem LKW entfernt."
     }
   }
 }

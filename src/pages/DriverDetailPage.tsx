@@ -5,6 +5,7 @@ import { driverApi } from '../services/api';
 import { useTranslation } from 'react-i18next';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
+import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select, TextInput } from '../components/common/FormField';
 import { Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
@@ -37,6 +38,8 @@ const DriverDetailPage = () => {
   const [certificateNumber, setCertificateNumber] = useState('');
   const [certificateIssueDate, setCertificateIssueDate] = useState('');
   const [certificateExpiryDate, setCertificateExpiryDate] = useState('');
+  const [confirmAction, setConfirmAction] = useState<'delete' | null>(null);
+  const [pendingCertificateId, setPendingCertificateId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!driverId) return;
@@ -198,21 +201,20 @@ const DriverDetailPage = () => {
     }
   };
 
-  const handleRemoveCertificate = async (certificateId: string) => {
-    if (!driverId) return;
+  const handleRemoveCertificate = (certificateId: string) => {
+    setPendingCertificateId(certificateId);
+    setConfirmAction('delete');
+  };
 
-    if (!confirm(t('driverDetail.confirmRemoveCert'))) {
-      return;
-    }
-
+  const runRemoveCertificate = async () => {
+    if (!driverId || !pendingCertificateId) return;
     try {
-      await driverApi.removeCertificate(driverId, certificateId);
-
-      // Refresh driver data
+      await driverApi.removeCertificate(driverId, pendingCertificateId);
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
-
       toast.success(t('toast.success.certificateRemoved'));
+      setConfirmAction(null);
+      setPendingCertificateId(null);
     } catch (err) {
       console.error('Error removing certificate:', err);
       toast.error(t('toast.error.deleteCertificate'));
@@ -284,16 +286,13 @@ const DriverDetailPage = () => {
     }
   };
 
-  const handleDeleteDriver = async () => {
+  const runDeleteDriver = async () => {
     if (!driverId) return;
-    if (!confirm(`${fullName} - ${t("driverDetail.confirmDelete")}`)) {
-      return;
-    }
-
     try {
       setDeleting(true);
       await driverApi.delete(driverId);
       toast.success(t('toast.success.driverDeleted'));
+      setConfirmAction(null);
       navigate('/manager/drivers');
     } catch (err) {
       console.error('Error deleting driver:', err);
@@ -673,7 +672,7 @@ const DriverDetailPage = () => {
       {/* Delete driver */}
       <div className="mt-6">
         <button
-          onClick={handleDeleteDriver}
+          onClick={() => { setPendingCertificateId(null); setConfirmAction('delete'); }}
           disabled={deleting}
           className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
         >
@@ -692,6 +691,30 @@ const DriverDetailPage = () => {
           relatedName={fullName}
           currentExpiryDate={uploadCurrentExpiry}
           onUpdate={handleDocumentSave}
+        />
+      )}
+
+      {confirmAction === 'delete' && pendingCertificateId && (
+        <ConfirmActionModal
+          title={t('confirmDelete.document.title')}
+          description={t('confirmDelete.document.description', { filename: t('driver.certificates') })}
+          bullets={[t('common.irreversible')]}
+          confirmLabel={t('common.delete')}
+          tone="danger"
+          onConfirm={runRemoveCertificate}
+          onClose={() => { setConfirmAction(null); setPendingCertificateId(null); }}
+        />
+      )}
+
+      {confirmAction === 'delete' && !pendingCertificateId && (
+        <ConfirmActionModal
+          title={t('confirmDelete.driver.title')}
+          description={t('confirmDelete.driver.description', { name: fullName })}
+          bullets={[t('common.irreversible')]}
+          confirmLabel={t('common.delete')}
+          tone="danger"
+          onConfirm={runDeleteDriver}
+          onClose={() => setConfirmAction(null)}
         />
       )}
     </div>

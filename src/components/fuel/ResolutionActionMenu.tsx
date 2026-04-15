@@ -4,6 +4,7 @@ import { fuelReviewApi } from '../../services/api';
 import type { UnmatchedBatchBreakdown } from '../../types/fuel';
 import AliasModal from './AliasModal';
 import ConfirmActionModal from './ConfirmActionModal';
+import AddTruckModal from '../common/AddTruckModal';
 import { toast } from 'sonner';
 
 interface Props {
@@ -18,6 +19,7 @@ export default function ResolutionActionMenu(
   { fleetId, normalizedPlate, displayPlate, batches, onResolved }: Props) {
 
   const { t } = useTranslation();
+  const [createTruckOpen, setCreateTruckOpen] = useState(false);
   const [aliasOpen, setAliasOpen] = useState(false);
   const [subcontractorOpen, setSubcontractorOpen] = useState(false);
   const [dismissBatch, setDismissBatch] = useState<UnmatchedBatchBreakdown | null>(null);
@@ -44,33 +46,6 @@ export default function ResolutionActionMenu(
     }
   };
 
-  const createTruck = async () => {
-    // v1 shortcut: simple prompts. Replaced with AddTruckModal integration later.
-    const capacityKgStr = window.prompt(t('fuelReview.createTruckPrompts.capacity'));
-    if (!capacityKgStr) return;
-    const capacityKg = Number(capacityKgStr);
-    const type = (window.prompt(t('fuelReview.createTruckPrompts.type')) ?? 'TIR').toUpperCase();
-    const cargoVolumeM3Str = window.prompt(t('fuelReview.createTruckPrompts.volume'));
-    if (!cargoVolumeM3Str) return;
-    const cargoVolumeM3 = Number(cargoVolumeM3Str);
-    if (!Number.isFinite(capacityKg) || !Number.isFinite(cargoVolumeM3)) {
-      toast.error(t('fuelReview.createTruckPrompts.invalidNumeric'));
-      return;
-    }
-    try {
-      const r = await fuelReviewApi.createTruck(fleetId, normalizedPlate, {
-        plateNumber: displayPlate,
-        type,
-        capacityKg,
-        cargoVolumeM3,
-      });
-      toast.success(t('fuelReview.createTruckPrompts.successToast', { count: r.relinkedFuelEntryCount }));
-      onResolved();
-    } catch (e: any) {
-      toast.error(e?.message ?? t('fuelReview.createTruckPrompts.errorDefault'));
-    }
-  };
-
   const showBatch = batches.length > 1;
 
   // Canonical button classes lifted from TrucksPage so the fuel surface reads
@@ -86,7 +61,7 @@ export default function ResolutionActionMenu(
     <div className="flex gap-2 flex-wrap items-center">
       <button
         className={btnPrimary}
-        onClick={createTruck}
+        onClick={() => setCreateTruckOpen(true)}
         title={t('fuelReview.tooltips.createTruck')}>
         {t('fuelReview.actions.createTruck')}
       </button>
@@ -116,6 +91,22 @@ export default function ResolutionActionMenu(
           </button>
         );
       })}
+      {createTruckOpen && (
+        <AddTruckModal
+          isOpen
+          onClose={() => setCreateTruckOpen(false)}
+          prefillPlate={displayPlate}
+          onSubmit={async (data) => {
+            const r = await fuelReviewApi.createTruck(fleetId, normalizedPlate, data);
+            return { relinkedFuelEntryCount: r.relinkedFuelEntryCount };
+          }}
+          onSuccess={(result) => {
+            const count = result?.relinkedFuelEntryCount ?? 0;
+            toast.success(t('fuelReview.createTruckPrompts.successToast', { count }));
+            onResolved();
+          }}
+        />
+      )}
       {aliasOpen && (
         <AliasModal
           fleetId={fleetId}

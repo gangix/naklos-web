@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { formatDate } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
+import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
 import type { DocumentCategory, Truck, Driver } from '../types';
 
@@ -26,6 +27,7 @@ const TruckDetailPage = () => {
   const [showDriverSelect, setShowDriverSelect] = useState(false);
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [assigningDriver, setAssigningDriver] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'delete' | 'unassign' | null>(null);
 
   useEffect(() => {
     if (!truckId) return;
@@ -136,15 +138,13 @@ const TruckDetailPage = () => {
     }
   };
 
-  const handleUnassignDriver = async () => {
+  const runUnassignDriver = async () => {
     if (!truckId) return;
-
-    if (!confirm(t('truckDetail.confirmRemoveDriver'))) return;
-
     try {
       setAssigningDriver(true);
       const updatedTruck = await truckApi.unassignDriver(truckId);
       setTruck(updatedTruck);
+      setConfirmAction(null);
     } catch (err) {
       console.error('Error unassigning driver:', err);
       toast.error(t('toast.error.removeDriver'));
@@ -190,11 +190,11 @@ const TruckDetailPage = () => {
     }
   };
 
-  const handleDelete = async () => {
+  const runDeleteTruck = async () => {
     if (!truckId) return;
-    if (!confirm(t('truckDetail.confirmDelete'))) return;
     try {
       await truckApi.delete(truckId);
+      setConfirmAction(null);
       navigate('/manager/trucks');
     } catch (err) {
       console.error('Error deleting truck:', err);
@@ -243,7 +243,7 @@ const TruckDetailPage = () => {
                     {truck.assignedDriverName}
                   </span>
                   <button
-                    onClick={handleUnassignDriver}
+                    onClick={() => setConfirmAction('unassign')}
                     disabled={assigningDriver}
                     className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                   >
@@ -410,7 +410,7 @@ const TruckDetailPage = () => {
       {/* Delete truck */}
       <div className="mt-6">
         <button
-          onClick={handleDelete}
+          onClick={() => setConfirmAction('delete')}
           className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
         >
           {t('truckDetail.deleteTruck')}
@@ -428,6 +428,30 @@ const TruckDetailPage = () => {
           relatedName={truck.plateNumber}
           currentExpiryDate={uploadCurrentExpiry}
           onUpdate={handleDocumentSave}
+        />
+      )}
+
+      {confirmAction === 'delete' && (
+        <ConfirmActionModal
+          title={t('confirmDelete.truck.title')}
+          description={t('confirmDelete.truck.description', { plate: truck.plateNumber })}
+          bullets={[t('common.irreversible')]}
+          confirmLabel={t('common.delete')}
+          tone="danger"
+          onConfirm={runDeleteTruck}
+          onClose={() => setConfirmAction(null)}
+        />
+      )}
+
+      {confirmAction === 'unassign' && (
+        <ConfirmActionModal
+          title={t('confirmDelete.unassignDriver.title')}
+          description={t('confirmDelete.unassignDriver.description')}
+          bullets={[t('common.irreversible')]}
+          confirmLabel={t('common.remove')}
+          tone="danger"
+          onConfirm={runUnassignDriver}
+          onClose={() => setConfirmAction(null)}
         />
       )}
     </div>

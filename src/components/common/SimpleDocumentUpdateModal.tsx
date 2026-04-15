@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FileText, Pencil, Upload } from 'lucide-react';
 import { truckApi, driverApi } from '../../services/api';
 import { FileInput, TextInput } from './FormField';
+import ConfirmActionModal from '../fuel/ConfirmActionModal';
 import type { DocumentCategory } from '../../types';
 
 interface TruckDocument {
@@ -46,6 +47,7 @@ const SimpleDocumentUpdateModal = ({
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loadingDocs, setLoadingDocs] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -124,20 +126,21 @@ const SimpleDocumentUpdateModal = ({
     }
   };
 
-  const handleDelete = async (documentId: string) => {
-    if (!confirm(t('simpleDocUpdate.confirmDelete'))) {
-      return;
-    }
+  const handleDelete = (documentId: string, fileName: string) => {
+    setPendingDelete({ id: documentId, name: fileName });
+  };
 
+  const runDeleteDocument = async () => {
+    if (!pendingDelete) return;
     try {
       if (relatedType === 'driver') {
-        await driverApi.deleteDocument(documentId);
+        await driverApi.deleteDocument(pendingDelete.id);
       } else {
-        await truckApi.deleteDocument(documentId);
+        await truckApi.deleteDocument(pendingDelete.id);
       }
       toast.success(t('toast.success.documentDeleted'));
+      setPendingDelete(null);
       await loadDocuments();
-      // Refresh parent component to update expiry dates
       await onUpdate(category, '');
     } catch (err) {
       console.error('Error deleting document:', err);
@@ -329,7 +332,7 @@ const SimpleDocumentUpdateModal = ({
                             {t('simpleDocUpdate.download')}
                           </button>
                           <button
-                            onClick={() => handleDelete(doc.id)}
+                            onClick={() => handleDelete(doc.id, doc.fileName)}
                             className="text-sm text-red-600 hover:text-red-700 font-medium"
                           >
                             {t('simpleDocUpdate.delete')}
@@ -356,6 +359,18 @@ const SimpleDocumentUpdateModal = ({
           </button>
         </div>
       </div>
+
+      {pendingDelete && (
+        <ConfirmActionModal
+          title={t('confirmDelete.document.title')}
+          description={t('confirmDelete.document.description', { filename: pendingDelete.name })}
+          bullets={[t('common.irreversible')]}
+          confirmLabel={t('common.delete')}
+          tone="danger"
+          onConfirm={runDeleteDocument}
+          onClose={() => setPendingDelete(null)}
+        />
+      )}
     </div>
   );
 };
