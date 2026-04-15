@@ -1130,6 +1130,7 @@
       "photo": "Photo",
       "photoRequired": "Photo required (as proof)",
       "photoChange": "Choose new photo",
+      "photoHint": "JPG, PNG, WebP — max. 10 MB",
       "optional": "Optional"
     },
     "error": {

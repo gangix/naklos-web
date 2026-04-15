@@ -160,7 +160,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
         <div className="mt-3">
           <a
             href={allEntriesUrl}
-            className="text-sm text-primary-600 hover:underline"
+            className="text-sm font-medium text-primary-600 hover:underline"
           >
             {t('fuelEntry.viewAll')}
           </a>
@@ -185,7 +185,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
             <p className="text-sm text-gray-500 mb-4">{t('fuelEntry.empty')}</p>
             <button
               onClick={() => setFormModal({ mode: 'add' })}
-              className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+              className="bg-primary-600 text-white px-4 py-2 text-sm font-semibold rounded-lg hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
             >
               {t('fuelEntry.add.button')}
             </button>

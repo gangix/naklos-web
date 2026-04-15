@@ -1129,6 +1129,7 @@
       "photo": "Fotoğraf",
       "photoRequired": "Fotoğraf zorunlu (kanıt için)",
       "photoChange": "Yeni fotoğraf seç",
+      "photoHint": "JPG, PNG, WebP — maks. 10 MB",
       "optional": "İsteğe bağlı"
     },
     "error": {

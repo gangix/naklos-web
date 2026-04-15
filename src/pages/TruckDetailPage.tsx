@@ -95,7 +95,9 @@ const TruckDetailPage = () => {
   if (error || !truck) {
     return (
       <div >
-        <p className="text-center text-red-600">{error || t('truckDetail.notFound')}</p>
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+          <p className="text-center text-red-600">{error || t('truckDetail.notFound')}</p>
+        </div>
         <button
           onClick={() => navigate(-1)}
           className="mt-4 mx-auto block px-4 py-2 bg-primary-600 text-white rounded-lg"
@@ -193,8 +195,6 @@ const TruckDetailPage = () => {
     { id: 'belgeler', label: t('truckDetail.tabs.belgeler') },
   ];
 
-  // Receipts uploaded via UC-4 manual fuel entries live in truck_documents with document_type='fuel-receipt';
-  // hide them here so they don't clutter the compliance docs view.
   const complianceDocs = documents.filter((doc) => doc.documentType !== 'fuel-receipt');
 
   return (
@@ -234,8 +234,8 @@ const TruckDetailPage = () => {
       {activeTab === 'genel' && (
         <>
           {/* Basic info card */}
-          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
+            <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-gray-600">{t('truck.status')}</span>
@@ -309,8 +309,8 @@ const TruckDetailPage = () => {
 
           {/* Location card */}
           {truck.lastPosition && (
-            <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.location')}</h2>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
+              <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('truck.location')}</h2>
               <div className="flex items-center gap-2">
                 <MapPin className="w-6 h-6 text-primary-600" />
                 <div>
@@ -322,10 +322,6 @@ const TruckDetailPage = () => {
               </div>
             </div>
           )}
-
-          {/* Performance metrics — hidden until trip + fuel modules ship.
-              Restoring this needs both: trip data populates revenue/tripCount,
-              fuel data feeds utilization. */}
 
           {/* Delete truck */}
           <div className="mt-6">
@@ -354,12 +350,11 @@ const TruckDetailPage = () => {
         <>
           {/* Document expiry section */}
           <div className="mb-4">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
             <div className="space-y-3">
               {/* Compulsory Insurance */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-bold text-gray-900">{t('truck.compulsoryInsurance')}</h3>
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.compulsoryInsurance')}</h3>
                   <button
                     onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
                     className="text-sm text-primary-600 font-medium"
@@ -374,9 +369,9 @@ const TruckDetailPage = () => {
               </div>
 
               {/* Comprehensive Insurance */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-bold text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
                   <button
                     onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
                     className="text-sm text-primary-600 font-medium"
@@ -391,9 +386,9 @@ const TruckDetailPage = () => {
               </div>
 
               {/* Inspection */}
-              <div className="bg-white rounded-xl p-4 shadow-sm">
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-bold text-gray-900">{t('truck.inspection')}</h3>
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.inspection')}</h3>
                   <button
                     onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
                     className="text-sm text-primary-600 font-medium"
@@ -412,8 +407,8 @@ const TruckDetailPage = () => {
           {/* Document upload history (audit trail) — fuel-receipt docs filtered out */}
           {complianceDocs.length > 0 && (
             <div className="mb-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truckDetail.documentHistory')}</h2>
-              <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+              <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('truckDetail.documentHistory')}</h2>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100">
                 {complianceDocs.map((doc) => (
                   <div key={doc.id} className="p-3">
                     <div className="flex items-center justify-between">

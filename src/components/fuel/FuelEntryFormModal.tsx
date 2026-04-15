@@ -35,7 +35,6 @@ function nowLocalDatetimeString(): string {
 }
 
 function toDatetimeLocal(isoString: string): string {
-  // Convert full ISO to datetime-local format (YYYY-MM-DDTHH:mm)
   return isoString.slice(0, 16);
 }
 
@@ -398,7 +397,7 @@ export default function FuelEntryFormModal({
                   onClick={() => document.getElementById('fuel-photo-input')?.click()}
                 >
                   <p className="text-sm text-gray-500">{t('fuelEntry.field.photoRequired')}</p>
-                  <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP — maks. 10 MB</p>
+                  <p className="text-xs text-gray-400 mt-1">{t('fuelEntry.field.photoHint')}</p>
                 </div>
               )}
               <input

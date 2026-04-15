@@ -57,8 +57,8 @@ export default function FuelEntryRow({ fleetId, entry, onEdit, onDelete, onRecei
 
   const sourceBadgeClass =
     entry.source === 'MANUAL'
-      ? 'bg-primary-50 text-primary-700 text-xs px-2 py-0.5 rounded'
-      : 'bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded';
+      ? 'bg-primary-50 text-primary-700 text-xs px-2 py-0.5 rounded border border-primary-200'
+      : 'bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded border border-gray-200';
 
   return (
     <div className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 border-b border-gray-100">
