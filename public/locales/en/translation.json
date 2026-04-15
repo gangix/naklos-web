@@ -1042,9 +1042,7 @@
     },
     "dismissModal": {
       "title": "Dismiss in this batch",
-      "description": "<strong>{{count}}</strong> records of <strong>{{plate}}</strong> in the <strong>{{batch}}</strong> batch will be removed from pending.",
-      "bullet1": "Records from this import are hidden from pending; data is preserved but excluded from analytics.",
-      "bullet2": "If the same plate isn't matched in another batch, it'll appear pending there.",
+      "description": "{{count}} records of <strong>{{plate}}</strong> in this batch will be hidden.",
       "confirm": "Dismiss",
       "successToast": "{{count}} entries dismissed (in this batch).",
       "errorDefault": "Couldn't dismiss."

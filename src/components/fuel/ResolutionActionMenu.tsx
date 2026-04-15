@@ -149,14 +149,10 @@ export default function ResolutionActionMenu(
           description={
             <Trans
               i18nKey="fuelReview.dismissModal.description"
-              values={{ plate: displayPlate, batch: dismissBatch.batchFileName, count: dismissBatch.entryCount }}
+              values={{ plate: displayPlate, count: dismissBatch.entryCount }}
               components={{ strong: <strong className="font-mono text-gray-900" /> }}
             />
           }
-          bullets={[
-            t('fuelReview.dismissModal.bullet1'),
-            t('fuelReview.dismissModal.bullet2'),
-          ]}
           confirmLabel={t('fuelReview.dismissModal.confirm')}
           onConfirm={() => confirmDismiss(dismissBatch.batchId)}
           onClose={() => setDismissBatch(null)}

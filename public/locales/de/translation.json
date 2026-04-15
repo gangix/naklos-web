@@ -1042,9 +1042,7 @@
     },
     "dismissModal": {
       "title": "In diesem Batch verwerfen",
-      "description": "<strong>{{count}}</strong> Einträge von <strong>{{plate}}</strong> im Batch <strong>{{batch}}</strong> werden aus „Offen\" entfernt.",
-      "bullet1": "Einträge aus diesem Import werden aus „Offen\" ausgeblendet; Daten bleiben erhalten, sind aber aus der Analyse ausgeschlossen.",
-      "bullet2": "Wird dasselbe Kennzeichen in einem anderen Batch nicht zugeordnet, erscheint es dort wieder unter „Offen\".",
+      "description": "{{count}} Einträge von <strong>{{plate}}</strong> in diesem Batch werden ausgeblendet.",
       "confirm": "Verwerfen",
       "successToast": "{{count}} Einträge verworfen (in diesem Batch).",
       "errorDefault": "Verwerfen fehlgeschlagen."

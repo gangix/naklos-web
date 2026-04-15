@@ -1041,9 +1041,7 @@
     },
     "dismissModal": {
       "title": "Bu partide yoksay",
-      "description": "<strong>{{plate}}</strong> plakasının <strong>{{batch}}</strong> partisindeki <strong>{{count}}</strong> kaydı bekleyenlerden kaldırılacak.",
-      "bullet1": "Sadece bu içe aktarımdaki kayıtlar bekleyenlerden gizlenir; kayıtlar silinmez ama analizlerden çıkar.",
-      "bullet2": "Aynı plaka başka bir partide eşleşmezse orada yine bekleyenlerde görünür.",
+      "description": "<strong>{{plate}}</strong> plakasının {{count}} kaydı bu partiden gizlenecek.",
       "confirm": "Yoksay",
       "successToast": "{{count}} kayıt yoksayıldı (bu partide).",
       "errorDefault": "Yoksayma başarısız."
