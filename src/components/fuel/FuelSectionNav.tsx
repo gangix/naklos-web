@@ -10,6 +10,8 @@ export default function FuelSectionNav() {
   const active = 'bg-primary-600 text-white shadow-sm';
   const idle = 'text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300';
 
+  // Order: frequency-first (daily flow on the left), config-last (Formats
+  // is set once and rarely revisited).
   return (
     <nav className="flex gap-2 mb-5">
       <NavLink
@@ -17,12 +19,6 @@ export default function FuelSectionNav() {
         end
         className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
         {t('fuelReview.nav.imports')}
-      </NavLink>
-      <NavLink
-        to="/manager/fuel-formats"
-        end
-        className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
-        {t('fuelReview.nav.formats')}
       </NavLink>
       <NavLink
         to="/manager/fuel-review"
@@ -35,6 +31,12 @@ export default function FuelSectionNav() {
         end
         className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
         {t('fuelReview.nav.resolutions')}
+      </NavLink>
+      <NavLink
+        to="/manager/fuel-formats"
+        end
+        className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
+        {t('fuelReview.nav.formats')}
       </NavLink>
     </nav>
   );

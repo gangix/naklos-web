@@ -487,7 +487,7 @@ const DriverDetailPage = () => {
             onClick={() => setShowAddCertificate(true)}
             className="text-sm text-primary-600 font-medium"
           >
-            + Sertifika Ekle
+            {t('driverDetail.addCertificate')}
           </button>
         </div>
 
@@ -497,7 +497,7 @@ const DriverDetailPage = () => {
             <h3 className="text-sm font-bold text-gray-900 mb-3">{t('driverDetail.newCertificate')}</h3>
             <div className="space-y-3">
               <Select
-                label="Sertifika Tipi"
+                label={t('driverDetail.certType')}
                 required
                 value={certificateType}
                 onChange={(e) => setCertificateType(e.target.value as 'SRC' | 'CPC')}
@@ -531,7 +531,7 @@ const DriverDetailPage = () => {
                   onClick={handleAddCertificate}
                   className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
                 >
-                  Ekle
+                  {t('driverDetail.addButton')}
                 </button>
                 <button
                   onClick={() => {
@@ -562,7 +562,7 @@ const DriverDetailPage = () => {
                     onClick={() => handleRemoveCertificate(cert.id)}
                     className="text-sm text-red-600 font-medium"
                   >
-                    Sil
+                    {t('common.delete')}
                   </button>
                 </div>
                 <div className="space-y-2 mb-3">
