@@ -907,6 +907,19 @@
     "priceBusiness": "999 ₺/mo",
     "priceEnterprise": "Custom pricing"
   },
+  "fuelReview": {
+    "pageTitle": "Fuel Review",
+    "tabs": { "unmatched": "Unmatched plates", "duplicates": "Possible duplicates" },
+    "empty": { "unmatched": "No unmatched plates.", "duplicates": "No pending duplicates." },
+    "actions": {
+      "createTruck": "Create truck",
+      "alias": "Add alias",
+      "subcontractor": "Mark subcontractor",
+      "dismiss": "Dismiss",
+      "confirmDuplicate": "Confirm duplicate",
+      "dismissDuplicate": "Not a duplicate"
+    }
+  },
   "cookie": {
     "message": "🍪 Naklos uses only essential session cookies.",
     "usingPlatform": "By using the platform you accept our",

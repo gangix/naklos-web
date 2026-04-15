@@ -907,6 +907,19 @@
     "priceBusiness": "999 ₺/Monat",
     "priceEnterprise": "Individuelle Preise"
   },
+  "fuelReview": {
+    "pageTitle": "Kraftstoff-Überprüfung",
+    "tabs": { "unmatched": "Unzugeordnete Kennzeichen", "duplicates": "Mögliche Duplikate" },
+    "empty": { "unmatched": "Keine unzugeordneten Kennzeichen.", "duplicates": "Keine ausstehenden Duplikate." },
+    "actions": {
+      "createTruck": "LKW erstellen",
+      "alias": "Alias hinzufügen",
+      "subcontractor": "Als Subunternehmer markieren",
+      "dismiss": "Verwerfen",
+      "confirmDuplicate": "Duplikat bestätigen",
+      "dismissDuplicate": "Kein Duplikat"
+    }
+  },
   "cookie": {
     "message": "🍪 Naklos verwendet nur unverzichtbare Sitzungscookies.",
     "usingPlatform": "Durch die Nutzung der Plattform akzeptieren Sie unsere",

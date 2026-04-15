@@ -27,6 +27,7 @@ import FuelFormatsPage from './pages/FuelFormatsPage';
 import FuelFormatCreatePage from './pages/FuelFormatCreatePage';
 import FuelImportPage from './pages/FuelImportPage';
 import FuelImportBatchDetailPage from './pages/FuelImportBatchDetailPage';
+import FuelReviewPage from './pages/FuelReviewPage';
 import CookieBanner from './components/common/CookieBanner';
 import ContactButton from './components/common/ContactButton';
 import { useLanguage } from './hooks/useLanguage';
@@ -230,6 +231,7 @@ function App() {
                 <Route path="fuel-formats/new" element={<FuelFormatCreatePage />} />
                 <Route path="fuel-imports" element={<FuelImportPage />} />
                 <Route path="fuel-imports/:batchId" element={<FuelImportBatchDetailPage />} />
+                <Route path="fuel-review" element={<FuelReviewPage />} />
               </>
             )}
           </Route>

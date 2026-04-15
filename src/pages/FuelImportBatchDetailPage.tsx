@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 import { fuelImportApi } from '../services/api';
@@ -54,9 +54,11 @@ const FuelImportBatchDetailPage = () => {
       <div className="grid grid-cols-3 gap-2">
         <Stat label="Toplam Satır" value={batch.rowCountTotal} />
         <Stat label="Aktarıldı" value={batch.rowCountImported} tone="green" />
-        <Stat label="Eşleşmeyen (aktarıldı)" value={batch.rowCountUnmatched} tone="yellow" />
+        <Stat label="Eşleşmeyen (aktarıldı)" value={batch.rowCountUnmatched} tone="yellow"
+              linkTo={batch.rowCountUnmatched > 0 ? `/manager/fuel-review?batchId=${batch.id}&tab=unmatched` : undefined} />
         <Stat label="Yinelenen" value={batch.rowCountSkippedDuplicate} tone="gray" />
-        <Stat label="Olası yinelenen" value={batch.rowCountSkippedPossibleDup} tone="yellow" />
+        <Stat label="Olası yinelenen" value={batch.rowCountSkippedPossibleDup} tone="yellow"
+              linkTo={batch.rowCountSkippedPossibleDup > 0 ? `/manager/fuel-review?batchId=${batch.id}&tab=duplicates` : undefined} />
         <Stat label="Hata" value={batch.rowCountError} tone="red" />
       </div>
     </div>
@@ -70,7 +72,7 @@ const Row = ({ k, v }: { k: string; v: string }) => (
   </div>
 );
 
-const Stat = ({ label, value, tone }: { label: string; value: number; tone?: 'green' | 'red' | 'yellow' | 'gray' }) => {
+const Stat = ({ label, value, tone, linkTo }: { label: string; value: number; tone?: 'green' | 'red' | 'yellow' | 'gray'; linkTo?: string }) => {
   const cls =
     tone === 'green'  ? 'border-green-200 bg-green-50' :
     tone === 'red'    ? 'border-red-200 bg-red-50' :
@@ -80,7 +82,13 @@ const Stat = ({ label, value, tone }: { label: string; value: number; tone?: 'gr
   return (
     <div className={`border rounded p-3 ${cls}`}>
       <p className="text-xs text-gray-600">{label}</p>
-      <p className="text-xl font-semibold">{value}</p>
+      {linkTo ? (
+        <Link to={linkTo} className="text-xl font-semibold underline text-primary-600 hover:text-primary-700">
+          {value}
+        </Link>
+      ) : (
+        <p className="text-xl font-semibold">{value}</p>
+      )}
     </div>
   );
 };
