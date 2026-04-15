@@ -174,9 +174,11 @@ export interface TruckFuelEntryDto {
   plateTextRaw: string;
   occurredAt: string;
   fuelType: ManualFuelEntryInput['fuelType'];
-  liters: number;
-  totalPrice: number;
-  pricePerLiter: number | null;
+  // BigDecimal arrives as a string in Jackson defaults — same as
+  // FuelEntryDto / ResolutionEntryView above.
+  liters: string;
+  totalPrice: string;
+  pricePerLiter: string | null;
   stationName: string | null;
   odometerKm: number | null;
   notes: string | null;
@@ -186,8 +188,8 @@ export interface TruckFuelEntryDto {
 }
 
 export interface TruckFuelSummary {
-  totalLiters: number;
-  totalPrice: number;
+  totalLiters: string;
+  totalPrice: string;
   fillCount: number;
   rangeDays: number;
 }
