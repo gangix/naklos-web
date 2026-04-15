@@ -66,10 +66,16 @@ const FuelFormatCreatePage = () => {
     }
     try {
       setSaving(true);
+      // Strip empty values — optional semantic fields that the user left
+      // unmapped shouldn't reach the backend (its @NotBlank on map values
+      // rejects them). Required fields are already verified above.
+      const cleanMapping = Object.fromEntries(
+        Object.entries(mapping).filter(([, v]) => v.trim() !== '')
+      );
       await fuelFormatApi.create(fleetId, {
         provider,
         name: name.trim(),
-        columnMapping: mapping,
+        columnMapping: cleanMapping,
         sampleHeaders: suggested?.sampleHeaders ?? [],
       });
       toast.success('Format oluşturuldu');
