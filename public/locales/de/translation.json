@@ -982,22 +982,22 @@
       "duplicates": "Keine ausstehenden Duplikate."
     },
     "banner": {
-      "lead": "Diese Kennzeichen konnten keinem LKW zugeordnet werden. Pro Kennzeichen haben Sie vier Optionen:",
+      "lead": "Diese Kraftstoffeinträge sind keinem LKW zugeordnet und bis zur Auflösung von der Flottenanalyse ausgeschlossen. Sie haben pro Kennzeichen 4 Optionen:",
       "createTruck": {
         "label": "LKW erstellen",
-        "desc": "Dieses Kennzeichen gehört Ihnen, wurde aber noch nicht als LKW hinzugefügt."
+        "desc": "Das Kennzeichen gehört Ihnen. Mit dem Hinzufügen des LKW werden alle Einträge verknüpft und in die Analyse aufgenommen."
       },
       "alias": {
         "label": "Kennzeichen korrigieren",
-        "desc": "Das Kennzeichen im Beleg ist falsch eingelesen. Weiterleitung zur richtigen Variante."
+        "desc": "Das Kennzeichen ist falsch geschrieben. Auf das richtige umleiten; Einträge werden korrekt zugeordnet und in die Analyse aufgenommen."
       },
       "subcontractor": {
         "label": "Subunternehmer",
-        "desc": "Gehört einem Subunternehmer, aus der Flottenanalyse ausschließen."
+        "desc": "Kennzeichen gehört nicht Ihnen. Einträge werden aus der Analyse ausgeschlossen (Regel jederzeit unter Auflösungen löschbar)."
       },
       "dismiss": {
         "label": "Verwerfen",
-        "desc": "In diesem Batch ausblenden und aus der Analyse ausschließen — kann in einem anderen Batch wieder erscheinen."
+        "desc": "Versteckt Einträge nur in diesem Import. Können in einem anderen Batch wieder erscheinen."
       }
     },
     "plateRow": {
@@ -1021,7 +1021,7 @@
     },
     "aliasModal": {
       "title": "Kennzeichen korrigieren",
-      "description": "Das im Beleg als <strong>{{plate}}</strong> angezeigte Kennzeichen ist falsch. Geben Sie das richtige Kennzeichen ein — historische und zukünftige Einträge werden korrekt verknüpft.",
+      "description": "Das Kennzeichen <strong>{{plate}}</strong> im Statement ist falsch geschrieben. Geben Sie das richtige Kennzeichen ein — alle vergangenen und zukünftigen Einträge werden dem richtigen LKW zugeordnet und in die Analyse aufgenommen.",
       "inputLabel": "Richtiges Kennzeichen",
       "placeholder": "z.B. 34 ABC 123",
       "cancel": "Abbrechen",
@@ -1032,19 +1032,19 @@
     },
     "subcontractorModal": {
       "title": "Als Subunternehmer markieren",
-      "description": "<strong>{{plate}}</strong> wird als Kennzeichen eines Subunternehmers markiert, nicht Ihrer Flotte.",
-      "bullet1": "Vergangene und zukünftige Einträge für dieses Kennzeichen werden aus Flottenanalysen ausgeschlossen.",
-      "bullet2": "Für dieses Kennzeichen wird kein LKW erstellt.",
-      "bullet3": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "description": "<strong>{{plate}}</strong> wird als Kennzeichen eines Subunternehmers markiert.",
+      "bullet1": "Vergangene und zukünftige Einträge für dieses Kennzeichen sind von der Flottenanalyse ausgeschlossen.",
+      "bullet2": "Zukünftige Importe markieren dieses Kennzeichen automatisch als Subunternehmer.",
+      "bullet3": "Sie können die Regel jederzeit unter <strong>Auflösungen</strong> löschen.",
       "confirm": "Als Subunternehmer markieren",
       "successToast": "{{count}} Einträge als Subunternehmer markiert.",
       "errorDefault": "Markierung als Subunternehmer fehlgeschlagen."
     },
     "dismissModal": {
       "title": "In diesem Batch verwerfen",
-      "description": "<strong>{{count}}</strong> Einträge von <strong>{{plate}}</strong> im Batch <strong>{{batch}}</strong> werden aus der Überprüfung entfernt.",
-      "bullet1": "Die Einträge werden nicht gelöscht, aber aus der Flottenanalyse und der Überprüfung ausgeschlossen.",
-      "bullet2": "Wird dasselbe Kennzeichen in einem anderen Batch nicht zugeordnet, erscheint es dort erneut.",
+      "description": "<strong>{{count}}</strong> Einträge von <strong>{{plate}}</strong> im Batch <strong>{{batch}}</strong> werden aus „Offen\" entfernt.",
+      "bullet1": "Einträge aus diesem Import werden aus „Offen\" ausgeblendet; Daten bleiben erhalten, sind aber aus der Analyse ausgeschlossen.",
+      "bullet2": "Wird dasselbe Kennzeichen in einem anderen Batch nicht zugeordnet, erscheint es dort wieder unter „Offen\".",
       "confirm": "Verwerfen",
       "successToast": "{{count}} Einträge verworfen (in diesem Batch).",
       "errorDefault": "Verwerfen fehlgeschlagen."
@@ -1063,8 +1063,8 @@
       "confirmModal": {
         "title": "Duplikat bestätigen",
         "description": "Der markierte Eintrag wird als Duplikat bestätigt und gelöscht.",
-        "bullet1": "Der Eintrag wird weich gelöscht — aus Abfragen und Flottenanalysen entfernt.",
-        "bullet2": "Diese Aktion kann nicht rückgängig gemacht werden.",
+        "bullet1": "Der Eintrag wird als gelöscht markiert; aus Abfragen und der Flottenanalyse ausgeschlossen.",
+        "bullet2": "Das Rückgängigmachen dieser Aktion wird derzeit nicht unterstützt.",
         "confirm": "Bestätigen und löschen"
       }
     },

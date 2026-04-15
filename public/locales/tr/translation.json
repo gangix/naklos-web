@@ -981,22 +981,22 @@
       "duplicates": "Bekleyen olası yineleme yok."
     },
     "banner": {
-      "lead": "Bu plakalar bir araca bağlanamadı. Her plaka için dört seçeneğiniz var:",
+      "lead": "Bu plakalardaki yakıt kayıtları bir araçla eşleşmedi ve eşleşene kadar filo analizlerinden çıkarıldı. Her plaka için 4 seçeneğiniz var:",
       "createTruck": {
         "label": "Araç oluştur",
-        "desc": "Bu plaka size ait, henüz araç olarak eklenmemiş."
+        "desc": "Plaka size ait. Aracı eklediğinizde tüm kayıtlar bu araca bağlanır ve analize dahil edilir."
       },
       "alias": {
         "label": "Plaka düzelt",
-        "desc": "Statement'teki plaka yanlış yazılmış. Doğrusuna yönlendir."
+        "desc": "Plaka yanlış yazılmış. Doğrusuna yönlendirin; kayıtlar doğru araca bağlanır ve analize dahil edilir."
       },
       "subcontractor": {
         "label": "Taşeron",
-        "desc": "Taşerona ait, filo analizlerinden dışla."
+        "desc": "Plaka size ait değil. Bu plakanın kayıtları analizden hariç tutulur (kuralı Çözümler sekmesinden silebilirsiniz)."
       },
       "dismiss": {
         "label": "Yoksay",
-        "desc": "Bu partide gizle ve analizlerden dışla — başka partide tekrar görünebilir."
+        "desc": "Sadece bu partideki kayıtları bekleyenlerden gizler. Başka bir partide tekrar görünebilir."
       }
     },
     "plateRow": {
@@ -1020,7 +1020,7 @@
     },
     "aliasModal": {
       "title": "Plaka düzelt",
-      "description": "Statement'te <strong>{{plate}}</strong> olarak görünen plakanın gerçekte hangi araca ait olduğunu yazın. Hem geçmiş hem gelecek kayıtlar doğru araca bağlanır.",
+      "description": "Statement'teki <strong>{{plate}}</strong> plakası yanlış yazılmış. Doğru plakayı yazın — geçmiş ve yeni tüm kayıtlar doğru araca bağlanır ve analize dahil edilir.",
       "inputLabel": "Doğru plaka",
       "placeholder": "Örn. 34 ABC 123",
       "cancel": "İptal",
@@ -1031,19 +1031,19 @@
     },
     "subcontractorModal": {
       "title": "Taşeron olarak işaretle",
-      "description": "<strong>{{plate}}</strong> size ait olmayan, taşeronunuza ait bir plaka olarak işaretlenecek.",
-      "bullet1": "Bu plakanın geçmiş ve gelecek kayıtları filo analizlerinden dışlanır.",
-      "bullet2": "Bu plaka için araç oluşturulmaz.",
-      "bullet3": "Bu işlem geri alınamaz.",
+      "description": "<strong>{{plate}}</strong> plakası taşerona ait olarak işaretlenecek.",
+      "bullet1": "Bu plakanın geçmiş ve yeni kayıtları filo analizlerinden çıkar.",
+      "bullet2": "Yeni içe aktarımlar da otomatik taşeron olarak işaretlenir.",
+      "bullet3": "Kuralı istediğiniz zaman <strong>Çözümler</strong> sekmesinden silebilirsiniz.",
       "confirm": "Taşeron olarak işaretle",
       "successToast": "{{count}} kayıt taşeron olarak işaretlendi.",
       "errorDefault": "Taşeron işaretleme başarısız."
     },
     "dismissModal": {
       "title": "Bu partide yoksay",
-      "description": "<strong>{{plate}}</strong> plakasının <strong>{{batch}}</strong> partisindeki <strong>{{count}}</strong> kaydı incelemeden kaldırılacak.",
-      "bullet1": "Kayıtlar silinmez ama filo analizlerinden ve incelemeden çıkarılır.",
-      "bullet2": "Aynı plaka başka bir partide tekrar eşleşmezse orada yeniden görünür.",
+      "description": "<strong>{{plate}}</strong> plakasının <strong>{{batch}}</strong> partisindeki <strong>{{count}}</strong> kaydı bekleyenlerden kaldırılacak.",
+      "bullet1": "Sadece bu içe aktarımdaki kayıtlar bekleyenlerden gizlenir; kayıtlar silinmez ama analizlerden çıkar.",
+      "bullet2": "Aynı plaka başka bir partide eşleşmezse orada yine bekleyenlerde görünür.",
       "confirm": "Yoksay",
       "successToast": "{{count}} kayıt yoksayıldı (bu partide).",
       "errorDefault": "Yoksayma başarısız."
@@ -1062,8 +1062,8 @@
       "confirmModal": {
         "title": "Yinelemeyi onayla",
         "description": "İşaretlenen kayıt yinelenmiş olarak onaylanacak ve silinecek.",
-        "bullet1": "Kayıt silinmiş olarak işaretlenir — sorgulardan ve filo analizlerinden çıkarılır.",
-        "bullet2": "Bu işlem geri alınamaz.",
+        "bullet1": "Kayıt silinmiş olarak işaretlenir; sorgulardan ve filo analizlerinden çıkar.",
+        "bullet2": "Şu an için bu işlemi geri alma desteklenmiyor.",
         "confirm": "Yinelemeyi onayla ve sil"
       }
     },

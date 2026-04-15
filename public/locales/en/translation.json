@@ -982,22 +982,22 @@
       "duplicates": "No pending duplicates."
     },
     "banner": {
-      "lead": "These plates couldn't be linked to a truck. You have four options per plate:",
+      "lead": "These fuel records aren't matched to a truck and are excluded from fleet analytics until resolved. You have 4 options per plate:",
       "createTruck": {
         "label": "Create truck",
-        "desc": "This plate is yours but hasn't been added as a truck yet."
+        "desc": "The plate is yours. Adding the truck links all records to it and includes them in analytics."
       },
       "alias": {
         "label": "Fix plate",
-        "desc": "The plate in the statement is misread. Redirect to the correct one."
+        "desc": "The plate is misread. Redirect to the correct one; records link to the right truck and join analytics."
       },
       "subcontractor": {
         "label": "Subcontractor",
-        "desc": "Subcontractor's plate, exclude from fleet analytics."
+        "desc": "Plate isn't yours. Records are excluded from analytics (delete the rule anytime from Resolutions)."
       },
       "dismiss": {
         "label": "Dismiss",
-        "desc": "Hide from this batch and exclude from analytics — may reappear in another batch."
+        "desc": "Hides records from this import only. May reappear in another batch."
       }
     },
     "plateRow": {
@@ -1021,7 +1021,7 @@
     },
     "aliasModal": {
       "title": "Fix plate",
-      "description": "The plate shown as <strong>{{plate}}</strong> in the statement is incorrect. Enter the real plate — historical and future entries will link to the correct truck.",
+      "description": "The plate <strong>{{plate}}</strong> in the statement is misread. Enter the correct plate — all past and future records link to the right truck and join analytics.",
       "inputLabel": "Correct plate",
       "placeholder": "e.g. 34 ABC 123",
       "cancel": "Cancel",
@@ -1032,19 +1032,19 @@
     },
     "subcontractorModal": {
       "title": "Mark as subcontractor",
-      "description": "<strong>{{plate}}</strong> will be marked as a plate that belongs to a subcontractor, not to your fleet.",
-      "bullet1": "Past and future entries for this plate are excluded from fleet analytics.",
-      "bullet2": "No truck is created for this plate.",
-      "bullet3": "This action cannot be undone.",
+      "description": "<strong>{{plate}}</strong> will be marked as a subcontractor's plate.",
+      "bullet1": "Past and future records for this plate are excluded from fleet analytics.",
+      "bullet2": "Future imports automatically mark this plate as subcontractor.",
+      "bullet3": "You can delete the rule anytime from the <strong>Resolutions</strong> tab.",
       "confirm": "Mark as subcontractor",
       "successToast": "{{count}} entries marked as subcontractor.",
       "errorDefault": "Couldn't mark as subcontractor."
     },
     "dismissModal": {
       "title": "Dismiss in this batch",
-      "description": "<strong>{{count}}</strong> entries of <strong>{{plate}}</strong> in the <strong>{{batch}}</strong> batch will be removed from review.",
-      "bullet1": "Entries are not deleted but excluded from fleet analytics and from review.",
-      "bullet2": "If the same plate isn't matched in another batch, it will reappear there.",
+      "description": "<strong>{{count}}</strong> records of <strong>{{plate}}</strong> in the <strong>{{batch}}</strong> batch will be removed from pending.",
+      "bullet1": "Records from this import are hidden from pending; data is preserved but excluded from analytics.",
+      "bullet2": "If the same plate isn't matched in another batch, it'll appear pending there.",
       "confirm": "Dismiss",
       "successToast": "{{count}} entries dismissed (in this batch).",
       "errorDefault": "Couldn't dismiss."
@@ -1063,8 +1063,8 @@
       "confirmModal": {
         "title": "Confirm duplicate",
         "description": "The flagged entry will be marked as a duplicate and deleted.",
-        "bullet1": "The entry is soft-deleted — hidden from queries and fleet analytics.",
-        "bullet2": "This action cannot be undone.",
+        "bullet1": "The entry is marked deleted; excluded from queries and fleet analytics.",
+        "bullet2": "Reversing this action isn't supported yet.",
         "confirm": "Confirm and delete"
       }
     },
