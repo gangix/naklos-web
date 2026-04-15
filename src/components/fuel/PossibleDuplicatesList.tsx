@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fuelReviewApi } from '../../services/api';
 import type { PossibleDuplicatePair } from '../../types/fuel';
 import DuplicateComparisonCard from './DuplicateComparisonCard';
@@ -6,6 +7,7 @@ import DuplicateComparisonCard from './DuplicateComparisonCard';
 interface Props { fleetId: string; batchId: string | null; }
 
 export default function PossibleDuplicatesList({ fleetId, batchId }: Props) {
+  const { t } = useTranslation();
   const [pairs, setPairs] = useState<PossibleDuplicatePair[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,8 +25,8 @@ export default function PossibleDuplicatesList({ fleetId, batchId }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fleetId, batchId]);
 
-  if (loading) return <p className="text-gray-500">Yükleniyor…</p>;
-  if (pairs.length === 0) return <p className="text-gray-500">Bekleyen olası yineleme yok.</p>;
+  if (loading) return <p className="text-gray-500">{t('fuelReview.loading')}</p>;
+  if (pairs.length === 0) return <p className="text-gray-500">{t('fuelReview.empty.duplicates')}</p>;
 
   return (
     <div className="space-y-3">

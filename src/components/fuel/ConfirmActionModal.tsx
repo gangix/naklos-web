@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   /** Shown in the extrabold header. */
@@ -26,12 +27,15 @@ export default function ConfirmActionModal({
   title,
   description,
   bullets,
-  confirmLabel = 'Onayla',
-  cancelLabel = 'İptal',
+  confirmLabel,
+  cancelLabel,
   tone = 'neutral',
   onConfirm,
   onClose,
 }: Props) {
+  const { t } = useTranslation();
+  const resolvedConfirmLabel = confirmLabel ?? t('fuelReview.common.confirm');
+  const resolvedCancelLabel = cancelLabel ?? t('fuelReview.common.cancel');
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -78,10 +82,10 @@ export default function ConfirmActionModal({
             className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
             onClick={onClose}
             disabled={submitting}>
-            {cancelLabel}
+            {resolvedCancelLabel}
           </button>
           <button className={confirmClass} onClick={submit} disabled={submitting}>
-            {submitting ? 'İşleniyor…' : confirmLabel}
+            {submitting ? t('fuelReview.common.processing') : resolvedConfirmLabel}
           </button>
         </div>
       </div>

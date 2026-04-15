@@ -909,14 +909,95 @@
   "fuelReview": {
     "pageTitle": "Yakıt İncelemesi",
     "tabs": { "unmatched": "Eşleşmeyen plakalar", "duplicates": "Olası yineleme" },
-    "empty": { "unmatched": "Eşleşmeyen plaka yok.", "duplicates": "Bekleyen olası yineleme yok." },
+    "nav": { "imports": "İçe Aktar", "formats": "Formatlar", "review": "İnceleme" },
+    "loading": "Yükleniyor…",
+    "empty": {
+      "unmatched": { "title": "Tüm plakalar eşleşmiş durumda.", "subtitle": "İçe aktarılan yakıt kayıtları mevcut araçlarınıza bağlandı." },
+      "duplicates": "Bekleyen olası yineleme yok."
+    },
+    "banner": {
+      "lead": "Bu plakalar bir araca bağlanamadı. Her plaka için dört seçeneğiniz var:",
+      "createTruck": { "label": "Araç oluştur", "desc": "Bu plaka size ait, henüz araç olarak eklenmemiş." },
+      "alias": { "label": "Plaka düzelt", "desc": "Statement'teki plaka yanlış yazılmış. Doğrusuna yönlendir." },
+      "subcontractor": { "label": "Taşeron", "desc": "Taşerona ait, filo analizlerinden dışla." },
+      "dismiss": { "label": "Yoksay", "desc": "Bu partide görmezden gel (başka partide tekrar görünebilir)." }
+    },
+    "plateRow": { "entries": "{{count}} kayıt", "first": "İlk", "last": "Son" },
     "actions": {
       "createTruck": "Araç oluştur",
-      "alias": "Takma ad",
+      "alias": "Plaka düzelt",
       "subcontractor": "Taşeron",
       "dismiss": "Yoksay",
-      "confirmDuplicate": "Yinelemeyi onayla",
-      "dismissDuplicate": "Yineleme değil"
+      "dismissInBatch": "Yoksay · {{batch}}"
+    },
+    "tooltips": {
+      "createTruck": "Bu plakayı yeni araç olarak kaydet. Geçmiş kayıtlar otomatik olarak yeni araca bağlanır.",
+      "alias": "Yanlış yazılmış plakayı doğrusuna yönlendir (ör. 34A8C123 → 34ABC123). Bu ve gelecekteki kayıtlar doğru araca bağlanır.",
+      "subcontractor": "Bu plaka taşerona ait. Filo analizlerinden dışlanır, araç oluşturulmaz.",
+      "dismiss": "\"{{batch}}\" partisindeki {{count}} kaydı incelemeden kaldır. Aynı plaka başka bir partide tekrar görünebilir."
+    },
+    "aliasModal": {
+      "title": "Plaka düzelt",
+      "description": "Statement'te <strong>{{plate}}</strong> olarak görünen plakanın gerçekte hangi araca ait olduğunu yazın. Hem geçmiş hem gelecek kayıtlar doğru araca bağlanır.",
+      "inputLabel": "Doğru plaka",
+      "placeholder": "Örn. 34 ABC 123",
+      "cancel": "İptal",
+      "save": "Kaydet",
+      "saving": "Kaydediliyor…",
+      "errorDefault": "Plaka düzeltilemedi.",
+      "successToast": "Plaka düzeltildi. {{count}} kayıt bağlandı."
+    },
+    "subcontractorModal": {
+      "title": "Taşeron olarak işaretle",
+      "description": "<strong>{{plate}}</strong> size ait olmayan, taşeronunuza ait bir plaka olarak işaretlenecek.",
+      "bullet1": "Bu plakanın geçmiş ve gelecek kayıtları filo analizlerinden dışlanır.",
+      "bullet2": "Bu plaka için araç oluşturulmaz.",
+      "bullet3": "Bu işlem geri alınamaz.",
+      "confirm": "Taşeron olarak işaretle",
+      "successToast": "{{count}} kayıt taşeron olarak işaretlendi.",
+      "errorDefault": "Taşeron işaretleme başarısız."
+    },
+    "dismissModal": {
+      "title": "Bu partide yoksay",
+      "description": "<strong>{{plate}}</strong> plakasının <strong>{{batch}}</strong> partisindeki <strong>{{count}}</strong> kaydı incelemeden kaldırılacak.",
+      "bullet1": "Kayıtlar silinmez, sadece bu inceleme listesinden gizlenir.",
+      "bullet2": "Aynı plaka başka bir partide tekrar eşleşmezse orada yeniden görünür.",
+      "confirm": "Yoksay",
+      "successToast": "{{count}} kayıt yoksayıldı (bu partide).",
+      "errorDefault": "Yoksayma başarısız."
+    },
+    "duplicate": {
+      "batchLabel": "Parti",
+      "flagged": "İşaretlenen",
+      "original": "Orijinal (şüpheli)",
+      "noMatch": "Eşleşen kayıt bulunamadı",
+      "confirmBtn": "Yinelemeyi onayla",
+      "dismissBtn": "Yineleme değil",
+      "confirmSuccessToast": "Yineleme onaylandı ve kayıt silindi.",
+      "dismissSuccessToast": "Uyarı temizlendi.",
+      "confirmErrorDefault": "Onaylama başarısız.",
+      "dismissErrorDefault": "Temizleme başarısız.",
+      "confirmModal": {
+        "title": "Yinelemeyi onayla",
+        "description": "İşaretlenen kayıt yinelenmiş olarak onaylanacak ve silinecek.",
+        "bullet1": "Kayıt silinmiş olarak işaretlenir — sorgulardan ve filo analizlerinden çıkarılır.",
+        "bullet2": "Bu işlem geri alınamaz.",
+        "confirm": "Yinelemeyi onayla ve sil"
+      }
+    },
+    "common": {
+      "irreversible": "Bu işlem geri alınamaz.",
+      "processing": "İşleniyor…",
+      "cancel": "İptal",
+      "confirm": "Onayla"
+    },
+    "createTruckPrompts": {
+      "capacity": "Kapasite (kg)?",
+      "type": "Tür? (TIR, KAMYON, KAMYONET)",
+      "volume": "Kargo hacmi (m³)?",
+      "invalidNumeric": "Kapasite veya hacim geçersiz.",
+      "successToast": "Araç oluşturuldu. {{count}} geçmiş kayıt bağlandı.",
+      "errorDefault": "Araç oluşturma başarısız."
     }
   },
   "cookie": {

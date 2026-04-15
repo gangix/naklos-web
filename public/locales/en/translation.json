@@ -910,14 +910,95 @@
   "fuelReview": {
     "pageTitle": "Fuel Review",
     "tabs": { "unmatched": "Unmatched plates", "duplicates": "Possible duplicates" },
-    "empty": { "unmatched": "No unmatched plates.", "duplicates": "No pending duplicates." },
+    "nav": { "imports": "Import", "formats": "Formats", "review": "Review" },
+    "loading": "Loading…",
+    "empty": {
+      "unmatched": { "title": "All plates are matched.", "subtitle": "Imported fuel entries are linked to your trucks." },
+      "duplicates": "No pending duplicates."
+    },
+    "banner": {
+      "lead": "These plates couldn't be linked to a truck. You have four options per plate:",
+      "createTruck": { "label": "Create truck", "desc": "This plate is yours but hasn't been added as a truck yet." },
+      "alias": { "label": "Fix plate", "desc": "The plate in the statement is misread. Redirect to the correct one." },
+      "subcontractor": { "label": "Subcontractor", "desc": "Belongs to a subcontractor, exclude from fleet analytics." },
+      "dismiss": { "label": "Dismiss", "desc": "Ignore in this batch only (may reappear in another batch)." }
+    },
+    "plateRow": { "entries": "{{count}} entries", "first": "First", "last": "Last" },
     "actions": {
       "createTruck": "Create truck",
-      "alias": "Add alias",
-      "subcontractor": "Mark subcontractor",
+      "alias": "Fix plate",
+      "subcontractor": "Subcontractor",
       "dismiss": "Dismiss",
-      "confirmDuplicate": "Confirm duplicate",
-      "dismissDuplicate": "Not a duplicate"
+      "dismissInBatch": "Dismiss · {{batch}}"
+    },
+    "tooltips": {
+      "createTruck": "Register this plate as a new truck. Historical entries auto-link to the new truck.",
+      "alias": "Redirect a misread plate to the correct one (e.g. 34A8C123 → 34ABC123). This and future entries link to the correct truck.",
+      "subcontractor": "This plate belongs to a subcontractor. Excluded from fleet analytics; no truck is created.",
+      "dismiss": "Dismiss the {{count}} entries of this plate in \"{{batch}}\". The same plate may reappear in another batch."
+    },
+    "aliasModal": {
+      "title": "Fix plate",
+      "description": "The plate shown as <strong>{{plate}}</strong> in the statement is incorrect. Enter the real plate — historical and future entries will link to the correct truck.",
+      "inputLabel": "Correct plate",
+      "placeholder": "e.g. 34 ABC 123",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "errorDefault": "Couldn't fix the plate.",
+      "successToast": "Plate fixed. {{count}} entries linked."
+    },
+    "subcontractorModal": {
+      "title": "Mark as subcontractor",
+      "description": "<strong>{{plate}}</strong> will be marked as a plate that belongs to a subcontractor, not to your fleet.",
+      "bullet1": "Past and future entries for this plate are excluded from fleet analytics.",
+      "bullet2": "No truck is created for this plate.",
+      "bullet3": "This action cannot be undone.",
+      "confirm": "Mark as subcontractor",
+      "successToast": "{{count}} entries marked as subcontractor.",
+      "errorDefault": "Couldn't mark as subcontractor."
+    },
+    "dismissModal": {
+      "title": "Dismiss in this batch",
+      "description": "<strong>{{count}}</strong> entries of <strong>{{plate}}</strong> in the <strong>{{batch}}</strong> batch will be removed from review.",
+      "bullet1": "Entries are not deleted, just hidden from this review list.",
+      "bullet2": "If the same plate isn't matched in another batch, it will reappear there.",
+      "confirm": "Dismiss",
+      "successToast": "{{count}} entries dismissed (in this batch).",
+      "errorDefault": "Couldn't dismiss."
+    },
+    "duplicate": {
+      "batchLabel": "Batch",
+      "flagged": "Flagged",
+      "original": "Original (suspected)",
+      "noMatch": "No matching entry found",
+      "confirmBtn": "Confirm duplicate",
+      "dismissBtn": "Not a duplicate",
+      "confirmSuccessToast": "Duplicate confirmed and entry deleted.",
+      "dismissSuccessToast": "Warning cleared.",
+      "confirmErrorDefault": "Couldn't confirm.",
+      "dismissErrorDefault": "Couldn't clear.",
+      "confirmModal": {
+        "title": "Confirm duplicate",
+        "description": "The flagged entry will be marked as a duplicate and deleted.",
+        "bullet1": "The entry is soft-deleted — hidden from queries and fleet analytics.",
+        "bullet2": "This action cannot be undone.",
+        "confirm": "Confirm and delete"
+      }
+    },
+    "common": {
+      "irreversible": "This action cannot be undone.",
+      "processing": "Processing…",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "createTruckPrompts": {
+      "capacity": "Capacity (kg)?",
+      "type": "Type? (TIR, KAMYON, KAMYONET)",
+      "volume": "Cargo volume (m³)?",
+      "invalidNumeric": "Capacity or volume is invalid.",
+      "successToast": "Truck created. {{count}} historical entries linked.",
+      "errorDefault": "Couldn't create truck."
     }
   },
   "cookie": {

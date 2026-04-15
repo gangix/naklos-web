@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { fuelReviewApi } from '../../services/api';
 import type { FuelEntryDto, PossibleDuplicatePair } from '../../types/fuel';
 import ConfirmActionModal from './ConfirmActionModal';
@@ -11,7 +12,8 @@ interface Props {
 }
 
 function EntryCell({ entry }: { entry: FuelEntryDto | null }) {
-  if (!entry) return <div className="text-sm text-gray-500">Eşleşen kayıt bulunamadı</div>;
+  const { t } = useTranslation();
+  if (!entry) return <div className="text-sm text-gray-500">{t('fuelReview.duplicate.noMatch')}</div>;
   return (
     <div className="text-sm">
       <div className="font-semibold">{entry.plateTextRaw}</div>
@@ -24,42 +26,43 @@ function EntryCell({ entry }: { entry: FuelEntryDto | null }) {
 }
 
 export default function DuplicateComparisonCard({ fleetId, pair, onResolved }: Props) {
+  const { t } = useTranslation();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const runConfirm = async () => {
     try {
       await fuelReviewApi.confirmDuplicate(fleetId, pair.flaggedEntry.id);
-      toast.success('Yineleme onaylandı ve kayıt silindi.');
+      toast.success(t('fuelReview.duplicate.confirmSuccessToast'));
       setConfirmOpen(false);
       onResolved();
     } catch (e: any) {
-      toast.error(e?.message ?? 'Onaylama başarısız.');
+      toast.error(e?.message ?? t('fuelReview.duplicate.confirmErrorDefault'));
     }
   };
   const dismissDupe = async () => {
     try {
       await fuelReviewApi.dismissDuplicate(fleetId, pair.flaggedEntry.id);
-      toast.success('Uyarı temizlendi.');
+      toast.success(t('fuelReview.duplicate.dismissSuccessToast'));
       onResolved();
     } catch (e: any) {
-      toast.error(e?.message ?? 'Temizleme başarısız.');
+      toast.error(e?.message ?? t('fuelReview.duplicate.dismissErrorDefault'));
     }
   };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
       <div className="text-[11px] text-gray-500 font-medium uppercase tracking-wider mb-3">
-        Parti: {pair.batchFileName ?? '—'}
+        {t('fuelReview.duplicate.batchLabel')}: {pair.batchFileName ?? '—'}
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="border-r border-gray-200 pr-4">
           <div className="text-[11px] text-amber-700 font-bold uppercase tracking-wider mb-2">
-            İşaretlenen
+            {t('fuelReview.duplicate.flagged')}
           </div>
           <EntryCell entry={pair.flaggedEntry} />
         </div>
         <div>
           <div className="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-2">
-            Orijinal (şüpheli)
+            {t('fuelReview.duplicate.original')}
           </div>
           <EntryCell entry={pair.suspectedOriginal} />
         </div>
@@ -68,23 +71,23 @@ export default function DuplicateComparisonCard({ fleetId, pair, onResolved }: P
         <button
           className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
           onClick={dismissDupe}>
-          Yineleme değil
+          {t('fuelReview.duplicate.dismissBtn')}
         </button>
         <button
           className="px-4 py-2 text-sm font-semibold rounded-lg bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-500/20 transition-all"
           onClick={() => setConfirmOpen(true)}>
-          Yinelemeyi onayla
+          {t('fuelReview.duplicate.confirmBtn')}
         </button>
       </div>
       {confirmOpen && (
         <ConfirmActionModal
-          title="Yinelemeyi onayla"
-          description={<>İşaretlenen kayıt yinelenmiş olarak onaylanacak ve silinecek.</>}
+          title={t('fuelReview.duplicate.confirmModal.title')}
+          description={t('fuelReview.duplicate.confirmModal.description')}
           bullets={[
-            <>Kayıt silinmiş olarak işaretlenir — sorgulardan ve filo analizlerinden çıkarılır.</>,
-            <>Geri alma işlemi şu an desteklenmiyor — dikkatli ilerleyin.</>,
+            t('fuelReview.duplicate.confirmModal.bullet1'),
+            t('fuelReview.duplicate.confirmModal.bullet2'),
           ]}
-          confirmLabel="Yinelemeyi onayla ve sil"
+          confirmLabel={t('fuelReview.duplicate.confirmModal.confirm')}
           tone="danger"
           onConfirm={runConfirm}
           onClose={() => setConfirmOpen(false)}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import UnmatchedPlateList from './UnmatchedPlateList';
 import PossibleDuplicatesList from './PossibleDuplicatesList';
 
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function FuelReviewTabs({ fleetId, batchId, initialTab }: Props) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>(initialTab);
   const tabClass = (active: boolean) =>
     `px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
@@ -23,10 +25,10 @@ export default function FuelReviewTabs({ fleetId, batchId, initialTab }: Props) 
     <div>
       <div className="flex gap-1 border-b border-gray-200 mb-5">
         <button className={tabClass(tab === 'unmatched')} onClick={() => setTab('unmatched')}>
-          Eşleşmeyen plakalar
+          {t('fuelReview.tabs.unmatched')}
         </button>
         <button className={tabClass(tab === 'duplicates')} onClick={() => setTab('duplicates')}>
-          Olası yineleme
+          {t('fuelReview.tabs.duplicates')}
         </button>
       </div>
       {tab === 'unmatched'

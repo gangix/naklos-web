@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation, Trans } from 'react-i18next';
 import { fuelReviewApi } from '../../services/api';
 import type { UnmatchedBatchBreakdown } from '../../types/fuel';
 import AliasModal from './AliasModal';
@@ -16,6 +17,7 @@ interface Props {
 export default function ResolutionActionMenu(
   { fleetId, normalizedPlate, displayPlate, batches, onResolved }: Props) {
 
+  const { t } = useTranslation();
   const [aliasOpen, setAliasOpen] = useState(false);
   const [subcontractorOpen, setSubcontractorOpen] = useState(false);
   const [dismissBatch, setDismissBatch] = useState<UnmatchedBatchBreakdown | null>(null);
@@ -23,36 +25,36 @@ export default function ResolutionActionMenu(
   const confirmSubcontractor = async () => {
     try {
       const { affectedCount } = await fuelReviewApi.subcontractor(fleetId, normalizedPlate);
-      toast.success(`${affectedCount} kayıt taşeron olarak işaretlendi.`);
+      toast.success(t('fuelReview.subcontractorModal.successToast', { count: affectedCount }));
       setSubcontractorOpen(false);
       onResolved();
     } catch (e: any) {
-      toast.error(e?.message ?? 'Taşeron işaretleme başarısız.');
+      toast.error(e?.message ?? t('fuelReview.subcontractorModal.errorDefault'));
     }
   };
 
   const confirmDismiss = async (batchId: string) => {
     try {
       const { affectedCount } = await fuelReviewApi.dismiss(fleetId, normalizedPlate, batchId);
-      toast.success(`${affectedCount} kayıt yoksayıldı (bu partide).`);
+      toast.success(t('fuelReview.dismissModal.successToast', { count: affectedCount }));
       setDismissBatch(null);
       onResolved();
     } catch (e: any) {
-      toast.error(e?.message ?? 'Yoksayma başarısız.');
+      toast.error(e?.message ?? t('fuelReview.dismissModal.errorDefault'));
     }
   };
 
   const createTruck = async () => {
     // v1 shortcut: simple prompts. Replaced with AddTruckModal integration later.
-    const capacityKgStr = window.prompt('Kapasite (kg)?');
+    const capacityKgStr = window.prompt(t('fuelReview.createTruckPrompts.capacity'));
     if (!capacityKgStr) return;
     const capacityKg = Number(capacityKgStr);
-    const type = (window.prompt('Tür? (TIR, KAMYON, KAMYONET)') ?? 'TIR').toUpperCase();
-    const cargoVolumeM3Str = window.prompt('Kargo hacmi (m³)?');
+    const type = (window.prompt(t('fuelReview.createTruckPrompts.type')) ?? 'TIR').toUpperCase();
+    const cargoVolumeM3Str = window.prompt(t('fuelReview.createTruckPrompts.volume'));
     if (!cargoVolumeM3Str) return;
     const cargoVolumeM3 = Number(cargoVolumeM3Str);
     if (!Number.isFinite(capacityKg) || !Number.isFinite(cargoVolumeM3)) {
-      toast.error('Kapasite veya hacim geçersiz.');
+      toast.error(t('fuelReview.createTruckPrompts.invalidNumeric'));
       return;
     }
     try {
@@ -62,12 +64,14 @@ export default function ResolutionActionMenu(
         capacityKg,
         cargoVolumeM3,
       });
-      toast.success(`Araç oluşturuldu. ${r.relinkedFuelEntryCount} geçmiş kayıt bağlandı.`);
+      toast.success(t('fuelReview.createTruckPrompts.successToast', { count: r.relinkedFuelEntryCount }));
       onResolved();
     } catch (e: any) {
-      toast.error(e?.message ?? 'Araç oluşturma başarısız.');
+      toast.error(e?.message ?? t('fuelReview.createTruckPrompts.errorDefault'));
     }
   };
+
+  const showBatch = batches.length > 1;
 
   // Canonical button classes lifted from TrucksPage so the fuel surface reads
   // the same as the rest of the manager area.
@@ -83,31 +87,32 @@ export default function ResolutionActionMenu(
       <button
         className={btnPrimary}
         onClick={createTruck}
-        title="Bu plakayı yeni araç olarak kaydet. Geçmiş kayıtlar otomatik olarak yeni araca bağlanır.">
-        Araç oluştur
+        title={t('fuelReview.tooltips.createTruck')}>
+        {t('fuelReview.actions.createTruck')}
       </button>
       <button
         className={btnSecondary}
         onClick={() => setAliasOpen(true)}
-        title="Yanlış yazılmış plakayı doğrusuna yönlendir (ör. 34A8C123 → 34ABC123). Bu ve gelecekteki kayıtlar doğru araca bağlanır.">
-        Plaka düzelt
+        title={t('fuelReview.tooltips.alias')}>
+        {t('fuelReview.actions.alias')}
       </button>
       <button
         className={btnSecondary}
         onClick={() => setSubcontractorOpen(true)}
-        title="Bu plaka taşerona ait. Filo analizlerinden dışlanır, araç oluşturulmaz.">
-        Taşeron
+        title={t('fuelReview.tooltips.subcontractor')}>
+        {t('fuelReview.actions.subcontractor')}
       </button>
       {batches.map(b => {
-        const showBatch = batches.length > 1;
         const shortBatch = (b.batchFileName ?? '').replace(/\.[^.]+$/, '').slice(0, 14);
         return (
           <button
             key={b.batchId}
             className={btnGhost}
             onClick={() => setDismissBatch(b)}
-            title={`"${b.batchFileName}" partisindeki ${b.entryCount} kaydı incelemeden kaldır. Aynı plaka başka bir partide tekrar görünebilir.`}>
-            {showBatch ? `Yoksay · ${shortBatch}` : 'Yoksay'}
+            title={t('fuelReview.tooltips.dismiss', { count: b.entryCount, batch: b.batchFileName })}>
+            {showBatch
+              ? t('fuelReview.actions.dismissInBatch', { batch: shortBatch })
+              : t('fuelReview.actions.dismiss')}
           </button>
         );
       })}
@@ -117,7 +122,7 @@ export default function ResolutionActionMenu(
           normalizedPlate={normalizedPlate}
           onClose={() => setAliasOpen(false)}
           onSuccess={(count) => {
-            toast.success(`Plaka düzeltildi. ${count} kayıt bağlandı.`);
+            toast.success(t('fuelReview.aliasModal.successToast', { count }));
             setAliasOpen(false);
             onResolved();
           }}
@@ -125,31 +130,39 @@ export default function ResolutionActionMenu(
       )}
       {subcontractorOpen && (
         <ConfirmActionModal
-          title="Taşeron olarak işaretle"
-          description={<><strong className="font-mono text-gray-900">{displayPlate}</strong> size ait olmayan, taşeronunuza ait bir plaka olarak işaretlenecek.</>}
+          title={t('fuelReview.subcontractorModal.title')}
+          description={
+            <Trans
+              i18nKey="fuelReview.subcontractorModal.description"
+              values={{ plate: displayPlate }}
+              components={{ strong: <strong className="font-mono text-gray-900" /> }}
+            />
+          }
           bullets={[
-            <>Bu plakanın geçmiş ve gelecek kayıtları <strong>filo analizlerinden dışlanır</strong>.</>,
-            <>Bu plaka için araç oluşturulmaz.</>,
-            <>Geri alma işlemi şu an desteklenmiyor — dikkatli ilerleyin.</>,
+            t('fuelReview.subcontractorModal.bullet1'),
+            t('fuelReview.subcontractorModal.bullet2'),
+            t('fuelReview.subcontractorModal.bullet3'),
           ]}
-          confirmLabel="Taşeron olarak işaretle"
+          confirmLabel={t('fuelReview.subcontractorModal.confirm')}
           onConfirm={confirmSubcontractor}
           onClose={() => setSubcontractorOpen(false)}
         />
       )}
       {dismissBatch && (
         <ConfirmActionModal
-          title="Bu partide yoksay"
-          description={<>
-            <strong className="font-mono text-gray-900">{displayPlate}</strong> plakasının
-            {' '}<strong className="font-mono">{dismissBatch.batchFileName}</strong> partisindeki
-            {' '}<strong>{dismissBatch.entryCount}</strong> kaydı incelemeden kaldırılacak.
-          </>}
+          title={t('fuelReview.dismissModal.title')}
+          description={
+            <Trans
+              i18nKey="fuelReview.dismissModal.description"
+              values={{ plate: displayPlate, batch: dismissBatch.batchFileName, count: dismissBatch.entryCount }}
+              components={{ strong: <strong className="font-mono text-gray-900" /> }}
+            />
+          }
           bullets={[
-            <>Kayıtlar silinmez, sadece bu inceleme listesinden gizlenir.</>,
-            <>Aynı plaka başka bir partide tekrar eşleşmezse orada yeniden görünür.</>,
+            t('fuelReview.dismissModal.bullet1'),
+            t('fuelReview.dismissModal.bullet2'),
           ]}
-          confirmLabel="Yoksay"
+          confirmLabel={t('fuelReview.dismissModal.confirm')}
           onConfirm={() => confirmDismiss(dismissBatch.batchId)}
           onClose={() => setDismissBatch(null)}
         />

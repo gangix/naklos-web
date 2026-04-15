@@ -910,14 +910,95 @@
   "fuelReview": {
     "pageTitle": "Kraftstoff-Überprüfung",
     "tabs": { "unmatched": "Unzugeordnete Kennzeichen", "duplicates": "Mögliche Duplikate" },
-    "empty": { "unmatched": "Keine unzugeordneten Kennzeichen.", "duplicates": "Keine ausstehenden Duplikate." },
+    "nav": { "imports": "Import", "formats": "Formate", "review": "Überprüfung" },
+    "loading": "Laden…",
+    "empty": {
+      "unmatched": { "title": "Alle Kennzeichen sind zugeordnet.", "subtitle": "Importierte Kraftstoffeinträge sind Ihren LKWs zugeordnet." },
+      "duplicates": "Keine ausstehenden Duplikate."
+    },
+    "banner": {
+      "lead": "Diese Kennzeichen konnten keinem LKW zugeordnet werden. Pro Kennzeichen haben Sie vier Optionen:",
+      "createTruck": { "label": "LKW erstellen", "desc": "Dieses Kennzeichen gehört Ihnen, wurde aber noch nicht als LKW hinzugefügt." },
+      "alias": { "label": "Kennzeichen korrigieren", "desc": "Das Kennzeichen im Beleg ist falsch eingelesen. Weiterleitung zur richtigen Variante." },
+      "subcontractor": { "label": "Subunternehmer", "desc": "Gehört einem Subunternehmer, aus Flottenanalysen ausschließen." },
+      "dismiss": { "label": "Verwerfen", "desc": "In diesem Batch ignorieren (kann in einem anderen Batch wieder erscheinen)." }
+    },
+    "plateRow": { "entries": "{{count}} Einträge", "first": "Erstes", "last": "Letztes" },
     "actions": {
       "createTruck": "LKW erstellen",
-      "alias": "Alias hinzufügen",
-      "subcontractor": "Als Subunternehmer markieren",
+      "alias": "Kennzeichen korrigieren",
+      "subcontractor": "Subunternehmer",
       "dismiss": "Verwerfen",
-      "confirmDuplicate": "Duplikat bestätigen",
-      "dismissDuplicate": "Kein Duplikat"
+      "dismissInBatch": "Verwerfen · {{batch}}"
+    },
+    "tooltips": {
+      "createTruck": "Dieses Kennzeichen als neuen LKW registrieren. Historische Einträge werden automatisch verknüpft.",
+      "alias": "Falsch gelesenes Kennzeichen zum richtigen weiterleiten (z.B. 34A8C123 → 34ABC123). Dieser und zukünftige Einträge werden korrekt verknüpft.",
+      "subcontractor": "Dieses Kennzeichen gehört einem Subunternehmer. Aus Flottenanalysen ausgeschlossen; kein LKW wird erstellt.",
+      "dismiss": "Die {{count}} Einträge dieses Kennzeichens in \"{{batch}}\" verwerfen. Dasselbe Kennzeichen kann in einem anderen Batch erneut erscheinen."
+    },
+    "aliasModal": {
+      "title": "Kennzeichen korrigieren",
+      "description": "Das im Beleg als <strong>{{plate}}</strong> angezeigte Kennzeichen ist falsch. Geben Sie das richtige Kennzeichen ein — historische und zukünftige Einträge werden korrekt verknüpft.",
+      "inputLabel": "Richtiges Kennzeichen",
+      "placeholder": "z.B. 34 ABC 123",
+      "cancel": "Abbrechen",
+      "save": "Speichern",
+      "saving": "Wird gespeichert…",
+      "errorDefault": "Kennzeichen konnte nicht korrigiert werden.",
+      "successToast": "Kennzeichen korrigiert. {{count}} Einträge verknüpft."
+    },
+    "subcontractorModal": {
+      "title": "Als Subunternehmer markieren",
+      "description": "<strong>{{plate}}</strong> wird als Kennzeichen eines Subunternehmers markiert, nicht Ihrer Flotte.",
+      "bullet1": "Vergangene und zukünftige Einträge für dieses Kennzeichen werden aus Flottenanalysen ausgeschlossen.",
+      "bullet2": "Für dieses Kennzeichen wird kein LKW erstellt.",
+      "bullet3": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "confirm": "Als Subunternehmer markieren",
+      "successToast": "{{count}} Einträge als Subunternehmer markiert.",
+      "errorDefault": "Markierung als Subunternehmer fehlgeschlagen."
+    },
+    "dismissModal": {
+      "title": "In diesem Batch verwerfen",
+      "description": "<strong>{{count}}</strong> Einträge von <strong>{{plate}}</strong> im Batch <strong>{{batch}}</strong> werden aus der Überprüfung entfernt.",
+      "bullet1": "Einträge werden nicht gelöscht, nur aus dieser Überprüfungsliste ausgeblendet.",
+      "bullet2": "Wird dasselbe Kennzeichen in einem anderen Batch nicht zugeordnet, erscheint es dort erneut.",
+      "confirm": "Verwerfen",
+      "successToast": "{{count}} Einträge verworfen (in diesem Batch).",
+      "errorDefault": "Verwerfen fehlgeschlagen."
+    },
+    "duplicate": {
+      "batchLabel": "Batch",
+      "flagged": "Markiert",
+      "original": "Original (verdächtig)",
+      "noMatch": "Kein übereinstimmender Eintrag gefunden",
+      "confirmBtn": "Duplikat bestätigen",
+      "dismissBtn": "Kein Duplikat",
+      "confirmSuccessToast": "Duplikat bestätigt und Eintrag gelöscht.",
+      "dismissSuccessToast": "Warnung gelöscht.",
+      "confirmErrorDefault": "Bestätigung fehlgeschlagen.",
+      "dismissErrorDefault": "Löschen fehlgeschlagen.",
+      "confirmModal": {
+        "title": "Duplikat bestätigen",
+        "description": "Der markierte Eintrag wird als Duplikat bestätigt und gelöscht.",
+        "bullet1": "Der Eintrag wird weich gelöscht — aus Abfragen und Flottenanalysen entfernt.",
+        "bullet2": "Diese Aktion kann nicht rückgängig gemacht werden.",
+        "confirm": "Bestätigen und löschen"
+      }
+    },
+    "common": {
+      "irreversible": "Diese Aktion kann nicht rückgängig gemacht werden.",
+      "processing": "Verarbeiten…",
+      "cancel": "Abbrechen",
+      "confirm": "Bestätigen"
+    },
+    "createTruckPrompts": {
+      "capacity": "Kapazität (kg)?",
+      "type": "Typ? (TIR, KAMYON, KAMYONET)",
+      "volume": "Ladevolumen (m³)?",
+      "invalidNumeric": "Kapazität oder Volumen ist ungültig.",
+      "successToast": "LKW erstellt. {{count}} historische Einträge verknüpft.",
+      "errorDefault": "LKW konnte nicht erstellt werden."
     }
   },
   "cookie": {

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import type { UnmatchedPlateGroup } from '../../types/fuel';
 import ResolutionActionMenu from './ResolutionActionMenu';
 
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function UnmatchedPlateRow({ fleetId, group, onResolved }: Props) {
+  const { t } = useTranslation();
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-start justify-between gap-4">
       <div className="min-w-0">
@@ -16,16 +18,16 @@ export default function UnmatchedPlateRow({ fleetId, group, onResolved }: Props)
           <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">{group.normalizedPlate}</span>
         </div>
         <div className="text-sm text-gray-700 mt-1.5 font-medium">
-          {group.entryCount} kayıt
+          {t('fuelReview.plateRow.entries', { count: group.entryCount })}
           <span className="mx-1.5 text-gray-300">·</span>
           {Number(group.totalLiters).toFixed(2)} L
           <span className="mx-1.5 text-gray-300">·</span>
           ₺{Number(group.totalPriceTl).toFixed(2)}
         </div>
         <div className="text-xs text-gray-500 mt-0.5">
-          İlk: {new Date(group.firstOccurredAt).toLocaleDateString('tr-TR')}
+          {t('fuelReview.plateRow.first')}: {new Date(group.firstOccurredAt).toLocaleDateString('tr-TR')}
           <span className="mx-1.5 text-gray-300">·</span>
-          Son: {new Date(group.lastOccurredAt).toLocaleDateString('tr-TR')}
+          {t('fuelReview.plateRow.last')}: {new Date(group.lastOccurredAt).toLocaleDateString('tr-TR')}
         </div>
       </div>
       <ResolutionActionMenu
