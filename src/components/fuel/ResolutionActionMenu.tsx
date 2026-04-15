@@ -94,15 +94,19 @@ export default function ResolutionActionMenu(
         title="Bu plaka taşerona ait. Filo analizlerinden dışlanır, araç oluşturulmaz.">
         Taşeron
       </button>
-      {batches.map(b => (
-        <button
-          key={b.batchId}
-          className={btnGhost}
-          onClick={() => dismiss(b.batchId)}
-          title={`"${b.batchFileName}" partisindeki ${b.entryCount} kaydı incelemeden kaldır. Aynı plaka başka bir partide tekrar görünebilir.`}>
-          Yoksay ({b.entryCount})
-        </button>
-      ))}
+      {batches.map(b => {
+        const showBatch = batches.length > 1;
+        const shortBatch = (b.batchFileName ?? '').replace(/\.[^.]+$/, '').slice(0, 14);
+        return (
+          <button
+            key={b.batchId}
+            className={btnGhost}
+            onClick={() => dismiss(b.batchId)}
+            title={`"${b.batchFileName}" partisindeki ${b.entryCount} kaydı incelemeden kaldır. Aynı plaka başka bir partide tekrar görünebilir.`}>
+            {showBatch ? `Yoksay · ${shortBatch}` : 'Yoksay'}
+          </button>
+        );
+      })}
       {aliasOpen && (
         <AliasModal
           fleetId={fleetId}
