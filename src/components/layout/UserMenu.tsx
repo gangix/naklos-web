@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, LogOut, Settings } from 'lucide-react';
+import { ChevronDown, LogOut, Settings, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 /** Avatar-triggered dropdown containing the user's name, settings link, and
@@ -29,9 +29,11 @@ export default function UserMenu() {
     };
   }, [open]);
 
+  // Initials from real name; fall back to a generic User icon when name is
+  // missing or made of non-letter characters (avoids the awkward "?").
   const initials = user?.name
-    ? user.name.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase()
-    : '?';
+    ? user.name.split(' ').map(p => p[0]).filter(c => /\p{L}/u.test(c)).slice(0, 2).join('').toUpperCase()
+    : '';
 
   return (
     <div ref={rootRef} className="relative">
@@ -42,7 +44,7 @@ export default function UserMenu() {
         aria-label={t('common.account', { defaultValue: 'Hesap' }) as string}
         aria-expanded={open}>
         <span className="w-7 h-7 rounded-full bg-primary-500/20 text-primary-200 flex items-center justify-center text-xs font-bold">
-          {initials}
+          {initials || <User className="w-3.5 h-3.5" />}
         </span>
         <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
@@ -50,6 +52,9 @@ export default function UserMenu() {
       {open && (
         <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl shadow-black/10 border border-gray-200 overflow-hidden z-40 animate-[fadeIn_140ms_ease-out]">
           <div className="px-4 py-3 border-b border-gray-100">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-gray-400 mb-0.5">
+              {t('common.account', { defaultValue: 'Hesap' })}
+            </p>
             <p className="text-sm font-semibold text-gray-900 truncate">
               {user?.name ?? '—'}
             </p>
