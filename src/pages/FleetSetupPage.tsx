@@ -6,7 +6,7 @@ import { useFleet } from '../contexts/FleetContext';
 import { useAuth } from '../contexts/AuthContext';
 import { fleetApi } from '../services/api';
 import keycloak from '../auth/keycloak';
-import { Select, TextInput } from '../components/common/FormField';
+import { Checkbox, Select, TextInput } from '../components/common/FormField';
 
 const TERMS_VERSION = '2026-04-11';
 
@@ -191,24 +191,23 @@ const FleetSetupPage = () => {
 
           {/* Terms acceptance */}
           <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mt-0.5 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500 cursor-pointer"
-              />
-              <span className="text-sm text-gray-700 leading-relaxed">
-                <Link to="/terms" target="_blank" className="text-primary-600 font-medium underline">
-                  {t('fleetSetup.termsOfService')}
-                </Link>
-                {' '}&{' '}
-                <Link to="/privacy" target="_blank" className="text-primary-600 font-medium underline">
-                  {t('fleetSetup.privacyPolicy')}
-                </Link>
-                {t('fleetSetup.agreementSuffix')}
-              </span>
-            </label>
+            <Checkbox
+              checked={termsAccepted}
+              onChange={setTermsAccepted}
+              align="start"
+              label={
+                <>
+                  <Link to="/terms" target="_blank" className="text-primary-600 font-medium underline">
+                    {t('fleetSetup.termsOfService')}
+                  </Link>
+                  {' '}&{' '}
+                  <Link to="/privacy" target="_blank" className="text-primary-600 font-medium underline">
+                    {t('fleetSetup.privacyPolicy')}
+                  </Link>
+                  {t('fleetSetup.agreementSuffix')}
+                </>
+              }
+            />
           </div>
 
           <button

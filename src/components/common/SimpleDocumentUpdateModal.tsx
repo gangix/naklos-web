@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { FileText, Pencil, Upload } from 'lucide-react';
 import { truckApi, driverApi } from '../../services/api';
-import { TextInput } from './FormField';
+import { FileInput, TextInput } from './FormField';
 import type { DocumentCategory } from '../../types';
 
 interface TruckDocument {
@@ -83,11 +83,10 @@ const SimpleDocumentUpdateModal = ({
     return labels[cat];
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-      setError(null);
-    }
+  const handleFileSelected = (file: File | null) => {
+    if (!file) return;
+    setSelectedFile(file);
+    setError(null);
   };
 
   const handleUpload = async () => {
@@ -232,22 +231,12 @@ const SimpleDocumentUpdateModal = ({
               <p className="text-xs text-gray-600 mt-1">{t('simpleDocUpdate.uploadHint')}</p>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {t('simpleDocUpdate.selectFile')}
-              </label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                accept=".pdf,.jpg,.jpeg,.png"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-              {selectedFile && (
-                <p className="text-sm text-gray-600 mt-1">
-                  {t('simpleDocUpdate.selected')}: {selectedFile.name} ({formatFileSize(selectedFile.size)})
-                </p>
-              )}
-            </div>
+            <FileInput
+              label={t('simpleDocUpdate.selectFile')}
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={handleFileSelected}
+              selectedFileName={selectedFile ? `${selectedFile.name} (${formatFileSize(selectedFile.size)})` : null}
+            />
 
             <TextInput
               label={t('simpleDocUpdate.expiryDate')}

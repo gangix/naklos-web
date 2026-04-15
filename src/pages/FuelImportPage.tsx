@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Upload, AlertTriangle, CheckCircle2, XCircle } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
+import { Checkbox, FileInput } from '../components/common/FormField';
 import type {
   CommitOverride,
   DraftPreview,
@@ -112,15 +113,12 @@ const FuelImportPage = () => {
               ))}
             </select>
           </label>
-          <label className="block">
-            <span className="text-sm font-medium">Statement dosyası (XLSX)</span>
-            <input
-              type="file"
-              accept=".xlsx"
-              className="mt-1 block text-sm"
-              onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
+          <FileInput
+            label="Statement dosyası (XLSX)"
+            accept=".xlsx"
+            onChange={setFile}
+            selectedFileName={file?.name ?? null}
+          />
         </div>
         <div className="flex justify-end">
           <button
@@ -184,14 +182,11 @@ const FuelImportPage = () => {
                       </td>
                       <td className="px-3 py-2 text-right">
                         {r.classification === 'POSSIBLE_DUPLICATE' && (
-                          <label className="inline-flex items-center gap-1 text-xs cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={overridden}
-                              onChange={() => toggleOverride(r.rowIndex)}
-                            />
-                            Yine de içe aktar
-                          </label>
+                          <Checkbox
+                            checked={overridden}
+                            onChange={() => toggleOverride(r.rowIndex)}
+                            label={<span className="text-xs">Yine de içe aktar</span>}
+                          />
                         )}
                       </td>
                     </tr>

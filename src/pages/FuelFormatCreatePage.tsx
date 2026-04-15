@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FileInput } from '../components/common/FormField';
 import { toast } from 'sonner';
 import { ArrowLeft, Upload } from 'lucide-react';
 import { fuelFormatApi } from '../services/api';
@@ -15,6 +16,7 @@ const FuelFormatCreatePage = () => {
 
   const [provider, setProvider] = useState<FuelProvider>('GENERIC');
   const [name, setName] = useState('');
+  const [sampleFile, setSampleFile] = useState<File | null>(null);
   const [suggested, setSuggested] = useState<SuggestedMappingDto | null>(null);
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState(false);
@@ -22,6 +24,7 @@ const FuelFormatCreatePage = () => {
 
   const handleSample = async (file: File) => {
     if (!fleetId) return;
+    setSampleFile(file);
     try {
       setUploading(true);
       const result = await fuelFormatApi.suggestMapping(fleetId, file);
@@ -117,19 +120,13 @@ const FuelFormatCreatePage = () => {
         </div>
 
         <div>
-          <label className="block">
-            <span className="text-sm font-medium">Örnek XLSX yükle (isteğe bağlı — eşlemeyi otomatik önerir)</span>
-            <input
-              type="file"
-              accept=".xlsx"
-              className="mt-1 block text-sm"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) void handleSample(f);
-              }}
-              disabled={uploading}
-            />
-          </label>
+          <FileInput
+            label="Örnek XLSX yükle (isteğe bağlı — eşlemeyi otomatik önerir)"
+            accept=".xlsx"
+            disabled={uploading}
+            onChange={(f) => { if (f) void handleSample(f); }}
+            selectedFileName={sampleFile?.name ?? null}
+          />
           {uploading && <p className="text-sm text-gray-500 mt-2">Analiz ediliyor…</p>}
           {suggested && <div className="mt-2 flex items-center gap-2">{sourceBadge()}</div>}
         </div>
