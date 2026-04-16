@@ -765,7 +765,8 @@
     "noTruckTitle": "Noch kein Fahrzeug zugewiesen",
     "noTruckDesc": "Ihnen wurde kein Fahrzeug zugewiesen. Bitte wenden Sie sich an Ihren Vorgesetzten.",
     "update": "Aktualisieren",
-    "upload": "Hochladen"
+    "upload": "Hochladen",
+    "recentFuelEntries": "Meine letzten Kraftstoffeinträge"
   },
   "categoryLabel": {
     "license": "Führerschein",
@@ -1112,12 +1113,14 @@
     },
     "edit": {
       "title": "Kraftstoffeintrag bearbeiten",
-      "submit": "Aktualisieren"
+      "submit": "Aktualisieren",
+      "successToast": "Eintrag aktualisiert."
     },
     "delete": {
       "title": "Kraftstoffeintrag löschen",
       "description": "Eintrag vom {{date}} ({{liters}} L) wird gelöscht.",
-      "confirm": "Löschen"
+      "confirm": "Löschen",
+      "successToast": "Eintrag gelöscht."
     },
     "field": {
       "occurredAt": "Datum und Uhrzeit",
@@ -1147,8 +1150,7 @@
     "editPhotoHint": "Zum Ändern des Fotos den Eintrag löschen und neu erstellen.",
     "source": {
       "MANUAL": "Manuell",
-      "FUEL_CARD_IMPORT": "Importiert",
-      "DRIVER_RECEIPT": "Fahrerbeleg"
+      "FUEL_CARD_IMPORT": "Importiert"
     }
   },
   "fuelImport": {

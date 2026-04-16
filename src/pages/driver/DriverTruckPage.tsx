@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Truck as TruckIcon, Fuel } from 'lucide-react';
+import { Truck as TruckIcon, Fuel, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { driverApi, truckApi } from '../../services/api';
 import { fuelEntryApi } from '../../services/fuelEntryApi';
 import { useTranslation } from 'react-i18next';
-import { formatRelativeTime } from '../../utils/format';
+import { formatDateTime, formatRelativeTime } from '../../utils/format';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import FuelEntryFormModal from '../../components/fuel/FuelEntryFormModal';
+import ConfirmActionModal from '../../components/fuel/ConfirmActionModal';
 import { useLocationSharing } from '../../contexts/LocationSharingContext';
 import type { Driver, Truck, DocumentCategory } from '../../types';
+import type { TruckFuelEntryDto } from '../../types/fuel';
 
 const DriverTruckPage = () => {
   const { t } = useTranslation();
@@ -20,7 +22,19 @@ const DriverTruckPage = () => {
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
   const [fuelModalOpen, setFuelModalOpen] = useState(false);
+  const [fuelEntries, setFuelEntries] = useState<TruckFuelEntryDto[]>([]);
+  const [editEntry, setEditEntry] = useState<TruckFuelEntryDto | null>(null);
+  const [deleteEntry, setDeleteEntry] = useState<TruckFuelEntryDto | null>(null);
   const locationSharing = useLocationSharing();
+
+  const reloadFuelEntries = async () => {
+    try {
+      const list = await fuelEntryApi.listForDriver(10);
+      setFuelEntries(list);
+    } catch (err) {
+      console.error('Error loading driver fuel entries:', err);
+    }
+  };
 
   useEffect(() => {
     loadData();
@@ -45,8 +59,10 @@ const DriverTruckPage = () => {
 
       if (driverData.assignedTruckId) {
         await reloadTruck();
+        await reloadFuelEntries();
       } else {
         setAssignedTruck(null);
+        setFuelEntries([]);
       }
     } catch (error) {
       console.error('Error loading driver profile:', error);
@@ -163,6 +179,56 @@ const DriverTruckPage = () => {
         {t('fuelEntry.add.button')}
       </button>
 
+      {/* Recent manual fuel entries the driver can still edit/delete.
+          Imported rows (source=FUEL_CARD_IMPORT) stay read-only. */}
+      {fuelEntries.length > 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-4 overflow-hidden">
+          <h2 className="text-sm font-extrabold tracking-tight text-gray-900 px-4 pt-3 pb-2">
+            {t('driverTruck.recentFuelEntries')}
+          </h2>
+          <ul className="divide-y divide-gray-100">
+            {fuelEntries.map(entry => {
+              const liters = parseFloat(entry.liters);
+              const price = parseFloat(entry.totalPrice);
+              const editable = entry.source === 'MANUAL';
+              return (
+                <li key={entry.id} className="flex items-center gap-3 px-4 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-gray-500">{formatDateTime(entry.occurredAt)}</p>
+                    <p className="text-sm font-medium text-gray-900 tabular-nums">
+                      {liters.toFixed(2)} L · ₺{price.toFixed(2)}
+                    </p>
+                    {entry.stationName && (
+                      <p className="text-xs text-gray-600 truncate">{entry.stationName}</p>
+                    )}
+                  </div>
+                  {editable && (
+                    <div className="flex items-center gap-1 flex-shrink-0">
+                      <button
+                        type="button"
+                        aria-label={t('fuelEntry.edit.title')}
+                        onClick={() => setEditEntry(entry)}
+                        className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={t('fuelEntry.delete.title')}
+                        onClick={() => setDeleteEntry(entry)}
+                        className="p-1.5 rounded hover:bg-red-50 text-gray-500 hover:text-red-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.documents')}</h2>
 
@@ -231,10 +297,54 @@ const DriverTruckPage = () => {
           truckPlate={assignedTruck.plateNumber}
           mode="add"
           onClose={() => setFuelModalOpen(false)}
-          onSaved={() => toast.success(t('fuelEntry.add.successToast'))}
+          onSaved={() => {
+            toast.success(t('fuelEntry.add.successToast'));
+            void reloadFuelEntries();
+          }}
           saveFn={(input, photo) => fuelEntryApi.addDriverEntry(input, photo!)}
         />
       )}
+
+      {editEntry && (
+        <FuelEntryFormModal
+          fleetId=""
+          truckId={assignedTruck.id}
+          truckPlate={assignedTruck.plateNumber}
+          mode="edit"
+          initial={editEntry}
+          onClose={() => setEditEntry(null)}
+          onSaved={() => {
+            toast.success(t('fuelEntry.edit.successToast', { defaultValue: 'Kayıt güncellendi.' }));
+            void reloadFuelEntries();
+          }}
+          saveFn={(input) => fuelEntryApi.updateDriverEntry(editEntry.id, input)}
+        />
+      )}
+
+      {deleteEntry && (() => {
+        const liters = parseFloat(deleteEntry.liters).toFixed(2);
+        return (
+          <ConfirmActionModal
+            title={t('fuelEntry.delete.title')}
+            description={t('fuelEntry.delete.description', {
+              date: formatDateTime(deleteEntry.occurredAt),
+              liters,
+            })}
+            confirmLabel={t('fuelEntry.delete.confirm')}
+            tone="danger"
+            onConfirm={async () => {
+              try {
+                await fuelEntryApi.deleteDriverEntry(deleteEntry.id);
+                toast.success(t('fuelEntry.delete.successToast', { defaultValue: 'Kayıt silindi.' }));
+                await reloadFuelEntries();
+              } catch {
+                toast.error(t('fuelEntry.error.deleteFailed'));
+              }
+            }}
+            onClose={() => setDeleteEntry(null)}
+          />
+        );
+      })()}
     </div>
   );
 };

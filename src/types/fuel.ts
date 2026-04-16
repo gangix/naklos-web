@@ -183,7 +183,7 @@ export interface TruckFuelEntryDto {
   odometerKm: number | null;
   notes: string | null;
   receiptDocumentId: string | null;
-  source: 'FUEL_CARD_IMPORT' | 'DRIVER_RECEIPT' | 'MANUAL';
+  source: 'FUEL_CARD_IMPORT' | 'MANUAL';
   matchStatus: 'MATCHED' | 'UNMATCHED' | 'AMBIGUOUS' | 'SUBCONTRACTOR' | 'DISMISSED';
 }
 

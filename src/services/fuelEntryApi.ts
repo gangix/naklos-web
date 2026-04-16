@@ -170,6 +170,20 @@ export const fuelEntryApi = {
     return fuelApiCall<TruckFuelEntryDto[]>(`/driver/fuel-entries${params}`);
   },
 
+  /** PUT /api/driver/fuel-entries/{entryId} */
+  updateDriverEntry: (
+    entryId: string,
+    input: ManualFuelEntryInput,
+  ): Promise<TruckFuelEntryDto> =>
+    fuelApiCall<TruckFuelEntryDto>(`/driver/fuel-entries/${entryId}`, {
+      method: 'PUT',
+      body: JSON.stringify(input),
+    }),
+
+  /** DELETE /api/driver/fuel-entries/{entryId} */
+  deleteDriverEntry: (entryId: string): Promise<void> =>
+    fuelApiCall<void>(`/driver/fuel-entries/${entryId}`, { method: 'DELETE' }),
+
   /** GET /api/driver/fuel-entries/{entryId}/receipt */
   driverReceiptUrl: (entryId: string): string =>
     `${API_BASE_URL}/driver/fuel-entries/${entryId}/receipt`,

@@ -765,7 +765,8 @@
     "noTruckTitle": "Henüz araç atanmadı",
     "noTruckDesc": "Size bir araç atanmamış. Lütfen yöneticinizle iletişime geçin.",
     "update": "Güncelle",
-    "upload": "Yükle"
+    "upload": "Yükle",
+    "recentFuelEntries": "Son yakıt kayıtlarım"
   },
   "categoryLabel": {
     "license": "Ehliyet",
@@ -1111,12 +1112,14 @@
     },
     "edit": {
       "title": "Yakıt kaydını düzenle",
-      "submit": "Güncelle"
+      "submit": "Güncelle",
+      "successToast": "Kayıt güncellendi."
     },
     "delete": {
       "title": "Yakıt kaydını sil",
       "description": "{{date}} tarihli {{liters}} L kayıt silinecek.",
-      "confirm": "Sil"
+      "confirm": "Sil",
+      "successToast": "Kayıt silindi."
     },
     "field": {
       "occurredAt": "Tarih ve saat",
@@ -1146,8 +1149,7 @@
     "editPhotoHint": "Fotoğrafı değiştirmek için kaydı silip yeniden ekleyin.",
     "source": {
       "MANUAL": "Manuel",
-      "FUEL_CARD_IMPORT": "İçe aktarma",
-      "DRIVER_RECEIPT": "Şoför fişi"
+      "FUEL_CARD_IMPORT": "İçe aktarma"
     }
   },
   "fuelImport": {

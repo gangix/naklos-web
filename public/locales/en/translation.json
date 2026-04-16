@@ -765,7 +765,8 @@
     "noTruckTitle": "No truck assigned yet",
     "noTruckDesc": "You have not been assigned a truck. Please contact your manager.",
     "update": "Update",
-    "upload": "Upload"
+    "upload": "Upload",
+    "recentFuelEntries": "My recent fuel records"
   },
   "categoryLabel": {
     "license": "License",
@@ -1112,12 +1113,14 @@
     },
     "edit": {
       "title": "Edit fuel record",
-      "submit": "Update"
+      "submit": "Update",
+      "successToast": "Entry updated."
     },
     "delete": {
       "title": "Delete fuel record",
       "description": "Record from {{date}} ({{liters}} L) will be deleted.",
-      "confirm": "Delete"
+      "confirm": "Delete",
+      "successToast": "Entry deleted."
     },
     "field": {
       "occurredAt": "Date and time",
@@ -1147,8 +1150,7 @@
     "editPhotoHint": "To change the photo, delete this entry and add a new one.",
     "source": {
       "MANUAL": "Manual",
-      "FUEL_CARD_IMPORT": "Imported",
-      "DRIVER_RECEIPT": "Driver receipt"
+      "FUEL_CARD_IMPORT": "Imported"
     }
   },
   "fuelImport": {
