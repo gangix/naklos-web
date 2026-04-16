@@ -517,7 +517,7 @@ export default function FuelEntryFormModal({
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-2 pt-2">
+          <div className="flex flex-wrap justify-end gap-2 pt-2">
             <button
               type="button"
               onClick={onClose}

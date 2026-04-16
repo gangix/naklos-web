@@ -135,7 +135,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
           {/* Toplam litre */}
           <div>
             <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.totalLiters')}</div>
-            <div className="text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
               {isNaN(totalLiters) ? '—' : `${totalLiters.toFixed(2)} L`}
             </div>
           </div>
@@ -143,7 +143,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
           {/* Toplam tutar */}
           <div>
             <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.totalPrice')}</div>
-            <div className="text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
               {isNaN(totalPrice) ? '—' : `₺${totalPrice.toFixed(2)}`}
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
           {/* Dolum sayısı */}
           <div>
             <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.fillCount')}</div>
-            <div className="text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
               {fillCount}
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
       {/* Entries list */}
       <div className="rounded-xl shadow-sm border border-gray-200 bg-white overflow-hidden">
         {/* Header row */}
-        <div className="bg-gray-50 px-4 py-2 text-xs uppercase tracking-wider font-semibold text-gray-500 flex items-center gap-4">
+        <div className="hidden sm:flex bg-gray-50 px-4 py-2 text-xs uppercase tracking-wider font-semibold text-gray-500 items-center gap-4">
           <div className="w-32 flex-shrink-0">Tarih</div>
           <div className="flex-1">İstasyon</div>
           <div className="w-24 text-right">Litre</div>

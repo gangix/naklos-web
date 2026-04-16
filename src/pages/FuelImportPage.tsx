@@ -106,7 +106,7 @@ const FuelImportPage = () => {
       <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yakıt Statement İçe Aktar</h1>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-3">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <label className="block">
             <span className="text-sm font-medium">Format</span>
             <select
@@ -171,7 +171,7 @@ const FuelImportPage = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <StatCard label="Toplam" value={summary.total} />
             <StatCard label="Yeni" value={summary.newCount} highlight="green" />
             <StatCard label="Yinelenen" value={summary.duplicateCount} highlight="gray" />

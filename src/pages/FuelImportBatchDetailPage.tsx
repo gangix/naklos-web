@@ -199,9 +199,9 @@ const FuelImportBatchDetailPage = () => {
 };
 
 const Row = ({ k, v }: { k: string; v: string }) => (
-  <div className="flex justify-between border-b last:border-b-0 pb-1">
+  <div className="flex justify-between border-b last:border-b-0 pb-1 min-w-0">
     <span className="text-gray-500">{k}</span>
-    <span className="font-medium">{v}</span>
+    <span className="font-medium truncate max-w-[55%]">{v}</span>
   </div>
 );
 

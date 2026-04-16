@@ -75,7 +75,7 @@ export default function ReceiptLightbox({ fleetId, entryId, fileName, onClose }:
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
 
       {/* Controls */}
-      <div id="receipt-lightbox-title" className="absolute top-4 right-4 flex items-center gap-2">
+      <div id="receipt-lightbox-title" className="absolute top-[max(1rem,env(safe-area-inset-top))] right-4 flex items-center gap-2">
         {blobUrl && (
           <button
             className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"

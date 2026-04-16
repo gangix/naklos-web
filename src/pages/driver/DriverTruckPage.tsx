@@ -208,7 +208,7 @@ const DriverTruckPage = () => {
                         type="button"
                         aria-label={t('fuelEntry.edit.title')}
                         onClick={() => setEditEntry(entry)}
-                        className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
+                        className="p-2.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
@@ -216,7 +216,7 @@ const DriverTruckPage = () => {
                         type="button"
                         aria-label={t('fuelEntry.delete.title')}
                         onClick={() => setDeleteEntry(entry)}
-                        className="p-1.5 rounded hover:bg-red-50 text-gray-500 hover:text-red-600"
+                        className="p-2.5 rounded hover:bg-red-50 text-gray-500 hover:text-red-600"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

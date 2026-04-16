@@ -275,26 +275,28 @@ const TruckDetailPage = () => {
                           {t('truckDetail.assignDriver')}
                         </button>
                       ) : (
-                        <div className="flex items-center gap-2">
-                          <Select
-                            onChange={(e) => {
-                              if (e.target.value) {
-                                handleAssignDriver(e.target.value);
-                              }
-                            }}
-                            disabled={assigningDriver}
-                            defaultValue=""
-                          >
-                            <option value="">{t('truckDetail.selectDriver')}</option>
-                            {drivers.map((driver) => (
-                              <option key={driver.id} value={driver.id}>
-                                {driver.firstName} {driver.lastName}
-                              </option>
-                            ))}
-                          </Select>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="min-w-0">
+                            <Select
+                              onChange={(e) => {
+                                if (e.target.value) {
+                                  handleAssignDriver(e.target.value);
+                                }
+                              }}
+                              disabled={assigningDriver}
+                              defaultValue=""
+                            >
+                              <option value="">{t('truckDetail.selectDriver')}</option>
+                              {drivers.map((driver) => (
+                                <option key={driver.id} value={driver.id}>
+                                  {driver.firstName} {driver.lastName}
+                                </option>
+                              ))}
+                            </Select>
+                          </div>
                           <button
                             onClick={() => setShowDriverSelect(false)}
-                            className="text-xs text-gray-600 hover:text-gray-700"
+                            className="text-xs text-gray-600 hover:text-gray-700 flex-shrink-0"
                           >
                             {t('common.cancel')}
                           </button>

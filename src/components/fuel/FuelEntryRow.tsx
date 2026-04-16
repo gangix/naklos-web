@@ -112,7 +112,7 @@ export default function FuelEntryRow({ fleetId, entry, onEdit, onDelete, onRecei
         <div className="flex items-center gap-1 flex-shrink-0">
           {onEdit && (
             <button
-              className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+              className="p-2.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
               onClick={() => onEdit(entry)}
               title={t('fuelEntry.edit.title')}>
               <Pencil size={16} />
@@ -120,7 +120,7 @@ export default function FuelEntryRow({ fleetId, entry, onEdit, onDelete, onRecei
           )}
           {onDelete && (
             <button
-              className="p-1.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
+              className="p-2.5 rounded hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors"
               onClick={() => onDelete(entry)}
               title={t('fuelEntry.delete.title')}>
               <Trash2 size={16} />
