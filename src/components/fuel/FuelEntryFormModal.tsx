@@ -186,14 +186,12 @@ export default function FuelEntryFormModal({
       }
     }
 
-    // odometerKm — required (analytics depend on it for L/100km)
-    const km = parseInt(odometerKm, 10);
-    if (
-      odometerKm.trim() === '' ||
-      isNaN(km) || km < 0 || km > 10_000_000 ||
-      String(km) !== odometerKm.trim()
-    ) {
-      errs.odometerKm = t('fuelEntry.error.saveFailed');
+    // optional: odometerKm
+    if (odometerKm.trim() !== '') {
+      const km = parseInt(odometerKm, 10);
+      if (isNaN(km) || km < 0 || km > 10_000_000 || String(km) !== odometerKm.trim()) {
+        errs.odometerKm = t('fuelEntry.error.saveFailed');
+      }
     }
 
     // notes
@@ -226,7 +224,7 @@ export default function FuelEntryFormModal({
       totalPrice: parseFloat(totalPrice),
       pricePerLiter: pricePerLiter.trim() !== '' ? parseFloat(pricePerLiter) : null,
       stationName: stationName.trim() !== '' ? stationName.trim() : null,
-      odometerKm: parseInt(odometerKm, 10),
+      odometerKm: odometerKm.trim() !== '' ? parseInt(odometerKm, 10) : null,
       notes: notes.trim() !== '' ? notes.trim() : null,
     };
 
@@ -367,22 +365,6 @@ export default function FuelEntryFormModal({
             }}
           />
 
-          {/* odometerKm — required because L/100km analytics depend on it */}
-          <TextInput
-            type="number"
-            step="1"
-            min="0"
-            max="10000000"
-            required
-            label={t('fuelEntry.field.odometerKm')}
-            error={errors.odometerKm}
-            value={odometerKm}
-            onChange={e => {
-              setOdometerKm(e.target.value);
-              setErrors(prev => ({ ...prev, odometerKm: undefined }));
-            }}
-          />
-
           {/* Photo */}
           {mode === 'add' ? (
             <div>
@@ -500,6 +482,21 @@ export default function FuelEntryFormModal({
                   label={t('fuelEntry.field.stationName')}
                   value={stationName}
                   onChange={e => setStationName(e.target.value)}
+                />
+
+                {/* odometerKm */}
+                <TextInput
+                  type="number"
+                  step="1"
+                  min="0"
+                  max="10000000"
+                  label={t('fuelEntry.field.odometerKm')}
+                  error={errors.odometerKm}
+                  value={odometerKm}
+                  onChange={e => {
+                    setOdometerKm(e.target.value);
+                    setErrors(prev => ({ ...prev, odometerKm: undefined }));
+                  }}
                 />
 
                 {/* notes */}
