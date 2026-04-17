@@ -150,7 +150,7 @@ export function richExplanation(alert: AnomalyPendingItem): string {
       const prev = num(ctx.previousOdo) ?? num(ctx.previousOdometerKm);
       if (cur !== null && prev !== null) {
         const diff = prev - cur;
-        return `Kilometre ${fmtKm(prev)} → ${fmtKm(cur)} olarak girilmiş (${fmtKm(diff)} km geriye). Odometre mekanik olarak geri gitmez — ya şu anki kayıt ya da önceki kayıt yanlış.`;
+        return `Önceki kayıtta ${fmtKm(prev)} km, şu anki dolumda ${fmtKm(cur)} km olarak girilmiş — ${fmtKm(diff)} km geriye. Odometre geri gitmez; kayıtlardan birinde hata var.`;
       }
       return 'Bu dolumun kilometresi, aracın önceki dolumundan daha küçük. Odometre geri gitmez — kayıtlardan birinde hata olabilir.';
     }

@@ -1394,7 +1394,10 @@
       "viewReceipt": "Fişi görüntüle",
       "callDriver": "Şoförü ara",
       "ruleCodeLabel": "uyarı kodu: {{code}}",
-      "excludedHint": "Bu uyarı analizlere dahil edilmedi. İşaretledikten sonra \"Gerçek\" dersen ortalama tüketim yeniden hesaplanır.",
+      "confirmHint": {
+        "dataBroken": "Gerçek sorun olarak işaretlersen, bu hatalı kayıt tüketim ortalamasına dahil edilmez — yanlış veri aracın ortalamasını bozmaz.",
+        "behaviour": "Bu bir veri hatası değil, gerçek bir olay. İşaretlesen aracın tüketim ortalaması değişmez; sadece kayıt altına alınır."
+      },
       "confirmBtn": {
         "title": "Gerçek sorun — işaretle",
         "hint": "Kayıt dışarıda kalır, bir not bırakabilirsin."

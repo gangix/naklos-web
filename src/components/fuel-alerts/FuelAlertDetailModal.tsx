@@ -9,6 +9,7 @@ import SeverityBadge from './SeverityBadge';
 import Plate from './Plate';
 import DismissalReasonSheet from './DismissalReasonSheet';
 import { num, parseContext, richExplanation } from './ruleExplanation';
+import { excludesEntryOnConfirm } from '../../types/fuelAnomaly';
 import './fuelAlertsAnimations.css';
 
 interface Props {
@@ -200,7 +201,11 @@ export default function FuelAlertDetailModal({
               {explanation}
             </p>
             <p className="mt-2 text-xs text-slate-500">
-              {t('fuelAlerts.modal.excludedHint')}
+              {t(
+                excludesEntryOnConfirm(alert.ruleCode)
+                  ? 'fuelAlerts.modal.confirmHint.dataBroken'
+                  : 'fuelAlerts.modal.confirmHint.behaviour',
+              )}
             </p>
           </div>
 

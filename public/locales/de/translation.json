@@ -1395,7 +1395,10 @@
       "viewReceipt": "Beleg ansehen",
       "callDriver": "Fahrer anrufen",
       "ruleCodeLabel": "Warnungscode: {{code}}",
-      "excludedHint": "Diese Warnung ist vom Reporting ausgeschlossen. Wenn Sie als „echt“ markieren, wird der Durchschnittsverbrauch neu berechnet.",
+      "confirmHint": {
+        "dataBroken": "Wenn Sie als echtes Problem markieren, wird dieser fehlerhafte Eintrag aus dem Verbrauchsdurchschnitt entfernt — falsche Daten verfälschen den Durchschnitt des Fahrzeugs nicht.",
+        "behaviour": "Das ist kein Dateneingabefehler, sondern ein tatsächliches Ereignis. Markieren ändert den Verbrauchsdurchschnitt des Fahrzeugs nicht; es wird nur dokumentiert."
+      },
       "confirmBtn": {
         "title": "Echtes Problem — markieren",
         "hint": "Der Datensatz bleibt ausgeschlossen; Notiz optional."

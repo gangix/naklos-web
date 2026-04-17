@@ -38,6 +38,29 @@ export const RULE_CODES = [
 ] as const;
 export type RuleCode = typeof RULE_CODES[number];
 
+/** Rules where confirming "Gerçek sorun" flips
+ *  {@code FuelEntry.excludedFromBaseline=true} on the backend — the reading
+ *  itself is known-wrong and should stop contributing to the rolling
+ *  consumption average. Mirrors RuleConfirmPolicy.EXCLUDE_ON_CONFIRM on the
+ *  backend; keep the two lists in sync.
+ *
+ *  Used by the detail modal to pick the right "what happens when you confirm"
+ *  hint: data-broken rules promise "excluded from consumption average",
+ *  behaviour rules say "doesn't affect the average; just recorded". */
+export const RULES_EXCLUDE_ENTRY_ON_CONFIRM: ReadonlySet<string> = new Set<RuleCode>([
+  'ODOMETER_ROLLBACK',
+  'ODOMETER_NOT_ADVANCING',
+  'VOLUME_EXCEEDS_TANK_CAPACITY',
+  'IMPLAUSIBLE_VOLUME_FOR_TYPE',
+  'PRICE_MATH_MISMATCH',
+  'FUEL_TYPE_MISMATCH',
+  'CONSUMPTION_UNDER_BASELINE',
+]);
+
+export function excludesEntryOnConfirm(ruleCode: string): boolean {
+  return RULES_EXCLUDE_ENTRY_ON_CONFIRM.has(ruleCode);
+}
+
 /** Default severity per rule — mirrors the Severity enum each rule returns
  *  on the backend. Used when you need the severity tone before a specific
  *  anomaly has been detected (e.g. the config page rule list). */

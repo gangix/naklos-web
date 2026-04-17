@@ -1395,7 +1395,10 @@
       "viewReceipt": "View receipt",
       "callDriver": "Call driver",
       "ruleCodeLabel": "alert code: {{code}}",
-      "excludedHint": "This alert is excluded from analytics. If you mark it as real, average consumption will be recalculated.",
+      "confirmHint": {
+        "dataBroken": "If you mark this as a real issue, the faulty entry is removed from the consumption average — wrong data won't drag down the truck's average.",
+        "behaviour": "This isn't a data error, it's a real event. Marking it doesn't change the truck's consumption average; it's just kept on record."
+      },
       "confirmBtn": {
         "title": "Real issue — mark",
         "hint": "The record stays excluded; you can leave a note."
