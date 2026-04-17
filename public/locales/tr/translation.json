@@ -933,11 +933,11 @@
     "priceEnterprise": "Özel fiyat"
   },
   "fuelReview": {
-    "pageTitle": "Bekleyen Kayıtlar",
+    "pageTitle": "Eşleşmeyen Plakalar",
     "nav": {
       "imports": "İçe Aktar",
       "formats": "Formatlar",
-      "review": "Bekleyenler",
+      "review": "Eşleşmeyen Plakalar",
       "resolutions": "Kurallar"
     },
     "resolutions": {

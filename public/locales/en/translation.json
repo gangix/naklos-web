@@ -934,11 +934,11 @@
     "priceEnterprise": "Custom pricing"
   },
   "fuelReview": {
-    "pageTitle": "Pending entries",
+    "pageTitle": "Unmatched plates",
     "nav": {
       "imports": "Import",
       "formats": "Formats",
-      "review": "Pending",
+      "review": "Unmatched plates",
       "resolutions": "Rules"
     },
     "resolutions": {

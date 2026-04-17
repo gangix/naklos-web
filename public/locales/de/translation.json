@@ -934,11 +934,11 @@
     "priceEnterprise": "Individuelle Preise"
   },
   "fuelReview": {
-    "pageTitle": "Offene Einträge",
+    "pageTitle": "Nicht zugeordnete Kennzeichen",
     "nav": {
       "imports": "Import",
       "formats": "Formate",
-      "review": "Offen",
+      "review": "Nicht zugeordnete Kennzeichen",
       "resolutions": "Regeln"
     },
     "resolutions": {
