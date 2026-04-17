@@ -1396,7 +1396,7 @@
       "callDriver": "Fahrer anrufen",
       "ruleCodeLabel": "Warnungscode: {{code}}",
       "confirmHint": {
-        "dataBroken": "Wenn Sie als echtes Problem markieren, wird dieser fehlerhafte Eintrag aus dem Verbrauchsdurchschnitt entfernt — falsche Daten verfälschen den Durchschnitt des Fahrzeugs nicht.",
+        "dataBroken": "Wenn Sie als echtes Problem markieren, wird dieser Eintrag aus der Analyse entfernt, damit falsche Daten den Kraftstoffverbrauchs-Durchschnitt des Fahrzeugs nicht verfälschen.",
         "behaviour": "Das ist kein Dateneingabefehler, sondern ein tatsächliches Ereignis. Markieren ändert den Verbrauchsdurchschnitt des Fahrzeugs nicht; es wird nur dokumentiert."
       },
       "confirmBtn": {
