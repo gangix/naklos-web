@@ -1317,6 +1317,7 @@
         "unit": "Liter"
       },
       "save": "Speichern",
+      "saving": "Wird gespeichert…",
       "saved": "Einstellungen aktualisiert",
       "rulesTitle": "Fahrzeug-spezifische Regeln",
       "rulesEmpty": "Keine individuellen Regeln für dieses Fahrzeug.",

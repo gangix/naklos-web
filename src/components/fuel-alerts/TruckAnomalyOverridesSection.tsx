@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { fuelAnomalyApi } from '../../services/fuelAnomalyApi';
+import { formatDecimal } from '../../utils/format';
 import type {
   FuelType,
   TruckAnomalyRuleOverride,
@@ -14,15 +15,6 @@ interface Props {
 }
 
 const FUEL_TYPES: FuelType[] = ['DIESEL', 'GASOLINE', 'LPG', 'ELECTRIC'];
-
-/** Display derived L/100km at 1 decimal place. Raw string is preserved when
- *  non-numeric so backend edge cases aren't silently lost. */
-function formatDerived(v: string | null): string | null {
-  if (v == null) return null;
-  const n = Number(v);
-  if (!Number.isFinite(n)) return v;
-  return n.toFixed(1);
-}
 
 export default function TruckAnomalyOverridesSection({ fleetId, truckId }: Props) {
   const { t } = useTranslation();
@@ -85,7 +77,7 @@ export default function TruckAnomalyOverridesSection({ fleetId, truckId }: Props
     }
   }, [fleetId, truckId, manualInput, fuelType, tankCapacity, hydrate, t]);
 
-  const derivedDisplay = baseline ? formatDerived(baseline.derived) : null;
+  const derivedDisplay = baseline ? formatDecimal(baseline.derived) : null;
 
   const dirty = baseline
     ? manualInput.trim() !== (baseline.manual ?? '') ||
@@ -207,7 +199,7 @@ export default function TruckAnomalyOverridesSection({ fleetId, truckId }: Props
               className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {saving
-                ? t('fuelAlerts.config.settings.saving')
+                ? t('fuelAlerts.overrides.saving')
                 : t('fuelAlerts.overrides.save')}
             </button>
           </div>

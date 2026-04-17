@@ -1,13 +1,15 @@
 import { NavLink, useMatch } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useFuelAlertsPendingCount } from '../../hooks/useFuelAlertsPendingCount';
+import { useFuelCounts } from '../../contexts/FuelCountsContext';
 
 /** Sub-nav shared across fuel pages. Kept here (not in ManagerTopNav) because
  *  the fuel section has four related pages — flattening them into the top nav
  *  would crowd it for users who don't care about fuel. */
 export default function FuelSectionNav() {
   const { t } = useTranslation();
-  const pendingCount = useFuelAlertsPendingCount();
+  // Uyarılar tab surfaces only anomaly-engine pending items; unmatched plates
+  // belong to the Bekleyenler tab's own badge.
+  const { pending: pendingCount } = useFuelCounts();
   // `/manager/fuel-alerts/config` is a sibling page without its own tab — keep
   // the Uyarılar tab visually active while the user is on the config screen.
   const configMatch = useMatch('/manager/fuel-alerts/config');

@@ -1,4 +1,20 @@
 export type Severity = 'CRITICAL' | 'WARNING' | 'INFO';
+
+/** Tailwind bg-* class for the small severity dot used in chips, rule rows,
+ *  and accordion summaries. Single source of truth — don't re-inline. */
+export const SEVERITY_DOT_CLASS: Record<Severity, string> = {
+  CRITICAL: 'bg-urgent-500',
+  WARNING: 'bg-attention-500',
+  INFO: 'bg-info-500',
+};
+
+/** i18n key per severity — mirrors SeverityBadge's label. */
+export const SEVERITY_I18N_KEY: Record<Severity, string> = {
+  CRITICAL: 'fuelAlerts.severity.urgent',
+  WARNING: 'fuelAlerts.severity.attention',
+  INFO: 'fuelAlerts.severity.info',
+};
+
 export type AnomalyStatus = 'PENDING' | 'CONFIRMED' | 'DISMISSED';
 export type DismissalReason = 'FALSE_POSITIVE' | 'DATA_ENTRY_ERROR' | 'EXPLAINED_BY_DRIVER' | 'OTHER';
 export type FuelType = 'DIESEL' | 'GASOLINE' | 'LPG' | 'ELECTRIC';

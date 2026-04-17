@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -9,19 +10,32 @@ import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import {
   RULE_CODES,
   RULE_SEVERITY,
+  SEVERITY_DOT_CLASS,
   type FleetAnomalyRuleConfig,
   type FleetAnomalySettings,
   type RuleCode,
-  type Severity,
 } from '../types/fuelAnomaly';
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
-const severityDotClass: Record<Severity, string> = {
-  CRITICAL: 'bg-urgent-500',
-  WARNING: 'bg-attention-500',
-  INFO: 'bg-info-500',
-};
+// ─── SettingRow: shared shell for a label/hint + control row ───────────────
+interface SettingRowProps {
+  label: string;
+  hint?: string;
+  children: ReactNode;
+}
+
+function SettingRow({ label, hint, children }: SettingRowProps) {
+  return (
+    <div className="flex items-start justify-between gap-4 px-5 py-4">
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-slate-900">{label}</p>
+        {hint && <p className="text-xs text-slate-500 mt-0.5">{hint}</p>}
+      </div>
+      {children}
+    </div>
+  );
+}
 
 // ─── Reusable switch atom ──────────────────────────────────────────────────
 interface SwitchProps {
@@ -105,33 +119,21 @@ function SettingsSection({ fleetId, initial, onSaved }: SettingsSectionProps) {
       </header>
 
       <div className="divide-y divide-slate-100">
-        {/* Engine on/off */}
-        <div className="flex items-start justify-between gap-4 px-5 py-4">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-900">
-              {t('fuelAlerts.config.settings.enabled.label')}
-            </p>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {t('fuelAlerts.config.settings.enabled.hint')}
-            </p>
-          </div>
+        <SettingRow
+          label={t('fuelAlerts.config.settings.enabled.label')}
+          hint={t('fuelAlerts.config.settings.enabled.hint')}
+        >
           <Switch
             checked={enabled}
             onChange={setEnabled}
             label={t('fuelAlerts.config.settings.enabled.label')}
           />
-        </div>
+        </SettingRow>
 
-        {/* Digest hour */}
-        <div className="flex items-start justify-between gap-4 px-5 py-4">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-900">
-              {t('fuelAlerts.config.settings.digestHour.label')}
-            </p>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {t('fuelAlerts.config.settings.digestHour.hint')}
-            </p>
-          </div>
+        <SettingRow
+          label={t('fuelAlerts.config.settings.digestHour.label')}
+          hint={t('fuelAlerts.config.settings.digestHour.hint')}
+        >
           <input
             type="number"
             min={0}
@@ -143,24 +145,18 @@ function SettingsSection({ fleetId, initial, onSaved }: SettingsSectionProps) {
             }}
             className="w-20 px-3 py-1.5 text-sm font-semibold text-slate-900 tabular-nums text-right border border-slate-300 rounded-lg focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500"
           />
-        </div>
+        </SettingRow>
 
-        {/* Instant critical email */}
-        <div className="flex items-start justify-between gap-4 px-5 py-4">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-slate-900">
-              {t('fuelAlerts.config.settings.instantCriticalEmail.label')}
-            </p>
-            <p className="text-xs text-slate-500 mt-0.5">
-              {t('fuelAlerts.config.settings.instantCriticalEmail.hint')}
-            </p>
-          </div>
+        <SettingRow
+          label={t('fuelAlerts.config.settings.instantCriticalEmail.label')}
+          hint={t('fuelAlerts.config.settings.instantCriticalEmail.hint')}
+        >
           <Switch
             checked={instantCritical}
             onChange={setInstantCritical}
             label={t('fuelAlerts.config.settings.instantCriticalEmail.label')}
           />
-        </div>
+        </SettingRow>
 
         {/* Read-only (not yet editable) */}
         <div className="px-5 py-4 bg-slate-50/60">
@@ -279,7 +275,7 @@ function RuleRow({ fleetId, ruleCode, initial, onSaved }: RuleRowProps) {
       {/* Row */}
       <div className="px-5 py-4 flex items-start gap-4">
         <span
-          className={`mt-1.5 flex-shrink-0 w-2.5 h-2.5 rounded-full ${severityDotClass[severity]}`}
+          className={`mt-1.5 flex-shrink-0 w-2.5 h-2.5 rounded-full ${SEVERITY_DOT_CLASS[severity]}`}
           aria-label={severity}
         />
         <div className="min-w-0 flex-1">

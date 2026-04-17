@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronDown, Filter as FilterIcon, Settings, Truck as TruckIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useFleet } from '../contexts/FleetContext';
+import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { fuelAnomalyApi } from '../services/fuelAnomalyApi';
 import type { AnomalyPendingItem, Severity } from '../types/fuelAnomaly';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
@@ -100,6 +101,8 @@ export default function FuelAlertsPage() {
   const [bulkConfirming, setBulkConfirming] = useState(false);
   const [bulkDismissOpen, setBulkDismissOpen] = useState(false);
 
+  const { refresh: refreshFuelCounts } = useFuelCounts();
+
   const refresh = useCallback(async () => {
     if (!fleetId) return;
     setLoading(true);
@@ -108,13 +111,16 @@ export default function FuelAlertsPage() {
       const data = await fuelAnomalyApi.listPending(fleetId);
       setItems(data);
       setLastLoadedAt(new Date().toISOString());
+      // Reuse our own fetch to refresh the nav badges — keeps the top-nav
+      // aggregate in sync without a second HTTP round trip.
+      refreshFuelCounts();
     } catch (err) {
       console.error('Failed to load fuel alerts', err);
       setError(err instanceof Error ? err.message : t('fuelAlerts.toast.loadError'));
     } finally {
       setLoading(false);
     }
-  }, [fleetId, t]);
+  }, [fleetId, t, refreshFuelCounts]);
 
   useEffect(() => {
     void refresh();

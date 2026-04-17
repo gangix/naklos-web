@@ -1317,6 +1317,7 @@
         "unit": "liters"
       },
       "save": "Save",
+      "saving": "Saving…",
       "saved": "Settings updated",
       "rulesTitle": "Per-truck rule overrides",
       "rulesEmpty": "No custom rule overrides for this truck.",

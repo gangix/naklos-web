@@ -1316,6 +1316,7 @@
         "unit": "litre"
       },
       "save": "Kaydet",
+      "saving": "Kaydediliyor…",
       "saved": "Ayarlar güncellendi",
       "rulesTitle": "Bu araca özel kural ayarları",
       "rulesEmpty": "Bu araç için özel kural ayarı yok.",

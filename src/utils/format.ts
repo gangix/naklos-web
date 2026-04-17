@@ -30,6 +30,24 @@ export const formatTime = (dateString: string): string => {
 };
 
 /**
+ * Formats a numeric value (from BigDecimal string or number) with the given
+ * fractional-digit precision. Returns null for null/undefined/NaN so callers
+ * can decide the fallback glyph (— is conventional in this codebase).
+ */
+export const formatDecimal = (
+  v: string | number | null | undefined,
+  digits = 1,
+): string | null => {
+  if (v === null || v === undefined) return null;
+  const n = typeof v === 'number' ? v : Number(v);
+  if (Number.isNaN(n)) return null;
+  return n.toLocaleString(i18n.language, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+};
+
+/**
  * "3 dk önce", "2 saat önce", "5 gün önce"
  */
 export const formatRelativeTime = (dateString: string): string => {

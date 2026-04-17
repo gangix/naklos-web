@@ -4,17 +4,47 @@ import { Home, Truck, Users, Settings, LogOut, Menu, X, Fuel } from 'lucide-reac
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
+import { useFuelCounts } from '../../contexts/FuelCountsContext';
 import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
-import { useFuelAlertsPendingCount } from '../../hooks/useFuelAlertsPendingCount';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 import UserMenu from './UserMenu';
+
+type NavItem = {
+  id: 'dashboard' | 'trucks' | 'drivers' | 'fuel';
+  path: string;
+  label: string;
+  icon: typeof Home;
+};
+
+interface NavBadgeProps {
+  count: number;
+  size: 'desktop' | 'mobile';
+}
+
+/** Red absolute-positioned pill for the icon top-right.
+ *  Renders nothing when count <= 0. 99+ cap keeps the pill compact. */
+const NavBadge = ({ count, size }: NavBadgeProps) => {
+  if (count <= 0) return null;
+  const display = count > 99 ? '99+' : String(count);
+  const sizeCls =
+    size === 'desktop'
+      ? 'h-3.5 min-w-3.5 px-0.5 text-[9px]'
+      : 'h-4 min-w-4 px-1 text-[10px]';
+  return (
+    <span
+      className={`absolute -top-1.5 -right-1.5 flex ${sizeCls} items-center justify-center rounded-full bg-red-500 font-bold text-white`}
+    >
+      {display}
+    </span>
+  );
+};
 
 const ManagerTopNav = () => {
   const { t } = useTranslation();
   const { logout } = useAuth();
   const { plan } = useFleet();
   const warningCount = useDocumentWarnings();
-  const fuelPendingCount = useFuelAlertsPendingCount();
+  const { total: fuelPendingCount } = useFuelCounts();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Visible to paid plans only. FREE plans don't see the Yakıt nav entry —
@@ -25,14 +55,20 @@ const ManagerTopNav = () => {
 
   // Core nav is reserved for primary work surfaces. Settings + logout live in
   // the UserMenu dropdown (top-right, avatar-triggered).
-  const menuItems = [
-    { path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
-    { path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
-    { path: '/manager/drivers', label: t('nav.drivers'), icon: Users },
+  const menuItems: NavItem[] = [
+    { id: 'dashboard', path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
+    { id: 'trucks', path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
+    { id: 'drivers', path: '/manager/drivers', label: t('nav.drivers'), icon: Users },
     ...(fuelTrackingEnabled
-      ? [{ path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
+      ? [{ id: 'fuel' as const, path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
       : []),
   ];
+
+  const badgeCountFor = (id: NavItem['id']): number => {
+    if (id === 'dashboard') return warningCount;
+    if (id === 'fuel') return fuelPendingCount;
+    return 0;
+  };
 
   const planLabel = t(`plan.${(plan ?? 'FREE').toLowerCase()}`, {
     defaultValue:
@@ -82,16 +118,7 @@ const ManagerTopNav = () => {
               >
                 <span className="relative">
                   <Icon className="w-4 h-4" />
-                  {item.path === '/manager/dashboard' && warningCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
-                      {warningCount}
-                    </span>
-                  )}
-                  {item.path === '/manager/fuel-imports' && fuelTrackingEnabled && fuelPendingCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
-                      {fuelPendingCount > 99 ? '99+' : fuelPendingCount}
-                    </span>
-                  )}
+                  <NavBadge count={badgeCountFor(item.id)} size="desktop" />
                 </span>
                 <span>{item.label}</span>
               </NavLink>
@@ -138,16 +165,7 @@ const ManagerTopNav = () => {
               >
                 <span className="relative">
                   <Icon className="w-5 h-5" />
-                  {item.path === '/manager/dashboard' && warningCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-                      {warningCount}
-                    </span>
-                  )}
-                  {item.path === '/manager/fuel-imports' && fuelTrackingEnabled && fuelPendingCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-                      {fuelPendingCount > 99 ? '99+' : fuelPendingCount}
-                    </span>
-                  )}
+                  <NavBadge count={badgeCountFor(item.id)} size="mobile" />
                 </span>
                 <span>{item.label}</span>
               </NavLink>

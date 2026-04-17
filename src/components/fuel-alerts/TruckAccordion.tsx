@@ -2,7 +2,11 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Truck as TruckIcon } from 'lucide-react';
 import Plate from './Plate';
-import type { Severity } from '../../types/fuelAnomaly';
+import {
+  SEVERITY_DOT_CLASS,
+  SEVERITY_I18N_KEY,
+  type Severity,
+} from '../../types/fuelAnomaly';
 
 interface Props {
   plate: string | null;
@@ -16,18 +20,6 @@ const chipClass: Record<Severity, string> = {
   CRITICAL: 'bg-urgent-50 text-urgent-700 border border-urgent-100',
   WARNING: 'bg-attention-50 text-attention-700 border border-attention-100',
   INFO: 'bg-info-50 text-info-700 border border-info-100',
-};
-
-const dotClass: Record<Severity, string> = {
-  CRITICAL: 'bg-urgent-500',
-  WARNING: 'bg-attention-500',
-  INFO: 'bg-info-500',
-};
-
-const severityI18nKey: Record<Severity, string> = {
-  CRITICAL: 'fuelAlerts.severity.urgent',
-  WARNING: 'fuelAlerts.severity.attention',
-  INFO: 'fuelAlerts.severity.info',
 };
 
 /** Collapsible truck group. Summary must show aggregate severity chips
@@ -70,8 +62,8 @@ export default function TruckAccordion({
               key={s}
               className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold tabular-nums ${chipClass[s]}`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full ${dotClass[s]}`} />
-              {severityCounts[s]} {t(severityI18nKey[s])}
+              <span className={`w-1.5 h-1.5 rounded-full ${SEVERITY_DOT_CLASS[s]}`} />
+              {severityCounts[s]} {t(SEVERITY_I18N_KEY[s])}
             </span>
           ))}
         </div>
