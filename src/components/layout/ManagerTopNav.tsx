@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
+import { useFuelAlertsPendingCount } from '../../hooks/useFuelAlertsPendingCount';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 import UserMenu from './UserMenu';
 
@@ -13,6 +14,7 @@ const ManagerTopNav = () => {
   const { logout } = useAuth();
   const { plan } = useFleet();
   const warningCount = useDocumentWarnings();
+  const fuelPendingCount = useFuelAlertsPendingCount();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Visible to paid plans only. FREE plans don't see the Yakıt nav entry —
@@ -85,6 +87,11 @@ const ManagerTopNav = () => {
                       {warningCount}
                     </span>
                   )}
+                  {item.path === '/manager/fuel-imports' && fuelTrackingEnabled && fuelPendingCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[9px] font-bold text-white">
+                      {fuelPendingCount > 99 ? '99+' : fuelPendingCount}
+                    </span>
+                  )}
                 </span>
                 <span>{item.label}</span>
               </NavLink>
@@ -134,6 +141,11 @@ const ManagerTopNav = () => {
                   {item.path === '/manager/dashboard' && warningCount > 0 && (
                     <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
                       {warningCount}
+                    </span>
+                  )}
+                  {item.path === '/manager/fuel-imports' && fuelTrackingEnabled && fuelPendingCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                      {fuelPendingCount > 99 ? '99+' : fuelPendingCount}
                     </span>
                   )}
                 </span>
