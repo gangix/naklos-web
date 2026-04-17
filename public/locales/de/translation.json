@@ -1236,5 +1236,117 @@
     "MISSING_DOCS": "Fehlende Dokumente",
     "READY": "Bereit",
     "ACTIVE": "Aktiv"
+  },
+  "fuelAlerts": {
+    "pageTitle": "Kraftstoff-Warnungen",
+    "pageSubtitle": "{{count}} Warnung(en) zur Prüfung",
+    "pageSubtitleUpdatedAt": "heute 06:30 aktualisiert",
+    "settingsLink": "Einstellungen",
+    "severity": {
+      "urgent": "Dringend",
+      "attention": "Achtung",
+      "info": "Info"
+    },
+    "toteBoard": {
+      "urgent": "verdächtige Tankung · Handlungsbedarf",
+      "attention": "lohnt sich zu prüfen",
+      "info": "zur Dokumentation erfasst"
+    },
+    "filters": {
+      "all": "Alle",
+      "byTruck": "Fahrzeug",
+      "byRule": "Regel",
+      "anyTruck": "Alle Fahrzeuge",
+      "anyRule": "Alle Regeln",
+      "lastDays": "Letzte 7 Tage"
+    },
+    "card": {
+      "unassignedTruck": "Unzugewiesenes Fahrzeug",
+      "receiptIndicator": "Beleg",
+      "hasReceipt": "Beleg vorhanden"
+    },
+    "empty": {
+      "title": "Alles in Ordnung",
+      "subtitle": "Aktuell gibt es keine Tankungen, die Ihre Aufmerksamkeit brauchen. Neue Warnungen erscheinen hier.",
+      "filteredTitle": "Keine Warnungen passen zu diesem Filter",
+      "filteredSubtitle": "Filter zurücksetzen, um alle Warnungen zu sehen."
+    },
+    "bulkBar": {
+      "selected": "{{count}} ausgewählt",
+      "confirm": "Bestätigen",
+      "dismiss": "Kein Problem",
+      "clear": "Auswahl leeren",
+      "confirming": "Wird bestätigt…",
+      "dismissing": "Wird geschlossen…"
+    },
+    "toast": {
+      "confirmed": "Als echtes Problem markiert",
+      "dismissed": "Geschlossen",
+      "bulkDismissed": "{{dismissed}} geschlossen, {{skipped}} übersprungen",
+      "bulkConfirmed": "{{count}} Warnungen bestätigt",
+      "loadError": "Warnungen konnten nicht geladen werden"
+    },
+    "rules": {
+      "ODOMETER_ROLLBACK": { "title": "Kilometerstand zurückgesetzt" },
+      "VOLUME_EXCEEDS_TANK_CAPACITY": { "title": "Volumen übersteigt Tankkapazität" },
+      "FUEL_TYPE_MISMATCH": { "title": "Kraftstoffart passt nicht" },
+      "CONSUMPTION_OVER_BASELINE": { "title": "Höherer Verbrauch als erwartet" },
+      "CONSUMPTION_UNDER_BASELINE": { "title": "Geringerer Verbrauch als erwartet" },
+      "RAPID_REFUEL": { "title": "Erneutes Tanken in kurzer Zeit" },
+      "EXCESSIVE_DAILY_FREQUENCY": { "title": "Zu viele Tankvorgänge an einem Tag" },
+      "OFF_HOURS_PURCHASE": { "title": "Tanken außerhalb der Arbeitszeit" },
+      "ODOMETER_NOT_ADVANCING": { "title": "Kilometerstand unverändert" },
+      "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "title": "Unplausible Menge für Kraftstoffart" },
+      "PRICE_MATH_MISMATCH": { "title": "Preis-Menge-Abweichung" },
+      "MISSING_BASELINE": { "title": "Basiswert noch nicht definiert" }
+    },
+    "modal": {
+      "ruleDate": "{{date}}",
+      "comparisonTitle": "Tankungs-Vergleich",
+      "previous": "Vorherige Tankung",
+      "currentIssue": "Problematische Tankung",
+      "thisRecord": "Dieser Datensatz",
+      "liters": "Kraftstoff",
+      "odometer": "Kilometerstand",
+      "amount": "Betrag",
+      "noComparison": "Für diese Warnung liegen keine Vergleichsdaten vor.",
+      "viewReceipt": "Beleg ansehen",
+      "callDriver": "Fahrer anrufen",
+      "ruleCodeLabel": "Warnungscode: {{code}}",
+      "excludedHint": "Diese Warnung ist vom Reporting ausgeschlossen. Wenn Sie als „echt“ markieren, wird der Durchschnittsverbrauch neu berechnet.",
+      "confirmBtn": {
+        "title": "Echtes Problem — markieren",
+        "hint": "Der Datensatz bleibt ausgeschlossen; Notiz optional."
+      },
+      "dismissBtn": {
+        "title": "Kein Problem — schließen",
+        "hint": "Schließen, wenn es eine plausible Erklärung gibt."
+      }
+    },
+    "dismissReason": {
+      "title": "Warum schließen?",
+      "required": "erforderlich",
+      "FALSE_POSITIVE": {
+        "title": "System hat es falsch erkannt",
+        "desc": "Tankung war normal; die Regel hat unnötig ausgelöst."
+      },
+      "DATA_ENTRY_ERROR": {
+        "title": "Eingabe war falsch — ich habe sie korrigiert",
+        "desc": "Liter / Kilometerstand im Datensatz waren falsch und wurden aktualisiert."
+      },
+      "EXPLAINED_BY_DRIVER": {
+        "title": "Fahrer hat es erklärt, normal",
+        "desc": "Z. B. schlammige Straße, schwere Ladung, Stop-and-go-Verkehr."
+      },
+      "OTHER": {
+        "title": "Anderer Grund",
+        "desc": ""
+      },
+      "otherPlaceholder": "Kurze Erklärung schreiben…",
+      "noteLabel": "Notiz (optional)",
+      "notePlaceholder": "Was hat der Fahrer gesagt, was haben Sie getan?",
+      "submit": "Schließen",
+      "cancel": "Abbrechen"
+    }
   }
 }

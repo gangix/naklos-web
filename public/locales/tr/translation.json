@@ -1235,5 +1235,117 @@
     "MISSING_DOCS": "Eksik belgeler",
     "READY": "Hazır",
     "ACTIVE": "Aktif"
+  },
+  "fuelAlerts": {
+    "pageTitle": "Yakıt Uyarıları",
+    "pageSubtitle": "{{count}} uyarı incelemeni bekliyor",
+    "pageSubtitleUpdatedAt": "bugün 06:30'da güncellendi",
+    "settingsLink": "Ayarlar",
+    "severity": {
+      "urgent": "Acil",
+      "attention": "Dikkat",
+      "info": "Bilgi"
+    },
+    "toteBoard": {
+      "urgent": "şüpheli dolum · müdahale gerekiyor",
+      "attention": "gözden geçirilmesi faydalı",
+      "info": "kayıt altına alındı"
+    },
+    "filters": {
+      "all": "Tümü",
+      "byTruck": "Araç",
+      "byRule": "Kural",
+      "anyTruck": "Tüm araçlar",
+      "anyRule": "Tüm kurallar",
+      "lastDays": "Son 7 gün"
+    },
+    "card": {
+      "unassignedTruck": "Tanımsız araç",
+      "receiptIndicator": "fiş var",
+      "hasReceipt": "Fiş mevcut"
+    },
+    "empty": {
+      "title": "Her şey yolunda",
+      "subtitle": "Şu an dikkat edilecek bir yakıt dolumu yok. Yeni uyarılar çıkarsa burada listelenecek.",
+      "filteredTitle": "Bu filtreye uyan uyarı yok",
+      "filteredSubtitle": "Filtreyi temizleyip tüm uyarıları görebilirsin."
+    },
+    "bulkBar": {
+      "selected": "{{count}} seçildi",
+      "confirm": "İşaretle",
+      "dismiss": "Sorun değil",
+      "clear": "Temizle",
+      "confirming": "İşaretleniyor…",
+      "dismissing": "Kapatılıyor…"
+    },
+    "toast": {
+      "confirmed": "İşaretlendi",
+      "dismissed": "Kapatıldı",
+      "bulkDismissed": "{{dismissed}} kapatıldı, {{skipped}} atlandı",
+      "bulkConfirmed": "{{count}} uyarı işaretlendi",
+      "loadError": "Uyarılar yüklenemedi"
+    },
+    "rules": {
+      "ODOMETER_ROLLBACK": { "title": "Kilometre geriye gitmiş" },
+      "VOLUME_EXCEEDS_TANK_CAPACITY": { "title": "Tank kapasitesinin üstünde dolum" },
+      "FUEL_TYPE_MISMATCH": { "title": "Yakıt türü aracıyla uyuşmuyor" },
+      "CONSUMPTION_OVER_BASELINE": { "title": "Beklenenden fazla yakıt" },
+      "CONSUMPTION_UNDER_BASELINE": { "title": "Beklenenden az yakıt" },
+      "RAPID_REFUEL": { "title": "Kısa sürede ikinci dolum" },
+      "EXCESSIVE_DAILY_FREQUENCY": { "title": "Aynı günde çok fazla dolum" },
+      "OFF_HOURS_PURCHASE": { "title": "Mesai dışı dolum" },
+      "ODOMETER_NOT_ADVANCING": { "title": "Kilometre değişmemiş" },
+      "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "title": "Bu yakıt türü için mantıksız miktar" },
+      "PRICE_MATH_MISMATCH": { "title": "Fiyat-miktar uyuşmazlığı" },
+      "MISSING_BASELINE": { "title": "Ortalama tüketim henüz tanımlı değil" }
+    },
+    "modal": {
+      "ruleDate": "{{date}}",
+      "comparisonTitle": "Dolum karşılaştırması",
+      "previous": "Önceki dolum",
+      "currentIssue": "Sorunlu dolum",
+      "thisRecord": "Bu kayıt",
+      "liters": "Yakıt",
+      "odometer": "Kilometre",
+      "amount": "Tutar",
+      "noComparison": "Bu uyarı için karşılaştırma verisi yok.",
+      "viewReceipt": "Fişi görüntüle",
+      "callDriver": "Şoförü ara",
+      "ruleCodeLabel": "uyarı kodu: {{code}}",
+      "excludedHint": "Bu uyarı analizlere dahil edilmedi. İşaretledikten sonra \"Gerçek\" dersen ortalama tüketim yeniden hesaplanır.",
+      "confirmBtn": {
+        "title": "Gerçek sorun — işaretle",
+        "hint": "Kayıt dışarıda kalır, bir not bırakabilirsin."
+      },
+      "dismissBtn": {
+        "title": "Sorun değil — kapat",
+        "hint": "Bir nedenle açıklanabiliyorsa kapat."
+      }
+    },
+    "dismissReason": {
+      "title": "Neden kapatıyorsun?",
+      "required": "zorunlu",
+      "FALSE_POSITIVE": {
+        "title": "Sistem yanlış algılamış",
+        "desc": "Dolum normal; kural gereksiz tetiklendi."
+      },
+      "DATA_ENTRY_ERROR": {
+        "title": "Yakıt girişi yanlış yapılmış, düzelttim",
+        "desc": "Kayıttaki litre / kilometre hatalıydı, güncelledim."
+      },
+      "EXPLAINED_BY_DRIVER": {
+        "title": "Şoför açıkladı, normal bir durum",
+        "desc": "Örn. çamurlu yol, büyük yük, dur-kalk trafik."
+      },
+      "OTHER": {
+        "title": "Başka bir sebep",
+        "desc": ""
+      },
+      "otherPlaceholder": "Kısa bir açıklama yaz…",
+      "noteLabel": "Not (isteğe bağlı)",
+      "notePlaceholder": "Şoför ne dedi, ne yaptın?",
+      "submit": "Kapat",
+      "cancel": "Vazgeç"
+    }
   }
 }

@@ -1236,5 +1236,117 @@
     "MISSING_DOCS": "Missing documents",
     "READY": "Ready",
     "ACTIVE": "Active"
+  },
+  "fuelAlerts": {
+    "pageTitle": "Fuel Alerts",
+    "pageSubtitle": "{{count}} alert(s) awaiting review",
+    "pageSubtitleUpdatedAt": "updated today at 06:30",
+    "settingsLink": "Settings",
+    "severity": {
+      "urgent": "URGENT",
+      "attention": "ATTENTION",
+      "info": "INFO"
+    },
+    "toteBoard": {
+      "urgent": "suspicious refuel · action needed",
+      "attention": "worth reviewing",
+      "info": "logged for reference"
+    },
+    "filters": {
+      "all": "All",
+      "byTruck": "Truck",
+      "byRule": "Rule",
+      "anyTruck": "All trucks",
+      "anyRule": "All rules",
+      "lastDays": "Last 7 days"
+    },
+    "card": {
+      "unassignedTruck": "Unassigned truck",
+      "receiptIndicator": "receipt",
+      "hasReceipt": "Receipt attached"
+    },
+    "empty": {
+      "title": "All clear",
+      "subtitle": "No refuels need attention right now. New alerts will show up here.",
+      "filteredTitle": "No alerts match this filter",
+      "filteredSubtitle": "Clear the filter to see all alerts."
+    },
+    "bulkBar": {
+      "selected": "{{count}} selected",
+      "confirm": "Confirm",
+      "dismiss": "Not an issue",
+      "clear": "Clear",
+      "confirming": "Confirming…",
+      "dismissing": "Dismissing…"
+    },
+    "toast": {
+      "confirmed": "Marked as real issue",
+      "dismissed": "Dismissed",
+      "bulkDismissed": "{{dismissed}} dismissed, {{skipped}} skipped",
+      "bulkConfirmed": "{{count}} alerts confirmed",
+      "loadError": "Could not load alerts"
+    },
+    "rules": {
+      "ODOMETER_ROLLBACK": { "title": "Odometer rolled back" },
+      "VOLUME_EXCEEDS_TANK_CAPACITY": { "title": "Volume exceeds tank capacity" },
+      "FUEL_TYPE_MISMATCH": { "title": "Fuel type mismatch" },
+      "CONSUMPTION_OVER_BASELINE": { "title": "Higher than expected consumption" },
+      "CONSUMPTION_UNDER_BASELINE": { "title": "Lower than expected consumption" },
+      "RAPID_REFUEL": { "title": "Refueled again too soon" },
+      "EXCESSIVE_DAILY_FREQUENCY": { "title": "Too many refuels in one day" },
+      "OFF_HOURS_PURCHASE": { "title": "After-hours refuel" },
+      "ODOMETER_NOT_ADVANCING": { "title": "Odometer not advancing" },
+      "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "title": "Implausible volume for fuel type" },
+      "PRICE_MATH_MISMATCH": { "title": "Price-quantity mismatch" },
+      "MISSING_BASELINE": { "title": "Baseline not yet defined" }
+    },
+    "modal": {
+      "ruleDate": "{{date}}",
+      "comparisonTitle": "Refuel comparison",
+      "previous": "Previous refuel",
+      "currentIssue": "Flagged refuel",
+      "thisRecord": "This record",
+      "liters": "Fuel",
+      "odometer": "Odometer",
+      "amount": "Amount",
+      "noComparison": "No comparison data for this alert.",
+      "viewReceipt": "View receipt",
+      "callDriver": "Call driver",
+      "ruleCodeLabel": "alert code: {{code}}",
+      "excludedHint": "This alert is excluded from analytics. If you mark it as real, average consumption will be recalculated.",
+      "confirmBtn": {
+        "title": "Real issue — mark",
+        "hint": "The record stays excluded; you can leave a note."
+      },
+      "dismissBtn": {
+        "title": "Not an issue — dismiss",
+        "hint": "Dismiss if there's a reasonable explanation."
+      }
+    },
+    "dismissReason": {
+      "title": "Why are you dismissing?",
+      "required": "required",
+      "FALSE_POSITIVE": {
+        "title": "System detected it incorrectly",
+        "desc": "The refuel was normal; the rule fired unnecessarily."
+      },
+      "DATA_ENTRY_ERROR": {
+        "title": "Entry was wrong — I fixed it",
+        "desc": "Liters / odometer in the record were wrong; I updated them."
+      },
+      "EXPLAINED_BY_DRIVER": {
+        "title": "Driver explained, it's normal",
+        "desc": "E.g. muddy road, heavy load, stop-and-go traffic."
+      },
+      "OTHER": {
+        "title": "Other reason",
+        "desc": ""
+      },
+      "otherPlaceholder": "Write a short explanation…",
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "What did the driver say, what did you do?",
+      "submit": "Dismiss",
+      "cancel": "Cancel"
+    }
   }
 }
