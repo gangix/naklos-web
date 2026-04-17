@@ -28,7 +28,7 @@ export interface BulkImportResult {
   errors: Array<{ rowNumber: number; identifier: string; message: string }>;
 }
 
-async function apiCall<T>(
+export async function apiCall<T>(
   endpoint: string,
   options?: RequestInit
 ): Promise<T> {
