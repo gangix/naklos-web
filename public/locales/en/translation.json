@@ -1396,9 +1396,10 @@
       "callDriver": "Call driver",
       "ruleCodeLabel": "alert code: {{code}}",
       "confirmHint": {
-        "dataBroken": "If you mark this as a real issue, the entry is removed from analysis so that wrong data can't skew the truck's fuel consumption average.",
+        "dataBroken": "This faulty entry is already excluded from analysis — the wrong data isn't skewing the truck's fuel consumption average. Marking it as a real issue makes that exclusion permanent.",
         "behaviour": "This isn't a data error, it's a real event. Marking it doesn't change the truck's consumption average; it's just kept on record."
       },
+      "fixDataHint": "If the truck's setup is wrong (tank capacity, fuel type, baseline), fix it on the truck page — the next scan will auto-resolve this alert.",
       "confirmBtn": {
         "title": "Real issue — mark",
         "hint": "The record stays excluded; you can leave a note."

@@ -83,6 +83,7 @@ export default function FuelAlertDetailModal({
 
   const ctx = useMemo(() => parseContext(alert.contextJson), [alert.contextJson]);
   const explanation = useMemo(() => richExplanation(alert), [alert]);
+  const isDataBroken = excludesEntryOnConfirm(alert.ruleCode);
 
   const prevLiters = num(ctx.previousLiters);
   const prevOdo = num(ctx.previousOdo) ?? num(ctx.previousOdometerKm);
@@ -277,10 +278,10 @@ export default function FuelAlertDetailModal({
             </div>
           </div>
 
-          {/* Two big buttons — hidden once reason sheet is open */}
+          {/* Action buttons — hidden once reason sheet is open */}
           {!showReasonSheet && (
             <div className="px-6 py-5 border-t border-slate-100 bg-slate-50/50">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className={isDataBroken ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 sm:grid-cols-2 gap-3'}>
                 <button
                   type="button"
                   onClick={handleConfirm}
@@ -295,26 +296,37 @@ export default function FuelAlertDetailModal({
                     {t('fuelAlerts.modal.confirmBtn.hint')}
                   </span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowReasonSheet(true)}
-                  disabled={confirming || dismissing}
-                  className="group inline-flex flex-col items-start gap-0.5 px-5 py-4 rounded-xl bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 disabled:opacity-60 disabled:pointer-events-none transition-all text-left"
-                >
-                  <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
-                    <X className="w-4 h-4 text-slate-500" strokeWidth={2.5} />
-                    {t('fuelAlerts.modal.dismissBtn.title')}
-                  </div>
-                  <span className="text-xs font-normal text-slate-500">
-                    {t('fuelAlerts.modal.dismissBtn.hint')}
-                  </span>
-                </button>
+                {/* Dismiss is only meaningful for behaviour rules (Cat B) —
+                    for data-broken rules, "not a problem" would be denying
+                    physics. Users resolve those by fixing truck config, which
+                    the engine auto-detects on rescan. */}
+                {!isDataBroken && (
+                  <button
+                    type="button"
+                    onClick={() => setShowReasonSheet(true)}
+                    disabled={confirming || dismissing}
+                    className="group inline-flex flex-col items-start gap-0.5 px-5 py-4 rounded-xl bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 disabled:opacity-60 disabled:pointer-events-none transition-all text-left"
+                  >
+                    <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
+                      <X className="w-4 h-4 text-slate-500" strokeWidth={2.5} />
+                      {t('fuelAlerts.modal.dismissBtn.title')}
+                    </div>
+                    <span className="text-xs font-normal text-slate-500">
+                      {t('fuelAlerts.modal.dismissBtn.hint')}
+                    </span>
+                  </button>
+                )}
               </div>
+              {isDataBroken && (
+                <p className="mt-3 text-xs text-slate-500">
+                  {t('fuelAlerts.modal.fixDataHint')}
+                </p>
+              )}
             </div>
           )}
 
-        {/* Inline reason sheet */}
-        {showReasonSheet && (
+        {/* Inline reason sheet — only reachable for behaviour rules. */}
+        {showReasonSheet && !isDataBroken && (
           <DismissalReasonSheet
             submitting={dismissing}
             onSubmit={handleDismiss}
