@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ChevronRight, Truck as TruckIcon } from 'lucide-react';
 import Plate from './Plate';
 import type { Severity } from '../../types/fuelAnomaly';
@@ -23,10 +24,10 @@ const dotClass: Record<Severity, string> = {
   INFO: 'bg-info-500',
 };
 
-const labelTr: Record<Severity, string> = {
-  CRITICAL: 'Acil',
-  WARNING: 'Dikkat',
-  INFO: 'Bilgi',
+const severityI18nKey: Record<Severity, string> = {
+  CRITICAL: 'fuelAlerts.severity.urgent',
+  WARNING: 'fuelAlerts.severity.attention',
+  INFO: 'fuelAlerts.severity.info',
 };
 
 /** Collapsible truck group. Summary must show aggregate severity chips
@@ -38,6 +39,7 @@ export default function TruckAccordion({
   defaultOpen = false,
   children,
 }: Props) {
+  const { t } = useTranslation();
   const chips: Severity[] = (['CRITICAL', 'WARNING', 'INFO'] as const).filter(
     (s) => severityCounts[s] > 0,
   );
@@ -69,7 +71,7 @@ export default function TruckAccordion({
               className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold tabular-nums ${chipClass[s]}`}
             >
               <span className={`w-1.5 h-1.5 rounded-full ${dotClass[s]}`} />
-              {severityCounts[s]} {labelTr[s]}
+              {severityCounts[s]} {t(severityI18nKey[s])}
             </span>
           ))}
         </div>

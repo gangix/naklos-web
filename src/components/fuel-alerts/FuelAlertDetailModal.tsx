@@ -8,7 +8,8 @@ import { formatCurrency, formatDateTime } from '../../utils/format';
 import SeverityBadge from './SeverityBadge';
 import Plate from './Plate';
 import DismissalReasonSheet from './DismissalReasonSheet';
-import { richExplanation } from './ruleExplanation';
+import { num, parseContext, richExplanation } from './ruleExplanation';
+import './fuelAlertsAnimations.css';
 
 interface Props {
   fleetId: string;
@@ -40,26 +41,6 @@ const tintText: Record<Severity, string> = {
   WARNING: 'text-attention-700',
   INFO: 'text-info-700',
 };
-
-function parseCtx(raw: string | null): Record<string, unknown> {
-  if (!raw) return {};
-  try {
-    const obj = JSON.parse(raw);
-    return obj && typeof obj === 'object' ? (obj as Record<string, unknown>) : {};
-  } catch {
-    return {};
-  }
-}
-
-function num(v: unknown): number | null {
-  if (v === null || v === undefined) return null;
-  if (typeof v === 'number' && !isNaN(v)) return v;
-  if (typeof v === 'string' && v.trim() !== '') {
-    const n = Number(v);
-    return isNaN(n) ? null : n;
-  }
-  return null;
-}
 
 function fmtL(v: number | null, digits = 1): string {
   if (v === null) return '—';
@@ -99,7 +80,8 @@ export default function FuelAlertDetailModal({
     return () => document.removeEventListener('keydown', onKey);
   }, [onClose, confirming, dismissing]);
 
-  const ctx = useMemo(() => parseCtx(alert.contextJson), [alert.contextJson]);
+  const ctx = useMemo(() => parseContext(alert.contextJson), [alert.contextJson]);
+  const explanation = useMemo(() => richExplanation(alert), [alert]);
 
   const prevLiters = num(ctx.previousLiters);
   const prevOdo = num(ctx.previousOdo) ?? num(ctx.previousOdometerKm);
@@ -158,22 +140,14 @@ export default function FuelAlertDetailModal({
   }
 
   return (
-    <>
-      <style>{`
-        @keyframes fuel-alerts-modal-in {
-          from { opacity: 0; transform: translateY(12px) scale(.98) }
-          to   { opacity: 1; transform: translateY(0) scale(1) }
+    <div
+      className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-[2px] flex items-start justify-center overflow-y-auto py-10 px-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !confirming && !dismissing) {
+          onClose();
         }
-        .fuel-alerts-modal-in { animation: fuel-alerts-modal-in .25s cubic-bezier(0.22,1,0.36,1) both; }
-      `}</style>
-      <div
-        className="fixed inset-0 z-50 bg-slate-900/45 backdrop-blur-[2px] flex items-start justify-center overflow-y-auto py-10 px-4"
-        onClick={(e) => {
-          if (e.target === e.currentTarget && !confirming && !dismissing) {
-            onClose();
-          }
-        }}
-      >
+      }}
+    >
         <div
           ref={dialogRef}
           role="dialog"
@@ -223,7 +197,7 @@ export default function FuelAlertDetailModal({
           {/* Plain-Turkish explanation on tinted bg */}
           <div className={`px-6 py-5 border-t border-slate-100 ${tintBg[alert.severity]}`}>
             <p className="text-[15px] text-slate-800 leading-relaxed">
-              {richExplanation(alert)}
+              {explanation}
             </p>
             <p className="mt-2 text-xs text-slate-500">
               {t('fuelAlerts.modal.excludedHint')}
@@ -238,7 +212,6 @@ export default function FuelAlertDetailModal({
 
             {hasPrevious ? (
               <div className="grid grid-cols-2 gap-3">
-                {/* Previous */}
                 <div className="rounded-lg border border-slate-200 p-4 bg-slate-50/60">
                   <div className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
                     {t('fuelAlerts.modal.previous')}
@@ -257,81 +230,20 @@ export default function FuelAlertDetailModal({
                     />
                   </dl>
                 </div>
-
-                {/* Current (severity-tinted) */}
-                <div
-                  className={`rounded-lg border-2 p-4 relative ${tintBorder[alert.severity]} ${tintBg[alert.severity]}`}
-                >
-                  <div
-                    className={`absolute -top-2 right-3 inline-flex items-center gap-1 px-2 py-0.5 text-white text-[10px] font-bold rounded-md tracking-wider uppercase ${
-                      alert.severity === 'CRITICAL'
-                        ? 'bg-urgent-500'
-                        : alert.severity === 'WARNING'
-                          ? 'bg-attention-500'
-                          : 'bg-info-500'
-                    }`}
-                  >
-                    {t('fuelAlerts.modal.thisRecord')}
-                  </div>
-                  <div
-                    className={`text-[11px] font-semibold uppercase tracking-wider mb-2 ${tintText[alert.severity]}`}
-                  >
-                    {t('fuelAlerts.modal.currentIssue')}
-                  </div>
-                  {alert.occurredAt && (
-                    <div className={`text-xs tabular-nums mb-3 ${tintText[alert.severity]}`}>
-                      {formatDateTime(alert.occurredAt)}
-                    </div>
-                  )}
-                  <dl className="space-y-1.5">
-                    <DlRow
-                      label={t('fuelAlerts.modal.liters')}
-                      value={fmtL(curLiters)}
-                      emphasize
-                    />
-                    <DlRow
-                      label={t('fuelAlerts.modal.odometer')}
-                      value={fmtKm(alert.reportedOdometerKm)}
-                    />
-                    <DlRow
-                      label={t('fuelAlerts.modal.amount')}
-                      value={curPrice !== null ? formatCurrency(curPrice) : '—'}
-                    />
-                  </dl>
-                </div>
+                <CurrentCard
+                  alert={alert}
+                  curLiters={curLiters}
+                  curPrice={curPrice}
+                  variant="with-previous"
+                />
               </div>
             ) : (
-              // Single-card mode — rules without a clean "previous" comparison.
-              <div
-                className={`rounded-lg border-2 p-4 ${tintBorder[alert.severity]} ${tintBg[alert.severity]}`}
-              >
-                <div
-                  className={`text-[11px] font-semibold uppercase tracking-wider mb-2 ${tintText[alert.severity]}`}
-                >
-                  {t('fuelAlerts.modal.currentIssue')}
-                </div>
-                {alert.occurredAt && (
-                  <div className={`text-xs tabular-nums mb-3 ${tintText[alert.severity]}`}>
-                    {formatDateTime(alert.occurredAt)}
-                  </div>
-                )}
-                <dl className="grid grid-cols-3 gap-3">
-                  <DlRow label={t('fuelAlerts.modal.liters')} value={fmtL(curLiters)} vertical />
-                  <DlRow
-                    label={t('fuelAlerts.modal.odometer')}
-                    value={fmtKm(alert.reportedOdometerKm)}
-                    vertical
-                  />
-                  <DlRow
-                    label={t('fuelAlerts.modal.amount')}
-                    value={curPrice !== null ? formatCurrency(curPrice) : '—'}
-                    vertical
-                  />
-                </dl>
-                <p className="mt-3 text-xs text-slate-500">
-                  {t('fuelAlerts.modal.noComparison')}
-                </p>
-              </div>
+              <CurrentCard
+                alert={alert}
+                curLiters={curLiters}
+                curPrice={curPrice}
+                variant="standalone"
+              />
             )}
           </div>
 
@@ -396,17 +308,84 @@ export default function FuelAlertDetailModal({
             </div>
           )}
 
-          {/* Inline reason sheet */}
-          {showReasonSheet && (
-            <DismissalReasonSheet
-              submitting={dismissing}
-              onSubmit={handleDismiss}
-              onCancel={() => setShowReasonSheet(false)}
-            />
-          )}
-        </div>
+        {/* Inline reason sheet */}
+        {showReasonSheet && (
+          <DismissalReasonSheet
+            submitting={dismissing}
+            onSubmit={handleDismiss}
+            onCancel={() => setShowReasonSheet(false)}
+          />
+        )}
       </div>
-    </>
+    </div>
+  );
+}
+
+interface CurrentCardProps {
+  alert: AnomalyPendingItem;
+  curLiters: number | null;
+  curPrice: number | null;
+  /** with-previous: stacked dl, "this record" badge, emphasized liters row.
+   *  standalone:    3-col dl, no badge, "no comparison" helper underneath. */
+  variant: 'with-previous' | 'standalone';
+}
+
+function CurrentCard({ alert, curLiters, curPrice, variant }: CurrentCardProps) {
+  const { t } = useTranslation();
+  const sev = alert.severity;
+  const withPrev = variant === 'with-previous';
+  const badgeBg =
+    sev === 'CRITICAL'
+      ? 'bg-urgent-500'
+      : sev === 'WARNING'
+        ? 'bg-attention-500'
+        : 'bg-info-500';
+
+  return (
+    <div
+      className={`rounded-lg border-2 p-4 relative ${tintBorder[sev]} ${tintBg[sev]}`}
+    >
+      {withPrev && (
+        <div
+          className={`absolute -top-2 right-3 inline-flex items-center gap-1 px-2 py-0.5 text-white text-[10px] font-bold rounded-md tracking-wider uppercase ${badgeBg}`}
+        >
+          {t('fuelAlerts.modal.thisRecord')}
+        </div>
+      )}
+      <div
+        className={`text-[11px] font-semibold uppercase tracking-wider mb-2 ${tintText[sev]}`}
+      >
+        {t('fuelAlerts.modal.currentIssue')}
+      </div>
+      {alert.occurredAt && (
+        <div className={`text-xs tabular-nums mb-3 ${tintText[sev]}`}>
+          {formatDateTime(alert.occurredAt)}
+        </div>
+      )}
+      <dl className={withPrev ? 'space-y-1.5' : 'grid grid-cols-3 gap-3'}>
+        <DlRow
+          label={t('fuelAlerts.modal.liters')}
+          value={fmtL(curLiters)}
+          emphasize={withPrev}
+          vertical={!withPrev}
+        />
+        <DlRow
+          label={t('fuelAlerts.modal.odometer')}
+          value={fmtKm(alert.reportedOdometerKm)}
+          vertical={!withPrev}
+        />
+        <DlRow
+          label={t('fuelAlerts.modal.amount')}
+          value={curPrice !== null ? formatCurrency(curPrice) : '—'}
+          vertical={!withPrev}
+        />
+      </dl>
+      {!withPrev && (
+        <p className="mt-3 text-xs text-slate-500">
+          {t('fuelAlerts.modal.noComparison')}
+        </p>
+      )}
+    </div>
   );
 }
 

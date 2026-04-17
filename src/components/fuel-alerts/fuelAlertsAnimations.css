@@ -1,0 +1,35 @@
+/* Keyframes for the fuel-alerts feature. Hoisted out of per-component <style>
+ * blocks so they aren't re-injected on every mount/unmount cycle (the
+ * floating action bar mounts and unmounts as selection changes). */
+
+@keyframes fuel-alerts-slide-up {
+  from { transform: translateY(120%); opacity: 0 }
+  to   { transform: translateY(0);    opacity: 1 }
+}
+.fuel-alerts-slide-up {
+  animation: fuel-alerts-slide-up .35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fuel-alerts-breathe {
+  0%, 100% { transform: scale(1);    opacity: 1    }
+  50%      { transform: scale(1.04); opacity: 0.92 }
+}
+.fuel-alerts-breathe {
+  animation: fuel-alerts-breathe 6s ease-in-out infinite;
+}
+
+.fuel-alerts-aura {
+  background: radial-gradient(
+    circle at 50% 40%,
+    rgba(14, 165, 233, 0.12),
+    rgba(250, 250, 247, 0) 62%
+  );
+}
+
+@keyframes fuel-alerts-modal-in {
+  from { opacity: 0; transform: translateY(12px) scale(.98) }
+  to   { opacity: 1; transform: translateY(0) scale(1)      }
+}
+.fuel-alerts-modal-in {
+  animation: fuel-alerts-modal-in .25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

@@ -1272,6 +1272,7 @@
     },
     "bulkBar": {
       "selected": "{{count}} seçildi",
+      "selectedLabel": "seçildi",
       "confirm": "İşaretle",
       "dismiss": "Sorun değil",
       "clear": "Temizle",
@@ -1300,7 +1301,6 @@
       "MISSING_BASELINE": { "title": "Ortalama tüketim henüz tanımlı değil" }
     },
     "modal": {
-      "ruleDate": "{{date}}",
       "comparisonTitle": "Dolum karşılaştırması",
       "previous": "Önceki dolum",
       "currentIssue": "Sorunlu dolum",

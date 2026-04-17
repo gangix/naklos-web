@@ -1,7 +1,7 @@
 import type { AnomalyPendingItem } from '../../types/fuelAnomaly';
 
 /** Safe JSON.parse — returns an untyped object or {} on failure. */
-function parseContext(raw: string | null | undefined): Record<string, unknown> {
+export function parseContext(raw: string | null | undefined): Record<string, unknown> {
   if (!raw) return {};
   try {
     const obj = JSON.parse(raw);
@@ -11,7 +11,7 @@ function parseContext(raw: string | null | undefined): Record<string, unknown> {
   }
 }
 
-function num(v: unknown): number | null {
+export function num(v: unknown): number | null {
   if (v === null || v === undefined) return null;
   if (typeof v === 'number' && !isNaN(v)) return v;
   if (typeof v === 'string' && v.trim() !== '') {

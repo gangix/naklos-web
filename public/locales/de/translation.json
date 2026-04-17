@@ -1273,6 +1273,7 @@
     },
     "bulkBar": {
       "selected": "{{count}} ausgewählt",
+      "selectedLabel": "ausgewählt",
       "confirm": "Bestätigen",
       "dismiss": "Kein Problem",
       "clear": "Auswahl leeren",
@@ -1301,7 +1302,6 @@
       "MISSING_BASELINE": { "title": "Basiswert noch nicht definiert" }
     },
     "modal": {
-      "ruleDate": "{{date}}",
       "comparisonTitle": "Tankungs-Vergleich",
       "previous": "Vorherige Tankung",
       "currentIssue": "Problematische Tankung",

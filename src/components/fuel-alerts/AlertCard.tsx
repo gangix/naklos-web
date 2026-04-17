@@ -1,10 +1,11 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Clock, Image as ImageIcon } from 'lucide-react';
 import type { AnomalyPendingItem, RuleCode } from '../../types/fuelAnomaly';
 import SeverityBadge from './SeverityBadge';
 import SeverityStripe from './SeverityStripe';
 import { shortExplanation } from './ruleExplanation';
-import { formatCurrency, formatDateTime } from '../../utils/format';
+import { formatCurrency, formatDateTime, formatTime } from '../../utils/format';
 
 interface Props {
   alert: AnomalyPendingItem;
@@ -21,7 +22,7 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
   const title = t(`fuelAlerts.rules.${alert.ruleCode}.title`, {
     defaultValue: alert.ruleCode,
   });
-  const body = shortExplanation(alert);
+  const body = useMemo(() => shortExplanation(alert), [alert]);
   const ts = alert.occurredAt ?? alert.detectedAt;
   const liters = alert.liters;
   const km = alert.reportedOdometerKm;
@@ -72,7 +73,7 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
           {ts && (
             <span className="inline-flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
-              {new Date(ts).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+              {formatTime(ts)}
             </span>
           )}
           {alert.totalPrice && (

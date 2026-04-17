@@ -22,6 +22,13 @@ export const formatDateTime = (dateString: string): string => {
   }).format(date);
 };
 
+export const formatTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat(i18n.language, {
+    hour: '2-digit', minute: '2-digit',
+  }).format(date);
+};
+
 /**
  * "3 dk önce", "2 saat önce", "5 gün önce"
  */

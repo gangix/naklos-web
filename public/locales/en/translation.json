@@ -1273,6 +1273,7 @@
     },
     "bulkBar": {
       "selected": "{{count}} selected",
+      "selectedLabel": "selected",
       "confirm": "Confirm",
       "dismiss": "Not an issue",
       "clear": "Clear",
@@ -1301,7 +1302,6 @@
       "MISSING_BASELINE": { "title": "Baseline not yet defined" }
     },
     "modal": {
-      "ruleDate": "{{date}}",
       "comparisonTitle": "Refuel comparison",
       "previous": "Previous refuel",
       "currentIssue": "Flagged refuel",
