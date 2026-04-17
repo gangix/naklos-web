@@ -934,10 +934,6 @@
   },
   "fuelReview": {
     "pageTitle": "Bekleyen Kayıtlar",
-    "tabs": {
-      "unmatched": "Eşleşmeyen plakalar",
-      "anomalies": "Anomaliler"
-    },
     "nav": {
       "imports": "İçe Aktar",
       "formats": "Formatlar",
@@ -1082,24 +1078,7 @@
     },
     "filteredByBatch": "Yalnızca seçili partideki kayıtlar gösteriliyor.",
     "viewBatch": "Parti detayı →",
-    "showAll": "Tümünü göster",
-    "anomaly": {
-      "empty": "Bekleyen anomali yok.",
-      "loadError": "Anomaliler yüklenemedi.",
-      "confirm": "Doğrula",
-      "dismiss": "Yoksay",
-      "confirmedToast": "Kayıt doğrulandı.",
-      "dismissedToast": "Anomali işareti kaldırıldı.",
-      "warningExcluded": "Bu kayıt çözümlenene kadar analizlere dahil edilmez.",
-      "baseline": "Önceki: {{prevOdo}} km ({{prevAt}}), {{prevLiters}} L · Fark: +{{delta}} km",
-      "rapidRefuelHint": "Aynı araçta 5 saat içinde başka bir dolum var.",
-      "reason": {
-        "ODOMETER_ROLLBACK": "Kilometre geriye gitmiş",
-        "ODOMETER_CONSUMPTION_HIGH": "Çok yakıt – az mesafe",
-        "ODOMETER_CONSUMPTION_LOW": "Az yakıt – çok mesafe",
-        "RAPID_REFUEL": "Kısa sürede tekrar dolum"
-      }
-    }
+    "showAll": "Tümünü göster"
   },
   "cookie": {
     "message": "🍪 Naklos yalnızca oturum yönetimi için zorunlu çerezler kullanır.",

@@ -935,10 +935,6 @@
   },
   "fuelReview": {
     "pageTitle": "Pending entries",
-    "tabs": {
-      "unmatched": "Unmatched plates",
-      "anomalies": "Anomalies"
-    },
     "nav": {
       "imports": "Import",
       "formats": "Formats",
@@ -1083,24 +1079,7 @@
     },
     "filteredByBatch": "Showing only entries from the selected batch.",
     "viewBatch": "View batch →",
-    "showAll": "Show all",
-    "anomaly": {
-      "empty": "No pending anomalies.",
-      "loadError": "Couldn't load anomalies.",
-      "confirm": "Confirm",
-      "dismiss": "Dismiss",
-      "confirmedToast": "Entry confirmed.",
-      "dismissedToast": "Anomaly flag cleared.",
-      "warningExcluded": "Excluded from analytics until resolved.",
-      "baseline": "Previous: {{prevOdo}} km ({{prevAt}}), {{prevLiters}} L · Delta: +{{delta}} km",
-      "rapidRefuelHint": "Another fill-up on the same truck within 5 hours.",
-      "reason": {
-        "ODOMETER_ROLLBACK": "Odometer rolled back",
-        "ODOMETER_CONSUMPTION_HIGH": "Too much fuel for the distance",
-        "ODOMETER_CONSUMPTION_LOW": "Too little fuel for the distance",
-        "RAPID_REFUEL": "Rapid refuel"
-      }
-    }
+    "showAll": "Show all"
   },
   "cookie": {
     "message": "🍪 Naklos uses only essential session cookies.",

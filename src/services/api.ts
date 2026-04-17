@@ -422,21 +422,6 @@ export const fuelReviewApi = {
       `/fleets/${fleetId}/fuel-review/possible-duplicates/${entryId}/dismiss`,
       { method: 'POST' }),
 
-  // UC-5-lite anomaly surface
-  listAnomalies: (fleetId: string) =>
-    apiCall<import('../types/fuel').AnomalyEntryView[]>(
-      `/fleets/${fleetId}/fuel-review/anomalies`),
-
-  confirmAnomaly: (fleetId: string, entryId: string) =>
-    apiCall<void>(
-      `/fleets/${fleetId}/fuel-review/anomalies/${entryId}/confirm`,
-      { method: 'POST' }),
-
-  dismissAnomaly: (fleetId: string, entryId: string) =>
-    apiCall<void>(
-      `/fleets/${fleetId}/fuel-review/anomalies/${entryId}/dismiss`,
-      { method: 'POST' }),
-
   listResolutions: (fleetId: string) =>
     apiCall<import('../types/fuel').PlateResolutionDto[]>(
       `/fleets/${fleetId}/fuel-review/resolutions`),

@@ -935,10 +935,6 @@
   },
   "fuelReview": {
     "pageTitle": "Offene Einträge",
-    "tabs": {
-      "unmatched": "Nicht zugeordnete Kennzeichen",
-      "anomalies": "Anomalien"
-    },
     "nav": {
       "imports": "Import",
       "formats": "Formate",
@@ -1083,24 +1079,7 @@
     },
     "filteredByBatch": "Es werden nur Einträge aus dem ausgewählten Batch angezeigt.",
     "viewBatch": "Batch-Details →",
-    "showAll": "Alle anzeigen",
-    "anomaly": {
-      "empty": "Keine offenen Anomalien.",
-      "loadError": "Anomalien konnten nicht geladen werden.",
-      "confirm": "Bestätigen",
-      "dismiss": "Verwerfen",
-      "confirmedToast": "Eintrag bestätigt.",
-      "dismissedToast": "Anomalie-Flag entfernt.",
-      "warningExcluded": "Bis zur Klärung von Analysen ausgeschlossen.",
-      "baseline": "Vorher: {{prevOdo}} km ({{prevAt}}), {{prevLiters}} L · Differenz: +{{delta}} km",
-      "rapidRefuelHint": "Innerhalb von 5 Stunden ein weiterer Tankvorgang beim selben LKW.",
-      "reason": {
-        "ODOMETER_ROLLBACK": "Kilometerstand zurückgesetzt",
-        "ODOMETER_CONSUMPTION_HIGH": "Zu viel Kraftstoff für die Strecke",
-        "ODOMETER_CONSUMPTION_LOW": "Zu wenig Kraftstoff für die Strecke",
-        "RAPID_REFUEL": "Kurzzeitiges Nachtanken"
-      }
-    }
+    "showAll": "Alle anzeigen"
   },
   "cookie": {
     "message": "🍪 Naklos verwendet nur unverzichtbare Sitzungscookies.",

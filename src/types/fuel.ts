@@ -136,27 +136,6 @@ export interface ReviewCounts {
   pendingAnomalies: number;
 }
 
-export type AnomalyReason =
-  | 'ODOMETER_ROLLBACK'
-  | 'ODOMETER_CONSUMPTION_HIGH'
-  | 'ODOMETER_CONSUMPTION_LOW'
-  | 'RAPID_REFUEL';
-
-export interface AnomalyEntryView {
-  entryId: string;
-  truckId: string;
-  plateTextRaw: string;
-  occurredAt: string;
-  liters: string;       // BigDecimal as string
-  totalPrice: string;
-  odometerKm: number | null;
-  reason: AnomalyReason;
-  /** null for rapid-refuel or when there's no baseline prior entry. */
-  previousOdometerKm: number | null;
-  previousLiters: string | null;
-  previousOccurredAt: string | null;
-}
-
 export interface PlateResolutionDto {
   normalizedPlate: string;
   kind: 'ALIAS' | 'SUBCONTRACTOR';
