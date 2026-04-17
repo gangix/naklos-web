@@ -29,6 +29,8 @@ import FuelImportPage from './pages/FuelImportPage';
 import FuelImportBatchDetailPage from './pages/FuelImportBatchDetailPage';
 import FuelReviewPage from './pages/FuelReviewPage';
 import FuelResolutionsPage from './pages/FuelResolutionsPage';
+import FuelAlertsPage from './pages/FuelAlertsPage';
+import FuelAlertsConfigPage from './pages/FuelAlertsConfigPage';
 import CookieBanner from './components/common/CookieBanner';
 import ContactButton from './components/common/ContactButton';
 import { useLanguage } from './hooks/useLanguage';
@@ -237,6 +239,8 @@ function App() {
                 <Route path="fuel-imports/:batchId" element={<FuelImportBatchDetailPage />} />
                 <Route path="fuel-review" element={<FuelReviewPage />} />
                 <Route path="fuel-resolutions" element={<FuelResolutionsPage />} />
+                <Route path="fuel-alerts" element={<FuelAlertsPage />} />
+                <Route path="fuel-alerts/config" element={<FuelAlertsConfigPage />} />
               </>
             )}
           </Route>

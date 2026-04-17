@@ -1242,6 +1242,87 @@
     "pageSubtitle": "{{count}} alert(s) awaiting review",
     "pageSubtitleUpdatedAt": "updated today at 06:30",
     "settingsLink": "Settings",
+    "nav": {
+      "tab": "Alerts"
+    },
+    "config": {
+      "pageTitle": "Fuel Alert Settings",
+      "subtitle": "These settings apply to the entire fleet.",
+      "backToList": "← Back to alerts",
+      "settings": {
+        "title": "Fleet settings",
+        "enabled": {
+          "label": "Anomaly engine",
+          "hint": "Disabling this stops all alerts from being detected."
+        },
+        "digestHour": {
+          "label": "Daily digest hour",
+          "hint": "The daily email digest is sent at this hour (0–23)."
+        },
+        "instantCriticalEmail": {
+          "label": "Instant critical email",
+          "hint": "Urgent alerts trigger an immediate email when detected."
+        },
+        "readOnly": {
+          "title": "Read-only settings",
+          "hint": "Working hours and recipients are managed in a separate form."
+        },
+        "save": "Save",
+        "saving": "Saving…",
+        "saved": "Settings saved"
+      },
+      "rules": {
+        "title": "Alert rules",
+        "subtitle": "Toggle each rule and fine-tune its thresholds.",
+        "enabled": "Active",
+        "notify": "Email",
+        "threshold": "Threshold",
+        "invalidJson": "Not valid JSON.",
+        "save": "Save",
+        "saved": "Saved",
+        "ODOMETER_ROLLBACK": { "desc": "Fires when the odometer is lower than the previous entry." },
+        "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Fires when the refueled volume exceeds the truck's tank capacity." },
+        "FUEL_TYPE_MISMATCH": { "desc": "Fires when the receipt's fuel type differs from the truck's fuel type." },
+        "CONSUMPTION_OVER_BASELINE": { "desc": "Fires when consumption exceeds the baseline by the configured ratio." },
+        "CONSUMPTION_UNDER_BASELINE": { "desc": "Fires when consumption is far below baseline — likely data error." },
+        "RAPID_REFUEL": { "desc": "Fires when the same truck refuels twice within a short window." },
+        "EXCESSIVE_DAILY_FREQUENCY": { "desc": "Fires when a truck refuels unusually often within a single day." },
+        "OFF_HOURS_PURCHASE": { "desc": "Refuels outside of configured working hours." },
+        "ODOMETER_NOT_ADVANCING": { "desc": "Fires when consecutive refuels show no odometer change." },
+        "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "desc": "Volume looks implausible for this fuel type (e.g. diesel in an EV)." },
+        "PRICE_MATH_MISMATCH": { "desc": "Unit price × liters doesn't match the total amount on the receipt." },
+        "MISSING_BASELINE": { "desc": "Baseline consumption hasn't been established from enough refuels yet." }
+      }
+    },
+    "overrides": {
+      "sectionTitle": "Anomaly rules",
+      "subtitle": "Baseline and rule configuration for this truck.",
+      "baseline": {
+        "title": "Consumption baseline",
+        "manual": "Manual",
+        "derived": "Computed",
+        "manualPlaceholder": "e.g. 9.2",
+        "unit": "L/100km"
+      },
+      "fuelType": {
+        "label": "Fuel type",
+        "notSet": "Not set",
+        "DIESEL": "Diesel",
+        "GASOLINE": "Gasoline",
+        "LPG": "LPG",
+        "ELECTRIC": "Electric"
+      },
+      "tankCapacity": {
+        "label": "Tank capacity",
+        "unit": "liters"
+      },
+      "save": "Save",
+      "saved": "Settings updated",
+      "rulesTitle": "Per-truck rule overrides",
+      "rulesEmpty": "No custom rule overrides for this truck.",
+      "ruleOn": "On",
+      "ruleOff": "Off"
+    },
     "severity": {
       "urgent": "URGENT",
       "attention": "ATTENTION",

@@ -1242,6 +1242,87 @@
     "pageSubtitle": "{{count}} Warnung(en) zur Prüfung",
     "pageSubtitleUpdatedAt": "heute 06:30 aktualisiert",
     "settingsLink": "Einstellungen",
+    "nav": {
+      "tab": "Warnungen"
+    },
+    "config": {
+      "pageTitle": "Warn-Einstellungen",
+      "subtitle": "Diese Einstellungen gelten für die gesamte Flotte.",
+      "backToList": "← Zurück zu Warnungen",
+      "settings": {
+        "title": "Flotten-Einstellungen",
+        "enabled": {
+          "label": "Anomalie-Engine",
+          "hint": "Deaktivieren stoppt jede Warnung."
+        },
+        "digestHour": {
+          "label": "Tägliche Berichtszeit",
+          "hint": "Die tägliche E-Mail wird zu dieser Stunde gesendet (0–23)."
+        },
+        "instantCriticalEmail": {
+          "label": "Sofort-E-Mail bei Dringend",
+          "hint": "Dringende Warnungen lösen eine sofortige E-Mail aus."
+        },
+        "readOnly": {
+          "title": "Nicht editierbare Einstellungen",
+          "hint": "Arbeitszeiten und Empfänger werden separat verwaltet."
+        },
+        "save": "Speichern",
+        "saving": "Speichert…",
+        "saved": "Einstellungen gespeichert"
+      },
+      "rules": {
+        "title": "Warnregeln",
+        "subtitle": "Jede Regel ein-/ausschalten und Schwellwerte anpassen.",
+        "enabled": "Aktiv",
+        "notify": "E-Mail",
+        "threshold": "Schwelle",
+        "invalidJson": "Kein gültiges JSON.",
+        "save": "Speichern",
+        "saved": "Gespeichert",
+        "ODOMETER_ROLLBACK": { "desc": "Löst aus, wenn der Kilometerstand niedriger ist als zuvor." },
+        "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Löst aus, wenn die getankte Menge die Tankkapazität überschreitet." },
+        "FUEL_TYPE_MISMATCH": { "desc": "Die Kraftstoffart auf dem Beleg passt nicht zum Fahrzeug." },
+        "CONSUMPTION_OVER_BASELINE": { "desc": "Verbrauch übersteigt den Basiswert um das konfigurierte Verhältnis." },
+        "CONSUMPTION_UNDER_BASELINE": { "desc": "Verbrauch weit unter Basiswert — wahrscheinlich Datenfehler." },
+        "RAPID_REFUEL": { "desc": "Dasselbe Fahrzeug tankt zweimal innerhalb kurzer Zeit." },
+        "EXCESSIVE_DAILY_FREQUENCY": { "desc": "Ungewöhnlich viele Tankvorgänge an einem Tag." },
+        "OFF_HOURS_PURCHASE": { "desc": "Tanken außerhalb der konfigurierten Arbeitszeiten." },
+        "ODOMETER_NOT_ADVANCING": { "desc": "Aufeinanderfolgende Tankvorgänge ohne Kilometeränderung." },
+        "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "desc": "Menge wirkt unplausibel für diese Kraftstoffart (z. B. Diesel in einem E-Fahrzeug)." },
+        "PRICE_MATH_MISMATCH": { "desc": "Einzelpreis × Liter stimmt nicht mit dem Gesamtbetrag überein." },
+        "MISSING_BASELINE": { "desc": "Basiswert ist noch nicht aus genügend Tankungen berechnet." }
+      }
+    },
+    "overrides": {
+      "sectionTitle": "Anomalie-Regeln",
+      "subtitle": "Basiswert und Regeln für dieses Fahrzeug.",
+      "baseline": {
+        "title": "Verbrauchs-Basiswert",
+        "manual": "Manuell",
+        "derived": "Berechnet",
+        "manualPlaceholder": "z. B. 9,2",
+        "unit": "L/100km"
+      },
+      "fuelType": {
+        "label": "Kraftstoffart",
+        "notSet": "Nicht gesetzt",
+        "DIESEL": "Diesel",
+        "GASOLINE": "Benzin",
+        "LPG": "LPG",
+        "ELECTRIC": "Elektro"
+      },
+      "tankCapacity": {
+        "label": "Tankkapazität",
+        "unit": "Liter"
+      },
+      "save": "Speichern",
+      "saved": "Einstellungen aktualisiert",
+      "rulesTitle": "Fahrzeug-spezifische Regeln",
+      "rulesEmpty": "Keine individuellen Regeln für dieses Fahrzeug.",
+      "ruleOn": "An",
+      "ruleOff": "Aus"
+    },
     "severity": {
       "urgent": "Dringend",
       "attention": "Achtung",

@@ -12,6 +12,7 @@ import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import TruckFuelTab from '../components/fuel/TruckFuelTab';
+import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
 import type { DocumentCategory, Truck, Driver } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
 
@@ -21,7 +22,11 @@ const TruckDetailPage = () => {
   const { t } = useTranslation();
   const { truckId } = useParams<{ truckId: string }>();
   const navigate = useNavigate();
-  const { fleetId } = useFleet();
+  const { fleetId, plan } = useFleet();
+  // Mirrors the ManagerTopNav gate — anomaly features are a paid-plan UX.
+  // FREE users see the Yakıt tab with manual entry but not the overrides panel.
+  const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
+  const anomalyUiEnabled = forceOn || (plan !== 'FREE' && plan !== undefined);
   const [truck, setTruck] = useState<Truck | null>(null);
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -339,12 +344,17 @@ const TruckDetailPage = () => {
 
       {/* Yakıt tab */}
       {activeTab === 'yakit' && fleetId && (
-        <TruckFuelTab
-          fleetId={fleetId}
-          truckId={truck.id}
-          truckPlate={truck.plateNumber}
-          truckPrimaryFuelType={truckPrimaryFuelType}
-        />
+        <>
+          <TruckFuelTab
+            fleetId={fleetId}
+            truckId={truck.id}
+            truckPlate={truck.plateNumber}
+            truckPrimaryFuelType={truckPrimaryFuelType}
+          />
+          {anomalyUiEnabled && (
+            <TruckAnomalyOverridesSection fleetId={fleetId} truckId={truck.id} />
+          )}
+        </>
       )}
 
       {/* Belgeler tab */}

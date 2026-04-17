@@ -1241,6 +1241,87 @@
     "pageSubtitle": "{{count}} uyarı incelemeni bekliyor",
     "pageSubtitleUpdatedAt": "bugün 06:30'da güncellendi",
     "settingsLink": "Ayarlar",
+    "nav": {
+      "tab": "Uyarılar"
+    },
+    "config": {
+      "pageTitle": "Yakıt Uyarı Ayarları",
+      "subtitle": "Bu ayarlar filonun tamamı için geçerlidir.",
+      "backToList": "← Uyarılara dön",
+      "settings": {
+        "title": "Filo ayarları",
+        "enabled": {
+          "label": "Anomali motoru",
+          "hint": "Kapatırsan hiçbir uyarı tespit edilmez."
+        },
+        "digestHour": {
+          "label": "Günlük rapor saati",
+          "hint": "Günlük e-posta özeti bu saatte gönderilir (0–23)."
+        },
+        "instantCriticalEmail": {
+          "label": "Anlık kritik e-postası",
+          "hint": "Acil uyarılar tespit edildiğinde e-posta anında gönderilir."
+        },
+        "readOnly": {
+          "title": "Düzenlenemeyen ayarlar",
+          "hint": "Çalışma saatleri ve alıcılar ayrı bir formla yönetilir."
+        },
+        "save": "Kaydet",
+        "saving": "Kaydediliyor…",
+        "saved": "Ayarlar kaydedildi"
+      },
+      "rules": {
+        "title": "Uyarı kuralları",
+        "subtitle": "Her kuralı aç/kapat ve eşiklerini düzenle.",
+        "enabled": "Aktif",
+        "notify": "E-posta",
+        "threshold": "Eşik",
+        "invalidJson": "Geçerli bir JSON değil.",
+        "save": "Kaydet",
+        "saved": "Kaydedildi",
+        "ODOMETER_ROLLBACK": { "desc": "Aracın kilometresi bir önceki kayıttan küçükse tetiklenir." },
+        "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Alınan yakıt, tank kapasitesini aşıyorsa tetiklenir." },
+        "FUEL_TYPE_MISMATCH": { "desc": "Fişteki yakıt türü, aracın yakıt türüyle uyuşmuyor." },
+        "CONSUMPTION_OVER_BASELINE": { "desc": "Tüketim, aracın ortalamasını belirli bir oranın üzerinde aştıysa." },
+        "CONSUMPTION_UNDER_BASELINE": { "desc": "Tüketim beklenenin çok altında — muhtemel veri hatası." },
+        "RAPID_REFUEL": { "desc": "Aynı araç çok kısa sürede iki kez dolduruldu." },
+        "EXCESSIVE_DAILY_FREQUENCY": { "desc": "Aynı gün içinde aşırı sayıda dolum yapıldıysa." },
+        "OFF_HOURS_PURCHASE": { "desc": "Çalışma saatleri dışında yapılan dolum." },
+        "ODOMETER_NOT_ADVANCING": { "desc": "Peş peşe dolumlarda kilometre değişmediyse." },
+        "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "desc": "Yakıt türüne göre mantıksız miktarda dolum (örn. elektrikli araca dizel)." },
+        "PRICE_MATH_MISMATCH": { "desc": "Birim fiyat × litre, toplam tutarla eşleşmiyor." },
+        "MISSING_BASELINE": { "desc": "Ortalama tüketim henüz yeterli dolumla hesaplanmadı." }
+      }
+    },
+    "overrides": {
+      "sectionTitle": "Anomali kuralları",
+      "subtitle": "Bu araç için baseline ve kural ayarları.",
+      "baseline": {
+        "title": "Tüketim baseline'ı",
+        "manual": "Elle girilen",
+        "derived": "Hesaplanan",
+        "manualPlaceholder": "Örn. 9.2",
+        "unit": "L/100km"
+      },
+      "fuelType": {
+        "label": "Yakıt türü",
+        "notSet": "Belirtilmedi",
+        "DIESEL": "Dizel",
+        "GASOLINE": "Benzin",
+        "LPG": "LPG",
+        "ELECTRIC": "Elektrik"
+      },
+      "tankCapacity": {
+        "label": "Tank kapasitesi",
+        "unit": "litre"
+      },
+      "save": "Kaydet",
+      "saved": "Ayarlar güncellendi",
+      "rulesTitle": "Bu araca özel kural ayarları",
+      "rulesEmpty": "Bu araç için özel kural ayarı yok.",
+      "ruleOn": "Açık",
+      "ruleOff": "Kapalı"
+    },
     "severity": {
       "urgent": "Acil",
       "attention": "Dikkat",
