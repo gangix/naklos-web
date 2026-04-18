@@ -30,7 +30,9 @@ export default function TruckAnomalyOverridesSection({ fleetId, truckId }: Props
 
   const hydrate = useCallback((b: TruckBaseline) => {
     setBaseline(b);
-    setManualInput(b.manual ?? '');
+    // BigDecimal arrives as a JSON number — must coerce before handing to a
+    // string input (TypeScript lies about the wire shape here).
+    setManualInput(b.manual != null ? String(b.manual) : '');
     setFuelType(b.fuelType ?? '');
     setTankCapacity(b.tankCapacityLiters != null ? String(b.tankCapacityLiters) : '');
   }, []);
@@ -80,7 +82,7 @@ export default function TruckAnomalyOverridesSection({ fleetId, truckId }: Props
   const derivedDisplay = baseline ? formatDecimal(baseline.derived) : null;
 
   const dirty = baseline
-    ? manualInput.trim() !== (baseline.manual ?? '') ||
+    ? manualInput.trim() !== (baseline.manual != null ? String(baseline.manual) : '') ||
       fuelType !== (baseline.fuelType ?? '') ||
       tankCapacity.trim() !== (baseline.tankCapacityLiters != null ? String(baseline.tankCapacityLiters) : '')
     : false;

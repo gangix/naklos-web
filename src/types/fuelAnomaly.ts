@@ -155,10 +155,15 @@ export interface TruckAnomalyOverrideRequest {
   thresholdJson?: string | null;
 }
 
-/** GET /trucks/{truckId}/baseline response. */
+/** GET /trucks/{truckId}/baseline response.
+ *  Jackson serialises BigDecimal as a JSON *number* by default, so `manual`
+ *  and `derived` arrive as numbers over the wire — not strings. Callers
+ *  must coerce to string explicitly before passing to anything that expects
+ *  a string (text inputs, `.trim()`, concatenation). Use {@link formatDecimal}
+ *  for display. */
 export interface TruckBaseline {
-  manual: string | null;        // BigDecimal
-  derived: string | null;       // BigDecimal
+  manual: number | null;        // BigDecimal
+  derived: number | null;       // BigDecimal
   recomputedAt: string | null;
   fuelType: FuelType | null;
   tankCapacityLiters: number | null;
