@@ -1395,7 +1395,7 @@
       "callDriver": "Şoförü ara",
       "ruleCodeLabel": "uyarı kodu: {{code}}",
       "confirmHint": {
-        "dataBroken": "Bu hatalı kayıt şu anda analiz dışında tutuluyor — yanlış veri aracın yakıt tüketim ortalamasını etkilemiyor. Gerçek sorun olarak işaretlersen bu durum kalıcı olur.",
+        "dataBroken": "Bu hatalı kayıt şu anda analiz dışında tutuluyor — yanlış veri aracın yakıt tüketim ortalamasını etkilemiyor. Gerçek sorun olarak işaretlersen, analiz dışında tutma işlemi kalıcı olur.",
         "behaviour": "Bu bir veri hatası değil, gerçek bir olay. İşaretlesen aracın tüketim ortalaması değişmez; sadece kayıt altına alınır."
       },
       "fixDataHint": "Araç bilgisi (tank kapasitesi, yakıt türü, baseline) hatalıysa, aracın ayarlarından düzelt — bir sonraki taramada uyarı otomatik kapanır.",
