@@ -1341,13 +1341,55 @@
         "saved": "Ayarlar kaydedildi",
         "rescanNote": "Mevcut kayıtlar yeni ayarlarla tekrar taranacak."
       },
+      "units": {
+        "hours": "saat",
+        "timesPerDay": "kez/gün",
+        "entries": "kayıt"
+      },
+      "fields": {
+        "tolerancePct": {
+          "label": "Tolerans payı",
+          "hintTank": "Tank kapasitesinin ne kadar üzerine çıkan dolumun uyarı sayılacağını belirler.",
+          "hintOver": "Aracın baz tüketimini ne kadar aşan kayıtların uyarı sayılacağını belirler.",
+          "hintUnder": "Baz tüketimin ne kadar altına düşen kayıtların olası veri hatası sayılacağını belirler.",
+          "hintPrice": "Hesaplanan toplam ile fişteki toplam arasındaki farkı bu kadar tolere et."
+        },
+        "minDeltaKm": {
+          "label": "En az mesafe",
+          "hint": "İki kayıt arası bu mesafeden az ise atla — kısa mesafelerde oran güvenilir değil."
+        },
+        "windowHours": {
+          "label": "Zaman aralığı",
+          "hint": "Bu süre içinde yapılan ikinci dolum uyarı sayılır."
+        },
+        "maxPerDay": {
+          "label": "Günlük üst sınır",
+          "hint": "Bu sayıyı aşan günlük dolumlar uyarı oluşturur."
+        },
+        "weekdayStart": { "label": "Hafta içi başlangıç" },
+        "weekdayEnd": { "label": "Hafta içi bitiş" },
+        "includeWeekends": {
+          "label": "Hafta sonlarını dahil et",
+          "hint": "Cumartesi-pazar dolumları her saatte mesai dışı sayılır."
+        },
+        "minLitersThreshold": {
+          "label": "Asgari dolum",
+          "hint": "Bu miktarın altındaki dolumlar (ör. AdBlue) kurala dahil edilmez."
+        },
+        "implausibleDiesel": { "label": "Dizel üst sınır" },
+        "implausibleGasoline": { "label": "Benzin üst sınır" },
+        "implausibleAdblue": { "label": "AdBlue üst sınır" },
+        "minEntries": {
+          "label": "Gereken kayıt sayısı",
+          "hint": "Bu kadar kaydı olmayan araçlar için 'baz tüketim yok' uyarısı çıkar."
+        }
+      },
       "rules": {
         "title": "Uyarı kuralları",
-        "subtitle": "Her kuralı aç/kapat ve eşiklerini düzenle.",
+        "subtitle": "Her kuralı aç/kapat ve ayarlarını düzenle.",
         "enabled": "Aktif",
         "notify": "E-posta",
-        "threshold": "Eşik",
-        "invalidJson": "Geçerli bir JSON değil.",
+        "threshold": "Ayarlar",
         "save": "Kaydet",
         "saved": "Kaydedildi",
         "rescanNote": "Mevcut kayıtlar yeni kurallarla tekrar taranacak.",

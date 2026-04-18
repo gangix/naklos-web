@@ -1342,13 +1342,55 @@
         "saved": "Settings saved",
         "rescanNote": "Existing entries will be re-scanned with the new settings."
       },
+      "units": {
+        "hours": "hours",
+        "timesPerDay": "per day",
+        "entries": "entries"
+      },
+      "fields": {
+        "tolerancePct": {
+          "label": "Tolerance",
+          "hintTank": "How far above tank capacity counts as an anomaly.",
+          "hintOver": "How much above the truck's baseline counts as an anomaly.",
+          "hintUnder": "How far below baseline is treated as possible bad data.",
+          "hintPrice": "Acceptable difference between computed total and receipt total."
+        },
+        "minDeltaKm": {
+          "label": "Minimum distance",
+          "hint": "Skip entries with less than this distance since the last fill — the ratio isn't reliable on short trips."
+        },
+        "windowHours": {
+          "label": "Time window",
+          "hint": "A second refill within this window is flagged."
+        },
+        "maxPerDay": {
+          "label": "Daily cap",
+          "hint": "More than this many refills per truck per day is flagged."
+        },
+        "weekdayStart": { "label": "Weekday start" },
+        "weekdayEnd": { "label": "Weekday end" },
+        "includeWeekends": {
+          "label": "Include weekends",
+          "hint": "Saturday–Sunday refills count as off-hours at any time."
+        },
+        "minLitersThreshold": {
+          "label": "Minimum refill volume",
+          "hint": "Refills smaller than this (e.g. AdBlue) are skipped by this rule."
+        },
+        "implausibleDiesel": { "label": "Diesel ceiling" },
+        "implausibleGasoline": { "label": "Gasoline ceiling" },
+        "implausibleAdblue": { "label": "AdBlue ceiling" },
+        "minEntries": {
+          "label": "Required entries",
+          "hint": "Trucks with fewer entries get a 'no baseline' notice."
+        }
+      },
       "rules": {
         "title": "Alert rules",
-        "subtitle": "Toggle each rule and fine-tune its thresholds.",
+        "subtitle": "Toggle each rule and fine-tune its settings.",
         "enabled": "Active",
         "notify": "Email",
-        "threshold": "Threshold",
-        "invalidJson": "Not valid JSON.",
+        "threshold": "Settings",
         "save": "Save",
         "saved": "Saved",
         "rescanNote": "Existing entries will be re-scanned with the new rules.",
