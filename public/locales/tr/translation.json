@@ -962,7 +962,25 @@
     "priceEnterprise": "Özel fiyat"
   },
   "fuelReview": {
-    "pageTitle": "Eşleşmeyen Plakalar",
+    "pageTitle": "İnceleme",
+    "tabs": {
+      "unmatched": "Eşleşmeyen plakalar",
+      "duplicates": "Yinelenen kayıtlar",
+      "dismissed": "Yoksaylanlar"
+    },
+    "dismissed": {
+      "empty": "Henüz yoksaydığınız bir kayıt yok.",
+      "loadError": "Yoksaylanlar yüklenemedi.",
+      "colPlate": "Plaka",
+      "colDate": "Tarih",
+      "colLiters": "Litre",
+      "colPrice": "Tutar",
+      "colStation": "İstasyon",
+      "undo": "Geri al",
+      "undoing": "Geri alınıyor…",
+      "undoneToast": "Kayıt eşleşmeyenlere geri alındı.",
+      "undoErrorDefault": "Geri alma başarısız."
+    },
     "nav": {
       "imports": "İçe Aktar",
       "formats": "Formatlar",
