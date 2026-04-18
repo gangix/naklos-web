@@ -157,6 +157,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
   // "Şu anki" (actual rolling) and "Hedef" (manual target) — shown side-by-side
   // so the manager can compare at a glance. Null = not enough history yet.
   const actualConsumption = baseline?.derived ?? null;
+  const actualMethod = baseline?.derivedMethod ?? null;
   const targetConsumption = baseline?.manual ?? null;
   const { status: effStatus, deviationPct } = efficiencyStatus(
     actualConsumption,
@@ -173,10 +174,20 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
       <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6">
         <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-5 items-center">
           <div className="grid grid-cols-2 gap-6">
-            {/* Actual — real data, confident black */}
+            {/* Actual — real data. AGGREGATE-method baselines are rough
+                fallbacks (sparse odometer data); mark them so a number the
+                user trusts doesn't hide its own data quality. */}
             <div>
-              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2 flex items-center gap-1.5">
                 {t('fuelEntry.efficiency.actual')}
+                {actualMethod === 'AGGREGATE' && (
+                  <span
+                    title={t('fuelEntry.efficiency.aggregateHint')}
+                    className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200"
+                  >
+                    {t('fuelEntry.efficiency.aggregateTag')}
+                  </span>
+                )}
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight tabular-nums">
@@ -187,9 +198,11 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                {actualConsumption !== null
-                  ? t('fuelEntry.efficiency.actualSource')
-                  : t('fuelEntry.summary.avgConsumptionEmpty')}
+                {actualConsumption === null
+                  ? t('fuelEntry.summary.avgConsumptionEmpty')
+                  : actualMethod === 'AGGREGATE'
+                    ? t('fuelEntry.efficiency.aggregateSource')
+                    : t('fuelEntry.efficiency.actualSource')}
               </p>
             </div>
             {/* Target — optional goal, muted grey */}
