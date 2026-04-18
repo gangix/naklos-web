@@ -374,6 +374,9 @@ export const fuelImportApi = {
   getBatch: (fleetId: string, batchId: string) =>
     apiCall<import('../types/fuel').FuelImportBatchDto>(
       `/fleets/${fleetId}/fuel-imports/${batchId}`),
+  listBatches: (fleetId: string, page = 0, size = 20) =>
+    apiCall<PageResponse<import('../types/fuel').FuelImportBatchDto>>(
+      `/fleets/${fleetId}/fuel-imports?page=${page}&size=${size}`),
 };
 
 // Fuel review API — UC-2 unmatched plates and duplicate detection.
@@ -434,6 +437,15 @@ export const fuelReviewApi = {
   listResolutionEntries: (fleetId: string, normalizedPlate: string, page = 0, size = 20) =>
     apiCall<PageResponse<import('../types/fuel').ResolutionEntryView>>(
       `/fleets/${fleetId}/fuel-review/resolutions/${encodeURIComponent(normalizedPlate)}/entries?page=${page}&size=${size}`),
+
+  listDismissedEntries: (fleetId: string, page = 0, size = 20) =>
+    apiCall<PageResponse<import('../types/fuel').ResolutionEntryView>>(
+      `/fleets/${fleetId}/fuel-review/dismissed-entries?page=${page}&size=${size}`),
+
+  undismissEntry: (fleetId: string, entryId: string) =>
+    apiCall<void>(
+      `/fleets/${fleetId}/fuel-review/dismissed-entries/${entryId}/undismiss`,
+      { method: 'POST' }),
 };
 
 // Invoice API — fleet is derived from JWT

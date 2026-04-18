@@ -963,7 +963,25 @@
     "priceEnterprise": "Individuelle Preise"
   },
   "fuelReview": {
-    "pageTitle": "Nicht zugeordnete Kennzeichen",
+    "pageTitle": "Prüfung",
+    "tabs": {
+      "unmatched": "Nicht zugeordnete Kennzeichen",
+      "duplicates": "Mögliche Duplikate",
+      "dismissed": "Ignorierte"
+    },
+    "dismissed": {
+      "empty": "Sie haben noch keine Einträge ignoriert.",
+      "loadError": "Ignorierte Einträge konnten nicht geladen werden.",
+      "colPlate": "Kennzeichen",
+      "colDate": "Datum",
+      "colLiters": "Liter",
+      "colPrice": "Betrag",
+      "colStation": "Tankstelle",
+      "undo": "Rückgängig",
+      "undoing": "Wird rückgängig gemacht…",
+      "undoneToast": "Eintrag zurück zu nicht zugeordnet.",
+      "undoErrorDefault": "Rückgängig machen fehlgeschlagen."
+    },
     "nav": {
       "imports": "Import",
       "formats": "Formate",

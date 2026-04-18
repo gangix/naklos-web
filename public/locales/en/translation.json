@@ -963,7 +963,25 @@
     "priceEnterprise": "Custom pricing"
   },
   "fuelReview": {
-    "pageTitle": "Unmatched plates",
+    "pageTitle": "Review",
+    "tabs": {
+      "unmatched": "Unmatched plates",
+      "duplicates": "Possible duplicates",
+      "dismissed": "Dismissed"
+    },
+    "dismissed": {
+      "empty": "You haven't dismissed any entries yet.",
+      "loadError": "Failed to load dismissed entries.",
+      "colPlate": "Plate",
+      "colDate": "Date",
+      "colLiters": "Liters",
+      "colPrice": "Amount",
+      "colStation": "Station",
+      "undo": "Undo",
+      "undoing": "Undoing…",
+      "undoneToast": "Entry moved back to unmatched.",
+      "undoErrorDefault": "Undo failed."
+    },
     "nav": {
       "imports": "Import",
       "formats": "Formats",

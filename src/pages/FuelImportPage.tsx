@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { toast } from 'sonner';
-import { Upload, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
+import { Upload, CheckCircle2, XCircle, Sparkles, ChevronRight } from 'lucide-react';
 import { fuelFormatApi, fuelImportApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { FileInput } from '../components/common/FormField';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import { setPendingSample } from '../state/pendingSampleFile';
+import { formatDateTime } from '../utils/format';
 import type {
   DraftPreview,
+  FuelImportBatchDto,
   FuelImportFormatDto,
   PreviewRow,
 } from '../types/fuel';
@@ -50,6 +52,7 @@ const FuelImportPage = () => {
   const [preview, setPreview] = useState<DraftPreview | null>(null);
   const [loading, setLoading] = useState(false);
   const [committing, setCommitting] = useState(false);
+  const [batches, setBatches] = useState<FuelImportBatchDto[] | null>(null);
 
   useEffect(() => {
     if (!fleetId) return;
@@ -66,6 +69,19 @@ const FuelImportPage = () => {
       }
     })();
   }, [fleetId]);
+
+  // Batch history — last 20, shown below the upload form. Reloaded after a
+  // commit so the just-created batch shows up without a page refresh.
+  const loadBatches = async () => {
+    if (!fleetId) return;
+    try {
+      const page = await fuelImportApi.listBatches(fleetId, 0, 20);
+      setBatches(page.content);
+    } catch {
+      // best-effort — the history card just won't render if this fails
+    }
+  };
+  useEffect(() => { void loadBatches(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [fleetId]);
 
   const runPreview = async () => {
     if (!fleetId) return;
@@ -90,6 +106,7 @@ const FuelImportPage = () => {
       setCommitting(true);
       const batch = await fuelImportApi.commit(fleetId, preview.draftId, []);
       toast.success('İçe aktarma tamamlandı');
+      void loadBatches();
       navigate(`/manager/fuel-imports/${batch.id}`);
     } catch (err: any) {
       toast.error(err.message ?? 'Commit başarısız');
@@ -239,7 +256,68 @@ const FuelImportPage = () => {
           </div>
         </>
       )}
+
+      {/* Batch history — hidden while previewing so the page doesn't become a
+          two-workflow soup. Only shown when there's no active preview. */}
+      {!preview && batches && batches.length > 0 && (
+        <BatchHistoryCard batches={batches} />
+      )}
     </div>
+  );
+};
+
+interface BatchHistoryCardProps {
+  batches: FuelImportBatchDto[];
+}
+
+/** "Son içe aktarmalar" — the manager's bridge back to batches they
+ *  committed earlier but didn't finish reviewing. Without this card the
+ *  import surface had no way to surface prior work. */
+const BatchHistoryCard = ({ batches }: BatchHistoryCardProps) => {
+  const statusTone = (batch: FuelImportBatchDto) => {
+    const unmatched = batch.rowCountUnmatched ?? 0;
+    const error = batch.rowCountError ?? 0;
+    if (error > 0) return 'bg-red-50 text-red-700 border-red-200';
+    if (unmatched > 0) return 'bg-amber-50 text-amber-700 border-amber-200';
+    return 'bg-green-50 text-green-700 border-green-200';
+  };
+  const statusLabel = (batch: FuelImportBatchDto) => {
+    const imported = batch.rowCountImported ?? 0;
+    const unmatched = batch.rowCountUnmatched ?? 0;
+    const error = batch.rowCountError ?? 0;
+    if (error > 0) return `${error} hata`;
+    if (unmatched > 0) return `${unmatched} eşleşmedi`;
+    return `${imported} içe aktarıldı`;
+  };
+
+  return (
+    <section>
+      <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">
+        Son içe aktarmalar
+      </h2>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100">
+        {batches.map((b) => (
+          <Link
+            key={b.id}
+            to={`/manager/fuel-imports/${b.id}`}
+            className="flex items-center gap-4 px-4 py-3 hover:bg-gray-50 transition-colors"
+          >
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">{b.fileName}</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {b.provider} · {formatDateTime(b.uploadedAt)}
+              </p>
+            </div>
+            <span
+              className={`inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold border flex-shrink-0 ${statusTone(b)}`}
+            >
+              {statusLabel(b)}
+            </span>
+            <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 };
 
