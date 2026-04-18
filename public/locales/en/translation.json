@@ -431,7 +431,8 @@
     "title": "Settings",
     "fleetInfo": "Fleet Info",
     "currency": "Currency",
-    "appInfo": "App Info"
+    "appInfo": "App Info",
+    "myPreferences": "My preferences"
   },
   "format": {
     "justNow": "just now",

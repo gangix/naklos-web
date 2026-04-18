@@ -429,7 +429,8 @@
     "title": "Ayarlar",
     "fleetInfo": "Filo Bilgileri",
     "currency": "Para Birimi",
-    "appInfo": "Uygulama Bilgileri"
+    "appInfo": "Uygulama Bilgileri",
+    "myPreferences": "Tercihlerim"
   },
   "format": {
     "justNow": "az önce",

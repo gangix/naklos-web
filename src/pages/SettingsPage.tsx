@@ -245,27 +245,16 @@ const SettingsPage = () => {
                 placeholder={t('fleetSetup.regionPlaceholder')}
               />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select
-                label={t('morePage.currency')}
-                value={fleetCurrency}
-                onChange={(e) => setFleetCurrency(e.target.value)}
-              >
-                <option value="TRY">TRY (₺)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="USD">USD ($)</option>
-                <option value="GBP">GBP (£)</option>
-              </Select>
-              <Select
-                label={t('morePage.language')}
-                value={i18n.language}
-                onChange={(e) => handleLanguageChange(e.target.value)}
-              >
-                <option value="tr">Türkçe</option>
-                <option value="en">English</option>
-                <option value="de">Deutsch</option>
-              </Select>
-            </div>
+            <Select
+              label={t('morePage.currency')}
+              value={fleetCurrency}
+              onChange={(e) => setFleetCurrency(e.target.value)}
+            >
+              <option value="TRY">TRY (₺)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="USD">USD ($)</option>
+              <option value="GBP">GBP (£)</option>
+            </Select>
             <div className="pt-2">
               <button
                 onClick={handleFleetSave}
@@ -278,6 +267,24 @@ const SettingsPage = () => {
           </div>
         </div>
       )}
+
+      {/* My preferences — per-user, not fleet-scoped */}
+      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+          <h2 className="font-bold text-gray-900">{t('settings.myPreferences')}</h2>
+        </div>
+        <div className="p-5">
+          <Select
+            label={t('morePage.language')}
+            value={i18n.language}
+            onChange={(e) => handleLanguageChange(e.target.value)}
+          >
+            <option value="tr">Türkçe</option>
+            <option value="en">English</option>
+            <option value="de">Deutsch</option>
+          </Select>
+        </div>
+      </div>
 
       {/* Developer Login Panel — only in development */}
       {showDriverList && import.meta.env.DEV && (
