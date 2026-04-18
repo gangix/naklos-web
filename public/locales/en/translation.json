@@ -226,7 +226,8 @@
     "irreversible": "This action cannot be undone."
   },
   "documentCard": {
-    "manageBtn": "Manage document"
+    "manageBtn": "Manage document",
+    "uploadBtn": "Upload document"
   },
   "document": {
     "title": "Documents",

@@ -247,7 +247,7 @@ const DriverProfilePage = () => {
       {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> Geliştirici Girişi</h2>
+            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> {t('driverProfile.devLogin')}</h2>
             <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
           </div>
 
@@ -316,7 +316,7 @@ const DriverProfilePage = () => {
               onClick={startEditing}
               className="text-sm text-primary-600 font-medium"
             >
-              Düzenle
+              {t('common.edit')}
             </button>
           )}
         </div>
@@ -378,7 +378,7 @@ const DriverProfilePage = () => {
                 onClick={() => setIsEditing(false)}
                 className="flex-1 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
               >
-                İptal
+                {t('common.cancel')}
               </button>
             </div>
           )}
@@ -418,7 +418,7 @@ const DriverProfilePage = () => {
               onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
               className="text-sm text-primary-600 font-medium"
             >
-              Güncelle
+              {t('documentCard.manageBtn')}
             </button>
           </div>
           <div className="space-y-2">
@@ -445,7 +445,7 @@ const DriverProfilePage = () => {
                   onClick={() => handleDocumentUpdate('src', srcCert?.expiryDate || null)}
                   className="text-sm text-primary-600 font-medium"
                 >
-                  {srcCert ? t('driverProfile.update') : t('driverProfile.upload')}
+                  {srcCert ? t('documentCard.manageBtn') : t('documentCard.uploadBtn')}
                 </button>
               </div>
               {srcCert ? (
@@ -478,7 +478,7 @@ const DriverProfilePage = () => {
                   onClick={() => handleDocumentUpdate('cpc', cpcCert?.expiryDate || null)}
                   className="text-sm text-primary-600 font-medium"
                 >
-                  {cpcCert ? t('driverProfile.update') : t('driverProfile.upload')}
+                  {cpcCert ? t('documentCard.manageBtn') : t('documentCard.uploadBtn')}
                 </button>
               </div>
               {cpcCert ? (

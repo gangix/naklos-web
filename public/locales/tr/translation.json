@@ -224,7 +224,8 @@
     "irreversible": "Bu işlem geri alınamaz."
   },
   "documentCard": {
-    "manageBtn": "Belgeyi yönet"
+    "manageBtn": "Belgeyi yönet",
+    "uploadBtn": "Belge yükle"
   },
   "document": {
     "title": "Belgeler",

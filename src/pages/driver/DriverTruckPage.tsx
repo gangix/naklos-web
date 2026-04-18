@@ -121,7 +121,7 @@ const DriverTruckPage = () => {
           </div>
           <div>
             <p className="text-xs text-gray-600 mb-1">{t('truck.type')}</p>
-            <p className="text-sm font-medium text-gray-900">{assignedTruck.type}</p>
+            <p className="text-sm font-medium text-gray-900">{t(`truckType.${assignedTruck.type}`, { defaultValue: assignedTruck.type })}</p>
           </div>
         </div>
       </div>
@@ -239,7 +239,7 @@ const DriverTruckPage = () => {
               onClick={() => handleDocumentUpdate('compulsory-insurance', assignedTruck.compulsoryInsuranceExpiry)}
               className="text-sm text-primary-600 font-medium"
             >
-              {assignedTruck.compulsoryInsuranceExpiry ? t('driverTruck.update') : t('driverTruck.upload')}
+              {assignedTruck.compulsoryInsuranceExpiry ? t('documentCard.manageBtn') : t('documentCard.uploadBtn')}
             </button>
           </div>
           <ExpiryBadge label={t('truck.expiryDate')} date={assignedTruck.compulsoryInsuranceExpiry} />
@@ -252,7 +252,7 @@ const DriverTruckPage = () => {
               onClick={() => handleDocumentUpdate('comprehensive-insurance', assignedTruck.comprehensiveInsuranceExpiry)}
               className="text-sm text-primary-600 font-medium"
             >
-              {assignedTruck.comprehensiveInsuranceExpiry ? t('driverTruck.update') : t('driverTruck.upload')}
+              {assignedTruck.comprehensiveInsuranceExpiry ? t('documentCard.manageBtn') : t('documentCard.uploadBtn')}
             </button>
           </div>
           <ExpiryBadge label={t('truck.expiryDate')} date={assignedTruck.comprehensiveInsuranceExpiry} />
@@ -265,7 +265,7 @@ const DriverTruckPage = () => {
               onClick={() => handleDocumentUpdate('inspection', assignedTruck.inspectionExpiry)}
               className="text-sm text-primary-600 font-medium"
             >
-              {assignedTruck.inspectionExpiry ? t('driverTruck.update') : t('driverTruck.upload')}
+              {assignedTruck.inspectionExpiry ? t('documentCard.manageBtn') : t('documentCard.uploadBtn')}
             </button>
           </div>
           <ExpiryBadge label={t('truck.expiryDate')} date={assignedTruck.inspectionExpiry} />

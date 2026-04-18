@@ -226,7 +226,8 @@
     "irreversible": "Diese Aktion kann nicht rückgängig gemacht werden."
   },
   "documentCard": {
-    "manageBtn": "Dokument verwalten"
+    "manageBtn": "Dokument verwalten",
+    "uploadBtn": "Dokument hochladen"
   },
   "document": {
     "title": "Dokumente",
