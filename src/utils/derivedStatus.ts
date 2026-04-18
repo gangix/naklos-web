@@ -25,10 +25,17 @@ const isExpiredOrMissing = (dateStr: string | null | undefined): boolean => {
   return new Date(dateStr) < today();
 };
 
+/**
+ * MISSING_DOCS = strictly "can't legally operate" — compulsory traffic
+ * insurance + inspection for trucks, license + SRC for commercial-freight
+ * drivers. Comprehensive insurance (kasko) is optional financial coverage;
+ * CPC is optional (EU international only). These must stay aligned with
+ * `computeTruckWarnings` / `computeDriverWarnings` — the filter chip, row
+ * badge, and attention row all need to agree on what counts as "missing".
+ */
 export function deriveTruckStatus(truck: Truck): DerivedStatus {
   if (
     isExpiredOrMissing(truck.compulsoryInsuranceExpiry) ||
-    isExpiredOrMissing(truck.comprehensiveInsuranceExpiry) ||
     isExpiredOrMissing(truck.inspectionExpiry)
   ) {
     return 'MISSING_DOCS';
@@ -39,9 +46,7 @@ export function deriveTruckStatus(truck: Truck): DerivedStatus {
 export function deriveDriverStatus(driver: Driver): DerivedStatus {
   if (isExpiredOrMissing(driver.licenseExpiryDate)) return 'MISSING_DOCS';
   const src = driver.certificates?.find((c) => c.type === 'SRC');
-  const cpc = driver.certificates?.find((c) => c.type === 'CPC');
   if (!src || isExpiredOrMissing(src.expiryDate)) return 'MISSING_DOCS';
-  if (!cpc || isExpiredOrMissing(cpc.expiryDate)) return 'MISSING_DOCS';
   return driver.assignedTruckId ? 'ACTIVE' : 'READY';
 }
 
