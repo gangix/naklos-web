@@ -9,14 +9,14 @@ import { driverApi } from '../../services/api';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
 import EntityWarningsCard from '../../components/common/EntityWarningsCard';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
-import { TextInput, Select } from '../../components/common/FormField';
+import { TextInput } from '../../components/common/FormField';
 import { formatDate } from '../../utils/format';
 import { computeDriverWarnings } from '../../utils/driverWarnings';
 import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
-  const { t, i18n } = useTranslation();
-  const { user, loginAsDriver, loginAsManager, logout } = useAuth();
+  const { t } = useTranslation();
+  const { user, loginAsDriver, loginAsManager } = useAuth();
   const { fleetId } = useFleet();
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
@@ -101,16 +101,6 @@ const DriverProfilePage = () => {
     loginAsManager();
     setShowDriverList(false);
     toast.success('Fleet Manager');
-  };
-
-  const handleLanguageChange = async (locale: string) => {
-    try {
-      await driverApi.updateLocale(locale);
-      i18n.changeLanguage(locale);
-      toast.success(t('toast.success.languageUpdated'));
-    } catch {
-      toast.error(t('toast.error.generic'));
-    }
   };
 
   if (loading) {
@@ -207,42 +197,22 @@ const DriverProfilePage = () => {
 
   return (
     <div className="p-4 pb-20">
-      {/* Header with User Switcher */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{t('profile.title')}</h1>
-            <p className="text-sm text-gray-600 mt-1">
-              {driver.firstName} {driver.lastName}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            {import.meta.env.DEV && (
-              <button
-                onClick={() => setShowDriverList(!showDriverList)}
-                className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                {showDriverList ? t('driverProfile.closePanel') : t('driverProfile.switchUser')}
-              </button>
-            )}
-            <button
-              onClick={logout}
-              className="px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors"
-            >
-              {t('common.logout')}
-            </button>
-          </div>
+      {/* Page header — identity + logout + language live in DriverTopBar */}
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{t('profile.title')}</h1>
+          <p className="text-sm text-gray-600 mt-1">
+            {driver.firstName} {driver.lastName}
+          </p>
         </div>
-        <div className="mt-3">
-          <Select
-            value={i18n.language}
-            onChange={(e) => handleLanguageChange(e.target.value)}
+        {import.meta.env.DEV && (
+          <button
+            onClick={() => setShowDriverList(!showDriverList)}
+            className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
           >
-            <option value="tr">Türkçe</option>
-            <option value="en">English</option>
-            <option value="de">Deutsch</option>
-          </Select>
-        </div>
+            {showDriverList ? t('driverProfile.closePanel') : t('driverProfile.switchUser')}
+          </button>
+        )}
       </div>
 
       {/* Developer Login Panel — only in development */}
