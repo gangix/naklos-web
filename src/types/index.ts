@@ -17,6 +17,9 @@ export interface Fleet {
   city: string;
   phone: string;
   email: string;
+  defaultCurrency?: string;
+  plan?: string;
+  address?: unknown;
 }
 
 export interface Truck {

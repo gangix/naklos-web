@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useFleet } from '../contexts/FleetContext';
 import { driverApi, fleetApi } from '../services/api';
 import { Select, TextInput } from '../components/common/FormField';
+import type { Fleet } from '../types';
 
 const SettingsPage = () => {
   const { t, i18n } = useTranslation();
@@ -16,7 +17,7 @@ const SettingsPage = () => {
   const [showDriverList, setShowDriverList] = useState(false);
 
   // Fleet settings state
-  const [fleetData, setFleetData] = useState<any>(null);
+  const [fleetData, setFleetData] = useState<Fleet | null>(null);
   const [fleetName, setFleetName] = useState('');
   const [fleetEmail, setFleetEmail] = useState('');
   const [fleetPhone, setFleetPhone] = useState('');
@@ -50,7 +51,7 @@ const SettingsPage = () => {
       setFleetName(data.name || '');
       setFleetEmail(data.email || '');
       setFleetPhone(data.phone || '');
-      setFleetCurrency((data as { defaultCurrency?: string }).defaultCurrency || 'TRY');
+      setFleetCurrency(data.defaultCurrency || 'TRY');
     } catch (error) {
       console.error('Error loading fleet:', error);
     }
@@ -66,7 +67,7 @@ const SettingsPage = () => {
         email: fleetEmail,
         phone: fleetPhone,
       });
-      if (fleetCurrency !== fleetData.currency) {
+      if (fleetCurrency !== fleetData.defaultCurrency) {
         await fleetApi.changeCurrency(fleetData.id, fleetCurrency);
       }
       await loadFleet();
