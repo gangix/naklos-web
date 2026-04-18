@@ -567,7 +567,7 @@
   "truckDetail": {
     "tabs": {
       "genel": "Allgemein",
-      "yakit": "Kraftstoff",
+      "yakit": "Kraftstoff-Einträge",
       "belgeler": "Dokumente"
     },
     "loadError": "Fehler beim Laden des Fahrzeugs",
@@ -1100,6 +1100,11 @@
       "totalLiters": "Gesamtliter",
       "totalPrice": "Gesamtkosten",
       "fillCount": "Tankvorgänge",
+      "avgConsumption": "Ø Verbrauch",
+      "avgConsumptionUnit": "L/100km",
+      "avgConsumptionDerived": "Automatisch berechnet",
+      "avgConsumptionManual": "Manuell gesetzt",
+      "avgConsumptionEmpty": "Noch nicht genug Daten",
       "last30Days": "Letzte 30 Tage"
     },
     "add": {

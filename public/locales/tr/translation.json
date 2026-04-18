@@ -567,7 +567,7 @@
   "truckDetail": {
     "tabs": {
       "genel": "Genel",
-      "yakit": "Yakıt",
+      "yakit": "Yakıt Kayıtları",
       "belgeler": "Belgeler"
     },
     "loadError": "Araç yüklenirken hata oluştu",
@@ -1099,6 +1099,11 @@
       "totalLiters": "Toplam litre",
       "totalPrice": "Toplam tutar",
       "fillCount": "Dolum sayısı",
+      "avgConsumption": "Ortalama tüketim",
+      "avgConsumptionUnit": "L/100km",
+      "avgConsumptionDerived": "Otomatik hesaplanan",
+      "avgConsumptionManual": "Elle girilmiş",
+      "avgConsumptionEmpty": "Yeterli veri yok",
       "last30Days": "Son 30 gün"
     },
     "add": {

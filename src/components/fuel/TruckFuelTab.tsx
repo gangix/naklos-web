@@ -2,8 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { fuelEntryApi } from '../../services/fuelEntryApi';
-import { formatDate } from '../../utils/format';
+import { fuelAnomalyApi } from '../../services/fuelAnomalyApi';
+import { formatDate, formatDecimal } from '../../utils/format';
 import type { TruckFuelEntryDto, TruckFuelSummary } from '../../types/fuel';
+import type { TruckBaseline } from '../../types/fuelAnomaly';
 import FuelEntryRow from './FuelEntryRow';
 import FuelEntryFormModal from './FuelEntryFormModal';
 import ConfirmActionModal from './ConfirmActionModal';
@@ -21,6 +23,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
 
   const [summary, setSummary] = useState<TruckFuelSummary | null>(null);
   const [entries, setEntries] = useState<TruckFuelEntryDto[]>([]);
+  const [baseline, setBaseline] = useState<TruckBaseline | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [formModal, setFormModal] = useState<{ mode: 'add' | 'edit'; initial?: TruckFuelEntryDto } | null>(null);
@@ -33,12 +36,16 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
   const fetchData = useCallback(async () => {
     setLoadError(false);
     try {
-      const [s, e] = await Promise.all([
+      // Baseline is best-effort — the endpoint 404s when the anomaly feature
+      // flag is off, and we don't want that to kill the whole tab.
+      const [s, e, b] = await Promise.all([
         fuelEntryApi.summaryForTruck(fleetId, truckId),
         fuelEntryApi.listForTruck(fleetId, truckId),
+        fuelAnomalyApi.getBaseline(fleetId, truckId).catch(() => null),
       ]);
       setSummary(s);
       setEntries(e);
+      setBaseline(b);
     } catch {
       setLoadError(true);
     } finally {
@@ -115,6 +122,12 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
   const totalPrice = summary ? parseFloat(summary.totalPrice) : 0;
   const fillCount = summary?.fillCount ?? 0;
 
+  // Consumption: manual wins (fleet manager's explicit baseline), else auto-
+  // computed from recent entries. Null on both = not enough history yet.
+  const avgConsumption = baseline?.manual ?? baseline?.derived ?? null;
+  const avgConsumptionSource: 'manual' | 'derived' | null =
+    baseline?.manual != null ? 'manual' : baseline?.derived != null ? 'derived' : null;
+
   return (
     <div className="space-y-4">
       {/* Summary card */}
@@ -131,7 +144,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Toplam litre */}
           <div>
             <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.totalLiters')}</div>
@@ -153,6 +166,23 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
             <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.fillCount')}</div>
             <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
               {fillCount}
+            </div>
+          </div>
+
+          {/* Ortalama tüketim — from anomaly-engine baseline (best-effort) */}
+          <div>
+            <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.avgConsumption')}</div>
+            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+              {avgConsumption !== null
+                ? `${formatDecimal(avgConsumption)} ${t('fuelEntry.summary.avgConsumptionUnit')}`
+                : '—'}
+            </div>
+            <div className="text-[11px] text-gray-400 mt-0.5">
+              {avgConsumptionSource === 'manual'
+                ? t('fuelEntry.summary.avgConsumptionManual')
+                : avgConsumptionSource === 'derived'
+                  ? t('fuelEntry.summary.avgConsumptionDerived')
+                  : t('fuelEntry.summary.avgConsumptionEmpty')}
             </div>
           </div>
         </div>

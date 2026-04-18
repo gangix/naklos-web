@@ -567,7 +567,7 @@
   "truckDetail": {
     "tabs": {
       "genel": "General",
-      "yakit": "Fuel",
+      "yakit": "Fuel entries",
       "belgeler": "Documents"
     },
     "loadError": "An error occurred while loading truck",
@@ -1100,6 +1100,11 @@
       "totalLiters": "Total liters",
       "totalPrice": "Total cost",
       "fillCount": "Fill-ups",
+      "avgConsumption": "Avg. consumption",
+      "avgConsumptionUnit": "L/100km",
+      "avgConsumptionDerived": "Auto-computed",
+      "avgConsumptionManual": "Manually set",
+      "avgConsumptionEmpty": "Not enough data",
       "last30Days": "Last 30 days"
     },
     "add": {
