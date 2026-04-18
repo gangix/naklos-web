@@ -1407,7 +1407,7 @@
         "title": "Real issue — mark",
         "hint": {
           "dataBroken": "Stays out of analysis permanently.",
-          "behaviour": "Warning resolves; refuel stays counted as valid."
+          "behaviour": "Warning closes; no data change."
         }
       },
       "dismissBtn": {

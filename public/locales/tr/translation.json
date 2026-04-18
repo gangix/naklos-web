@@ -1406,7 +1406,7 @@
         "title": "Gerçek sorun — işaretle",
         "hint": {
           "dataBroken": "Kalıcı olarak analiz dışında tutulur.",
-          "behaviour": "Uyarı kapatılır; dolum geçerli sayılır."
+          "behaviour": "Uyarı kapatılır; veri değişmez."
         }
       },
       "dismissBtn": {
