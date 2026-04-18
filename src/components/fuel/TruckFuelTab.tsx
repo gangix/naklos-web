@@ -98,6 +98,33 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
     }
   };
 
+  // 6-month rollup + derived values — computed once per entries change.
+  // IMPORTANT: must live ABOVE the early returns below so the hook count
+  // stays constant across loading → ready transitions (Rules of Hooks).
+  const derived = useMemo(() => {
+    const rollup = monthlyRollup(entries, 6);
+    const currentMonth = rollup[rollup.length - 1];
+    const previousMonth = rollup[rollup.length - 2];
+    const hasAnyFuelData = rollup.some((m) => m.totalLiters > 0);
+    return {
+      rollup,
+      currentMonth,
+      previousMonth,
+      hasAnyFuelData,
+      lastEntry: entries[0] ?? null,
+      monthVsPrevPct:
+        previousMonth && previousMonth.totalPrice > 0 && currentMonth
+          ? Math.round(
+              ((currentMonth.totalPrice - previousMonth.totalPrice) /
+                previousMonth.totalPrice) *
+                100,
+            )
+          : null,
+      maxMonthPrice: Math.max(...rollup.map((m) => m.totalPrice), 1),
+      trendTotal: rollup.reduce((s, m) => s + m.totalPrice, 0),
+    };
+  }, [entries]);
+
   // --- Loading state ---
   if (loading) {
     return (
@@ -135,33 +162,6 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
     actualConsumption,
     targetConsumption,
   );
-
-  // 6-month rollup plus all the derived values the view pulls from it —
-  // folded into one memo so nothing recomputes on unrelated parent re-renders
-  // (modal open/close, highlight state, toast dispatch).
-  const derived = useMemo(() => {
-    const rollup = monthlyRollup(entries, 6);
-    const currentMonth = rollup[rollup.length - 1];
-    const previousMonth = rollup[rollup.length - 2];
-    const hasAnyFuelData = rollup.some((m) => m.totalLiters > 0);
-    return {
-      rollup,
-      currentMonth,
-      previousMonth,
-      hasAnyFuelData,
-      lastEntry: entries[0] ?? null,
-      monthVsPrevPct:
-        previousMonth && previousMonth.totalPrice > 0 && currentMonth
-          ? Math.round(
-              ((currentMonth.totalPrice - previousMonth.totalPrice) /
-                previousMonth.totalPrice) *
-                100,
-            )
-          : null,
-      maxMonthPrice: Math.max(...rollup.map((m) => m.totalPrice), 1),
-      trendTotal: rollup.reduce((s, m) => s + m.totalPrice, 0),
-    };
-  }, [entries]);
   const {
     rollup, currentMonth, previousMonth, lastEntry,
     monthVsPrevPct, maxMonthPrice, hasAnyFuelData,
