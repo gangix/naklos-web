@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { fuelReviewApi } from '../../services/api';
+import { useFuelCounts } from '../../contexts/FuelCountsContext';
 import type { UnmatchedPlateGroup } from '../../types/fuel';
 import UnmatchedPlateRow from './UnmatchedPlateRow';
 
@@ -8,6 +9,7 @@ interface Props { fleetId: string; batchId: string | null; }
 
 export default function UnmatchedPlateList({ fleetId, batchId }: Props) {
   const { t } = useTranslation();
+  const { refresh: refreshFuelCounts } = useFuelCounts();
   const [groups, setGroups] = useState<UnmatchedPlateGroup[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +18,10 @@ export default function UnmatchedPlateList({ fleetId, batchId }: Props) {
     try {
       const data = await fuelReviewApi.listUnmatched(fleetId, batchId ?? undefined);
       setGroups(data);
+      // Every resolution (createTruck / alias / subcontractor / dismiss) also
+      // shrinks the top-nav unmatched-count badge. Refresh here so the badge
+      // and the list move together instead of the user having to reload.
+      refreshFuelCounts();
     } finally {
       setLoading(false);
     }

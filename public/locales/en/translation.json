@@ -259,10 +259,13 @@
     "licenseExpiring_one": "Driver's license expires in {{count}} day ({{driverName}})",
     "licenseExpiring_other": "Driver's license expires in {{count}} days ({{driverName}})",
     "srcMissing": "SRC certificate missing ({{driverName}})",
+    "srcExpired": "SRC certificate expired ({{driverName}})",
+    "srcExpiring_one": "SRC certificate expires in {{count}} day ({{driverName}})",
+    "srcExpiring_other": "SRC certificate expires in {{count}} days ({{driverName}})",
     "cpcMissing": "CPC certificate missing ({{driverName}})",
-    "certExpired": "{{certName}} expired ({{driverName}})",
-    "certExpiring_one": "{{certName}} expires in {{count}} day ({{driverName}})",
-    "certExpiring_other": "{{certName}} expires in {{count}} days ({{driverName}})"
+    "cpcExpired": "CPC certificate expired ({{driverName}})",
+    "cpcExpiring_one": "CPC certificate expires in {{count}} day ({{driverName}})",
+    "cpcExpiring_other": "CPC certificate expires in {{count}} days ({{driverName}})"
   },
   "approval": {
     "title": "Pending Approvals",
@@ -536,6 +539,7 @@
     "placeholderCountry": "e.g. Türkiye"
   },
   "driverDetail": {
+    "warnings": { "heading": "Warnings" },
     "loadError": "An error occurred while loading driver",
     "notFound": "Driver not found",
     "goBack": "Go Back",

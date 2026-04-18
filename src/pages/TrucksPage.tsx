@@ -2,13 +2,14 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, MapPin, Truck as TruckIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useTrucks } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
+import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useData } from '../contexts/DataContext';
 import { formatDate, formatDecimal, formatRelativeTime } from '../utils/format';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import type { DerivedStatus } from '../utils/derivedStatus';
 import { computeTruckWarnings } from '../utils/truckWarnings';
+import { todayMidnightMs } from '../utils/expiry';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import AddTruckModal from '../components/common/AddTruckModal';
 import BulkImportModal from '../components/common/BulkImportModal';
@@ -17,8 +18,8 @@ import type { DocumentSubmission } from '../types';
 
 const TrucksPage = () => {
   const { t } = useTranslation();
-  const { data: trucks, loading: trucksLoading, refresh } = useTrucks();
   const { plan } = useFleet();
+  const { trucks, loading: trucksLoading, refresh: refreshRoster } = useFleetRoster();
   const { documentSubmissions } = useData();
   const maxTrucks = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
   const [searchParams] = useSearchParams();
@@ -34,7 +35,7 @@ const TrucksPage = () => {
   // Expiry warnings keyed by truckId. Shares the computation with
   // TruckDetailPage's Genel tab so both surfaces word warnings identically.
   const warningsByTruck = useMemo(() => {
-    const todayMs = Date.now();
+    const todayMs = todayMidnightMs();
     const map = new Map<string, ReturnType<typeof computeTruckWarnings>>();
     for (const t of trucks) map.set(t.id, computeTruckWarnings(t, todayMs));
     return map;
@@ -550,15 +551,13 @@ const TrucksPage = () => {
       <AddTruckModal
         isOpen={addTruckModalOpen}
         onClose={() => setAddTruckModalOpen(false)}
-        onSuccess={() => {
-          refresh();
-        }}
+        onSuccess={refreshRoster}
       />
 
       <BulkImportModal
         isOpen={bulkImportOpen}
         onClose={() => setBulkImportOpen(false)}
-        onSuccess={refresh}
+        onSuccess={refreshRoster}
         entityType="truck"
       />
 

@@ -259,10 +259,13 @@
     "licenseExpiring_one": "Ehliyet {{count}} gün içinde sona erecek ({{driverName}})",
     "licenseExpiring_other": "Ehliyet {{count}} gün içinde sona erecek ({{driverName}})",
     "srcMissing": "SRC Belgesi eksik ({{driverName}})",
+    "srcExpired": "SRC Belgesi süresi dolmuş ({{driverName}})",
+    "srcExpiring_one": "SRC Belgesi {{count}} gün içinde sona erecek ({{driverName}})",
+    "srcExpiring_other": "SRC Belgesi {{count}} gün içinde sona erecek ({{driverName}})",
     "cpcMissing": "CPC Belgesi eksik ({{driverName}})",
-    "certExpired": "{{certName}} süresi dolmuş ({{driverName}})",
-    "certExpiring_one": "{{certName}} {{count}} gün içinde sona erecek ({{driverName}})",
-    "certExpiring_other": "{{certName}} {{count}} gün içinde sona erecek ({{driverName}})"
+    "cpcExpired": "CPC Belgesi süresi dolmuş ({{driverName}})",
+    "cpcExpiring_one": "CPC Belgesi {{count}} gün içinde sona erecek ({{driverName}})",
+    "cpcExpiring_other": "CPC Belgesi {{count}} gün içinde sona erecek ({{driverName}})"
   },
   "approval": {
     "title": "Onay Bekleyenler",
@@ -536,6 +539,7 @@
     "placeholderCountry": "Örn: Türkiye"
   },
   "driverDetail": {
+    "warnings": { "heading": "Uyarılar" },
     "loadError": "Sürücü yüklenirken hata oluştu",
     "notFound": "Sürücü bulunamadı",
     "goBack": "Geri Dön",

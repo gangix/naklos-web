@@ -259,10 +259,13 @@
     "licenseExpiring_one": "Führerschein läuft in {{count}} Tag ab ({{driverName}})",
     "licenseExpiring_other": "Führerschein läuft in {{count}} Tagen ab ({{driverName}})",
     "srcMissing": "SRC-Bescheinigung fehlt ({{driverName}})",
+    "srcExpired": "SRC-Bescheinigung abgelaufen ({{driverName}})",
+    "srcExpiring_one": "SRC-Bescheinigung läuft in {{count}} Tag ab ({{driverName}})",
+    "srcExpiring_other": "SRC-Bescheinigung läuft in {{count}} Tagen ab ({{driverName}})",
     "cpcMissing": "CPC-Bescheinigung fehlt ({{driverName}})",
-    "certExpired": "{{certName}} abgelaufen ({{driverName}})",
-    "certExpiring_one": "{{certName}} läuft in {{count}} Tag ab ({{driverName}})",
-    "certExpiring_other": "{{certName}} läuft in {{count}} Tagen ab ({{driverName}})"
+    "cpcExpired": "CPC-Bescheinigung abgelaufen ({{driverName}})",
+    "cpcExpiring_one": "CPC-Bescheinigung läuft in {{count}} Tag ab ({{driverName}})",
+    "cpcExpiring_other": "CPC-Bescheinigung läuft in {{count}} Tagen ab ({{driverName}})"
   },
   "approval": {
     "title": "Ausstehende Genehmigungen",
@@ -536,6 +539,7 @@
     "placeholderCountry": "z. B. Türkei"
   },
   "driverDetail": {
+    "warnings": { "heading": "Warnungen" },
     "loadError": "Fehler beim Laden des Fahrers",
     "notFound": "Fahrer nicht gefunden",
     "goBack": "Zurück",

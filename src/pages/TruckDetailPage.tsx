@@ -1,22 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { AlertTriangle, Gauge, MapPin } from 'lucide-react';
-import { truckApi, driverApi } from '../services/api';
+import { Gauge, MapPin } from 'lucide-react';
+import { truckApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
+import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useTranslation } from 'react-i18next';
 import { formatDate, formatDecimal } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
+import EntityWarningsCard from '../components/common/EntityWarningsCard';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { efficiencyStatus } from '../utils/fuelStats';
-import { computeTruckWarnings, type TruckWarning } from '../utils/truckWarnings';
+import { computeTruckWarnings } from '../utils/truckWarnings';
 import TruckFuelTab from '../components/fuel/TruckFuelTab';
 import EfficiencyStatusPill from '../components/fuel/EfficiencyStatusPill';
 import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
-import type { DocumentCategory, Truck, Driver } from '../types';
+import type { DocumentCategory, Truck } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
 
 type Tab = 'genel' | 'yakit' | 'belgeler';
@@ -26,6 +28,7 @@ const TruckDetailPage = () => {
   const { truckId } = useParams<{ truckId: string }>();
   const navigate = useNavigate();
   const { fleetId, plan } = useFleet();
+  const { drivers, refresh: refreshRoster } = useFleetRoster();
   // Mirrors the ManagerTopNav gate — anomaly features are a paid-plan UX.
   // FREE users see the Yakıt tab with manual entry but not the overrides panel.
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
@@ -39,7 +42,6 @@ const TruckDetailPage = () => {
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
   const [showDriverSelect, setShowDriverSelect] = useState(false);
-  const [drivers, setDrivers] = useState<Driver[]>([]);
   const [assigningDriver, setAssigningDriver] = useState(false);
   const [confirmAction, setConfirmAction] = useState<'delete' | 'unassign' | null>(null);
 
@@ -71,21 +73,6 @@ const TruckDetailPage = () => {
     fetchTruck();
     fetchDocuments();
   }, [truckId]);
-
-  useEffect(() => {
-    if (!fleetId) return;
-
-    const fetchDrivers = async () => {
-      try {
-        const page = await driverApi.getByFleet(0, 1000);
-        setDrivers(page.content);
-      } catch (err) {
-        console.error('Error fetching drivers:', err);
-      }
-    };
-
-    fetchDrivers();
-  }, [fleetId]);
 
   const truckWarnings = truck ? computeTruckWarnings(truck) : [];
 
@@ -135,6 +122,7 @@ const TruckDetailPage = () => {
       const updatedTruck = await truckApi.assignDriver(truckId, driverId);
       setTruck(updatedTruck);
       setShowDriverSelect(false);
+      refreshRoster();
     } catch (err) {
       console.error('Error assigning driver:', err);
       toast.error(t('toast.error.assignDriver'));
@@ -150,6 +138,7 @@ const TruckDetailPage = () => {
       const updatedTruck = await truckApi.unassignDriver(truckId);
       setTruck(updatedTruck);
       setConfirmAction(null);
+      refreshRoster();
     } catch (err) {
       console.error('Error unassigning driver:', err);
       toast.error(t('toast.error.removeDriver'));
@@ -182,6 +171,7 @@ const TruckDetailPage = () => {
     // Refresh truck data
     const updatedTruck = await truckApi.getById(truckId);
     setTruck(updatedTruck);
+    refreshRoster();
   };
 
   const runDeleteTruck = async () => {
@@ -189,6 +179,7 @@ const TruckDetailPage = () => {
     try {
       await truckApi.delete(truckId);
       setConfirmAction(null);
+      refreshRoster();
       navigate('/manager/trucks');
     } catch (err) {
       console.error('Error deleting truck:', err);
@@ -324,9 +315,13 @@ const TruckDetailPage = () => {
           )}
 
           {truckWarnings.length > 0 && (
-            <TruckWarningsCard
+            <EntityWarningsCard
               warnings={truckWarnings}
-              onOpenBelgeler={() => setActiveTab('belgeler')}
+              heading={t('truckDetail.warnings.heading')}
+              action={{
+                label: t('truckDetail.warnings.goToDocs'),
+                onClick: () => setActiveTab('belgeler'),
+              }}
             />
           )}
 
@@ -597,47 +592,3 @@ const FuelEfficiencyCard = ({
   );
 };
 
-/** Lists the truck's expiring/missing documents. Same wording as the trucks
- *  list card — both surfaces share {@link computeTruckWarnings}. */
-const TruckWarningsCard = ({
-  warnings,
-  onOpenBelgeler,
-}: {
-  warnings: TruckWarning[];
-  onOpenBelgeler: () => void;
-}) => {
-  const { t } = useTranslation();
-  return (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-lg font-extrabold tracking-tight text-gray-900 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-red-500" />
-          {t('truckDetail.warnings.heading')}
-        </h2>
-        <button
-          onClick={onOpenBelgeler}
-          className="text-xs text-primary-600 font-medium hover:underline"
-        >
-          {t('truckDetail.warnings.goToDocs')}
-        </button>
-      </div>
-      <ul className="space-y-2">
-        {warnings.map((w) => (
-          <li
-            key={w.type}
-            className={`flex items-start gap-2 text-sm ${
-              w.severity === 'error' ? 'text-red-800' : 'text-amber-800'
-            }`}
-          >
-            <span
-              className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${
-                w.severity === 'error' ? 'bg-red-500' : 'bg-amber-500'
-              }`}
-            />
-            <span>{t(w.key, w.params)}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};

@@ -36,17 +36,31 @@ const severityRank: Record<Severity, number> = {
   INFO: 1,
 };
 
+/** Mirrors backend PlateNormalizer: strip non-alphanumeric, uppercase. Keeps
+ *  "34 ABC 123", "34-abc-123", and "34abc123" in the same bucket so formatting
+ *  noise in the receipt text doesn't fragment the unmatched group. */
+function normalizePlate(raw: string | null | undefined): string {
+  if (!raw) return '';
+  return raw.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+}
+
 function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Group[] {
-  const byTruck = new Map<string, AnomalyPendingItem[]>();
+  const byKey = new Map<string, AnomalyPendingItem[]>();
   for (const it of items) {
-    const key = it.truckId ?? UNASSIGNED_KEY;
-    const arr = byTruck.get(key) ?? [];
+    // Matched entries group by truckId. Unmatched split per *normalized* raw
+    // plate — otherwise 5 distinct unmatched plates collapse into one opaque
+    // "Tanımsız araç" bucket and the manager has to open each card to see
+    // which plate needs attention.
+    const key = it.truckId != null
+      ? it.truckId
+      : `${UNASSIGNED_KEY}:${normalizePlate(it.plate)}`;
+    const arr = byKey.get(key) ?? [];
     arr.push(it);
-    byTruck.set(key, arr);
+    byKey.set(key, arr);
   }
 
   const groups: Group[] = [];
-  for (const [key, arr] of byTruck.entries()) {
+  for (const [key, arr] of byKey.entries()) {
     arr.sort(
       (a, b) => new Date(b.detectedAt).getTime() - new Date(a.detectedAt).getTime(),
     );
@@ -59,6 +73,7 @@ function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Grou
         break;
       }
     }
+    const isUnassigned = arr[0].truckId == null;
     const firstPlate = arr.find((a) => a.plate)?.plate ?? null;
     const driverName = arr
       .map((a) =>
@@ -67,8 +82,8 @@ function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Grou
       .find((s) => s.length > 0) ?? null;
     groups.push({
       key,
-      plate: key === UNASSIGNED_KEY ? null : firstPlate,
-      subtitle: key === UNASSIGNED_KEY ? unassignedLabel : driverName,
+      plate: firstPlate,
+      subtitle: isUnassigned ? unassignedLabel : driverName,
       items: arr,
       counts,
       worst,
