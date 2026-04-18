@@ -448,7 +448,7 @@ const DriverDetailPage = () => {
             onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
             className="text-sm text-primary-600 font-medium"
           >
-            {t('common.update')}
+            {t('documentCard.manageBtn')}
           </button>
         </div>
         <div className="space-y-3 mb-3">

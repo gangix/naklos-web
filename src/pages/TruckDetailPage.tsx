@@ -402,7 +402,7 @@ const TruckDetailPage = () => {
                     onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
                     className="text-sm text-primary-600 font-medium"
                   >
-                    {t('common.update')}
+                    {t('documentCard.manageBtn')}
                   </button>
                 </div>
                 <ExpiryBadge
@@ -419,7 +419,7 @@ const TruckDetailPage = () => {
                     onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
                     className="text-sm text-primary-600 font-medium"
                   >
-                    {t('common.update')}
+                    {t('documentCard.manageBtn')}
                   </button>
                 </div>
                 <ExpiryBadge
@@ -436,7 +436,7 @@ const TruckDetailPage = () => {
                     onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
                     className="text-sm text-primary-600 font-medium"
                   >
-                    {t('common.update')}
+                    {t('documentCard.manageBtn')}
                   </button>
                 </div>
                 <ExpiryBadge

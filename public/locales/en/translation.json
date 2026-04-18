@@ -224,6 +224,9 @@
     "notFound": "Not found.",
     "irreversible": "This action cannot be undone."
   },
+  "documentCard": {
+    "manageBtn": "Manage document"
+  },
   "document": {
     "title": "Documents",
     "upload": "Upload Document",

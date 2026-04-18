@@ -224,6 +224,9 @@
     "notFound": "Nicht gefunden.",
     "irreversible": "Diese Aktion kann nicht rückgängig gemacht werden."
   },
+  "documentCard": {
+    "manageBtn": "Dokument verwalten"
+  },
   "document": {
     "title": "Dokumente",
     "upload": "Dokument hochladen",
