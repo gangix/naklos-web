@@ -76,6 +76,16 @@ const TruckDetailPage = () => {
 
   const truckWarnings = truck ? computeTruckWarnings(truck) : [];
 
+  // When a manager clicks through from a "needs attention" context, default to
+  // the Documents tab so they don't have to pivot after landing. Once the user
+  // actively switches tabs, stop overriding.
+  const [tabAutoPicked, setTabAutoPicked] = useState(false);
+  useEffect(() => {
+    if (!truck || tabAutoPicked) return;
+    setTabAutoPicked(true);
+    if (truckWarnings.length > 0) setActiveTab('belgeler');
+  }, [truck, tabAutoPicked, truckWarnings.length]);
+
   if (loading) {
     return (
       <div >

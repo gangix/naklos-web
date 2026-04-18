@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { AlertTriangle, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { formatDate } from '../../utils/format';
+import { daysUntil } from '../../utils/expiry';
 
 interface ExpiryBadgeProps {
   label: string;
@@ -28,10 +29,9 @@ const ExpiryBadge = ({ label, date, warningDays = 30 }: ExpiryBadgeProps) => {
     );
   }
 
-  const today = new Date();
-  const expiryDate = new Date(date);
-  const diffTime = expiryDate.getTime() - today.getTime();
-  const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  // Shared helper with dashboard/warnings — agree on midnight-normalized floor
+  // semantics (earlier the badge used ceil+now, off by one vs dashboard copy).
+  const daysRemaining = daysUntil(date) ?? 0;
 
   // Determine badge color and message
   let badgeColor = '';
