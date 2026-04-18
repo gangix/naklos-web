@@ -1,15 +1,17 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Truck, User, MapPin, MapPinOff } from 'lucide-react';
 import { useLocationSharing } from '../../contexts/LocationSharingContext';
 
 const DriverBottomNav = () => {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { enabled, sending, toggle } = useLocationSharing();
 
   const tabs = [
-    { id: 'truck', label: 'Aracım', icon: Truck, path: '/driver/truck' },
-    { id: 'profile', label: 'Profil', icon: User, path: '/driver/profile' },
+    { id: 'truck', label: t('profile.myTruck'), icon: Truck, path: '/driver/truck' },
+    { id: 'profile', label: t('profile.title'), icon: User, path: '/driver/profile' },
   ];
 
   const isActive = (path: string) => location.pathname.startsWith(path);
@@ -52,7 +54,7 @@ const DriverBottomNav = () => {
             )}
           </div>
           <span className="text-[10px] mt-1 font-medium">
-            {sending ? 'Gönderiliyor' : enabled ? 'Konum Açık' : 'Konum Kapalı'}
+            {sending ? t('location.sending') : enabled ? t('location.navOn') : t('location.navOff')}
           </span>
         </button>
       </div>

@@ -464,7 +464,10 @@
     "autoSharingOn": "Auto-sharing on",
     "off": "Off",
     "lastLocation": "Last location",
-    "enableHint": "You can enable location sharing from the bottom menu"
+    "enableHint": "You can enable location sharing from the bottom menu",
+    "navOn": "Location On",
+    "navOff": "Location Off",
+    "sending": "Sending"
   },
   "bulkImport": {
     "truckTitle": "Bulk Import Trucks",

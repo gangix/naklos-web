@@ -462,7 +462,10 @@
     "autoSharingOn": "Otomatik paylaşım açık",
     "off": "Kapalı",
     "lastLocation": "Son konum",
-    "enableHint": "Alt menüden konum paylaşımını açabilirsiniz"
+    "enableHint": "Alt menüden konum paylaşımını açabilirsiniz",
+    "navOn": "Konum Açık",
+    "navOff": "Konum Kapalı",
+    "sending": "Gönderiliyor"
   },
   "bulkImport": {
     "truckTitle": "Araçları Toplu İçe Aktar",

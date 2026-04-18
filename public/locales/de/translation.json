@@ -464,7 +464,10 @@
     "autoSharingOn": "Automatische Freigabe aktiv",
     "off": "Aus",
     "lastLocation": "Letzter Standort",
-    "enableHint": "Sie können die Standortfreigabe über das untere Menü aktivieren"
+    "enableHint": "Sie können die Standortfreigabe über das untere Menü aktivieren",
+    "navOn": "Standort an",
+    "navOff": "Standort aus",
+    "sending": "Wird gesendet"
   },
   "bulkImport": {
     "truckTitle": "Fahrzeuge massenimportieren",
