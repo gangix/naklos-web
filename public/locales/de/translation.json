@@ -1122,6 +1122,39 @@
       "avgConsumptionEmpty": "Noch nicht genug Daten",
       "last30Days": "Letzte 30 Tage"
     },
+    "efficiency": {
+      "actual": "Aktueller Verbrauch",
+      "actualSource": "Aus jüngsten Tankungen berechnet",
+      "target": "Zielwert",
+      "targetSource": "Manuell gesetzt · In den Einstellungen ändern",
+      "targetEmpty": "Noch kein Zielwert gesetzt",
+      "status": {
+        "normal": "Normal",
+        "attention": "Beachten",
+        "warning": "Hoher Verbrauch",
+        "noTarget": "Kein Zielwert gesetzt",
+        "deviationOver_one": "{{count}}% über Zielwert",
+        "deviationOver_other": "{{count}}% über Zielwert",
+        "deviationUnder_one": "{{count}}% unter Zielwert",
+        "deviationUnder_other": "{{count}}% unter Zielwert"
+      }
+    },
+    "thisMonth": {
+      "label": "Diesen Monat",
+      "fills": "Tankungen",
+      "lastMonth": "Letzten Monat"
+    },
+    "lastFuel": {
+      "label": "Letzte Tankung"
+    },
+    "trend": {
+      "label": "Letzte 6 Monate",
+      "totalLabel": "Gesamt"
+    },
+    "list": {
+      "heading_one": "Alle Tankungen · {{count}} Eintrag",
+      "heading_other": "Alle Tankungen · {{count}} Einträge"
+    },
     "add": {
       "button": "Kraftstoff hinzufügen",
       "title": "Kraftstoffeintrag hinzufügen",

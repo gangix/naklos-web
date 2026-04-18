@@ -1122,6 +1122,39 @@
       "avgConsumptionEmpty": "Not enough data",
       "last30Days": "Last 30 days"
     },
+    "efficiency": {
+      "actual": "Actual consumption",
+      "actualSource": "Computed from recent refuels",
+      "target": "Target",
+      "targetSource": "Set manually · Change in settings",
+      "targetEmpty": "No target set yet",
+      "status": {
+        "normal": "Normal",
+        "attention": "Attention",
+        "warning": "High consumption",
+        "noTarget": "No target set",
+        "deviationOver_one": "{{count}}% over target",
+        "deviationOver_other": "{{count}}% over target",
+        "deviationUnder_one": "{{count}}% under target",
+        "deviationUnder_other": "{{count}}% under target"
+      }
+    },
+    "thisMonth": {
+      "label": "This month",
+      "fills": "refuels",
+      "lastMonth": "Last month"
+    },
+    "lastFuel": {
+      "label": "Last refuel"
+    },
+    "trend": {
+      "label": "Last 6 months",
+      "totalLabel": "Total"
+    },
+    "list": {
+      "heading_one": "All refuels · {{count}} record",
+      "heading_other": "All refuels · {{count}} records"
+    },
     "add": {
       "button": "Add fuel",
       "title": "Add fuel record",

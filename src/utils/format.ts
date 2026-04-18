@@ -47,6 +47,17 @@ export const formatDecimal = (
   });
 };
 
+/** Compact currency for space-constrained slots (monthly trend strip,
+ *  badges). ₺8450 → "₺8,5k", ₺820 → "₺820". Locale-aware via toLocaleString. */
+export const formatCompactCurrency = (v: number): string => {
+  const sign = i18n.t('common.currency');
+  if (v >= 1000) {
+    const k = (v / 1000).toLocaleString(i18n.language, { maximumFractionDigits: 1 });
+    return `${sign}${k}k`;
+  }
+  return `${sign}${Math.round(v).toLocaleString(i18n.language)}`;
+};
+
 /**
  * "3 dk önce", "2 saat önce", "5 gün önce"
  */

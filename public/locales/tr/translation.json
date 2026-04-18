@@ -1121,6 +1121,39 @@
       "avgConsumptionEmpty": "Yeterli veri yok",
       "last30Days": "Son 30 gün"
     },
+    "efficiency": {
+      "actual": "Şu anki tüketim",
+      "actualSource": "Son dolumlardan hesaplandı",
+      "target": "Hedef",
+      "targetSource": "Elle girilmiş · Ayarlardan değiştir",
+      "targetEmpty": "Henüz hedef girilmedi",
+      "status": {
+        "normal": "Normal",
+        "attention": "Dikkat",
+        "warning": "Yüksek tüketim",
+        "noTarget": "Hedef belirlenmemiş",
+        "deviationOver_one": "hedef üzerinde %{{count}}",
+        "deviationOver_other": "hedef üzerinde %{{count}}",
+        "deviationUnder_one": "hedefin %{{count}} altında",
+        "deviationUnder_other": "hedefin %{{count}} altında"
+      }
+    },
+    "thisMonth": {
+      "label": "Bu ay",
+      "fills": "dolum",
+      "lastMonth": "Geçen ay"
+    },
+    "lastFuel": {
+      "label": "Son dolum"
+    },
+    "trend": {
+      "label": "Son 6 ay",
+      "totalLabel": "Toplam"
+    },
+    "list": {
+      "heading_one": "Tüm dolumlar · {{count}} kayıt",
+      "heading_other": "Tüm dolumlar · {{count}} kayıt"
+    },
     "add": {
       "button": "Yakıt ekle",
       "title": "Yakıt kaydı ekle",

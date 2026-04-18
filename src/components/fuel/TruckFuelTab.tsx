@@ -1,10 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { Plus, TrendingUp, TrendingDown } from 'lucide-react';
 import { fuelEntryApi } from '../../services/fuelEntryApi';
 import { fuelAnomalyApi } from '../../services/fuelAnomalyApi';
-import { formatDate, formatDecimal } from '../../utils/format';
-import type { TruckFuelEntryDto, TruckFuelSummary } from '../../types/fuel';
+import {
+  formatCompactCurrency,
+  formatCurrency,
+  formatDate,
+  formatDecimal,
+  formatRelativeTime,
+} from '../../utils/format';
+import {
+  efficiencyStatus,
+  monthlyRollup,
+  type EfficiencyStatus,
+} from '../../utils/fuelStats';
+import i18n from '../../i18n';
+import type { TruckFuelEntryDto } from '../../types/fuel';
 import type { TruckBaseline } from '../../types/fuelAnomaly';
 import FuelEntryRow from './FuelEntryRow';
 import FuelEntryFormModal from './FuelEntryFormModal';
@@ -21,7 +34,6 @@ interface Props {
 export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimaryFuelType }: Props) {
   const { t } = useTranslation();
 
-  const [summary, setSummary] = useState<TruckFuelSummary | null>(null);
   const [entries, setEntries] = useState<TruckFuelEntryDto[]>([]);
   const [baseline, setBaseline] = useState<TruckBaseline | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,13 +49,13 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
     setLoadError(false);
     try {
       // Baseline is best-effort — the endpoint 404s when the anomaly feature
-      // flag is off, and we don't want that to kill the whole tab.
-      const [s, e, b] = await Promise.all([
-        fuelEntryApi.summaryForTruck(fleetId, truckId),
+      // flag is off, and we don't want that to kill the whole tab. Monthly
+      // rollup + "this month" stats are computed client-side from the entries
+      // list so one fetch feeds everything above.
+      const [e, b] = await Promise.all([
         fuelEntryApi.listForTruck(fleetId, truckId),
         fuelAnomalyApi.getBaseline(fleetId, truckId).catch(() => null),
       ]);
-      setSummary(s);
       setEntries(e);
       setBaseline(b);
     } catch {
@@ -86,9 +98,6 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
     }
   };
 
-  // URL for "Tüm yakıt kayıtları →" — no PlateNormalizer on FE, use encodeURIComponent
-  const allEntriesUrl = `/manager/fuel-imports?plate=${encodeURIComponent(truckPlate)}`;
-
   // --- Loading state ---
   if (loading) {
     return (
@@ -118,130 +127,314 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
     );
   }
 
-  const totalLiters = summary ? parseFloat(summary.totalLiters) : 0;
-  const totalPrice = summary ? parseFloat(summary.totalPrice) : 0;
-  const fillCount = summary?.fillCount ?? 0;
+  // "Şu anki" (actual rolling) and "Hedef" (manual target) — shown side-by-side
+  // so the manager can compare at a glance. Null = not enough history yet.
+  const actualConsumption = baseline?.derived ?? null;
+  const targetConsumption = baseline?.manual ?? null;
+  const { status: effStatus, deviationPct } = efficiencyStatus(
+    actualConsumption,
+    targetConsumption,
+  );
 
-  // Consumption: manual wins (fleet manager's explicit baseline), else auto-
-  // computed from recent entries. Null on both = not enough history yet.
-  const avgConsumption = baseline?.manual ?? baseline?.derived ?? null;
-  const avgConsumptionSource: 'manual' | 'derived' | null =
-    baseline?.manual != null ? 'manual' : baseline?.derived != null ? 'derived' : null;
+  // 6-month rollup plus all the derived values the view pulls from it —
+  // folded into one memo so nothing recomputes on unrelated parent re-renders
+  // (modal open/close, highlight state, toast dispatch).
+  const derived = useMemo(() => {
+    const rollup = monthlyRollup(entries, 6);
+    const currentMonth = rollup[rollup.length - 1];
+    const previousMonth = rollup[rollup.length - 2];
+    const hasAnyFuelData = rollup.some((m) => m.totalLiters > 0);
+    return {
+      rollup,
+      currentMonth,
+      previousMonth,
+      hasAnyFuelData,
+      lastEntry: entries[0] ?? null,
+      monthVsPrevPct:
+        previousMonth && previousMonth.totalPrice > 0 && currentMonth
+          ? Math.round(
+              ((currentMonth.totalPrice - previousMonth.totalPrice) /
+                previousMonth.totalPrice) *
+                100,
+            )
+          : null,
+      maxMonthPrice: Math.max(...rollup.map((m) => m.totalPrice), 1),
+      trendTotal: rollup.reduce((s, m) => s + m.totalPrice, 0),
+    };
+  }, [entries]);
+  const {
+    rollup, currentMonth, previousMonth, lastEntry,
+    monthVsPrevPct, maxMonthPrice, hasAnyFuelData,
+  } = derived;
 
   return (
     <div className="space-y-4">
-      {/* Summary card */}
-      <div className="rounded-xl shadow-sm border border-gray-200 p-5 bg-white">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-500 font-medium">
-            {t('fuelEntry.summary.last30Days')}
-          </span>
+      {/* ============ 1. EFFICIENCY HERO — actual vs target at a glance ============ */}
+      <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 sm:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-5 items-center">
+          <div className="grid grid-cols-2 gap-6">
+            {/* Actual — real data, confident black */}
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                {t('fuelEntry.efficiency.actual')}
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+                  {actualConsumption !== null ? formatDecimal(actualConsumption) : '—'}
+                </span>
+                <span className="text-sm text-gray-500 font-medium">
+                  {t('fuelEntry.summary.avgConsumptionUnit')}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {actualConsumption !== null
+                  ? t('fuelEntry.efficiency.actualSource')
+                  : t('fuelEntry.summary.avgConsumptionEmpty')}
+              </p>
+            </div>
+            {/* Target — optional goal, muted grey */}
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                {t('fuelEntry.efficiency.target')}
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-3xl sm:text-4xl font-extrabold text-gray-400 tracking-tight tabular-nums">
+                  {targetConsumption !== null ? formatDecimal(targetConsumption) : '—'}
+                </span>
+                <span className="text-sm text-gray-400 font-medium">
+                  {t('fuelEntry.summary.avgConsumptionUnit')}
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {targetConsumption !== null
+                  ? t('fuelEntry.efficiency.targetSource')
+                  : t('fuelEntry.efficiency.targetEmpty')}
+              </p>
+            </div>
+          </div>
+
+          {/* Status pill + sparkline */}
+          <div className="flex flex-col items-start md:items-end gap-3">
+            {actualConsumption !== null && (
+              <StatusPill
+                status={effStatus}
+                deviationPct={deviationPct}
+                hasTarget={targetConsumption !== null}
+              />
+            )}
+            {hasAnyFuelData && <Sparkline rollup={rollup} />}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ 2. BU AY + SON DOLUM ============ */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              {t('fuelEntry.thisMonth.label')}
+            </span>
+            {monthVsPrevPct !== null && (
+              <span
+                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold tabular-nums ${
+                  monthVsPrevPct > 0
+                    ? 'bg-red-50 text-red-700'
+                    : 'bg-emerald-50 text-emerald-700'
+                }`}
+              >
+                {monthVsPrevPct > 0 ? (
+                  <TrendingUp className="w-3 h-3" strokeWidth={2.5} />
+                ) : (
+                  <TrendingDown className="w-3 h-3" strokeWidth={2.5} />
+                )}
+                %{Math.abs(monthVsPrevPct)}
+              </span>
+            )}
+          </div>
+          <div className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+            {currentMonth ? formatCurrency(currentMonth.totalPrice) : '—'}
+          </div>
+          {currentMonth && (
+            <div className="mt-2 flex items-center gap-3 text-xs text-gray-500 tabular-nums">
+              <span>
+                <span className="font-semibold text-gray-700">{currentMonth.fillCount}</span>{' '}
+                {t('fuelEntry.thisMonth.fills')}
+              </span>
+              <span>·</span>
+              <span>
+                <span className="font-semibold text-gray-700">
+                  {formatDecimal(currentMonth.totalLiters, 0)}
+                </span>{' '}
+                L
+              </span>
+            </div>
+          )}
+          {previousMonth && previousMonth.fillCount > 0 && (
+            <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+              {t('fuelEntry.thisMonth.lastMonth')}:{' '}
+              <span className="font-semibold text-gray-700 tabular-nums">
+                {formatCurrency(previousMonth.totalPrice)}
+              </span>
+              {' · '}
+              <span className="tabular-nums">
+                {previousMonth.fillCount} {t('fuelEntry.thisMonth.fills')}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              {t('fuelEntry.lastFuel.label')}
+            </span>
+            {lastEntry && (
+              <span className="text-[10px] text-gray-400">
+                {formatRelativeTime(lastEntry.occurredAt)}
+              </span>
+            )}
+          </div>
+          {lastEntry ? (
+            <>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+                  {formatDecimal(parseFloat(lastEntry.liters))}
+                </span>
+                <span className="text-sm text-gray-500 font-medium">L</span>
+                <span className="ml-auto text-xl font-bold text-gray-700 tabular-nums">
+                  {formatCurrency(parseFloat(lastEntry.totalPrice))}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+                <span className="tabular-nums">{formatDate(lastEntry.occurredAt)}</span>
+                {lastEntry.stationName && (
+                  <>
+                    <span>·</span>
+                    <span className="truncate">{lastEntry.stationName}</span>
+                  </>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="text-sm text-gray-400">{t('fuelEntry.empty')}</div>
+          )}
+        </div>
+      </section>
+
+      {/* ============ 3. 6-MONTH TREND STRIP ============ */}
+      {hasAnyFuelData && (
+        <section>
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              {t('fuelEntry.trend.label')}
+            </h2>
+            <span className="text-[11px] text-gray-500 tabular-nums">
+              {t('fuelEntry.trend.totalLabel')} {formatCurrency(derived.trendTotal)}
+            </span>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="grid grid-cols-6 divide-x divide-gray-100">
+              {rollup.map((m, i) => {
+                const isCurrent = i === rollup.length - 1;
+                const heightPct = Math.round((m.totalPrice / maxMonthPrice) * 100);
+                return (
+                  <div
+                    key={m.yearMonth}
+                    className={`p-3 text-center ${isCurrent ? 'bg-primary-50/40' : ''}`}
+                  >
+                    <div
+                      className={`text-[10px] font-semibold uppercase tracking-wider ${
+                        isCurrent ? 'text-primary-700' : 'text-gray-500'
+                      }`}
+                    >
+                      {new Intl.DateTimeFormat(i18n.language, { month: 'short' })
+                        .format(new Date(m.year, m.monthIdx, 1))}
+                    </div>
+                    <div className="mt-2 h-12 flex items-end justify-center">
+                      <div
+                        className={`w-4 rounded-t ${
+                          isCurrent ? 'bg-primary-500' : 'bg-gray-300'
+                        }`}
+                        style={{ height: `${Math.max(heightPct, m.totalPrice > 0 ? 8 : 0)}%` }}
+                      />
+                    </div>
+                    <div className="mt-2 text-xs font-bold text-gray-900 tabular-nums">
+                      {m.totalPrice > 0 ? formatCompactCurrency(m.totalPrice) : '—'}
+                    </div>
+                    <div
+                      className={`text-[10px] tabular-nums ${
+                        isCurrent ? 'text-primary-700 font-semibold' : 'text-gray-400'
+                      }`}
+                    >
+                      {m.totalLiters > 0 ? `${Math.round(m.totalLiters)} L` : ''}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ============ 4. ENTRIES LIST ============ */}
+      <section>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+            {t('fuelEntry.list.heading', { count: entries.length })}
+          </h2>
           <button
             onClick={() => setFormModal({ mode: 'add' })}
-            className="bg-primary-600 text-white px-4 py-2 text-sm font-semibold rounded-lg hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 shadow-sm transition-colors"
           >
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
             {t('fuelEntry.add.button')}
           </button>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Toplam litre */}
-          <div>
-            <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.totalLiters')}</div>
-            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
-              {isNaN(totalLiters) ? '—' : `${totalLiters.toFixed(2)} L`}
-            </div>
+        <div className="rounded-xl shadow-sm border border-gray-200 bg-white overflow-hidden">
+          <div className="hidden sm:flex bg-gray-50 px-4 py-2 text-xs uppercase tracking-wider font-semibold text-gray-500 items-center gap-4">
+            <div className="w-32 flex-shrink-0">Tarih</div>
+            <div className="flex-1">İstasyon</div>
+            <div className="w-24 text-right">Litre</div>
+            <div className="w-24 text-right">Tutar</div>
+            <div className="w-10 flex-shrink-0" />
+            <div className="flex-shrink-0">Kaynak</div>
+            <div className="flex-shrink-0 w-16" />
           </div>
 
-          {/* Toplam tutar */}
-          <div>
-            <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.totalPrice')}</div>
-            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
-              {isNaN(totalPrice) ? '—' : `₺${totalPrice.toFixed(2)}`}
+          {entries.length === 0 ? (
+            <div className="py-12 text-center">
+              <p className="text-sm text-gray-500 mb-4">{t('fuelEntry.empty')}</p>
+              <button
+                onClick={() => setFormModal({ mode: 'add' })}
+                className="bg-primary-600 text-white px-4 py-2 text-sm font-semibold rounded-lg hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
+              >
+                {t('fuelEntry.add.button')}
+              </button>
             </div>
-          </div>
-
-          {/* Dolum sayısı */}
-          <div>
-            <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.fillCount')}</div>
-            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
-              {fillCount}
-            </div>
-          </div>
-
-          {/* Ortalama tüketim — from anomaly-engine baseline (best-effort) */}
-          <div>
-            <div className="text-xs text-gray-500 mb-1">{t('fuelEntry.summary.avgConsumption')}</div>
-            <div className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
-              {avgConsumption !== null
-                ? `${formatDecimal(avgConsumption)} ${t('fuelEntry.summary.avgConsumptionUnit')}`
-                : '—'}
-            </div>
-            <div className="text-[11px] text-gray-400 mt-0.5">
-              {avgConsumptionSource === 'manual'
-                ? t('fuelEntry.summary.avgConsumptionManual')
-                : avgConsumptionSource === 'derived'
-                  ? t('fuelEntry.summary.avgConsumptionDerived')
-                  : t('fuelEntry.summary.avgConsumptionEmpty')}
-            </div>
-          </div>
+          ) : (
+            entries.map((entry) => (
+              <div
+                key={entry.id}
+                ref={(el) => { rowRefs.current[entry.id] = el; }}
+                className={
+                  highlightedId === entry.id
+                    ? 'ring-2 ring-amber-400 rounded transition-all'
+                    : ''
+                }
+              >
+                <FuelEntryRow
+                  fleetId={fleetId}
+                  entry={entry}
+                  onEdit={(entry) => setFormModal({ mode: 'edit', initial: entry })}
+                  onDelete={(entry) => setDeleteTarget(entry)}
+                  onReceiptClick={(entry) => setReceiptTarget(entry)}
+                />
+              </div>
+            ))
+          )}
         </div>
-
-        <div className="mt-3">
-          <a
-            href={allEntriesUrl}
-            className="text-sm font-medium text-primary-600 hover:underline"
-          >
-            {t('fuelEntry.viewAll')}
-          </a>
-        </div>
-      </div>
-
-      {/* Entries list */}
-      <div className="rounded-xl shadow-sm border border-gray-200 bg-white overflow-hidden">
-        {/* Header row */}
-        <div className="hidden sm:flex bg-gray-50 px-4 py-2 text-xs uppercase tracking-wider font-semibold text-gray-500 items-center gap-4">
-          <div className="w-32 flex-shrink-0">Tarih</div>
-          <div className="flex-1">İstasyon</div>
-          <div className="w-24 text-right">Litre</div>
-          <div className="w-24 text-right">Tutar</div>
-          <div className="w-10 flex-shrink-0" />
-          <div className="flex-shrink-0">Kaynak</div>
-          <div className="flex-shrink-0 w-16" />
-        </div>
-
-        {entries.length === 0 ? (
-          <div className="py-12 text-center">
-            <p className="text-sm text-gray-500 mb-4">{t('fuelEntry.empty')}</p>
-            <button
-              onClick={() => setFormModal({ mode: 'add' })}
-              className="bg-primary-600 text-white px-4 py-2 text-sm font-semibold rounded-lg hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all"
-            >
-              {t('fuelEntry.add.button')}
-            </button>
-          </div>
-        ) : (
-          entries.map(entry => (
-            <div
-              key={entry.id}
-              ref={el => { rowRefs.current[entry.id] = el; }}
-              className={
-                highlightedId === entry.id
-                  ? 'ring-2 ring-amber-400 rounded transition-all'
-                  : ''
-              }
-            >
-              <FuelEntryRow
-                fleetId={fleetId}
-                entry={entry}
-                onEdit={entry => setFormModal({ mode: 'edit', initial: entry })}
-                onDelete={entry => setDeleteTarget(entry)}
-                onReceiptClick={entry => setReceiptTarget(entry)}
-              />
-            </div>
-          ))
-        )}
-      </div>
+      </section>
 
       {/* Add / Edit modal */}
       {formModal && (
@@ -283,5 +476,109 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
         />
       )}
     </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────────────────
+// Local visual primitives
+// ───────────────────────────────────────────────────────────────────────────
+
+interface StatusPillProps {
+  status: EfficiencyStatus;
+  deviationPct: number | null;
+  hasTarget: boolean;
+}
+
+const STATUS_PILL: Record<EfficiencyStatus, { cls: string; dot: string; key: string }> = {
+  normal: {
+    cls: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+    dot: 'bg-emerald-500',
+    key: 'fuelEntry.efficiency.status.normal',
+  },
+  attention: {
+    cls: 'bg-amber-50 text-amber-700 border-amber-100',
+    dot: 'bg-amber-500',
+    key: 'fuelEntry.efficiency.status.attention',
+  },
+  warning: {
+    cls: 'bg-red-50 text-red-700 border-red-100',
+    dot: 'bg-red-500',
+    key: 'fuelEntry.efficiency.status.warning',
+  },
+};
+
+function StatusPill({ status, deviationPct, hasTarget }: StatusPillProps) {
+  const { t } = useTranslation();
+  if (!hasTarget) {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 text-xs font-bold border border-gray-200">
+        <span className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+        {t('fuelEntry.efficiency.status.noTarget')}
+      </span>
+    );
+  }
+  const cfg = STATUS_PILL[status];
+  // Pick the right phrasing based on direction; always pass a positive count
+  // so the plural rules don't try to handle negative numbers.
+  const deviation =
+    deviationPct !== null
+      ? t(
+          deviationPct >= 0
+            ? 'fuelEntry.efficiency.status.deviationOver'
+            : 'fuelEntry.efficiency.status.deviationUnder',
+          { count: Math.abs(deviationPct) },
+        )
+      : '';
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border ${cfg.cls}`}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+      {t(cfg.key)}
+      {deviation && <span className="font-normal opacity-80"> · {deviation}</span>}
+    </span>
+  );
+}
+
+/** 6-month consumption trend sparkline. Points are monthly total liters
+ *  normalized to the viewBox height. Pure SVG + CSS `currentColor` so the
+ *  primary accent lives in one Tailwind class (no hex literals). */
+function Sparkline({ rollup }: { rollup: ReturnType<typeof monthlyRollup> }) {
+  const { values, area, line, last } = useMemo(() => {
+    const vals = rollup.map((m) => m.totalLiters);
+    const max = Math.max(...vals, 1);
+    const w = 140;
+    const h = 40;
+    const step = w / (vals.length - 1);
+    const pts = vals.map((v, i) => {
+      const x = i * step;
+      const y = 4 + (h - 8) * (1 - v / max);
+      return [x, y] as const;
+    });
+    const toPath = pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`);
+    return {
+      values: vals,
+      area: `M ${toPath[0]} L ${toPath.slice(1).join(' L ')} L ${w},${h} L 0,${h} Z`,
+      line: `M ${toPath[0]} L ${toPath.slice(1).join(' L ')}`,
+      last: pts[pts.length - 1],
+    };
+  }, [rollup]);
+  if (values.length === 0) return null;
+  return (
+    <svg
+      viewBox="0 0 140 40"
+      className="w-[140px] h-10 text-primary-500"
+      aria-label="6-month fuel trend"
+    >
+      <defs>
+        <linearGradient id="sparkGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill="url(#sparkGrad)" />
+      <path d={line} stroke="currentColor" strokeWidth={1.5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={last[0]} cy={last[1]} r={2.5} fill="currentColor" />
+    </svg>
   );
 }
