@@ -6,10 +6,12 @@ import { fuelEntryApi } from '../../services/fuelEntryApi';
 import { useTranslation } from 'react-i18next';
 import { formatDateTime, formatRelativeTime } from '../../utils/format';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
+import EntityWarningsCard from '../../components/common/EntityWarningsCard';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import FuelEntryFormModal from '../../components/fuel/FuelEntryFormModal';
 import ConfirmActionModal from '../../components/fuel/ConfirmActionModal';
 import { useLocationSharing } from '../../contexts/LocationSharingContext';
+import { computeTruckWarnings } from '../../utils/truckWarnings';
 import type { Driver, Truck, DocumentCategory } from '../../types';
 import type { TruckFuelEntryDto } from '../../types/fuel';
 
@@ -108,9 +110,18 @@ const DriverTruckPage = () => {
     );
   }
 
+  const truckWarnings = computeTruckWarnings(assignedTruck);
+
   return (
     <div className="p-4 pb-20">
       <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 mb-4">{t('driverTruck.title')}</h1>
+
+      {truckWarnings.length > 0 && (
+        <EntityWarningsCard
+          warnings={truckWarnings}
+          heading={t('truckDetail.warnings.heading')}
+        />
+      )}
 
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <h2 className="text-lg font-bold text-gray-900 mb-3">{t('truck.basicInfo')}</h2>

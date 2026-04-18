@@ -7,9 +7,11 @@ import { useFleet } from '../../contexts/FleetContext';
 import { driverApi } from '../../services/api';
 
 import ExpiryBadge from '../../components/common/ExpiryBadge';
+import EntityWarningsCard from '../../components/common/EntityWarningsCard';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import { TextInput, Select } from '../../components/common/FormField';
 import { formatDate } from '../../utils/format';
+import { computeDriverWarnings } from '../../utils/driverWarnings';
 import type { DocumentCategory } from '../../types';
 
 const DriverProfilePage = () => {
@@ -306,6 +308,16 @@ const DriverProfilePage = () => {
           </div>
         </div>
       )}
+
+      {(() => {
+        const warnings = computeDriverWarnings(driver);
+        return warnings.length > 0 ? (
+          <EntityWarningsCard
+            warnings={warnings}
+            heading={t('driverDetail.warnings.heading')}
+          />
+        ) : null;
+      })()}
 
       {/* Personal Info Card */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
