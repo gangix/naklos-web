@@ -36,7 +36,11 @@
       "driversSubtitle": "Führerschein, SRC, CPC müssen erneuert werden",
       "driversUnit": "Fahrer",
       "docsCount_one": "{{count}} Dokument",
-      "docsCount_other": "{{count}} Dokumente"
+      "docsCount_other": "{{count}} Dokumente",
+      "trucksSummary_one": "{{records}} Fahrzeug · {{docs}} Dokument",
+      "trucksSummary_other": "{{records}} Fahrzeuge · {{docs}} Dokumente",
+      "driversSummary_one": "{{records}} Fahrer · {{docs}} Dokument",
+      "driversSummary_other": "{{records}} Fahrer · {{docs}} Dokumente"
     },
     "recordsAndDocs_one": "{{records}} Eintrag · {{docs}} Dokument",
     "recordsAndDocs_other": "{{records}} Einträge · {{docs}} Dokumente",
@@ -44,6 +48,10 @@
     "docsAndList_other": "{{count}} Dokumente · {{labels}}",
     "allCurrent": "Alle Dokumente sind aktuell",
     "allCurrentSubtitle": "Keine Erneuerungen in den nächsten 30 Tagen.",
+    "onboarding": {
+      "title": "Richten Sie Ihre Flotte ein",
+      "subtitle": "Beginnen Sie mit dem ersten Fahrzeug und Fahrer. Dokumente, Kraftstoffverfolgung und Warnungen werden automatisch verknüpft."
+    },
     "quickActions": {
       "addTruck": "LKW hinzufügen",
       "inviteDriver": "Fahrer einladen",

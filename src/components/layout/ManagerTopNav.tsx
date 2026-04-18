@@ -59,8 +59,12 @@ const ManagerTopNav = () => {
     { id: 'dashboard', path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
     { id: 'trucks', path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
     { id: 'drivers', path: '/manager/drivers', label: t('nav.drivers'), icon: Users },
+    // Yakıt badge = pending anomalies + unmatched plates (`useFuelCounts`),
+    // so the click destination must be the page that actually surfaces those
+    // items. Alerts is the daily triage surface; Imports is an empty upload
+    // form that has nothing to do with the badge count.
     ...(fuelTrackingEnabled
-      ? [{ id: 'fuel' as const, path: '/manager/fuel-imports', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
+      ? [{ id: 'fuel' as const, path: '/manager/fuel-alerts', label: t('nav.fuel', { defaultValue: 'Yakıt' }), icon: Fuel }]
       : []),
   ];
 

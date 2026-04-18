@@ -202,74 +202,64 @@ const DashboardPage = () => {
         </div>
       </section>
 
-      {/* Section B — ATTENTION ITEMS: matches the top-nav badges exactly.
-          Fuel row → items (5); Araç/Şoför rows → entities (1 truck, 1 driver)
-          with "N belge" inside. Rendered only when something actually needs
-          attention, otherwise fall through to the empty state below. */}
-      {(fuelAttentionCount > 0 || truckWarningGroups.length > 0 || driverWarningGroups.length > 0) && (
+      {/* Section B was aggregate rows for fuel + trucks + drivers. Trucks/
+          drivers rows dropped: they pointed at list pages, while Section C
+          below lists the same entities with direct drill-in to the specific
+          truck/driver. Keeping both meant two rows for the same info with no
+          way to tell which to click. Fuel row stays — it's the only one
+          without a per-entity Section C counterpart. */}
+      {fuelTrackingEnabled && fuelAttentionCount > 0 && (
         <section className="mb-6">
           <div className="flex items-baseline justify-between mb-3">
             <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
               {t('dashboard.attention.heading')}
             </h2>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100">
-            {fuelTrackingEnabled && fuelAttentionCount > 0 && (
-              <AttentionRow
-                tone="danger"
-                icon={AlertTriangle}
-                title={t('dashboard.attention.fuelTitle')}
-                subtitle={t('dashboard.attention.fuelSubtitle')}
-                count={fuelAttentionCount}
-                unit={t('dashboard.attention.fuelUnit')}
-                onClick={() => navigate('/manager/fuel-alerts')}
-              />
-            )}
-            {truckWarningGroups.length > 0 && (
-              <AttentionRow
-                tone="warning"
-                icon={FileText}
-                title={t('dashboard.attention.trucksTitle')}
-                subtitle={t('dashboard.attention.trucksSubtitle')}
-                sidePill={t('dashboard.attention.docsCount', { count: truckDocsCount })}
-                count={truckWarningGroups.length}
-                unit={t('dashboard.attention.trucksUnit')}
-                onClick={() => navigate('/manager/trucks')}
-              />
-            )}
-            {driverWarningGroups.length > 0 && (
-              <AttentionRow
-                tone="warning"
-                icon={FileText}
-                title={t('dashboard.attention.driversTitle')}
-                subtitle={t('dashboard.attention.driversSubtitle')}
-                sidePill={t('dashboard.attention.docsCount', { count: driverDocsCount })}
-                count={driverWarningGroups.length}
-                unit={t('dashboard.attention.driversUnit')}
-                onClick={() => navigate('/manager/drivers')}
-              />
-            )}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <AttentionRow
+              tone="danger"
+              icon={AlertTriangle}
+              title={t('dashboard.attention.fuelTitle')}
+              subtitle={t('dashboard.attention.fuelSubtitle')}
+              count={fuelAttentionCount}
+              unit={t('dashboard.attention.fuelUnit')}
+              onClick={() => navigate('/manager/fuel-alerts')}
+            />
           </div>
         </section>
       )}
 
       {/* Section C — PER-ENTITY DETAIL: expiring-document rows so the manager
-          can jump straight to the affected truck / driver. */}
+          can jump straight to the affected truck / driver. Header carries
+          the split-by-kind summary that used to live in Section B. */}
       {warningGroups.length > 0 && (
         <section>
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="flex items-baseline justify-between gap-3 mb-3 flex-wrap">
             <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
               {t('dashboard.detailSection')}
             </h2>
-            <span className="text-xs text-gray-500 tabular-nums">
-              {t('dashboard.recordsAndDocs', {
-                count: warningGroups.length,
-                records: warningGroups.length,
-                docs: totalDocsCount,
-              })}
-            </span>
+            <div className="flex items-center gap-3 text-xs text-gray-500 tabular-nums">
+              {truckWarningGroups.length > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Truck className="w-3.5 h-3.5 text-blue-500" />
+                  {t('dashboard.attention.trucksSummary', {
+                    records: truckWarningGroups.length,
+                    docs: truckDocsCount,
+                  })}
+                </span>
+              )}
+              {driverWarningGroups.length > 0 && (
+                <span className="inline-flex items-center gap-1">
+                  <Users className="w-3.5 h-3.5 text-emerald-500" />
+                  {t('dashboard.attention.driversSummary', {
+                    records: driverWarningGroups.length,
+                    docs: driverDocsCount,
+                  })}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100 max-h-96 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100">
             {warningGroups.map((group) => (
               <button
                 key={`${group.entity}-${group.entityId}`}
@@ -302,8 +292,42 @@ const DashboardPage = () => {
         </section>
       )}
 
-      {/* Empty state — shown only when nothing needs attention anywhere. */}
-      {warningGroups.length === 0 && fuelAttentionCount === 0 && !loading && (
+      {/* Empty states: a fresh fleet (no trucks, no drivers) shouldn't read
+          as "everything is current" — it has no content to be current about.
+          Show the onboarding nudge there; reserve the green banner for the
+          genuinely-healthy case where the roster exists AND has no warnings. */}
+      {!loading && trucks.length === 0 && drivers.length === 0 && (
+        <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
+          <div className="w-12 h-12 rounded-xl bg-primary-50 text-primary-600 mx-auto mb-3 flex items-center justify-center">
+            <Truck className="w-6 h-6" />
+          </div>
+          <p className="text-base font-extrabold text-gray-900 tracking-tight">
+            {t('dashboard.onboarding.title')}
+          </p>
+          <p className="text-sm text-gray-600 mt-1 max-w-md mx-auto">
+            {t('dashboard.onboarding.subtitle')}
+          </p>
+          <div className="mt-5 flex gap-2 flex-wrap justify-center">
+            <button
+              onClick={() => navigate('/manager/trucks')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all">
+              <Plus className="w-4 h-4" />
+              {t('dashboard.quickActions.addTruck', { defaultValue: 'Araç ekle' })}
+            </button>
+            <button
+              onClick={() => navigate('/manager/drivers')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
+              <UserPlus className="w-4 h-4" />
+              {t('dashboard.quickActions.addDriver', { defaultValue: 'Sürücü ekle' })}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!loading
+        && (trucks.length > 0 || drivers.length > 0)
+        && warningGroups.length === 0
+        && fuelAttentionCount === 0 && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
           <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
           <p className="text-sm font-medium text-green-900">{t('dashboard.allCurrent')}</p>

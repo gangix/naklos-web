@@ -36,7 +36,9 @@
       "driversSubtitle": "Ehliyet, SRC, CPC belgeleri yenilenmeli",
       "driversUnit": "şoför",
       "docsCount_one": "{{count}} belge",
-      "docsCount_other": "{{count}} belge"
+      "docsCount_other": "{{count}} belge",
+      "trucksSummary": "{{records}} araç · {{docs}} belge",
+      "driversSummary": "{{records}} şoför · {{docs}} belge"
     },
     "recordsAndDocs_one": "{{records}} kayıt · {{docs}} belge",
     "recordsAndDocs_other": "{{records}} kayıt · {{docs}} belge",
@@ -44,6 +46,10 @@
     "docsAndList_other": "{{count}} belge · {{labels}}",
     "allCurrent": "Tüm belgeler güncel",
     "allCurrentSubtitle": "Son 30 günde yenilenecek belge yok.",
+    "onboarding": {
+      "title": "Filonuzu kurmaya başlayın",
+      "subtitle": "İlk aracınızı ve sürücünüzü ekleyerek başlayın. Belgeler, yakıt takibi ve uyarılar otomatik olarak hizalanır."
+    },
     "quickActions": {
       "addTruck": "Araç ekle",
       "inviteDriver": "Sürücü davet et",

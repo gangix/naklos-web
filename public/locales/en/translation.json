@@ -36,7 +36,11 @@
       "driversSubtitle": "License, SRC, CPC need renewal",
       "driversUnit": "drivers",
       "docsCount_one": "{{count}} document",
-      "docsCount_other": "{{count}} documents"
+      "docsCount_other": "{{count}} documents",
+      "trucksSummary_one": "{{records}} truck · {{docs}} doc",
+      "trucksSummary_other": "{{records}} trucks · {{docs}} docs",
+      "driversSummary_one": "{{records}} driver · {{docs}} doc",
+      "driversSummary_other": "{{records}} drivers · {{docs}} docs"
     },
     "recordsAndDocs_one": "{{records}} record · {{docs}} document",
     "recordsAndDocs_other": "{{records}} records · {{docs}} documents",
@@ -44,6 +48,10 @@
     "docsAndList_other": "{{count}} documents · {{labels}}",
     "allCurrent": "All documents up to date",
     "allCurrentSubtitle": "No renewals due in the next 30 days.",
+    "onboarding": {
+      "title": "Set up your fleet",
+      "subtitle": "Start by adding your first truck and driver. Documents, fuel tracking, and alerts line up automatically from there."
+    },
     "quickActions": {
       "addTruck": "Add truck",
       "inviteDriver": "Invite driver",
