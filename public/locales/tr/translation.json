@@ -1436,7 +1436,10 @@
     },
     "driver": {
       "title": "Sürücüyü sil",
-      "description": "{{name}} adlı sürücü silinecek."
+      "description": "{{name}} adlı sürücü kalıcı olarak silinecek.",
+      "bulletPermanent": "Bu işlem geri alınamaz",
+      "bulletHistory": "Geçmiş sefer ve yakıt kayıtları korunur; sürücü bilgisi \"—\" olarak görünür",
+      "bulletTruck": "Atanmış araç varsa sürücü alanı boşalır"
     },
     "client": {
       "title": "Müşteriyi sil",

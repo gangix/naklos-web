@@ -1439,7 +1439,10 @@
     },
     "driver": {
       "title": "Fahrer löschen",
-      "description": "Fahrer {{name}} wird gelöscht."
+      "description": "Fahrer {{name}} wird dauerhaft gelöscht.",
+      "bulletPermanent": "Diese Aktion kann nicht rückgängig gemacht werden",
+      "bulletHistory": "Frühere Fahrt- und Kraftstoffeinträge bleiben; Fahrer wird als \"—\" angezeigt",
+      "bulletTruck": "Falls zugewiesen, wird das Fahrer-Feld am Fahrzeug geleert"
     },
     "client": {
       "title": "Kunde löschen",

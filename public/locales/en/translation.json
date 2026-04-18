@@ -1439,7 +1439,10 @@
     },
     "driver": {
       "title": "Delete driver",
-      "description": "Driver {{name}} will be deleted."
+      "description": "Driver {{name}} will be permanently deleted.",
+      "bulletPermanent": "This action cannot be undone",
+      "bulletHistory": "Past trip and fuel records are kept; driver field shows as \"—\"",
+      "bulletTruck": "If assigned to a truck, that truck's driver field clears"
     },
     "client": {
       "title": "Delete client",

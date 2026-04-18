@@ -666,12 +666,16 @@ const DriverDetailPage = () => {
         </div>
       )}
 
-      {/* Delete driver */}
-      <div className="mt-6">
+      {/* Delete driver — genuinely destructive (hard-delete, unlike truck
+          archive). Red tone is semantic, but full-width at page bottom was
+          overweight for a single-user action already gated by a confirm
+          modal. Small red-ghost, right-aligned, matches archive's weight
+          on the truck page so the two destructive actions read consistently. */}
+      <div className="mt-8 text-right">
         <button
           onClick={() => setDriverDeleteOpen(true)}
           disabled={deleting}
-          className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 transition-colors disabled:opacity-50"
         >
           {deleting ? t('driverDetail.deletingDriver') : t('driverDetail.deleteDriver')}
         </button>
@@ -713,7 +717,11 @@ const DriverDetailPage = () => {
         <ConfirmActionModal
           title={t('confirmDelete.driver.title')}
           description={t('confirmDelete.driver.description', { name: fullName })}
-          bullets={[t('common.irreversible')]}
+          bullets={[
+            t('confirmDelete.driver.bulletPermanent'),
+            t('confirmDelete.driver.bulletHistory'),
+            t('confirmDelete.driver.bulletTruck'),
+          ]}
           confirmLabel={t('common.delete')}
           tone="danger"
           onConfirm={runDeleteDriver}
