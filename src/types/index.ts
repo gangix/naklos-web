@@ -8,6 +8,14 @@ export type TripStatus = 'CREATED' | 'IN_PROGRESS' | 'DELIVERED' | 'APPROVED' | 
 export type InvoiceStatus = 'paid' | 'pending' | 'overdue';
 export type PaymentReliability = 'good' | 'moderate' | 'poor';
 
+export interface Address {
+  street?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+  region?: string;
+}
+
 export interface Fleet {
   id: string;
   name: string;
@@ -19,7 +27,7 @@ export interface Fleet {
   email: string;
   defaultCurrency?: string;
   plan?: string;
-  address?: unknown;
+  address?: Address | null;
 }
 
 export interface Truck {

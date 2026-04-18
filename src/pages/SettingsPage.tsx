@@ -33,6 +33,10 @@ const SettingsPage = () => {
   const [fleetEmail, setFleetEmail] = useState('');
   const [fleetPhone, setFleetPhone] = useState('');
   const [fleetCurrency, setFleetCurrency] = useState('TRY');
+  const [fleetStreet, setFleetStreet] = useState('');
+  const [fleetCity, setFleetCity] = useState('');
+  const [fleetPostalCode, setFleetPostalCode] = useState('');
+  const [fleetRegion, setFleetRegion] = useState('');
   const [fleetSaving, setFleetSaving] = useState(false);
 
   useEffect(() => {
@@ -63,6 +67,10 @@ const SettingsPage = () => {
       setFleetEmail(data.email || '');
       setFleetPhone(data.phone || '');
       setFleetCurrency(data.defaultCurrency || 'TRY');
+      setFleetStreet(data.address?.street || '');
+      setFleetCity(data.address?.city || '');
+      setFleetPostalCode(data.address?.postalCode || '');
+      setFleetRegion(data.address?.region || '');
     } catch (error) {
       console.error('Error loading fleet:', error);
     }
@@ -74,7 +82,13 @@ const SettingsPage = () => {
       setFleetSaving(true);
       await fleetApi.update(fleetData.id, {
         name: fleetName,
-        address: fleetData.address,
+        address: {
+          street: fleetStreet,
+          city: fleetCity,
+          postalCode: fleetPostalCode,
+          country: fleetData.address?.country || 'TR',
+          region: fleetRegion,
+        },
         email: fleetEmail,
         phone: fleetPhone,
       });
@@ -201,6 +215,36 @@ const SettingsPage = () => {
               value={fleetPhone}
               onChange={(e) => setFleetPhone(e.target.value)}
             />
+            <TextInput
+              label={t('fleetSetup.street')}
+              type="text"
+              value={fleetStreet}
+              onChange={(e) => setFleetStreet(e.target.value)}
+              placeholder={t('fleetSetup.streetPlaceholder')}
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <TextInput
+                label={t('fleetSetup.city')}
+                type="text"
+                value={fleetCity}
+                onChange={(e) => setFleetCity(e.target.value)}
+                placeholder={t('fleetSetup.cityPlaceholder')}
+              />
+              <TextInput
+                label={t('fleetSetup.postalCode')}
+                type="text"
+                value={fleetPostalCode}
+                onChange={(e) => setFleetPostalCode(e.target.value)}
+                placeholder={t('fleetSetup.postalCodePlaceholder')}
+              />
+              <TextInput
+                label={t('fleetSetup.region')}
+                type="text"
+                value={fleetRegion}
+                onChange={(e) => setFleetRegion(e.target.value)}
+                placeholder={t('fleetSetup.regionPlaceholder')}
+              />
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Select
                 label={t('morePage.currency')}
