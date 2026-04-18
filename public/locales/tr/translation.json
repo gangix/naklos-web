@@ -1401,7 +1401,10 @@
       "fixDataHint": "Araç bilgisi (tank kapasitesi, yakıt türü, baseline) hatalıysa, aracın ayarlarından düzelt — bir sonraki taramada uyarı otomatik kapanır.",
       "confirmBtn": {
         "title": "Gerçek sorun — işaretle",
-        "hint": "Kayıt dışarıda kalır, bir not bırakabilirsin."
+        "hint": {
+          "dataBroken": "Kalıcı olarak analiz dışında tutulur.",
+          "behaviour": "Kayıt altına alınır; analizleri etkilemez."
+        }
       },
       "dismissBtn": {
         "title": "Sorun değil — kapat",

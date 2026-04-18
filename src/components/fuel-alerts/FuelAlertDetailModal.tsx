@@ -293,7 +293,11 @@ export default function FuelAlertDetailModal({
                     {confirming ? '…' : t('fuelAlerts.modal.confirmBtn.title')}
                   </div>
                   <span className="text-xs font-normal text-white/80">
-                    {t('fuelAlerts.modal.confirmBtn.hint')}
+                    {t(
+                      isDataBroken
+                        ? 'fuelAlerts.modal.confirmBtn.hint.dataBroken'
+                        : 'fuelAlerts.modal.confirmBtn.hint.behaviour',
+                    )}
                   </span>
                 </button>
                 {/* Dismiss is only meaningful for behaviour rules (Cat B) —

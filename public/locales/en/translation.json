@@ -1402,7 +1402,10 @@
       "fixDataHint": "If the truck's setup is wrong (tank capacity, fuel type, baseline), fix it on the truck page — the next scan will auto-resolve this alert.",
       "confirmBtn": {
         "title": "Real issue — mark",
-        "hint": "The record stays excluded; you can leave a note."
+        "hint": {
+          "dataBroken": "Stays out of analysis permanently.",
+          "behaviour": "Kept on record; doesn't affect analytics."
+        }
       },
       "dismissBtn": {
         "title": "Not an issue — dismiss",

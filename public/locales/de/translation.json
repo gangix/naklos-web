@@ -1402,7 +1402,10 @@
       "fixDataHint": "Wenn die Fahrzeugkonfiguration falsch ist (Tankkapazität, Kraftstoffart, Basiswert), korrigieren Sie sie auf der Fahrzeugseite — der nächste Scan löst diese Warnung automatisch.",
       "confirmBtn": {
         "title": "Echtes Problem — markieren",
-        "hint": "Der Datensatz bleibt ausgeschlossen; Notiz optional."
+        "hint": {
+          "dataBroken": "Bleibt dauerhaft aus der Analyse ausgeschlossen.",
+          "behaviour": "Wird dokumentiert; beeinflusst die Analyse nicht."
+        }
       },
       "dismissBtn": {
         "title": "Kein Problem — schließen",
