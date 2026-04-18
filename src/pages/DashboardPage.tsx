@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel, FileText } from 'lucide-react';
+import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
@@ -110,7 +110,6 @@ const DashboardPage = () => {
   const driverWarningGroups = warningGroups.filter((g) => g.entity === 'driver');
   const truckDocsCount = truckWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
   const driverDocsCount = driverWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
-  const totalDocsCount = truckDocsCount + driverDocsCount;
 
   if (loading) {
     return (

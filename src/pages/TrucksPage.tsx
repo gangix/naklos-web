@@ -54,6 +54,8 @@ const TrucksPage = () => {
   // Dashboard quick-action support: `?add=1` auto-opens the add-truck modal
   // on mount. Consumed once — the param is stripped so reloads don't re-open
   // the modal. Falls through to the plan-limit upgrade nudge when needed.
+  // setSearchParams + the setState setters are all stable references; only
+  // value-carrying deps belong here.
   useEffect(() => {
     if (searchParams.get('add') !== '1') return;
     if (maxTrucks !== -1 && trucks.length >= maxTrucks) {
@@ -65,8 +67,7 @@ const TrucksPage = () => {
     const next = new URLSearchParams(searchParams);
     next.delete('add');
     setSearchParams(next, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, maxTrucks, trucks.length]);
+  }, [searchParams, maxTrucks, trucks.length, setSearchParams]);
 
   // Get truck document submissions
   const truckSubmissions = useMemo(() => {

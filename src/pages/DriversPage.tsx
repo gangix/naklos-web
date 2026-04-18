@@ -64,6 +64,8 @@ const DriversPage = () => {
   // Dashboard quick-action support: `?add=1` auto-opens the add-driver modal
   // on mount. Consumed once — the param is stripped so reloads don't re-open
   // the modal. Falls through to the plan-limit upgrade nudge when needed.
+  // setSearchParams + the setState setters are all stable references; only
+  // value-carrying deps belong here.
   useEffect(() => {
     if (searchParams.get('add') !== '1') return;
     if (maxDrivers !== -1 && drivers.length >= maxDrivers) {
@@ -75,8 +77,7 @@ const DriversPage = () => {
     const next = new URLSearchParams(searchParams);
     next.delete('add');
     setSearchParams(next, { replace: true });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, maxDrivers, drivers.length]);
+  }, [searchParams, maxDrivers, drivers.length, setSearchParams]);
 
   // Get driver document submissions
   const driverSubmissions = useMemo(() => {
