@@ -978,11 +978,11 @@
     "pageTitle": "Prüfung",
     "tabs": {
       "unmatched": "Nicht zugeordnete Kennzeichen",
-      "duplicates": "Mögliche Duplikate",
       "dismissed": "Ignorierte"
     },
     "dismissed": {
       "empty": "Sie haben noch keine Einträge ignoriert.",
+      "emptyHint": "Ignorieren blendet bestimmte Zeilen aus einer einzelnen Datei aus. Wenn Sie ein Kennzeichen bei jedem Import überspringen möchten, erstellen Sie eine Subunternehmer-Regel im Tab \"Nicht zugeordnete Kennzeichen\" — diese Regel gilt auch für zukünftige Imports.",
       "loadError": "Ignorierte Einträge konnten nicht geladen werden.",
       "colPlate": "Kennzeichen",
       "colDate": "Datum",

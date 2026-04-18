@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { toast } from 'sonner';
 import { Upload, CheckCircle2, XCircle, Sparkles, ChevronRight } from 'lucide-react';
@@ -11,7 +11,6 @@ import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import { setPendingSample } from '../state/pendingSampleFile';
 import { formatDateTime } from '../utils/format';
 import type {
-  CommitOverride,
   DraftPreview,
   FuelImportBatchDto,
   FuelImportFormatDto,
@@ -21,9 +20,9 @@ import type {
 const classificationBadge = (c: PreviewRow['classification'], hasError: boolean, t: TFunction) => {
   if (hasError) return { cls: 'bg-red-100 text-red-700', label: t('fuelImport.page.badge.error'), icon: <XCircle className="w-3 h-3" /> };
   switch (c) {
-    case 'NEW':                return { cls: 'bg-green-100 text-green-700', label: t('fuelImport.page.badge.new'), icon: <CheckCircle2 className="w-3 h-3" /> };
-    case 'DUPLICATE':          return { cls: 'bg-gray-200 text-gray-700', label: t('fuelImport.page.badge.duplicate'), icon: null };
-    case 'POSSIBLE_DUPLICATE': return { cls: 'bg-amber-100 text-amber-800', label: t('fuelImport.page.badge.possibleDuplicate'), icon: null };
+    case 'NEW':       return { cls: 'bg-green-100 text-green-700', label: t('fuelImport.page.badge.new'), icon: <CheckCircle2 className="w-3 h-3" /> };
+    case 'DUPLICATE': return { cls: 'bg-gray-200 text-gray-700', label: t('fuelImport.page.badge.duplicate'), icon: null };
+    default:          return { cls: 'bg-gray-200 text-gray-700', label: c, icon: null };
   }
 };
 
@@ -55,10 +54,6 @@ const FuelImportPage = () => {
   const [loading, setLoading] = useState(false);
   const [committing, setCommitting] = useState(false);
   const [batches, setBatches] = useState<FuelImportBatchDto[] | null>(null);
-  /** Rows the user wants to force-import despite the POSSIBLE_DUPLICATE flag.
-   *  Keyed by rowIndex; default behaviour (unchecked) is SKIP per CommitOverride
-   *  contract, so we only record the IMPORT overrides. */
-  const [forceImport, setForceImport] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (!fleetId) return;
@@ -99,7 +94,6 @@ const FuelImportPage = () => {
       setLoading(true);
       const result = await fuelImportApi.preview(fleetId, formatId, file);
       setPreview(result);
-      setForceImport(new Set());
     } catch (err: any) {
       toast.error(err.message ?? t('fuelImport.page.toast.previewError'));
     } finally {
@@ -111,11 +105,10 @@ const FuelImportPage = () => {
     if (!fleetId || !preview) return;
     try {
       setCommitting(true);
-      const overrides: CommitOverride[] = Array.from(forceImport).map((rowIndex) => ({
-        rowIndex,
-        action: 'IMPORT',
-      }));
-      const batch = await fuelImportApi.commit(fleetId, preview.draftId, overrides);
+      // Commit with empty overrides — backend classifier only returns
+      // NEW or DUPLICATE in bulk import (see FuelImportService.classifyDedup),
+      // so there are no POSSIBLE_DUPLICATE rows to override.
+      const batch = await fuelImportApi.commit(fleetId, preview.draftId, []);
       toast.success(t('fuelImport.page.toast.commitSuccess'));
       void loadBatches();
       navigate(`/manager/fuel-imports/${batch.id}`);
@@ -125,14 +118,6 @@ const FuelImportPage = () => {
       setCommitting(false);
     }
   };
-
-  const toggleForceImport = (rowIndex: number) =>
-    setForceImport((prev) => {
-      const next = new Set(prev);
-      if (next.has(rowIndex)) next.delete(rowIndex);
-      else next.add(rowIndex);
-      return next;
-    });
 
   const summary = preview?.summary;
 
@@ -207,27 +192,12 @@ const FuelImportPage = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             <StatCard label={t('fuelImport.page.stat.total')} value={summary.total} />
             <StatCard label={t('fuelImport.page.stat.new')} value={summary.newCount} highlight="green" />
             <StatCard label={t('fuelImport.page.stat.duplicate')} value={summary.duplicateCount} highlight="gray" />
-            <StatCard label={t('fuelImport.page.stat.possibleDuplicate')} value={summary.possibleDuplicateCount} highlight="yellow" />
             <StatCard label={t('fuelImport.page.stat.errorOrUnmatched')} value={summary.errorCount + summary.unmatchedCount} highlight="red" />
           </div>
-
-          {summary.possibleDuplicateCount > 0 && (
-            <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
-              <p className="font-semibold mb-1">
-                {t('fuelImport.page.possibleDupHeading', { count: summary.possibleDuplicateCount })}
-              </p>
-              <p className="text-amber-800">
-                <Trans
-                  i18nKey="fuelImport.page.possibleDupBody"
-                  components={{ 1: <strong /> }}
-                />
-              </p>
-            </div>
-          )}
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
@@ -260,17 +230,6 @@ const FuelImportPage = () => {
                           {b.icon}{b.label}
                         </span>
                         {errorText && <span className="block text-xs text-red-600">{errorText}</span>}
-                        {r.classification === 'POSSIBLE_DUPLICATE' && (
-                          <label className="mt-1 flex items-center gap-1.5 text-[11px] text-amber-800 cursor-pointer select-none">
-                            <input
-                              type="checkbox"
-                              checked={forceImport.has(r.rowIndex)}
-                              onChange={() => toggleForceImport(r.rowIndex)}
-                              className="w-3.5 h-3.5 rounded border-amber-400 text-amber-600 focus:ring-amber-500 cursor-pointer"
-                            />
-                            {t('fuelImport.page.forceImportLabel')}
-                          </label>
-                        )}
                       </td>
                       <td className="px-4 py-3">
                         {r.matchedTruckId

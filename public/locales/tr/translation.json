@@ -975,11 +975,11 @@
     "pageTitle": "İnceleme",
     "tabs": {
       "unmatched": "Eşleşmeyen plakalar",
-      "duplicates": "Yinelenen kayıtlar",
       "dismissed": "Yoksaylanlar"
     },
     "dismissed": {
       "empty": "Henüz yoksaydığınız bir kayıt yok.",
+      "emptyHint": "Yoksay, tek bir partideki belirli satırları göz ardı eder. Bir plakayı her içe aktarmada atlamak istiyorsanız Eşleşmeyen Plakalar sekmesinde \"Taşeron\" kuralı oluşturun — kural gelecekteki dolumlar için de geçerli olur.",
       "loadError": "Yoksaylanlar yüklenemedi.",
       "colPlate": "Plaka",
       "colDate": "Tarih",

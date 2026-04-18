@@ -978,11 +978,11 @@
     "pageTitle": "Review",
     "tabs": {
       "unmatched": "Unmatched plates",
-      "duplicates": "Possible duplicates",
       "dismissed": "Dismissed"
     },
     "dismissed": {
       "empty": "You haven't dismissed any entries yet.",
+      "emptyHint": "Dismiss ignores specific rows from a single batch. If you want to skip a plate on every import, create a Subcontractor rule from the Unmatched plates tab — it applies going forward.",
       "loadError": "Failed to load dismissed entries.",
       "colPlate": "Plate",
       "colDate": "Date",

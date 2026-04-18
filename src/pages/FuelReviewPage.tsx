@@ -1,16 +1,13 @@
-import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Filter, X } from 'lucide-react';
 import { useFleet } from '../contexts/FleetContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
-import { fuelReviewApi } from '../services/api';
 import UnmatchedPlateList from '../components/fuel/UnmatchedPlateList';
-import PossibleDuplicatesList from '../components/fuel/PossibleDuplicatesList';
 import DismissedEntriesList from '../components/fuel/DismissedEntriesList';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 
-type Tab = 'unmatched' | 'duplicates' | 'dismissed';
+type Tab = 'unmatched' | 'dismissed';
 
 export default function FuelReviewPage() {
   const { t } = useTranslation();
@@ -19,24 +16,6 @@ export default function FuelReviewPage() {
   const batchId = params.get('batchId');
   const tab = (params.get('tab') as Tab) ?? 'unmatched';
   const { unmatched: unmatchedCount } = useFuelCounts();
-  const [duplicateCount, setDuplicateCount] = useState<number | null>(null);
-
-  // Duplicates don't have a context — load the list here to show a badge.
-  // Count can go stale after a confirm/dismiss, so reload on batchId change
-  // and on tab switch back into duplicates.
-  useEffect(() => {
-    if (!fleetId) return;
-    let cancelled = false;
-    (async () => {
-      try {
-        const list = await fuelReviewApi.listDuplicates(fleetId, batchId ?? undefined);
-        if (!cancelled) setDuplicateCount(list.length);
-      } catch {
-        // best-effort badge; silence
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [fleetId, batchId, tab]);
 
   if (!fleetId) return null;
 
@@ -64,7 +43,7 @@ export default function FuelReviewPage() {
             </Link>
           </div>
           <Link
-            to={`/manager/fuel-review${tab === 'duplicates' ? '?tab=duplicates' : ''}`}
+            to="/manager/fuel-review"
             className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-md border border-blue-300 text-blue-700 hover:bg-blue-100 transition-colors flex-shrink-0">
             <X className="w-3 h-3" />
             {t('fuelReview.showAll', { defaultValue: 'Tümünü göster' })}
@@ -80,12 +59,6 @@ export default function FuelReviewPage() {
           count={unmatchedCount}
         />
         <TabButton
-          active={tab === 'duplicates'}
-          onClick={() => setTab('duplicates')}
-          label={t('fuelReview.tabs.duplicates')}
-          count={duplicateCount ?? 0}
-        />
-        <TabButton
           active={tab === 'dismissed'}
           onClick={() => setTab('dismissed')}
           label={t('fuelReview.tabs.dismissed')}
@@ -94,7 +67,6 @@ export default function FuelReviewPage() {
       </div>
 
       {tab === 'unmatched' && <UnmatchedPlateList fleetId={fleetId} batchId={batchId} />}
-      {tab === 'duplicates' && <PossibleDuplicatesList fleetId={fleetId} batchId={batchId} />}
       {tab === 'dismissed' && <DismissedEntriesList fleetId={fleetId} />}
     </div>
   );

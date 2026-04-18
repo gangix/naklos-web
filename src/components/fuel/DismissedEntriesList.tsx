@@ -53,8 +53,13 @@ export default function DismissedEntriesList({ fleetId }: Props) {
 
   if (entries.length === 0) {
     return (
-      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center text-sm text-gray-600">
-        {t('fuelReview.dismissed.empty')}
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-center">
+        <p className="text-sm text-gray-700 font-medium">
+          {t('fuelReview.dismissed.empty')}
+        </p>
+        <p className="text-xs text-gray-500 mt-2 max-w-md mx-auto leading-relaxed">
+          {t('fuelReview.dismissed.emptyHint')}
+        </p>
       </div>
     );
   }
