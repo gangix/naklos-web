@@ -22,6 +22,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
     email: '',
     licenseNumber: '',
     licenseClass: 'C',
+    licenseExpiryDate: '',
     temporaryPassword: '',
   });
 
@@ -31,10 +32,24 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
     setError(null);
 
     try {
-      await driverApi.register({
-        ...formData,
+      const { licenseExpiryDate, ...registerPayload } = formData;
+      const created = await driverApi.register({
+        ...registerPayload,
         temporaryPassword: formData.temporaryPassword || undefined,
-      });
+      }) as { id: string };
+
+      // Backend Driver.register() doesn't take expiryDate — it's set via a
+      // separate mutator. Send it immediately after register so the fresh
+      // driver doesn't flash MISSING_DOCS on the dashboard between registration
+      // and the manager navigating to the detail page to fill it in. Failure
+      // here is non-fatal: the driver exists, manager can set expiry later.
+      if (licenseExpiryDate && created?.id) {
+        try {
+          await driverApi.updateLicense(created.id, licenseExpiryDate);
+        } catch (err) {
+          console.error('License expiry post-register update failed', err);
+        }
+      }
 
       // Reset form and close
       setFormData({
@@ -44,6 +59,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
         email: '',
         licenseNumber: '',
         licenseClass: 'C',
+        licenseExpiryDate: '',
         temporaryPassword: '',
       });
       onSuccess();
@@ -138,6 +154,15 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
               <option value="D">{t('addDriver.classD')}</option>
               <option value="DE">{t('addDriver.classDE')}</option>
             </Select>
+
+            <TextInput
+              label={t('addDriver.licenseExpiryDate')}
+              type="date"
+              value={formData.licenseExpiryDate}
+              onChange={(e) => setFormData({ ...formData, licenseExpiryDate: e.target.value })}
+              min={new Date().toISOString().split('T')[0]}
+              hint={t('addDriver.licenseExpiryHint')}
+            />
 
             <TextInput
               label={t('addDriver.tempPassword')}

@@ -928,6 +928,8 @@
     "classC1E": "C1E (Small Truck + Trailer)",
     "classD": "D (Bus)",
     "classDE": "DE (Bus + Trailer)",
+    "licenseExpiryDate": "License Expiry Date",
+    "licenseExpiryHint": "Leave blank and the driver shows up as \"missing docs\".",
     "tempPassword": "Temporary Password",
     "tempPasswordPlaceholder": "At least 8 characters",
     "tempPasswordHint": "The driver will change their password on first sign-in. Leave blank to skip account creation.",
@@ -1446,6 +1448,10 @@
     "document": {
       "title": "Delete document",
       "description": "{{filename}} will be deleted."
+    },
+    "certificate": {
+      "title": "Delete {{type}}",
+      "description": "{{type}} record will be deleted. Past document uploads stay."
     },
     "unassignDriver": {
       "title": "Unassign driver",

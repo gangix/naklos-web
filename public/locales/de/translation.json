@@ -928,6 +928,8 @@
     "classC1E": "C1E (Kleiner Lkw + Anhänger)",
     "classD": "D (Bus)",
     "classDE": "DE (Bus + Anhänger)",
+    "licenseExpiryDate": "Führerschein-Ablaufdatum",
+    "licenseExpiryHint": "Leer lassen und der Fahrer erscheint als \"Dokumente fehlen\".",
     "tempPassword": "Temporäres Passwort",
     "tempPasswordPlaceholder": "Mindestens 8 Zeichen",
     "tempPasswordHint": "Der Fahrer ändert sein Passwort bei der ersten Anmeldung. Leer lassen, um kein Konto zu erstellen.",
@@ -1446,6 +1448,10 @@
     "document": {
       "title": "Dokument löschen",
       "description": "{{filename}} wird gelöscht."
+    },
+    "certificate": {
+      "title": "{{type}} löschen",
+      "description": "{{type}}-Eintrag wird gelöscht. Frühere Dokumenten-Uploads bleiben."
     },
     "unassignDriver": {
       "title": "Fahrer entfernen",

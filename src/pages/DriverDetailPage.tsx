@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { driverApi } from '../services/api';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select, TextInput } from '../components/common/FormField';
-import { ArrowLeft, Mail, RefreshCw } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { computeDriverWarnings } from '../utils/driverWarnings';
@@ -42,8 +42,11 @@ const DriverDetailPage = () => {
   const [certificateNumber, setCertificateNumber] = useState('');
   const [certificateIssueDate, setCertificateIssueDate] = useState('');
   const [certificateExpiryDate, setCertificateExpiryDate] = useState('');
-  const [confirmAction, setConfirmAction] = useState<'delete' | null>(null);
-  const [pendingCertificateId, setPendingCertificateId] = useState<string | null>(null);
+  // Separate the two delete confirm paths so they can't collide. Earlier
+  // they shared `confirmAction === 'delete'` + a secondary `pendingCertificateId`
+  // field — a missed reset anywhere could delete the wrong target.
+  const [certDeleteId, setCertDeleteId] = useState<string | null>(null);
+  const [driverDeleteOpen, setDriverDeleteOpen] = useState(false);
   const { refresh: refreshRoster } = useFleetRoster();
 
   useEffect(() => {
@@ -194,21 +197,15 @@ const DriverDetailPage = () => {
     }
   };
 
-  const handleRemoveCertificate = (certificateId: string) => {
-    setPendingCertificateId(certificateId);
-    setConfirmAction('delete');
-  };
-
   const runRemoveCertificate = async () => {
-    if (!driverId || !pendingCertificateId) return;
+    if (!driverId || !certDeleteId) return;
     try {
-      await driverApi.removeCertificate(driverId, pendingCertificateId);
+      await driverApi.removeCertificate(driverId, certDeleteId);
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
       refreshRoster();
       toast.success(t('toast.success.certificateRemoved'));
-      setConfirmAction(null);
-      setPendingCertificateId(null);
+      setCertDeleteId(null);
     } catch (err) {
       console.error('Error removing certificate:', err);
       toast.error(t('toast.error.deleteCertificate'));
@@ -275,7 +272,7 @@ const DriverDetailPage = () => {
       setDeleting(true);
       await driverApi.delete(driverId);
       toast.success(t('toast.success.driverDeleted'));
-      setConfirmAction(null);
+      setDriverDeleteOpen(false);
       refreshRoster();
       navigate('/manager/drivers');
     } catch (err) {
@@ -550,7 +547,7 @@ const DriverDetailPage = () => {
                     {cert.type === 'SRC' ? t('driver.srcCertificate') : t('driver.cpcCertificate')}
                   </h3>
                   <button
-                    onClick={() => handleRemoveCertificate(cert.id)}
+                    onClick={() => setCertDeleteId(cert.id)}
                     className="text-sm text-red-600 font-medium"
                   >
                     {t('common.delete')}
@@ -580,12 +577,20 @@ const DriverDetailPage = () => {
         )}
       </div>
 
-      {/* Assigned truck card */}
-      {driver.assignedTruckPlate && (
-        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-2">{t('driver.assignedTruck')}</h2>
-          <p className="text-sm font-medium text-gray-900">{driver.assignedTruckPlate}</p>
-        </div>
+      {/* Assigned-truck card: click-through to the truck detail. Previously a
+          read-only plate display, which forced the user to navigate via the
+          trucks list to reassign / see vehicle state. */}
+      {driver.assignedTruckId && driver.assignedTruckPlate && (
+        <Link
+          to={`/manager/trucks/${driver.assignedTruckId}`}
+          className="group flex items-center gap-3 bg-white rounded-xl p-4 shadow-sm mb-4 hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex-1 min-w-0">
+            <p className="text-xs text-gray-600 mb-0.5">{t('driver.assignedTruck')}</p>
+            <p className="text-sm font-semibold text-gray-900 tracking-tight">{driver.assignedTruckPlate}</p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 flex-shrink-0" />
+        </Link>
       )}
 
       {/* Invite status */}
@@ -664,7 +669,7 @@ const DriverDetailPage = () => {
       {/* Delete driver */}
       <div className="mt-6">
         <button
-          onClick={() => { setPendingCertificateId(null); setConfirmAction('delete'); }}
+          onClick={() => setDriverDeleteOpen(true)}
           disabled={deleting}
           className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
         >
@@ -686,19 +691,25 @@ const DriverDetailPage = () => {
         />
       )}
 
-      {confirmAction === 'delete' && pendingCertificateId && (
-        <ConfirmActionModal
-          title={t('confirmDelete.document.title')}
-          description={t('confirmDelete.document.description', { filename: t('driver.certificates') })}
-          bullets={[t('common.irreversible')]}
-          confirmLabel={t('common.delete')}
-          tone="danger"
-          onConfirm={runRemoveCertificate}
-          onClose={() => { setConfirmAction(null); setPendingCertificateId(null); }}
-        />
-      )}
+      {certDeleteId && (() => {
+        const cert = driver.certificates?.find((c) => c.id === certDeleteId);
+        const certTypeLabel = cert?.type === 'SRC'
+          ? t('driver.srcCertificate')
+          : cert?.type === 'CPC' ? t('driver.cpcCertificate') : t('driver.certificates');
+        return (
+          <ConfirmActionModal
+            title={t('confirmDelete.certificate.title', { type: certTypeLabel })}
+            description={t('confirmDelete.certificate.description', { type: certTypeLabel })}
+            bullets={[t('common.irreversible')]}
+            confirmLabel={t('common.delete')}
+            tone="danger"
+            onConfirm={runRemoveCertificate}
+            onClose={() => setCertDeleteId(null)}
+          />
+        );
+      })()}
 
-      {confirmAction === 'delete' && !pendingCertificateId && (
+      {driverDeleteOpen && (
         <ConfirmActionModal
           title={t('confirmDelete.driver.title')}
           description={t('confirmDelete.driver.description', { name: fullName })}
@@ -706,7 +717,7 @@ const DriverDetailPage = () => {
           confirmLabel={t('common.delete')}
           tone="danger"
           onConfirm={runDeleteDriver}
-          onClose={() => setConfirmAction(null)}
+          onClose={() => setDriverDeleteOpen(false)}
         />
       )}
     </div>
