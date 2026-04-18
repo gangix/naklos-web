@@ -1407,7 +1407,7 @@
         "title": "Echtes Problem — markieren",
         "hint": {
           "dataBroken": "Bleibt dauerhaft aus der Analyse ausgeschlossen.",
-          "behaviour": "Wird dokumentiert; beeinflusst die Analyse nicht."
+          "behaviour": "Warnung wird geschlossen; Tankung bleibt gültig gezählt."
         }
       },
       "dismissBtn": {
