@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
 import { useFuelCounts } from '../../contexts/FuelCountsContext';
-import { useDocumentWarnings } from '../../hooks/useDocumentWarnings';
+import { useDocumentAttention } from '../../hooks/useDocumentAttention';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 import UserMenu from './UserMenu';
 
@@ -43,7 +43,7 @@ const ManagerTopNav = () => {
   const { t } = useTranslation();
   const { logout } = useAuth();
   const { plan } = useFleet();
-  const warningCount = useDocumentWarnings();
+  const { trucksWithWarnings, driversWithWarnings } = useDocumentAttention();
   const { total: fuelPendingCount } = useFuelCounts();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -64,8 +64,13 @@ const ManagerTopNav = () => {
       : []),
   ];
 
+  /** Badge convention: each nav item's badge = items-needing-action
+   *  **in that section**. Ana Sayfa has no badge (it's the overview
+   *  landing page; its dashboard IS the aggregate). Matches inbox-count
+   *  semantics used by Samsara/Fleetio/Linear. */
   const badgeCountFor = (id: NavItem['id']): number => {
-    if (id === 'dashboard') return warningCount;
+    if (id === 'trucks') return trucksWithWarnings;
+    if (id === 'drivers') return driversWithWarnings;
     if (id === 'fuel') return fuelPendingCount;
     return 0;
   };

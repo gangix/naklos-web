@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel } from 'lucide-react';
+import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
+import { useFuelCounts } from '../contexts/FuelCountsContext';
 import type { Truck as TruckType, Driver } from '../types';
-import { deriveTruckStatus, deriveDriverStatus, STATUS_BADGE, type DerivedStatus } from '../utils/derivedStatus';
+import { deriveTruckStatus, deriveDriverStatus, type DerivedStatus } from '../utils/derivedStatus';
+import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 
 interface ExpiringItem {
   /** i18n key for the document type label (e.g. 'doc.compulsoryInsurance') */
@@ -21,19 +23,11 @@ interface EntityWarningGroup {
   worstDaysLeft: number | null; // null only when ALL items are missing dates
 }
 
-const daysUntil = (dateStr: string | null | undefined): number | null => {
-  if (!dateStr) return null;
-  const target = new Date(dateStr);
-  target.setHours(0, 0, 0, 0);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return Math.floor((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-};
-
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { plan } = useFleet();
+  const { total: fuelAttentionCount } = useFuelCounts();
   // Same gate ManagerTopNav uses — fuel surface is paid-only in prod.
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
@@ -63,8 +57,6 @@ const DashboardPage = () => {
   useEffect(() => {
     loadAll();
   }, []);
-
-  const WARN_THRESHOLD_DAYS = 30;
 
   const warningGroups = useMemo<EntityWarningGroup[]>(() => {
     const groups: EntityWarningGroup[] = [];
@@ -132,7 +124,11 @@ const DashboardPage = () => {
     return groups;
   }, [trucks, drivers]);
 
-  const totalWarningCount = warningGroups.reduce((sum, g) => sum + g.items.length, 0);
+  const truckWarningGroups = warningGroups.filter((g) => g.entity === 'truck');
+  const driverWarningGroups = warningGroups.filter((g) => g.entity === 'driver');
+  const truckDocsCount = truckWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
+  const driverDocsCount = driverWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
+  const totalDocsCount = truckDocsCount + driverDocsCount;
 
   const truckCounts = useMemo(
     () => trucks.reduce<Record<DerivedStatus, number>>(
@@ -219,46 +215,102 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <KpiCard
-          label={t('nav.trucks')}
-          icon={Truck}
-          accentBar="bg-blue-500"
-          iconBg="bg-blue-50 text-blue-600"
-          counts={truckCounts}
-          activeLabel={t('derivedStatus.ACTIVE')}
-          readyLabel={t('derivedStatus.READY')}
-          missingLabel={t('derivedStatus.MISSING_DOCS')}
-          onClick={() => navigate('/manager/trucks')}
-        />
-        <KpiCard
-          label={t('nav.drivers')}
-          icon={Users}
-          accentBar="bg-emerald-500"
-          iconBg="bg-emerald-50 text-emerald-600"
-          counts={driverCounts}
-          activeLabel={t('derivedStatus.ACTIVE')}
-          readyLabel={t('derivedStatus.READY')}
-          missingLabel={t('derivedStatus.MISSING_DOCS')}
-          onClick={() => navigate('/manager/drivers')}
-        />
-      </div>
+      {/* Section A — FLEET STATE: entity counts, no urgency. Small status
+          dots inside each card for a quick secondary signal. */}
+      <section className="mb-6">
+        <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">
+          {t('dashboard.fleetState')}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FleetStatCard
+            label={t('nav.trucks')}
+            icon={Truck}
+            iconTone="bg-blue-50 text-blue-600"
+            total={trucks.length}
+            missingCount={truckCounts.MISSING_DOCS}
+            missingLabel={t('derivedStatus.MISSING_DOCS')}
+            onClick={() => navigate('/manager/trucks')}
+          />
+          <FleetStatCard
+            label={t('nav.drivers')}
+            icon={Users}
+            iconTone="bg-emerald-50 text-emerald-600"
+            total={drivers.length}
+            missingCount={driverCounts.MISSING_DOCS}
+            missingLabel={t('derivedStatus.MISSING_DOCS')}
+            onClick={() => navigate('/manager/drivers')}
+          />
+        </div>
+      </section>
 
-      {/* Warnings — soft white card with a red-tinted header strip. */}
+      {/* Section B — ATTENTION ITEMS: matches the top-nav badges exactly.
+          Fuel row → items (5); Araç/Şoför rows → entities (1 truck, 1 driver)
+          with "N belge" inside. Rendered only when something actually needs
+          attention, otherwise fall through to the empty state below. */}
+      {(fuelAttentionCount > 0 || truckWarningGroups.length > 0 || driverWarningGroups.length > 0) && (
+        <section className="mb-6">
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              {t('dashboard.attention.heading')}
+            </h2>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100">
+            {fuelTrackingEnabled && fuelAttentionCount > 0 && (
+              <AttentionRow
+                tone="danger"
+                icon={AlertTriangle}
+                title={t('dashboard.attention.fuelTitle')}
+                subtitle={t('dashboard.attention.fuelSubtitle')}
+                count={fuelAttentionCount}
+                unit={t('dashboard.attention.fuelUnit')}
+                onClick={() => navigate('/manager/fuel-alerts')}
+              />
+            )}
+            {truckWarningGroups.length > 0 && (
+              <AttentionRow
+                tone="warning"
+                icon={FileText}
+                title={t('dashboard.attention.trucksTitle')}
+                subtitle={t('dashboard.attention.trucksSubtitle')}
+                sidePill={t('dashboard.attention.docsCount', { count: truckDocsCount })}
+                count={truckWarningGroups.length}
+                unit={t('dashboard.attention.trucksUnit')}
+                onClick={() => navigate('/manager/trucks')}
+              />
+            )}
+            {driverWarningGroups.length > 0 && (
+              <AttentionRow
+                tone="warning"
+                icon={FileText}
+                title={t('dashboard.attention.driversTitle')}
+                subtitle={t('dashboard.attention.driversSubtitle')}
+                sidePill={t('dashboard.attention.docsCount', { count: driverDocsCount })}
+                count={driverWarningGroups.length}
+                unit={t('dashboard.attention.driversUnit')}
+                onClick={() => navigate('/manager/drivers')}
+              />
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Section C — PER-ENTITY DETAIL: expiring-document rows so the manager
+          can jump straight to the affected truck / driver. */}
       {warningGroups.length > 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="bg-red-50 border-b border-red-100 px-4 py-3 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-red-600" />
-            <h2 className="font-bold text-red-900">{t('dashboard.warningSection')}</h2>
-            <span className="ml-auto text-sm text-red-700 font-medium">
+        <section>
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+              {t('dashboard.detailSection')}
+            </h2>
+            <span className="text-xs text-gray-500 tabular-nums">
               {t('dashboard.recordsAndDocs', {
                 count: warningGroups.length,
                 records: warningGroups.length,
-                docs: totalWarningCount,
+                docs: totalDocsCount,
               })}
             </span>
           </div>
-          <div className="divide-y divide-gray-100 max-h-96 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100 max-h-96 overflow-y-auto">
             {warningGroups.map((group) => (
               <button
                 key={`${group.entity}-${group.entityId}`}
@@ -288,11 +340,11 @@ const DashboardPage = () => {
               </button>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Empty state — soft green tile, like the original. */}
-      {warningGroups.length === 0 && !loading && (
+      {/* Empty state — shown only when nothing needs attention anywhere. */}
+      {warningGroups.length === 0 && fuelAttentionCount === 0 && !loading && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
           <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
           <p className="text-sm font-medium text-green-900">{t('dashboard.allCurrent')}</p>
@@ -331,49 +383,98 @@ const DayCount = ({ value, t }: DayCountProps) => {
   );
 };
 
-interface KpiCardProps {
+interface FleetStatCardProps {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  accentBar: string;
-  iconBg: string;
-  counts: Record<DerivedStatus, number>;
-  activeLabel: string;
-  readyLabel: string;
+  iconTone: string;
+  total: number;
+  missingCount: number;
   missingLabel: string;
   onClick: () => void;
 }
 
-const KpiCard = ({
-  label, icon: Icon, accentBar, iconBg, counts,
-  activeLabel, readyLabel, missingLabel, onClick,
-}: KpiCardProps) => (
+/** Calm entity-count card. Big number = total; a single red dot-chip appears
+ *  below when some entities have missing documents. No "ready"/"active" chip
+ *  — healthy count is just (total − missing), inferable from the big number. */
+const FleetStatCard = ({
+  label, icon: Icon, iconTone, total, missingCount, missingLabel, onClick,
+}: FleetStatCardProps) => (
   <button
     onClick={onClick}
-    className="bg-white rounded-xl hover:shadow-lg hover:shadow-gray-200/50 transition-all duration-200 p-5 text-left border border-gray-100 group hover:-translate-y-0.5 overflow-hidden relative"
+    className="group bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all text-left"
   >
-    <div className={`absolute left-0 top-0 bottom-0 w-1 rounded-l-xl ${accentBar}`} />
     <div className="flex items-center justify-between mb-3">
-      <p className="text-sm text-gray-500 font-medium">{label}</p>
-      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${iconBg}`}>
-        <Icon className="w-5 h-5" />
+      <div className="flex items-center gap-2">
+        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${iconTone}`}>
+          <Icon className="w-4 h-4" />
+        </div>
+        <span className="text-sm font-semibold text-gray-700">{label}</span>
       </div>
+      <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
     </div>
-    <div className="flex items-baseline gap-3 flex-wrap">
-      <span>
-        <span className={`text-2xl font-extrabold tracking-tight tabular-nums ${STATUS_BADGE.ACTIVE.text}`}>{counts.ACTIVE}</span>
-        {' '}<span className="text-xs text-gray-500 font-medium">{activeLabel}</span>
-      </span>
-      <span>
-        <span className={`text-2xl font-extrabold tracking-tight tabular-nums ${STATUS_BADGE.READY.text}`}>{counts.READY}</span>
-        {' '}<span className="text-xs text-gray-500 font-medium">{readyLabel}</span>
-      </span>
-      {counts.MISSING_DOCS > 0 && (
-        <span>
-          <span className={`text-2xl font-extrabold tracking-tight tabular-nums ${STATUS_BADGE.MISSING_DOCS.text}`}>{counts.MISSING_DOCS}</span>
-          {' '}<span className="text-xs text-red-600 font-medium">{missingLabel}</span>
+    <div className="flex items-baseline gap-2">
+      <span className="text-3xl font-extrabold text-gray-900 tracking-tight tabular-nums">{total}</span>
+    </div>
+    {missingCount > 0 && (
+      <div className="mt-3 text-xs">
+        <span className="inline-flex items-center gap-1 text-red-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+          {missingCount} {missingLabel}
         </span>
-      )}
+      </div>
+    )}
+  </button>
+);
+
+type AttentionTone = 'danger' | 'warning';
+
+const ATTENTION_TONE: Record<AttentionTone, string> = {
+  danger: 'bg-red-50 text-red-600',
+  warning: 'bg-amber-50 text-amber-600',
+};
+
+interface AttentionRowProps {
+  icon: React.ComponentType<{ className?: string }>;
+  tone: AttentionTone;
+  title: string;
+  subtitle: string;
+  /** Small pill next to the title (e.g. "8 belge" as sub-detail). Optional. */
+  sidePill?: string;
+  /** Big right-aligned number — must match the nav badge for this destination. */
+  count: number;
+  unit: string;
+  onClick: () => void;
+}
+
+/** Single row inside the "Dikkatinize sunulan" card. Count = same metric the
+ *  nav badge shows, so the math reconciles at a glance. Rows sit inside a
+ *  `divide-y` parent; no per-row border prop needed. */
+const AttentionRow = ({
+  icon: Icon, tone, title, subtitle, sidePill, count, unit, onClick,
+}: AttentionRowProps) => (
+  <button
+    onClick={onClick}
+    className="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors text-left"
+  >
+    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${ATTENTION_TONE[tone]}`}>
+      <Icon className="w-5 h-5" />
     </div>
+    <div className="flex-1 min-w-0">
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-semibold text-gray-900">{title}</span>
+        {sidePill && (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[10px] font-bold tabular-nums">
+            {sidePill}
+          </span>
+        )}
+      </div>
+      <p className="text-xs text-gray-500 mt-0.5 truncate">{subtitle}</p>
+    </div>
+    <div className="text-right flex-shrink-0">
+      <div className="text-2xl font-extrabold text-gray-900 tabular-nums leading-none">{count}</div>
+      <div className="text-[10px] text-gray-400 mt-0.5">{unit}</div>
+    </div>
+    <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
   </button>
 );
 
