@@ -1138,6 +1138,9 @@
     "efficiency": {
       "actual": "Şu anki tüketim",
       "actualSource": "Son dolumlardan hesaplandı",
+      "aggregateTag": "Tahmini",
+      "aggregateHint": "Kilometre bilgisi seyrek — toplam yakıt ve ilk/son kilometreden yaklaşık hesaplandı.",
+      "aggregateSource": "Eksik kilometre nedeniyle yaklaşık",
       "target": "Hedef",
       "targetSource": "Elle girilmiş · Ayarlardan değiştir",
       "targetEmpty": "Henüz hedef girilmedi",

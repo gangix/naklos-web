@@ -164,6 +164,10 @@ export interface TruckAnomalyOverrideRequest {
 export interface TruckBaseline {
   manual: number | null;        // BigDecimal
   derived: number | null;       // BigDecimal
+  /** How `derived` was computed. AGGREGATE = rough estimate from sparse
+   *  odometer data; PAIR = confident multi-interval rolling average; null
+   *  when derived is null. */
+  derivedMethod: 'PAIR' | 'AGGREGATE' | null;
   recomputedAt: string | null;
   fuelType: FuelType | null;
   tankCapacityLiters: number | null;

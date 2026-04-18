@@ -1139,6 +1139,9 @@
     "efficiency": {
       "actual": "Actual consumption",
       "actualSource": "Computed from recent refuels",
+      "aggregateTag": "Estimate",
+      "aggregateHint": "Odometer data is sparse — estimated from total fuel and the earliest/latest readings.",
+      "aggregateSource": "Estimated due to sparse odometer data",
       "target": "Target",
       "targetSource": "Set manually · Change in settings",
       "targetEmpty": "No target set yet",

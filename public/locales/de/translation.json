@@ -1139,6 +1139,9 @@
     "efficiency": {
       "actual": "Aktueller Verbrauch",
       "actualSource": "Aus jüngsten Tankungen berechnet",
+      "aggregateTag": "Schätzung",
+      "aggregateHint": "Kilometerstände sind lückenhaft — aus Gesamtkraftstoff und ersten/letzten Werten geschätzt.",
+      "aggregateSource": "Schätzung wegen fehlender Kilometerstände",
       "target": "Zielwert",
       "targetSource": "Manuell gesetzt · In den Einstellungen ändern",
       "targetEmpty": "Noch kein Zielwert gesetzt",

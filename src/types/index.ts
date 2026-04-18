@@ -43,6 +43,10 @@ export interface Truck {
   /** Rolling L/100km average auto-computed from recent fuel entries. Null
    *  when the truck has too little history for a stable baseline. */
   expectedLPer100KmDerived: number | null;
+  /** How {@link expectedLPer100KmDerived} was produced. PAIR is the confident
+   *  default (multi-interval rolling average); AGGREGATE is a rough fallback
+   *  used when odometer data is sparse — the UI should mark it as tahmini. */
+  baselineMethod: 'PAIR' | 'AGGREGATE' | null;
   /** Fleet-manager-entered L/100km target. Null = not set. */
   expectedLPer100KmManual: number | null;
 }
