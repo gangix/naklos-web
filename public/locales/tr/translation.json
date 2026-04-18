@@ -984,8 +984,10 @@
     "nav": {
       "imports": "İçe Aktar",
       "formats": "Formatlar",
-      "review": "Eşleşmeyen Plakalar",
-      "resolutions": "Kurallar"
+      "review": "İnceleme",
+      "resolutions": "Plaka Kuralları",
+      "settings": "Ayarlar",
+      "alertsConfig": "Uyarı Kuralları"
     },
     "resolutions": {
       "title": "Plaka Kuralları",
@@ -1031,6 +1033,7 @@
       "duplicates": "Bekleyen olası yineleme yok."
     },
     "banner": {
+      "hide": "Bu açıklamayı gizle",
       "lead": "Bu plakalardaki kayıtlar bir araçla eşleşmedi ve analizlere dahil edilmiyor. 4 seçeneğiniz var:",
       "createTruck": {
         "label": "Araç oluştur",
@@ -1250,6 +1253,65 @@
     }
   },
   "fuelImport": {
+    "page": {
+      "title": "Yakıt Dosyası İçe Aktar",
+      "formatLabel": "Format",
+      "formatPlaceholder": "— seçiniz —",
+      "fileLabel": "Yakıt dosyası (XLSX)",
+      "previewBtn": "Önizle",
+      "previewing": "Önizleniyor…",
+      "cancelBtn": "Vazgeç",
+      "commitBtn": "Onayla ve Aktar",
+      "committing": "Aktarılıyor…",
+      "historyHeading": "Son içe aktarmalar",
+      "mismatchTitle": "Bu dosya seçtiğiniz formata uymuyor",
+      "mismatchBody": "Sütun isimleri tanınmadı. Endişelenmeyin — dosyanızı bir saniyede tanıyalım. Tek tıkla dosyanıza özel bir format oluşturalım, kolonları otomatik eşleştireceğiz.",
+      "mismatchCta": "Dosyama özel format oluştur",
+      "possibleDupHeading_one": "{{count}} olası yinelenen kayıt var",
+      "possibleDupHeading_other": "{{count}} olası yinelenen kayıt var",
+      "possibleDupBody": "Bu kayıtlar varsayılan olarak atlanacak. Aslında farklı bir dolum olduğunu düşünüyorsanız ilgili satırda <1>Yine de aktar</1> kutusunu işaretleyin.",
+      "forceImportLabel": "Yine de aktar",
+      "stat": {
+        "total": "Toplam",
+        "new": "Yeni",
+        "duplicate": "Yinelenen",
+        "possibleDuplicate": "Olası yinelenen",
+        "errorOrUnmatched": "Hata / Eşlenmemiş"
+      },
+      "badge": {
+        "error": "Hata",
+        "new": "Yeni",
+        "duplicate": "Yinelenen",
+        "possibleDuplicate": "Olası yinelenen"
+      },
+      "table": {
+        "rowNumber": "#",
+        "plate": "Plaka",
+        "date": "Tarih",
+        "fuel": "Yakıt",
+        "liters": "Litre",
+        "total": "Tutar",
+        "status": "Durum",
+        "truck": "Araç",
+        "matched": "Eşlendi",
+        "unmatched": "Eşleşmedi"
+      },
+      "batchStatus": {
+        "error_one": "{{count}} hata",
+        "error_other": "{{count}} hata",
+        "unmatched_one": "{{count}} eşleşmedi",
+        "unmatched_other": "{{count}} eşleşmedi",
+        "imported_one": "{{count}} içe aktarıldı",
+        "imported_other": "{{count}} içe aktarıldı"
+      },
+      "toast": {
+        "formatsLoadError": "Formatlar yüklenemedi",
+        "selectFormatAndFile": "Format ve dosya seçin",
+        "previewError": "Önizleme başarısız",
+        "commitSuccess": "İçe aktarma tamamlandı",
+        "commitError": "İçe aktarma başarısız"
+      }
+    },
     "field": {
       "plate": "Plaka",
       "date": "Tarih",
@@ -1273,7 +1335,43 @@
       "integerHasDecimals": "{{field}} tam sayı olmalı: {{value}}."
     }
   },
+  "fuelFormats": {
+    "toast": {
+      "loadError": "Formatlar yüklenemedi",
+      "cloneSuccess": "Format klonlandı",
+      "cloneError": "Klonlama başarısız",
+      "deactivateSuccess": "Format pasifleştirildi",
+      "deactivateError": "Pasifleştirme başarısız"
+    },
+    "clone": {
+      "title": "Formatı klonla",
+      "description": "Bu formatın bir kopyasını oluşturup filonuz için uyarlayabilirsiniz. Orijinal dokunulmaz kalır.",
+      "defaultName": "{{name}} (Kopya)",
+      "nameLabel": "Yeni formatın adı",
+      "save": "Klonla",
+      "saving": "Klonlanıyor…"
+    },
+    "deactivate": {
+      "title": "Formatı pasifleştir",
+      "description": "\"{{name}}\" pasifleştirilecek. İçe aktarma ekranında artık seçilemez; geçmiş partilere bağlı kalır.",
+      "confirm": "Pasifleştir"
+    }
+  },
   "fuelBatch": {
+    "pageTitle": "İçe Aktarma Özeti",
+    "notFound": "Parti bulunamadı",
+    "field": {
+      "file": "Dosya",
+      "provider": "Sağlayıcı",
+      "status": "Durum",
+      "uploadedAt": "Yüklenme",
+      "completedAt": "Tamamlanma"
+    },
+    "status": {
+      "PROCESSING": "İşleniyor",
+      "COMPLETED": "Tamamlandı",
+      "FAILED": "Başarısız"
+    },
     "outcome": {
       "cleanSuccess": {
         "title": "{{count}} kayıt aktarıldı",

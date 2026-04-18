@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Users } from 'lucide-react';
+import { Users, X } from 'lucide-react';
 import { fuelReviewApi } from '../../services/api';
 import { useFuelCounts } from '../../contexts/FuelCountsContext';
 import type { UnmatchedPlateGroup } from '../../types/fuel';
 import UnmatchedPlateRow from './UnmatchedPlateRow';
 import FloatingSelectionBar from '../common/FloatingSelectionBar';
+
+const BANNER_HIDDEN_KEY = 'naklos.fuelReview.unmatchedBannerHidden';
 
 interface Props { fleetId: string; batchId: string | null; }
 
@@ -17,6 +19,16 @@ export default function UnmatchedPlateList({ fleetId, batchId }: Props) {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [bulking, setBulking] = useState(false);
+  // Explanation banner: shown by default, hidden after the user dismisses it.
+  // localStorage per browser — no user-account sync, but matches the "I know
+  // how this works now" signal scope (per-device is fine for KOBİ).
+  const [bannerHidden, setBannerHidden] = useState(() => {
+    try { return localStorage.getItem(BANNER_HIDDEN_KEY) === '1'; } catch { return false; }
+  });
+  const hideBanner = () => {
+    setBannerHidden(true);
+    try { localStorage.setItem(BANNER_HIDDEN_KEY, '1'); } catch { /* no-op */ }
+  };
 
   const refresh = async () => {
     setLoading(true);
@@ -92,17 +104,28 @@ export default function UnmatchedPlateList({ fleetId, batchId }: Props) {
 
   return (
     <div className="space-y-3 pb-24">
-      <div className="bg-blue-50/60 border border-blue-200 rounded-xl p-4 text-sm text-gray-700">
-        <p className="mb-2">{t('fuelReview.banner.lead')}</p>
-        <ul className="space-y-1 text-xs text-gray-600 pl-1">
-          {(['createTruck', 'alias', 'subcontractor', 'dismiss'] as const).map(key => (
-            <li key={key}>
-              <span className="inline-block w-28 font-semibold text-gray-800">{t(`fuelReview.banner.${key}.label`)}</span>
-              <span>— {t(`fuelReview.banner.${key}.desc`)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {!bannerHidden && (
+        <div className="bg-blue-50/60 border border-blue-200 rounded-xl p-4 text-sm text-gray-700 relative">
+          <button
+            type="button"
+            onClick={hideBanner}
+            className="absolute top-2 right-2 w-7 h-7 rounded-md text-blue-600 hover:bg-blue-100 flex items-center justify-center transition-colors"
+            aria-label={t('fuelReview.banner.hide')}
+            title={t('fuelReview.banner.hide')}
+          >
+            <X className="w-4 h-4" />
+          </button>
+          <p className="mb-2 pr-6">{t('fuelReview.banner.lead')}</p>
+          <ul className="space-y-1 text-xs text-gray-600 pl-1">
+            {(['createTruck', 'alias', 'subcontractor', 'dismiss'] as const).map(key => (
+              <li key={key}>
+                <span className="inline-block w-28 font-semibold text-gray-800">{t(`fuelReview.banner.${key}.label`)}</span>
+                <span>— {t(`fuelReview.banner.${key}.desc`)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {groups.map(g => (
         <UnmatchedPlateRow
           key={g.normalizedPlate}

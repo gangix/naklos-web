@@ -985,8 +985,10 @@
     "nav": {
       "imports": "Import",
       "formats": "Formats",
-      "review": "Unmatched plates",
-      "resolutions": "Rules"
+      "review": "Review",
+      "resolutions": "Plate rules",
+      "settings": "Settings",
+      "alertsConfig": "Alert rules"
     },
     "resolutions": {
       "title": "Plate Rules",
@@ -1032,6 +1034,7 @@
       "duplicates": "No pending duplicates."
     },
     "banner": {
+      "hide": "Hide this explanation",
       "lead": "These plates' records aren't matched to a truck and aren't in analytics. 4 ways to resolve:",
       "createTruck": {
         "label": "Create truck",
@@ -1251,6 +1254,65 @@
     }
   },
   "fuelImport": {
+    "page": {
+      "title": "Import fuel file",
+      "formatLabel": "Format",
+      "formatPlaceholder": "— select —",
+      "fileLabel": "Fuel file (XLSX)",
+      "previewBtn": "Preview",
+      "previewing": "Previewing…",
+      "cancelBtn": "Cancel",
+      "commitBtn": "Confirm & Import",
+      "committing": "Importing…",
+      "historyHeading": "Recent imports",
+      "mismatchTitle": "This file doesn't match the chosen format",
+      "mismatchBody": "We didn't recognize the column headers. No worries — let's get your file recognized in a second. One click creates a custom format, columns auto-mapped.",
+      "mismatchCta": "Create a format for my file",
+      "possibleDupHeading_one": "{{count}} possible-duplicate row",
+      "possibleDupHeading_other": "{{count}} possible-duplicate rows",
+      "possibleDupBody": "These rows will be skipped by default. If you think a row is actually a different refuel, check the <1>Import anyway</1> box in that row.",
+      "forceImportLabel": "Import anyway",
+      "stat": {
+        "total": "Total",
+        "new": "New",
+        "duplicate": "Duplicate",
+        "possibleDuplicate": "Possible duplicate",
+        "errorOrUnmatched": "Error / unmatched"
+      },
+      "badge": {
+        "error": "Error",
+        "new": "New",
+        "duplicate": "Duplicate",
+        "possibleDuplicate": "Possible duplicate"
+      },
+      "table": {
+        "rowNumber": "#",
+        "plate": "Plate",
+        "date": "Date",
+        "fuel": "Fuel",
+        "liters": "Liters",
+        "total": "Amount",
+        "status": "Status",
+        "truck": "Truck",
+        "matched": "Matched",
+        "unmatched": "Unmatched"
+      },
+      "batchStatus": {
+        "error_one": "{{count}} error",
+        "error_other": "{{count}} errors",
+        "unmatched_one": "{{count}} unmatched",
+        "unmatched_other": "{{count}} unmatched",
+        "imported_one": "{{count}} imported",
+        "imported_other": "{{count}} imported"
+      },
+      "toast": {
+        "formatsLoadError": "Failed to load formats",
+        "selectFormatAndFile": "Select a format and file",
+        "previewError": "Preview failed",
+        "commitSuccess": "Import complete",
+        "commitError": "Import failed"
+      }
+    },
     "field": {
       "plate": "Plate",
       "date": "Date",
@@ -1274,7 +1336,43 @@
       "integerHasDecimals": "{{field}} must be a whole number: {{value}}."
     }
   },
+  "fuelFormats": {
+    "toast": {
+      "loadError": "Failed to load formats",
+      "cloneSuccess": "Format cloned",
+      "cloneError": "Clone failed",
+      "deactivateSuccess": "Format deactivated",
+      "deactivateError": "Deactivate failed"
+    },
+    "clone": {
+      "title": "Clone format",
+      "description": "Create a copy of this format and customize it for your fleet. The original stays untouched.",
+      "defaultName": "{{name}} (Copy)",
+      "nameLabel": "New format name",
+      "save": "Clone",
+      "saving": "Cloning…"
+    },
+    "deactivate": {
+      "title": "Deactivate format",
+      "description": "\"{{name}}\" will be deactivated. It won't be selectable in the import screen anymore but stays linked to past batches.",
+      "confirm": "Deactivate"
+    }
+  },
   "fuelBatch": {
+    "pageTitle": "Import summary",
+    "notFound": "Batch not found",
+    "field": {
+      "file": "File",
+      "provider": "Provider",
+      "status": "Status",
+      "uploadedAt": "Uploaded",
+      "completedAt": "Completed"
+    },
+    "status": {
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed"
+    },
     "outcome": {
       "cleanSuccess": {
         "title": "{{count}} entries imported",

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { toast } from 'sonner';
 import { Upload, CheckCircle2, XCircle, Sparkles, ChevronRight } from 'lucide-react';
@@ -18,12 +18,12 @@ import type {
   PreviewRow,
 } from '../types/fuel';
 
-const classificationBadge = (c: PreviewRow['classification'], hasError: boolean) => {
-  if (hasError) return { cls: 'bg-red-100 text-red-700', label: 'Hata', icon: <XCircle className="w-3 h-3" /> };
+const classificationBadge = (c: PreviewRow['classification'], hasError: boolean, t: TFunction) => {
+  if (hasError) return { cls: 'bg-red-100 text-red-700', label: t('fuelImport.page.badge.error'), icon: <XCircle className="w-3 h-3" /> };
   switch (c) {
-    case 'NEW':                return { cls: 'bg-green-100 text-green-700', label: 'Yeni', icon: <CheckCircle2 className="w-3 h-3" /> };
-    case 'DUPLICATE':          return { cls: 'bg-gray-200 text-gray-700', label: 'Yinelenen', icon: null };
-    case 'POSSIBLE_DUPLICATE': return { cls: 'bg-amber-100 text-amber-800', label: 'Olası yinelenen', icon: null };
+    case 'NEW':                return { cls: 'bg-green-100 text-green-700', label: t('fuelImport.page.badge.new'), icon: <CheckCircle2 className="w-3 h-3" /> };
+    case 'DUPLICATE':          return { cls: 'bg-gray-200 text-gray-700', label: t('fuelImport.page.badge.duplicate'), icon: null };
+    case 'POSSIBLE_DUPLICATE': return { cls: 'bg-amber-100 text-amber-800', label: t('fuelImport.page.badge.possibleDuplicate'), icon: null };
   }
 };
 
@@ -71,10 +71,10 @@ const FuelImportPage = () => {
         const importable = all.filter((f) => f.active);
         setFormats(importable);
       } catch (err: any) {
-        toast.error(err.message ?? 'Formatlar yüklenemedi');
+        toast.error(err.message ?? t('fuelImport.page.toast.formatsLoadError'));
       }
     })();
-  }, [fleetId]);
+  }, [fleetId, t]);
 
   // Batch history — last 20, shown below the upload form. Reloaded after a
   // commit so the just-created batch shows up without a page refresh.
@@ -92,7 +92,7 @@ const FuelImportPage = () => {
   const runPreview = async () => {
     if (!fleetId) return;
     if (!file || !formatId) {
-      toast.error('Format ve dosya seçin');
+      toast.error(t('fuelImport.page.toast.selectFormatAndFile'));
       return;
     }
     try {
@@ -101,7 +101,7 @@ const FuelImportPage = () => {
       setPreview(result);
       setForceImport(new Set());
     } catch (err: any) {
-      toast.error(err.message ?? 'Önizleme başarısız');
+      toast.error(err.message ?? t('fuelImport.page.toast.previewError'));
     } finally {
       setLoading(false);
     }
@@ -116,11 +116,11 @@ const FuelImportPage = () => {
         action: 'IMPORT',
       }));
       const batch = await fuelImportApi.commit(fleetId, preview.draftId, overrides);
-      toast.success('İçe aktarma tamamlandı');
+      toast.success(t('fuelImport.page.toast.commitSuccess'));
       void loadBatches();
       navigate(`/manager/fuel-imports/${batch.id}`);
     } catch (err: any) {
-      toast.error(err.message ?? 'Commit başarısız');
+      toast.error(err.message ?? t('fuelImport.page.toast.commitError'));
     } finally {
       setCommitting(false);
     }
@@ -139,25 +139,25 @@ const FuelImportPage = () => {
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <FuelSectionNav />
-      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Yakıt Statement İçe Aktar</h1>
+      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('fuelImport.page.title')}</h1>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <label className="block">
-            <span className="text-sm font-medium">Format</span>
+            <span className="text-sm font-medium">{t('fuelImport.page.formatLabel')}</span>
             <select
               className="mt-1 w-full border rounded px-2 py-1"
               value={formatId}
               onChange={(e) => setFormatId(e.target.value)}
             >
-              <option value="">— seçiniz —</option>
+              <option value="">{t('fuelImport.page.formatPlaceholder')}</option>
               {formats.map((f) => (
                 <option key={f.id} value={f.id}>{f.provider} · {f.name} (v{f.version})</option>
               ))}
             </select>
           </label>
           <FileInput
-            label="Statement dosyası (XLSX)"
+            label={t('fuelImport.page.fileLabel')}
             accept=".xlsx"
             onChange={setFile}
             selectedFileName={file?.name ?? null}
@@ -170,7 +170,7 @@ const FuelImportPage = () => {
             className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all disabled:opacity-50"
           >
             <Upload className="w-4 h-4" />
-            Önizle
+            {loading ? t('fuelImport.page.previewing') : t('fuelImport.page.previewBtn')}
           </button>
         </div>
       </div>
@@ -187,10 +187,10 @@ const FuelImportPage = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-base font-extrabold text-amber-900 tracking-tight">
-                    Bu dosya seçtiğiniz formata uymuyor
+                    {t('fuelImport.page.mismatchTitle')}
                   </h3>
                   <p className="text-sm text-amber-800 mt-1">
-                    Sütun isimleri tanınmadı. Endişelenmeyin — dosyanızı bir saniyede tanıyalım. Tek tıkla dosyanıza özel bir format oluşturalım, kolonları otomatik eşleştireceğiz.
+                    {t('fuelImport.page.mismatchBody')}
                   </p>
                   <button
                     type="button"
@@ -200,7 +200,7 @@ const FuelImportPage = () => {
                     }}
                     className="mt-3 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg bg-amber-600 text-white hover:bg-amber-700 hover:shadow-lg hover:shadow-amber-500/20 transition-all">
                     <Sparkles className="w-4 h-4" />
-                    Dosyama özel format oluştur
+                    {t('fuelImport.page.mismatchCta')}
                   </button>
                 </div>
               </div>
@@ -208,21 +208,23 @@ const FuelImportPage = () => {
           )}
 
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-            <StatCard label="Toplam" value={summary.total} />
-            <StatCard label="Yeni" value={summary.newCount} highlight="green" />
-            <StatCard label="Yinelenen" value={summary.duplicateCount} highlight="gray" />
-            <StatCard label="Olası yinelenen" value={summary.possibleDuplicateCount} highlight="yellow" />
-            <StatCard label="Hata / Eşlenmemiş" value={summary.errorCount + summary.unmatchedCount} highlight="red" />
+            <StatCard label={t('fuelImport.page.stat.total')} value={summary.total} />
+            <StatCard label={t('fuelImport.page.stat.new')} value={summary.newCount} highlight="green" />
+            <StatCard label={t('fuelImport.page.stat.duplicate')} value={summary.duplicateCount} highlight="gray" />
+            <StatCard label={t('fuelImport.page.stat.possibleDuplicate')} value={summary.possibleDuplicateCount} highlight="yellow" />
+            <StatCard label={t('fuelImport.page.stat.errorOrUnmatched')} value={summary.errorCount + summary.unmatchedCount} highlight="red" />
           </div>
 
           {summary.possibleDuplicateCount > 0 && (
             <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
               <p className="font-semibold mb-1">
-                {summary.possibleDuplicateCount} olası yinelenen kayıt var
+                {t('fuelImport.page.possibleDupHeading', { count: summary.possibleDuplicateCount })}
               </p>
               <p className="text-amber-800">
-                Bu kayıtlar varsayılan olarak atlanacak. Aslında farklı bir dolum olduğunu düşünüyorsanız ilgili satırda
-                {' '}<strong>Yine de aktar</strong>{' '} kutusunu işaretleyin.
+                <Trans
+                  i18nKey="fuelImport.page.possibleDupBody"
+                  components={{ 1: <strong /> }}
+                />
               </p>
             </div>
           )}
@@ -231,20 +233,20 @@ const FuelImportPage = () => {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-left">
                 <tr>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">#</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Plaka</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Tarih</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Yakıt</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Litre</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">Tutar</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Durum</th>
-                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">Araç</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('fuelImport.page.table.rowNumber')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('fuelImport.page.table.plate')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('fuelImport.page.table.date')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('fuelImport.page.table.fuel')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">{t('fuelImport.page.table.liters')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider text-right">{t('fuelImport.page.table.total')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('fuelImport.page.table.status')}</th>
+                  <th className="px-4 py-2.5 text-xs font-semibold text-gray-600 uppercase tracking-wider">{t('fuelImport.page.table.truck')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {preview.rows.map((r) => {
                   const errorText = renderRowError(r, t);
-                  const b = classificationBadge(r.classification, errorText !== null);
+                  const b = classificationBadge(r.classification, errorText !== null, t);
                   return (
                     <tr key={r.rowIndex} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-gray-500">{r.rowIndex}</td>
@@ -266,14 +268,14 @@ const FuelImportPage = () => {
                               onChange={() => toggleForceImport(r.rowIndex)}
                               className="w-3.5 h-3.5 rounded border-amber-400 text-amber-600 focus:ring-amber-500 cursor-pointer"
                             />
-                            Yine de aktar
+                            {t('fuelImport.page.forceImportLabel')}
                           </label>
                         )}
                       </td>
                       <td className="px-4 py-3">
                         {r.matchedTruckId
-                          ? <span className="text-xs text-gray-600" title={r.matchedTruckId}>Eşlendi</span>
-                          : <span className="text-xs text-amber-700">Eşleşmedi</span>}
+                          ? <span className="text-xs text-gray-600" title={r.matchedTruckId}>{t('fuelImport.page.table.matched')}</span>
+                          : <span className="text-xs text-amber-700">{t('fuelImport.page.table.unmatched')}</span>}
                       </td>
                     </tr>
                   );
@@ -287,14 +289,14 @@ const FuelImportPage = () => {
               onClick={() => setPreview(null)}
               className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
             >
-              Vazgeç
+              {t('fuelImport.page.cancelBtn')}
             </button>
             <button
               onClick={commit}
               disabled={committing}
               className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all disabled:opacity-50"
             >
-              {committing ? 'Aktarılıyor…' : 'Onayla ve Aktar'}
+              {committing ? t('fuelImport.page.committing') : t('fuelImport.page.commitBtn')}
             </button>
           </div>
         </>
@@ -317,6 +319,7 @@ interface BatchHistoryCardProps {
  *  committed earlier but didn't finish reviewing. Without this card the
  *  import surface had no way to surface prior work. */
 const BatchHistoryCard = ({ batches }: BatchHistoryCardProps) => {
+  const { t } = useTranslation();
   const statusTone = (batch: FuelImportBatchDto) => {
     const unmatched = batch.rowCountUnmatched ?? 0;
     const error = batch.rowCountError ?? 0;
@@ -328,15 +331,15 @@ const BatchHistoryCard = ({ batches }: BatchHistoryCardProps) => {
     const imported = batch.rowCountImported ?? 0;
     const unmatched = batch.rowCountUnmatched ?? 0;
     const error = batch.rowCountError ?? 0;
-    if (error > 0) return `${error} hata`;
-    if (unmatched > 0) return `${unmatched} eşleşmedi`;
-    return `${imported} içe aktarıldı`;
+    if (error > 0) return t('fuelImport.page.batchStatus.error', { count: error });
+    if (unmatched > 0) return t('fuelImport.page.batchStatus.unmatched', { count: unmatched });
+    return t('fuelImport.page.batchStatus.imported', { count: imported });
   };
 
   return (
     <section>
       <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">
-        Son içe aktarmalar
+        {t('fuelImport.page.historyHeading')}
       </h2>
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100">
         {batches.map((b) => (

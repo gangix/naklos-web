@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { Copy, Plus, Power, Upload } from 'lucide-react';
 import { fuelFormatApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import type { FuelImportFormatDto } from '../types/fuel';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
+import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 
 const FuelFormatsPage = () => {
   const { fleetId } = useFleet();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formats, setFormats] = useState<FuelImportFormatDto[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cloneTarget, setCloneTarget] = useState<FuelImportFormatDto | null>(null);
+  const [deactivateTarget, setDeactivateTarget] = useState<FuelImportFormatDto | null>(null);
 
   const load = async () => {
     if (!fleetId) return;
@@ -20,7 +25,7 @@ const FuelFormatsPage = () => {
       const data = await fuelFormatApi.list(fleetId);
       setFormats(data);
     } catch (err: any) {
-      toast.error(err.message ?? 'Formatlar yüklenemedi');
+      toast.error(err.message ?? t('fuelFormats.toast.loadError'));
     } finally {
       setLoading(false);
     }
@@ -31,28 +36,27 @@ const FuelFormatsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fleetId]);
 
-  const clone = async (starter: FuelImportFormatDto) => {
-    if (!fleetId) return;
-    const name = window.prompt(`"${starter.name}" için yeni ad:`, `${starter.name} (Kopya)`);
-    if (!name) return;
+  const runClone = async (name: string) => {
+    if (!fleetId || !cloneTarget) return;
     try {
-      await fuelFormatApi.clone(fleetId, starter.id, name);
-      toast.success('Format klonlandı');
+      await fuelFormatApi.clone(fleetId, cloneTarget.id, name);
+      toast.success(t('fuelFormats.toast.cloneSuccess'));
+      setCloneTarget(null);
       await load();
     } catch (err: any) {
-      toast.error(err.message ?? 'Klonlama başarısız');
+      toast.error(err.message ?? t('fuelFormats.toast.cloneError'));
     }
   };
 
-  const deactivate = async (f: FuelImportFormatDto) => {
-    if (!fleetId) return;
-    if (!window.confirm(`"${f.name}" pasifleştirilsin mi?`)) return;
+  const runDeactivate = async () => {
+    if (!fleetId || !deactivateTarget) return;
     try {
-      await fuelFormatApi.deactivate(fleetId, f.id);
-      toast.success('Format pasifleştirildi');
+      await fuelFormatApi.deactivate(fleetId, deactivateTarget.id);
+      toast.success(t('fuelFormats.toast.deactivateSuccess'));
+      setDeactivateTarget(null);
       await load();
     } catch (err: any) {
-      toast.error(err.message ?? 'Pasifleştirme başarısız');
+      toast.error(err.message ?? t('fuelFormats.toast.deactivateError'));
     }
   };
 
@@ -90,7 +94,7 @@ const FuelFormatsPage = () => {
             {fleetScoped.length === 0 ? (
               <p className="text-gray-500 text-sm">Henüz fleet-scope bir format yok. Bir başlangıç formatını klonlayabilir veya sıfırdan oluşturabilirsiniz.</p>
             ) : (
-              <FormatTable rows={fleetScoped} onDeactivate={deactivate} />
+              <FormatTable rows={fleetScoped} onDeactivate={setDeactivateTarget} />
             )}
           </section>
 
@@ -99,14 +103,99 @@ const FuelFormatsPage = () => {
             {globals.length === 0 ? (
               <p className="text-gray-500 text-sm">Başlangıç formatı bulunamadı.</p>
             ) : (
-              <FormatTable rows={globals} onClone={clone} />
+              <FormatTable rows={globals} onClone={setCloneTarget} />
             )}
           </section>
         </>
       )}
+
+      {cloneTarget && (
+        <CloneNameModal
+          initialName={t('fuelFormats.clone.defaultName', { name: cloneTarget.name })}
+          onSubmit={runClone}
+          onClose={() => setCloneTarget(null)}
+        />
+      )}
+
+      {deactivateTarget && (
+        <ConfirmActionModal
+          title={t('fuelFormats.deactivate.title')}
+          description={t('fuelFormats.deactivate.description', { name: deactivateTarget.name })}
+          confirmLabel={t('fuelFormats.deactivate.confirm')}
+          tone="danger"
+          onConfirm={runDeactivate}
+          onClose={() => setDeactivateTarget(null)}
+        />
+      )}
     </div>
   );
 };
+
+interface CloneNameModalProps {
+  initialName: string;
+  onSubmit: (name: string) => Promise<void>;
+  onClose: () => void;
+}
+
+/** Inline text-input modal for naming a cloned format. Small enough (one
+ *  trimmed-input field + two buttons) to live here instead of extracting to
+ *  components/common — the only other `window.prompt` in the fuel surface
+ *  has been removed, so there's nothing else to share with yet. */
+function CloneNameModal({ initialName, onSubmit, onClose }: CloneNameModalProps) {
+  const { t } = useTranslation();
+  const [name, setName] = useState(initialName);
+  const [submitting, setSubmitting] = useState(false);
+  const trimmed = name.trim();
+
+  const submit = async () => {
+    if (!trimmed || submitting) return;
+    try {
+      setSubmitting(true);
+      await onSubmit(trimmed);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-xl border border-gray-200 p-6 w-full max-w-md">
+        <h2 className="text-xl font-extrabold text-gray-900 tracking-tight mb-1">
+          {t('fuelFormats.clone.title')}
+        </h2>
+        <p className="text-sm text-gray-600 mb-5">
+          {t('fuelFormats.clone.description')}
+        </p>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5">
+          {t('fuelFormats.clone.nameLabel')}
+        </label>
+        <input
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent mb-5"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter' && trimmed && !submitting) void submit(); }}
+          autoFocus
+        />
+        <div className="flex justify-end gap-2">
+          <button
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+            onClick={onClose}
+            disabled={submitting}
+          >
+            {t('common.cancel')}
+          </button>
+          <button
+            className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all disabled:opacity-50 disabled:pointer-events-none"
+            onClick={() => void submit()}
+            disabled={submitting || !trimmed}
+          >
+            {submitting ? t('fuelFormats.clone.saving') : t('fuelFormats.clone.save')}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 interface TableProps {
   rows: FuelImportFormatDto[];

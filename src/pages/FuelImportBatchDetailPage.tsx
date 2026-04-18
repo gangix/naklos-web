@@ -152,7 +152,7 @@ const FuelImportBatchDetailPage = () => {
         const data = await fuelImportApi.getBatch(fleetId, batchId);
         setBatch(data);
       } catch (err: any) {
-        toast.error(err.message ?? 'Batch bulunamadı');
+        toast.error(err.message ?? t('fuelBatch.notFound'));
       } finally {
         setLoading(false);
       }
@@ -174,15 +174,15 @@ const FuelImportBatchDetailPage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">İçe Aktarma Özeti</h1>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('fuelBatch.pageTitle')}</h1>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 space-y-2 text-sm">
-        <Row k="Dosya" v={batch.fileName} />
-        <Row k="Provider" v={batch.provider} />
-        <Row k="Durum" v={batch.status} />
-        <Row k="Yüklenme" v={formatDateTime(batch.uploadedAt)} />
-        {batch.completedAt && <Row k="Tamamlanma" v={formatDateTime(batch.completedAt)} />}
+        <Row k={t('fuelBatch.field.file')} v={batch.fileName} />
+        <Row k={t('fuelBatch.field.provider')} v={batch.provider} />
+        <Row k={t('fuelBatch.field.status')} v={t(`fuelBatch.status.${batch.status}`, { defaultValue: batch.status })} />
+        <Row k={t('fuelBatch.field.uploadedAt')} v={formatDateTime(batch.uploadedAt)} />
+        {batch.completedAt && <Row k={t('fuelBatch.field.completedAt')} v={formatDateTime(batch.completedAt)} />}
       </div>
 
       <OutcomeBanner batch={batch} outcome={outcome} />

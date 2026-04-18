@@ -985,8 +985,10 @@
     "nav": {
       "imports": "Import",
       "formats": "Formate",
-      "review": "Nicht zugeordnete Kennzeichen",
-      "resolutions": "Regeln"
+      "review": "Prüfung",
+      "resolutions": "Kennzeichen-Regeln",
+      "settings": "Einstellungen",
+      "alertsConfig": "Warnregeln"
     },
     "resolutions": {
       "title": "Kennzeichen-Regeln",
@@ -1032,6 +1034,7 @@
       "duplicates": "Keine ausstehenden Duplikate."
     },
     "banner": {
+      "hide": "Diese Erklärung ausblenden",
       "lead": "Diese Einträge sind keinem LKW zugeordnet und nicht in der Analyse enthalten. 4 Optionen zur Lösung:",
       "createTruck": {
         "label": "LKW erstellen",
@@ -1251,6 +1254,65 @@
     }
   },
   "fuelImport": {
+    "page": {
+      "title": "Kraftstoff-Datei importieren",
+      "formatLabel": "Format",
+      "formatPlaceholder": "— auswählen —",
+      "fileLabel": "Kraftstoff-Datei (XLSX)",
+      "previewBtn": "Vorschau",
+      "previewing": "Vorschau…",
+      "cancelBtn": "Abbrechen",
+      "commitBtn": "Bestätigen & Importieren",
+      "committing": "Wird importiert…",
+      "historyHeading": "Letzte Importe",
+      "mismatchTitle": "Diese Datei passt nicht zum gewählten Format",
+      "mismatchBody": "Wir haben die Spaltenüberschriften nicht erkannt. Kein Problem — lassen Sie uns Ihre Datei in wenigen Sekunden erkennen. Ein Klick erstellt ein eigenes Format mit automatisch zugeordneten Spalten.",
+      "mismatchCta": "Format für meine Datei erstellen",
+      "possibleDupHeading_one": "{{count}} mögliches Duplikat",
+      "possibleDupHeading_other": "{{count}} mögliche Duplikate",
+      "possibleDupBody": "Diese Zeilen werden standardmäßig übersprungen. Wenn es sich um eine andere Tankung handelt, aktivieren Sie in der entsprechenden Zeile <1>Trotzdem importieren</1>.",
+      "forceImportLabel": "Trotzdem importieren",
+      "stat": {
+        "total": "Gesamt",
+        "new": "Neu",
+        "duplicate": "Duplikat",
+        "possibleDuplicate": "Möglich. Duplikat",
+        "errorOrUnmatched": "Fehler / Nicht zugeordnet"
+      },
+      "badge": {
+        "error": "Fehler",
+        "new": "Neu",
+        "duplicate": "Duplikat",
+        "possibleDuplicate": "Möglich. Duplikat"
+      },
+      "table": {
+        "rowNumber": "#",
+        "plate": "Kennzeichen",
+        "date": "Datum",
+        "fuel": "Kraftstoff",
+        "liters": "Liter",
+        "total": "Betrag",
+        "status": "Status",
+        "truck": "Fahrzeug",
+        "matched": "Zugeordnet",
+        "unmatched": "Nicht zugeordnet"
+      },
+      "batchStatus": {
+        "error_one": "{{count}} Fehler",
+        "error_other": "{{count}} Fehler",
+        "unmatched_one": "{{count}} nicht zugeordnet",
+        "unmatched_other": "{{count}} nicht zugeordnet",
+        "imported_one": "{{count}} importiert",
+        "imported_other": "{{count}} importiert"
+      },
+      "toast": {
+        "formatsLoadError": "Formate konnten nicht geladen werden",
+        "selectFormatAndFile": "Format und Datei auswählen",
+        "previewError": "Vorschau fehlgeschlagen",
+        "commitSuccess": "Import abgeschlossen",
+        "commitError": "Import fehlgeschlagen"
+      }
+    },
     "field": {
       "plate": "Kennzeichen",
       "date": "Datum",
@@ -1274,7 +1336,43 @@
       "integerHasDecimals": "{{field}} muss eine ganze Zahl sein: {{value}}."
     }
   },
+  "fuelFormats": {
+    "toast": {
+      "loadError": "Formate konnten nicht geladen werden",
+      "cloneSuccess": "Format geklont",
+      "cloneError": "Klonen fehlgeschlagen",
+      "deactivateSuccess": "Format deaktiviert",
+      "deactivateError": "Deaktivieren fehlgeschlagen"
+    },
+    "clone": {
+      "title": "Format klonen",
+      "description": "Erstellen Sie eine Kopie dieses Formats und passen Sie es für Ihre Flotte an. Das Original bleibt unverändert.",
+      "defaultName": "{{name}} (Kopie)",
+      "nameLabel": "Neuer Formatname",
+      "save": "Klonen",
+      "saving": "Wird geklont…"
+    },
+    "deactivate": {
+      "title": "Format deaktivieren",
+      "description": "\"{{name}}\" wird deaktiviert. Im Import-Bildschirm nicht mehr auswählbar, bleibt aber mit vorhandenen Dateien verknüpft.",
+      "confirm": "Deaktivieren"
+    }
+  },
   "fuelBatch": {
+    "pageTitle": "Import-Zusammenfassung",
+    "notFound": "Datei nicht gefunden",
+    "field": {
+      "file": "Datei",
+      "provider": "Anbieter",
+      "status": "Status",
+      "uploadedAt": "Hochgeladen",
+      "completedAt": "Abgeschlossen"
+    },
+    "status": {
+      "PROCESSING": "Wird verarbeitet",
+      "COMPLETED": "Abgeschlossen",
+      "FAILED": "Fehlgeschlagen"
+    },
     "outcome": {
       "cleanSuccess": {
         "title": "{{count}} Einträge importiert",
