@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { MapPin } from 'lucide-react';
+import { AlertTriangle, Gauge, MapPin } from 'lucide-react';
 import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { useTranslation } from 'react-i18next';
-import { formatDate } from '../utils/format';
+import { formatDate, formatDecimal } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
+import { efficiencyStatus } from '../utils/fuelStats';
+import { computeTruckWarnings, type TruckWarning } from '../utils/truckWarnings';
 import TruckFuelTab from '../components/fuel/TruckFuelTab';
+import EfficiencyStatusPill from '../components/fuel/EfficiencyStatusPill';
 import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
 import type { DocumentCategory, Truck, Driver } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
@@ -83,6 +86,8 @@ const TruckDetailPage = () => {
 
     fetchDrivers();
   }, [fleetId]);
+
+  const truckWarnings = truck ? computeTruckWarnings(truck) : [];
 
   if (loading) {
     return (
@@ -314,6 +319,17 @@ const TruckDetailPage = () => {
             </div>
           </div>
 
+          {(truck.expectedLPer100KmDerived !== null || truck.expectedLPer100KmManual !== null) && (
+            <FuelEfficiencyCard truck={truck} onOpenEntries={() => setActiveTab('yakit')} />
+          )}
+
+          {truckWarnings.length > 0 && (
+            <TruckWarningsCard
+              warnings={truckWarnings}
+              onOpenBelgeler={() => setActiveTab('belgeler')}
+            />
+          )}
+
           {/* Location card */}
           {truck.lastPosition && (
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
@@ -498,3 +514,130 @@ const TruckDetailPage = () => {
 };
 
 export default TruckDetailPage;
+
+// ───────────────────────────────────────────────────────────────────────────
+// Local cards for the Genel tab
+// ───────────────────────────────────────────────────────────────────────────
+
+/** Actual vs target consumption mini-card. Echoes the Yakıt Kayıtları hero
+ *  but compressed. Delegates the status pill to the shared primitive. */
+const FuelEfficiencyCard = ({
+  truck,
+  onOpenEntries,
+}: {
+  truck: Truck;
+  onOpenEntries: () => void;
+}) => {
+  const { t } = useTranslation();
+  const actual = truck.expectedLPer100KmDerived;
+  const target = truck.expectedLPer100KmManual;
+  const { status, deviationPct } = efficiencyStatus(actual, target);
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-extrabold tracking-tight text-gray-900 flex items-center gap-2">
+          <Gauge className="w-5 h-5 text-primary-600" />
+          {t('truckDetail.efficiency.heading')}
+        </h2>
+        <button
+          onClick={onOpenEntries}
+          className="text-xs text-primary-600 font-medium hover:underline"
+        >
+          {t('truckDetail.efficiency.seeEntries')}
+        </button>
+      </div>
+      <div className="grid grid-cols-2 gap-6">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+            {t('fuelEntry.efficiency.actual')}
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-extrabold text-gray-900 tracking-tight tabular-nums">
+              {actual !== null ? formatDecimal(actual) : '—'}
+            </span>
+            <span className="text-xs text-gray-500 font-medium">
+              {t('fuelEntry.summary.avgConsumptionUnit')}
+            </span>
+          </div>
+          <p className="text-[11px] text-gray-400 mt-1">
+            {actual !== null
+              ? t('fuelEntry.efficiency.actualSource')
+              : t('fuelEntry.summary.avgConsumptionEmpty')}
+          </p>
+        </div>
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
+            {t('fuelEntry.efficiency.target')}
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-extrabold text-gray-400 tracking-tight tabular-nums">
+              {target !== null ? formatDecimal(target) : '—'}
+            </span>
+            <span className="text-xs text-gray-400 font-medium">
+              {t('fuelEntry.summary.avgConsumptionUnit')}
+            </span>
+          </div>
+          <p className="text-[11px] text-gray-400 mt-1">
+            {target !== null
+              ? t('fuelEntry.efficiency.targetSource')
+              : t('fuelEntry.efficiency.targetEmpty')}
+          </p>
+        </div>
+      </div>
+      {actual !== null && (
+        <div className="mt-4 pt-3 border-t border-gray-100">
+          <EfficiencyStatusPill
+            status={status}
+            deviationPct={deviationPct}
+            hasTarget={target !== null}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+/** Lists the truck's expiring/missing documents. Same wording as the trucks
+ *  list card — both surfaces share {@link computeTruckWarnings}. */
+const TruckWarningsCard = ({
+  warnings,
+  onOpenBelgeler,
+}: {
+  warnings: TruckWarning[];
+  onOpenBelgeler: () => void;
+}) => {
+  const { t } = useTranslation();
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-lg font-extrabold tracking-tight text-gray-900 flex items-center gap-2">
+          <AlertTriangle className="w-5 h-5 text-red-500" />
+          {t('truckDetail.warnings.heading')}
+        </h2>
+        <button
+          onClick={onOpenBelgeler}
+          className="text-xs text-primary-600 font-medium hover:underline"
+        >
+          {t('truckDetail.warnings.goToDocs')}
+        </button>
+      </div>
+      <ul className="space-y-2">
+        {warnings.map((w) => (
+          <li
+            key={w.type}
+            className={`flex items-start gap-2 text-sm ${
+              w.severity === 'error' ? 'text-red-800' : 'text-amber-800'
+            }`}
+          >
+            <span
+              className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${
+                w.severity === 'error' ? 'bg-red-500' : 'bg-amber-500'
+              }`}
+            />
+            <span>{t(w.key, w.params)}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};

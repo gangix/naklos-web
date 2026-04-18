@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useTrucks } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
 import { useData } from '../contexts/DataContext';
-import { formatDate, formatRelativeTime } from '../utils/format';
+import { formatDate, formatDecimal, formatRelativeTime } from '../utils/format';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import type { DerivedStatus } from '../utils/derivedStatus';
+import { computeTruckWarnings } from '../utils/truckWarnings';
 import DocumentReviewModal from '../components/common/DocumentReviewModal';
 import AddTruckModal from '../components/common/AddTruckModal';
 import BulkImportModal from '../components/common/BulkImportModal';
@@ -30,73 +31,13 @@ const TrucksPage = () => {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState<string | undefined>();
 
-  // Calculate expiry warnings for trucks. Each warning carries an i18n key
-  // + interpolation params instead of a pre-built message, so the rendered
-  // text follows the active language without re-running the calculation.
-  const warnings = useMemo(() => {
-    const today = new Date();
-    const warningsList: Array<{
-      relatedId: string;
-      relatedType: 'truck';
-      severity: 'error' | 'warning';
-      key: string;
-      params: Record<string, string | number>;
-      type: string;
-    }> = [];
-
-    const checkExpiry = (
-      truck: typeof trucks[number],
-      date: string | null,
-      type: string,
-      keys: { missing?: string; expired: string; expiring: string },
-    ) => {
-      if (!date) {
-        if (keys.missing) {
-          warningsList.push({
-            relatedId: truck.id,
-            relatedType: 'truck',
-            severity: 'error',
-            key: keys.missing,
-            params: { plate: truck.plateNumber },
-            type,
-          });
-        }
-        return;
-      }
-      const days = Math.ceil((new Date(date).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      if (days < 0) {
-        warningsList.push({
-          relatedId: truck.id, relatedType: 'truck', severity: 'error',
-          key: keys.expired, params: { plate: truck.plateNumber }, type,
-        });
-      } else if (days <= 30) {
-        warningsList.push({
-          relatedId: truck.id, relatedType: 'truck',
-          severity: days <= 7 ? 'error' : 'warning',
-          key: keys.expiring, params: { plate: truck.plateNumber, count: days }, type,
-        });
-      }
-    };
-
-    trucks.forEach((truck) => {
-      checkExpiry(truck, truck.compulsoryInsuranceExpiry, 'compulsory-insurance', {
-        missing: 'warning.compulsoryInsuranceMissing',
-        expired: 'warning.compulsoryInsuranceExpired',
-        expiring: 'warning.compulsoryInsuranceExpiring',
-      });
-      checkExpiry(truck, truck.comprehensiveInsuranceExpiry, 'comprehensive-insurance', {
-        // Comprehensive insurance is optional — no missing warning.
-        expired: 'warning.comprehensiveInsuranceExpired',
-        expiring: 'warning.comprehensiveInsuranceExpiring',
-      });
-      checkExpiry(truck, truck.inspectionExpiry, 'inspection', {
-        missing: 'warning.inspectionMissing',
-        expired: 'warning.inspectionExpired',
-        expiring: 'warning.inspectionExpiring',
-      });
-    });
-
-    return warningsList;
+  // Expiry warnings keyed by truckId. Shares the computation with
+  // TruckDetailPage's Genel tab so both surfaces word warnings identically.
+  const warningsByTruck = useMemo(() => {
+    const todayMs = Date.now();
+    const map = new Map<string, ReturnType<typeof computeTruckWarnings>>();
+    for (const t of trucks) map.set(t.id, computeTruckWarnings(t, todayMs));
+    return map;
   }, [trucks]);
 
   // Handle query param for auto-tab selection
@@ -126,22 +67,10 @@ const TrucksPage = () => {
     );
   }, [truckSubmissions]);
 
-  // Check if a truck has any expiring documents within 7 days
-  const hasUrgentWarning = (truckId: string): boolean => {
-    return warnings.some(
-      (w) =>
-        w.relatedId === truckId &&
-        w.relatedType === 'truck' &&
-        w.severity === 'error'
-    );
-  };
+  const hasUrgentWarning = (truckId: string): boolean =>
+    (warningsByTruck.get(truckId) ?? []).some((w) => w.severity === 'error');
 
-  // Get all warnings for a specific truck
-  const getTruckWarnings = (truckId: string) => {
-    return warnings.filter(
-      (w) => w.relatedId === truckId && w.relatedType === 'truck'
-    );
-  };
+  const getTruckWarnings = (truckId: string) => warningsByTruck.get(truckId) ?? [];
 
   // Memoize derived status per truck to avoid repeated deriveTruckStatus calls
   const statusByTruckId = useMemo(() => {
@@ -169,7 +98,7 @@ const TrucksPage = () => {
       if (!aHasWarning && bHasWarning) return 1;
       return 0;
     });
-  }, [filter, warnings, trucks, statusByTruckId]);
+  }, [filter, warningsByTruck, trucks, statusByTruckId]);
 
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
@@ -416,6 +345,15 @@ const TrucksPage = () => {
                     <p>
                       {t('truck.driver')}: {truck.assignedDriverName || t('trucksPage.notAssigned')}
                     </p>
+                    {/* Tertiary signal: warnings below keep priority when
+                        present; on healthy trucks this is the "all good" cue. */}
+                    {truck.expectedLPer100KmDerived !== null && (
+                      <p className="mt-1 text-xs text-gray-400 tabular-nums">
+                        {formatDecimal(truck.expectedLPer100KmDerived)}{' '}
+                        {t('fuelEntry.summary.avgConsumptionUnit')}{' '}
+                        {t('trucksPage.consumptionSuffix')}
+                      </p>
+                    )}
                     {truck.lastPosition && (
                       <button
                         type="button"

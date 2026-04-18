@@ -585,6 +585,14 @@
       "yakit": "Yakıt Kayıtları",
       "belgeler": "Belgeler"
     },
+    "efficiency": {
+      "heading": "Yakıt Verimliliği",
+      "seeEntries": "Kayıtları gör →"
+    },
+    "warnings": {
+      "heading": "Uyarılar",
+      "goToDocs": "Belgelere git →"
+    },
     "loadError": "Araç yüklenirken hata oluştu",
     "notFound": "Araç bulunamadı",
     "goBack": "Geri Dön",
@@ -713,6 +721,7 @@
     "noFilterResult": "Bu filtreye uygun araç bulunamadı",
     "warningLabel": "Uyarı",
     "notAssigned": "Atanmadı",
+    "consumptionSuffix": "ortalama",
     "compulsoryInsurance": "Zorunlu Trafik Sigortası",
     "comprehensiveInsurance": "Kasko",
     "pending": "Bekliyor",

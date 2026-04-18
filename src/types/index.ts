@@ -40,6 +40,11 @@ export interface Truck {
   compulsoryInsuranceExpiry: string | null;
   comprehensiveInsuranceExpiry: string | null;
   inspectionExpiry: string | null;
+  /** Rolling L/100km average auto-computed from recent fuel entries. Null
+   *  when the truck has too little history for a stable baseline. */
+  expectedLPer100KmDerived: number | null;
+  /** Fleet-manager-entered L/100km target. Null = not set. */
+  expectedLPer100KmManual: number | null;
 }
 
 export interface Driver {

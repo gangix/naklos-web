@@ -585,6 +585,14 @@
       "yakit": "Fuel entries",
       "belgeler": "Documents"
     },
+    "efficiency": {
+      "heading": "Fuel efficiency",
+      "seeEntries": "See entries →"
+    },
+    "warnings": {
+      "heading": "Warnings",
+      "goToDocs": "Go to documents →"
+    },
     "loadError": "An error occurred while loading truck",
     "notFound": "Truck not found",
     "goBack": "Go Back",
@@ -713,6 +721,7 @@
     "noFilterResult": "No trucks found for this filter",
     "warningLabel": "Warning",
     "notAssigned": "Not Assigned",
+    "consumptionSuffix": "avg",
     "compulsoryInsurance": "Compulsory Traffic Insurance",
     "comprehensiveInsurance": "Comprehensive Insurance",
     "pending": "Pending",
