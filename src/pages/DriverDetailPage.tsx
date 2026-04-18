@@ -479,7 +479,12 @@ const DriverDetailPage = () => {
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-lg font-bold text-gray-900">{t('driver.certificates')}</h2>
           <button
-            onClick={() => setShowAddCertificate(true)}
+            onClick={() => {
+              if (!certificateIssueDate) {
+                setCertificateIssueDate(new Date().toISOString().split('T')[0]);
+              }
+              setShowAddCertificate(true);
+            }}
             className="text-sm text-primary-600 font-medium"
           >
             {t('driverDetail.addCertificate')}
