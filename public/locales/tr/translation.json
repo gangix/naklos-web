@@ -218,6 +218,7 @@
     "update": "Güncelle",
     "download": "İndir",
     "resend": "Tekrar Gönder",
+    "send": "Gönder",
     "close": "Kapat",
     "notFound": "Kayıt bulunamadı.",
     "irreversible": "Bu işlem geri alınamaz."
@@ -583,6 +584,7 @@
     "deletingDriver": "Siliniyor...",
     "inviteFailed": "Davet e-postası gönderilemedi",
     "invitePending": "Davet gönderiliyor...",
+    "inviteNotSent": "Davet henüz gönderilmedi",
     "resendInvite": "Tekrar Gönder",
     "confirmDelete": "Bu sürücü silinecek. Bu işlem geri alınamaz.",
     "confirmRemoveCert": "Bu sertifika kaldırılsın mı?",

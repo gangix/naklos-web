@@ -220,6 +220,7 @@
     "update": "Aktualisieren",
     "download": "Herunterladen",
     "resend": "Erneut senden",
+    "send": "Senden",
     "close": "Schließen",
     "notFound": "Nicht gefunden.",
     "irreversible": "Diese Aktion kann nicht rückgängig gemacht werden."
@@ -585,6 +586,7 @@
     "deletingDriver": "Wird gelöscht...",
     "inviteFailed": "Einladungs-E-Mail konnte nicht gesendet werden",
     "invitePending": "Einladung wird gesendet...",
+    "inviteNotSent": "Einladung noch nicht gesendet",
     "resendInvite": "Erneut senden",
     "confirmDelete": "Fahrer löschen? Dies kann nicht rückgängig gemacht werden.",
     "confirmRemoveCert": "Zertifikat entfernen?",

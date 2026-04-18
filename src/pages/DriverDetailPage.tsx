@@ -605,40 +605,53 @@ const DriverDetailPage = () => {
         </Link>
       )}
 
-      {/* Invite status */}
-      {(driver.inviteStatus === 'FAILED' || driver.inviteStatus === 'PENDING') && (
-        <div className={`rounded-lg p-4 shadow-sm mb-4 ${
-          driver.inviteStatus === 'FAILED' ? 'bg-red-50 border border-red-200' : 'bg-yellow-50 border border-yellow-200'
-        }`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Mail className={`w-4 h-4 ${driver.inviteStatus === 'FAILED' ? 'text-red-500' : 'text-yellow-500'}`} />
-              <span className={`text-sm font-medium ${driver.inviteStatus === 'FAILED' ? 'text-red-700' : 'text-yellow-700'}`}>
-                {driver.inviteStatus === 'FAILED' ? t('driverDetail.inviteFailed') : t('driverDetail.invitePending')}
-              </span>
+      {/* Invite status — NOT_INVITED (with email), PENDING, FAILED all surface here */}
+      {(() => {
+        const status = driver.inviteStatus;
+        const canInvite = !!driver.email && (status === 'FAILED' || status === 'NOT_INVITED');
+        if (status !== 'FAILED' && status !== 'PENDING' && !(status === 'NOT_INVITED' && driver.email)) {
+          return null;
+        }
+        const tone =
+          status === 'FAILED'
+            ? { bg: 'bg-red-50 border-red-200', icon: 'text-red-500', text: 'text-red-700', btn: 'border-red-300 text-red-700 hover:bg-red-50' }
+            : status === 'PENDING'
+            ? { bg: 'bg-yellow-50 border-yellow-200', icon: 'text-yellow-500', text: 'text-yellow-700', btn: '' }
+            : { bg: 'bg-gray-50 border-gray-200', icon: 'text-gray-500', text: 'text-gray-700', btn: 'border-primary-300 text-primary-700 hover:bg-primary-50' };
+        const label =
+          status === 'FAILED' ? t('driverDetail.inviteFailed')
+          : status === 'PENDING' ? t('driverDetail.invitePending')
+          : t('driverDetail.inviteNotSent');
+        return (
+          <div className={`rounded-lg p-4 shadow-sm mb-4 border ${tone.bg}`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Mail className={`w-4 h-4 ${tone.icon}`} />
+                <span className={`text-sm font-medium ${tone.text}`}>{label}</span>
+              </div>
+              {canInvite && (
+                <button
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    try {
+                      await driverApi.resendInvite(driver.id);
+                      toast.success(t('toast.success.inviteResent'));
+                      const data = await driverApi.getById(driver.id);
+                      setDriver(data);
+                    } catch {
+                      toast.error(t('toast.error.inviteFailed'));
+                    }
+                  }}
+                  className={`flex items-center gap-1 px-3 py-1.5 bg-white border rounded-lg text-xs font-medium ${tone.btn}`}
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  {status === 'FAILED' ? t('common.resend') : t('common.send')}
+                </button>
+              )}
             </div>
-            {driver.inviteStatus === 'FAILED' && (
-              <button
-                onClick={async (e) => {
-                  e.preventDefault();
-                  try {
-                    await driverApi.resendInvite(driver.id);
-                    toast.success(t('toast.success.inviteResent'));
-                    const data = await driverApi.getById(driver.id);
-                    setDriver(data);
-                  } catch {
-                    toast.error(t('toast.error.inviteFailed'));
-                  }
-                }}
-                className="flex items-center gap-1 px-3 py-1.5 bg-white border border-red-300 rounded-lg text-xs font-medium text-red-700 hover:bg-red-50"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                {t('common.resend')}
-              </button>
-            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Document upload history (audit trail) */}
       {documents.length > 0 && (

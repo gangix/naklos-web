@@ -220,6 +220,7 @@
     "update": "Update",
     "download": "Download",
     "resend": "Resend",
+    "send": "Send",
     "close": "Close",
     "notFound": "Not found.",
     "irreversible": "This action cannot be undone."
@@ -585,6 +586,7 @@
     "deletingDriver": "Deleting...",
     "inviteFailed": "Failed to send invitation email",
     "invitePending": "Sending invitation...",
+    "inviteNotSent": "Invite not sent yet",
     "resendInvite": "Resend",
     "confirmDelete": "Delete this driver? This cannot be undone.",
     "confirmRemoveCert": "Remove this certificate?",
