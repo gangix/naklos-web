@@ -565,7 +565,7 @@
     "add": "+ Ekle",
     "update": "Güncelle",
     "delete": "Sil",
-    "noEmergencyContact": "Acil durum kişisi eklenmemiş",
+    "addEmergencyContact": "Acil durum kişisi ekle",
     "addCertificate": "Sertifika Ekle",
     "newCertificate": "Yeni Sertifika Ekle",
     "certType": "Sertifika Tipi",

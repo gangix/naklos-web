@@ -567,7 +567,7 @@
     "add": "+ Add",
     "update": "Update",
     "delete": "Delete",
-    "noEmergencyContact": "No emergency contact added",
+    "addEmergencyContact": "Add emergency contact",
     "addCertificate": "Add certificate",
     "newCertificate": "Add New Certificate",
     "certType": "Certificate Type",

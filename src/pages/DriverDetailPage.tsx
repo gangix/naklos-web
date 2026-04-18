@@ -378,67 +378,74 @@ const DriverDetailPage = () => {
         )}
       </div>
 
-      {/* Emergency contact card */}
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{t('driver.emergencyContact')}</h2>
-          {!editingEmergency && (
-            <button onClick={startEditEmergency} className="text-sm text-primary-600 font-medium">
-              {driver.emergencyContact ? t('driverDetail.edit') : t('driverDetail.add')}
-            </button>
+      {/* Emergency contact — collapsed when empty to reduce visual noise */}
+      {editingEmergency || driver.emergencyContact ? (
+        <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-gray-900">{t('driver.emergencyContact')}</h2>
+            {!editingEmergency && (
+              <button onClick={startEditEmergency} className="text-sm text-primary-600 font-medium">
+                {t('driverDetail.edit')}
+              </button>
+            )}
+          </div>
+          {editingEmergency ? (
+            <div className="space-y-3">
+              <TextInput
+                label={t('driver.contactName')}
+                type="text"
+                value={emergencyName}
+                onChange={(e) => setEmergencyName(e.target.value)}
+              />
+              <TextInput
+                label={t('driver.contactPhone')}
+                type="tel"
+                value={emergencyPhone}
+                onChange={(e) => setEmergencyPhone(e.target.value)}
+              />
+              <TextInput
+                label={t('driver.relationship')}
+                type="text"
+                value={emergencyRelationship}
+                onChange={(e) => setEmergencyRelationship(e.target.value)}
+                placeholder=""
+              />
+              <div className="flex gap-2 pt-1">
+                <button onClick={handleSaveEmergency} disabled={saving}
+                  className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
+                  {saving ? t('driverDetail.saving') : t('driverDetail.save')}
+                </button>
+                <button onClick={() => setEditingEmergency(false)}
+                  className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs text-gray-600 mb-1">{t('driver.contactName')}</p>
+                <p className="text-sm font-medium text-gray-900">{driver.emergencyContact!.name}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 mb-1">{t('driver.contactPhone')}</p>
+                <p className="text-sm font-medium text-gray-900">{driver.emergencyContact!.phone}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 mb-1">{t('driver.relationship')}</p>
+                <p className="text-sm font-medium text-gray-900">{driver.emergencyContact!.relationship}</p>
+              </div>
+            </div>
           )}
         </div>
-        {editingEmergency ? (
-          <div className="space-y-3">
-            <TextInput
-              label={t('driver.contactName')}
-              type="text"
-              value={emergencyName}
-              onChange={(e) => setEmergencyName(e.target.value)}
-            />
-            <TextInput
-              label={t('driver.contactPhone')}
-              type="tel"
-              value={emergencyPhone}
-              onChange={(e) => setEmergencyPhone(e.target.value)}
-            />
-            <TextInput
-              label={t('driver.relationship')}
-              type="text"
-              value={emergencyRelationship}
-              onChange={(e) => setEmergencyRelationship(e.target.value)}
-              placeholder=""
-            />
-            <div className="flex gap-2 pt-1">
-              <button onClick={handleSaveEmergency} disabled={saving}
-                className="flex-1 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 disabled:opacity-50">
-                {saving ? t('driverDetail.saving') : t('driverDetail.save')}
-              </button>
-              <button onClick={() => setEditingEmergency(false)}
-                className="flex-1 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-50">
-                {t('common.cancel')}
-              </button>
-            </div>
-          </div>
-        ) : driver.emergencyContact ? (
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs text-gray-600 mb-1">{t('driver.contactName')}</p>
-              <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.name}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-600 mb-1">{t('driver.contactPhone')}</p>
-              <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.phone}</p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-600 mb-1">{t('driver.relationship')}</p>
-              <p className="text-sm font-medium text-gray-900">{driver.emergencyContact.relationship}</p>
-            </div>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500">{t('driverDetail.noEmergencyContact')}</p>
-        )}
-      </div>
+      ) : (
+        <button
+          onClick={startEditEmergency}
+          className="w-full mb-4 py-2.5 text-sm text-gray-600 hover:text-primary-600 border border-dashed border-gray-300 hover:border-primary-400 rounded-xl transition-colors"
+        >
+          + {t('driverDetail.addEmergencyContact')}
+        </button>
+      )}
 
       {/* License info card */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
