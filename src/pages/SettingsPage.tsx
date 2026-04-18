@@ -25,10 +25,10 @@ const SettingsPage = () => {
   const [fleetSaving, setFleetSaving] = useState(false);
 
   useEffect(() => {
-    if (fleetId) {
-      loadDrivers();
-      loadFleet();
-    }
+    if (!fleetId) return;
+    loadFleet();
+    // Driver list only feeds the dev-only user switcher — skip the fetch in prod.
+    if (import.meta.env.DEV) loadDrivers();
   }, [fleetId]);
 
   const loadDrivers = async () => {
