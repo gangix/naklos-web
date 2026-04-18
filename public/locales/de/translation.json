@@ -937,7 +937,7 @@
     "licenseExpiryHint": "Leer lassen und der Fahrer erscheint als \"Dokumente fehlen\".",
     "tempPassword": "Temporäres Passwort",
     "tempPasswordPlaceholder": "Mindestens 8 Zeichen",
-    "tempPasswordHint": "Der Fahrer ändert sein Passwort bei der ersten Anmeldung. Leer lassen, um kein Konto zu erstellen.",
+    "tempPasswordHint": "Passwort, mit dem sich der Fahrer in der mobilen App anmeldet und beim ersten Login ändert. Bei Leerlassen wird der Fahrer gespeichert, kann sich aber nicht anmelden.",
     "addingDriver": "Wird hinzugefügt…",
     "addDriverButton": "Fahrer hinzufügen"
   },

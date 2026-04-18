@@ -937,7 +937,7 @@
     "licenseExpiryHint": "Leave blank and the driver shows up as \"missing docs\".",
     "tempPassword": "Temporary Password",
     "tempPasswordPlaceholder": "At least 8 characters",
-    "tempPasswordHint": "The driver will change their password on first sign-in. Leave blank to skip account creation.",
+    "tempPasswordHint": "Password the driver uses to sign in to the mobile app, then changes on first login. Leave blank and the driver is saved but can't sign in to the app.",
     "addingDriver": "Adding…",
     "addDriverButton": "Add Driver"
   },

@@ -934,7 +934,7 @@
     "licenseExpiryHint": "Boş bırakırsanız sürücü \"belge eksik\" olarak işaretlenir.",
     "tempPassword": "Geçici Şifre",
     "tempPasswordPlaceholder": "En az 8 karakter",
-    "tempPasswordHint": "Sürücü ilk girişte şifresini değiştirecek. Boş bırakılırsa hesap oluşturulmaz.",
+    "tempPasswordHint": "Sürücünün mobil uygulamada ilk girişte kullanacağı şifre — sonrasında kendi değiştirir. Boş bırakırsanız sürücü kaydedilir ama uygulamaya giriş yapamaz.",
     "addingDriver": "Ekleniyor...",
     "addDriverButton": "Sürücü Ekle"
   },
