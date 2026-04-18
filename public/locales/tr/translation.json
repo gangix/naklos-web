@@ -825,6 +825,7 @@
     "professional": "Profesyonel",
     "business": "İşletme",
     "enterprise": "Kurumsal",
+    "cardTitle": "Abonelik Planı",
     "upgrade": {
       "title": "Planınızı Yükseltin",
       "limitReached": "Plan Limitine Ulaştınız"

@@ -1,21 +1,13 @@
 import { AlertTriangle, Mail, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { PLAN_LIMITS, PLAN_NEXT, planOf } from '../../utils/planLimits';
 
 const CONTACT_EMAIL = 'mailto:info@naklos.com.tr?subject=Naklos%20Plan%20Upgrade';
 
-const PLAN_NEXT: Record<string, { next: string; nextPriceKey: string }> = {
-  FREE:         { next: 'PROFESSIONAL', nextPriceKey: 'upgrade.priceProfessional' },
-  PROFESSIONAL: { next: 'BUSINESS',     nextPriceKey: 'upgrade.priceBusiness' },
-  BUSINESS:     { next: 'ENTERPRISE',   nextPriceKey: 'upgrade.priceEnterprise' },
-  ENTERPRISE:   { next: '',             nextPriceKey: '' },
-};
-
-// -1 = unlimited
-const PLAN_LIMITS: Record<string, Record<string, number>> = {
-  FREE:         { truck: 5,   driver: 5,   client: 3 },
-  PROFESSIONAL: { truck: 25,  driver: 25,  client: -1 },
-  BUSINESS:     { truck: 100, driver: 100, client: -1 },
-  ENTERPRISE:   { truck: -1,  driver: -1,  client: -1 },
+const NEXT_PRICE_KEY: Record<string, string> = {
+  PROFESSIONAL: 'upgrade.priceProfessional',
+  BUSINESS: 'upgrade.priceBusiness',
+  ENTERPRISE: 'upgrade.priceEnterprise',
 };
 
 interface UpgradeModalProps {
@@ -32,10 +24,10 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: Upgra
   const { t } = useTranslation();
   if (!isOpen) return null;
 
-  const plan = (PLAN_NEXT[currentPlan] != null ? currentPlan : 'FREE') as keyof typeof PLAN_NEXT;
-  const next = PLAN_NEXT[plan];
-  const currentLimit = (PLAN_LIMITS[plan] ?? PLAN_LIMITS.FREE)[resource] ?? 0;
-  const nextLimit = (PLAN_LIMITS[next.next] ?? {})[resource] ?? -1;
+  const plan = planOf(currentPlan);
+  const nextPlan = PLAN_NEXT[plan];
+  const currentLimit = PLAN_LIMITS[plan][resource];
+  const nextLimit = nextPlan ? PLAN_LIMITS[nextPlan][resource] : -1;
   const resourceLabel = t(`resource.${resource}`);
 
   const formatLimit = (limit: number) =>
@@ -80,7 +72,7 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: Upgra
         </div>
 
         {/* Body — plan comparison (hidden for feature gates where message is set) */}
-        {next.next && !message && (
+        {nextPlan && !message && (
           <div className="px-6 py-5">
             <div className="grid grid-cols-2 gap-3">
               {/* Current plan */}
@@ -93,9 +85,9 @@ const UpgradeModal = ({ isOpen, onClose, resource, currentPlan, message }: Upgra
               {/* Next plan */}
               <div className="rounded-xl border-2 border-primary-200 bg-primary-50 p-4">
                 <p className="text-[11px] font-semibold text-primary-600 uppercase tracking-wider mb-2">{t('upgrade.recommended')}</p>
-                <p className="text-sm font-bold text-gray-900">{t(`plan.${next.next.toLowerCase()}`)}</p>
+                <p className="text-sm font-bold text-gray-900">{t(`plan.${nextPlan.toLowerCase()}`)}</p>
                 <p className="text-xs text-gray-600 mt-1">{formatLimit(nextLimit)}</p>
-                <p className="text-xs font-semibold text-primary-700 mt-2">{t(next.nextPriceKey)}</p>
+                <p className="text-xs font-semibold text-primary-700 mt-2">{t(NEXT_PRICE_KEY[nextPlan])}</p>
               </div>
             </div>
           </div>

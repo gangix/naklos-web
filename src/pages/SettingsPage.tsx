@@ -4,17 +4,28 @@ import { toast } from 'sonner';
 import { Wrench } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useFleet } from '../contexts/FleetContext';
+import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { driverApi, fleetApi } from '../services/api';
 import { Select, TextInput } from '../components/common/FormField';
+import UpgradeModal from '../components/common/UpgradeModal';
+import { PLAN_NEXT, limitOf, planOf } from '../utils/planLimits';
 import type { Fleet } from '../types';
 
 const SettingsPage = () => {
   const { t, i18n } = useTranslation();
   const { user, loginAsDriver, loginAsManager } = useAuth();
-  const { fleetId } = useFleet();
+  const { fleetId, plan } = useFleet();
+  const { trucks, drivers: rosterDrivers } = useFleetRoster();
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDriverList, setShowDriverList] = useState(false);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+
+  const currentPlan = planOf(plan);
+  const truckLimit = limitOf(currentPlan, 'truck');
+  const driverLimit = limitOf(currentPlan, 'driver');
+  const canUpgrade = PLAN_NEXT[currentPlan] !== '';
+  const formatLimit = (n: number) => (n === -1 ? t('upgrade.unlimited') : n);
 
   // Fleet settings state
   const [fleetData, setFleetData] = useState<Fleet | null>(null);
@@ -122,6 +133,47 @@ const SettingsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Plan + usage */}
+      <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-gray-50 px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+          <h2 className="font-bold text-gray-900">{t('plan.cardTitle')}</h2>
+          <span className="px-2 py-0.5 text-xs font-semibold bg-primary-100 text-primary-700 rounded">
+            {t(`plan.${currentPlan.toLowerCase()}`)}
+          </span>
+        </div>
+        <div className="p-5 space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 capitalize">{t('resource.truck')}</span>
+            <span className="font-semibold text-gray-900 tabular-nums">
+              {trucks.length} / {formatLimit(truckLimit)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 capitalize">{t('resource.driver')}</span>
+            <span className="font-semibold text-gray-900 tabular-nums">
+              {rosterDrivers.length} / {formatLimit(driverLimit)}
+            </span>
+          </div>
+          {canUpgrade && (
+            <div className="pt-2">
+              <button
+                onClick={() => setUpgradeOpen(true)}
+                className="w-full py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors text-sm"
+              >
+                {t('upgrade.upgradeButton')}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <UpgradeModal
+        isOpen={upgradeOpen}
+        onClose={() => setUpgradeOpen(false)}
+        resource="truck"
+        currentPlan={currentPlan}
+      />
 
       {/* Fleet Settings */}
       {fleetData && (

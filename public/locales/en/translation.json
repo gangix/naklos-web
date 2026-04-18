@@ -827,6 +827,7 @@
     "professional": "Professional",
     "business": "Business",
     "enterprise": "Enterprise",
+    "cardTitle": "Subscription plan",
     "upgrade": {
       "title": "Upgrade Plan",
       "limitReached": "Plan Limit Reached"

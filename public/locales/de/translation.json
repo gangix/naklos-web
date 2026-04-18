@@ -827,6 +827,7 @@
     "professional": "Professional",
     "business": "Business",
     "enterprise": "Enterprise",
+    "cardTitle": "Abonnement",
     "upgrade": {
       "title": "Tarif upgraden",
       "limitReached": "Tariflimit erreicht"
