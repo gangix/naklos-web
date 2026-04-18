@@ -288,11 +288,25 @@ const TruckDetailPage = () => {
                               defaultValue=""
                             >
                               <option value="">{t('truckDetail.selectDriver')}</option>
-                              {drivers.map((driver) => (
-                                <option key={driver.id} value={driver.id}>
-                                  {driver.firstName} {driver.lastName}
-                                </option>
-                              ))}
+                              {/* Drivers already assigned to ANOTHER truck are
+                                  shown with a suffix so the manager doesn't
+                                  silently reassign someone away. Picking them
+                                  still works — the old truck gets unassigned
+                                  server-side (TruckService.assignDriver). */}
+                              {drivers.map((driver) => {
+                                const otherTruckPlate =
+                                  driver.assignedTruckId && driver.assignedTruckId !== truck.id
+                                    ? driver.assignedTruckPlate
+                                    : null;
+                                return (
+                                  <option key={driver.id} value={driver.id}>
+                                    {driver.firstName} {driver.lastName}
+                                    {otherTruckPlate
+                                      ? ` · ${t('truckDetail.driverAssignedTo', { plate: otherTruckPlate })}`
+                                      : ''}
+                                  </option>
+                                );
+                              })}
                             </Select>
                           </div>
                           <button
@@ -341,11 +355,14 @@ const TruckDetailPage = () => {
             </div>
           )}
 
-          {/* Delete truck */}
-          <div className="mt-6">
+          {/* Archive (soft-delete). Non-destructive — history is preserved —
+              so a full-width red button would over-signal severity. A ghost
+              button with amber tone matches the weight of the action; the
+              ConfirmActionModal is the real friction guard. */}
+          <div className="mt-8 text-right">
             <button
               onClick={() => setConfirmAction('delete')}
-              className="w-full py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-gray-300 text-amber-700 hover:bg-amber-50 hover:border-amber-400 transition-colors"
             >
               {t('truckDetail.deleteTruck')}
             </button>

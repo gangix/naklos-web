@@ -615,6 +615,7 @@
     "update": "Update",
     "assignDriver": "+ Assign Driver",
     "selectDriver": "Select a driver",
+    "driverAssignedTo": "currently on {{plate}}",
     "removeDriver": "Remove",
     "cancel": "Cancel",
     "statusAvailable": "Available",
@@ -1169,6 +1170,13 @@
     },
     "empty": "No fuel records yet.",
     "loadError": "Couldn't load fuel records.",
+    "table": {
+      "date": "Date",
+      "station": "Station",
+      "liters": "Liters",
+      "amount": "Amount",
+      "source": "Source"
+    },
     "summary": {
       "totalLiters": "Total liters",
       "totalPrice": "Total cost",

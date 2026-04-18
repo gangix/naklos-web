@@ -615,6 +615,7 @@
     "update": "Aktualisieren",
     "assignDriver": "+ Fahrer zuweisen",
     "selectDriver": "Fahrer auswählen",
+    "driverAssignedTo": "derzeit auf {{plate}}",
     "removeDriver": "Entfernen",
     "cancel": "Abbrechen",
     "statusAvailable": "Verfügbar",
@@ -1169,6 +1170,13 @@
     },
     "empty": "Noch keine Kraftstoffeinträge.",
     "loadError": "Kraftstoffeinträge konnten nicht geladen werden.",
+    "table": {
+      "date": "Datum",
+      "station": "Tankstelle",
+      "liters": "Liter",
+      "amount": "Betrag",
+      "source": "Quelle"
+    },
     "summary": {
       "totalLiters": "Gesamtliter",
       "totalPrice": "Gesamtkosten",

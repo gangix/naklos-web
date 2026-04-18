@@ -613,6 +613,7 @@
     "update": "Güncelle",
     "assignDriver": "+ Sürücü Ata",
     "selectDriver": "Sürücü seçin",
+    "driverAssignedTo": "şu anda {{plate}} aracında",
     "removeDriver": "Kaldır",
     "cancel": "İptal",
     "statusAvailable": "Müsait",
@@ -1166,6 +1167,13 @@
     },
     "empty": "Henüz yakıt kaydı yok.",
     "loadError": "Yakıt kayıtları yüklenemedi.",
+    "table": {
+      "date": "Tarih",
+      "station": "İstasyon",
+      "liters": "Litre",
+      "amount": "Tutar",
+      "source": "Kaynak"
+    },
     "summary": {
       "totalLiters": "Toplam litre",
       "totalPrice": "Toplam tutar",

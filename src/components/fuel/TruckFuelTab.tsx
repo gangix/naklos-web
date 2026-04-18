@@ -406,12 +406,12 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
 
         <div className="rounded-xl shadow-sm border border-gray-200 bg-white overflow-hidden">
           <div className="hidden sm:flex bg-gray-50 px-4 py-2 text-xs uppercase tracking-wider font-semibold text-gray-500 items-center gap-4">
-            <div className="w-32 flex-shrink-0">Tarih</div>
-            <div className="flex-1">İstasyon</div>
-            <div className="w-24 text-right">Litre</div>
-            <div className="w-24 text-right">Tutar</div>
+            <div className="w-32 flex-shrink-0">{t('fuelEntry.table.date')}</div>
+            <div className="flex-1">{t('fuelEntry.table.station')}</div>
+            <div className="w-24 text-right">{t('fuelEntry.table.liters')}</div>
+            <div className="w-24 text-right">{t('fuelEntry.table.amount')}</div>
             <div className="w-10 flex-shrink-0" />
-            <div className="flex-shrink-0">Kaynak</div>
+            <div className="flex-shrink-0">{t('fuelEntry.table.source')}</div>
             <div className="flex-shrink-0 w-16" />
           </div>
 
