@@ -1061,13 +1061,23 @@
       "alias": "Fix plate",
       "subcontractor": "Subcontractor",
       "dismiss": "Dismiss",
-      "dismissInBatch": "Dismiss · {{batch}}"
+      "dismissInBatch": "Dismiss · {{batch}}",
+      "dismissMenuHeading": "Which batch's entries to dismiss?"
     },
     "tooltips": {
       "createTruck": "Register this plate as a new truck. Historical entries auto-link to the new truck.",
       "alias": "Redirect a misread plate to the correct one (e.g. 34A8C123 → 34ABC123). This and future entries link to the correct truck.",
       "subcontractor": "This plate belongs to a subcontractor. Excluded from fleet analytics; no truck is created.",
       "dismiss": "Dismiss the {{count}} entries of this plate in \"{{batch}}\". The same plate may reappear in another batch."
+    },
+    "bulk": {
+      "selectedLabel": "{{count}} selected",
+      "selectRow": "Select this plate",
+      "markSubcontractor": "Mark as subcontractor",
+      "subcontractoring": "Marking…",
+      "subcontractorToast_one": "{{count}} plate marked as subcontractor.",
+      "subcontractorToast_other": "{{count}} plates marked as subcontractor.",
+      "clear": "Clear selection"
     },
     "aliasModal": {
       "title": "Fix plate",
@@ -1520,6 +1530,8 @@
       "MISSING_BASELINE": { "title": "Baseline not yet defined" }
     },
     "modal": {
+      "prev": "Previous (← key)",
+      "next": "Next (→ key)",
       "comparisonTitle": "Refuel comparison",
       "previous": "Previous refuel",
       "currentIssue": "Flagged refuel",

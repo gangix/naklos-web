@@ -1061,13 +1061,23 @@
       "alias": "Kennzeichen korrigieren",
       "subcontractor": "Subunternehmer",
       "dismiss": "Verwerfen",
-      "dismissInBatch": "Verwerfen · {{batch}}"
+      "dismissInBatch": "Verwerfen · {{batch}}",
+      "dismissMenuHeading": "Welche Einträge aus welcher Datei verwerfen?"
     },
     "tooltips": {
       "createTruck": "Dieses Kennzeichen als neuen LKW registrieren. Historische Einträge werden automatisch verknüpft.",
       "alias": "Falsch gelesenes Kennzeichen zum richtigen weiterleiten (z.B. 34A8C123 → 34ABC123). Dieser und zukünftige Einträge werden korrekt verknüpft.",
       "subcontractor": "Dieses Kennzeichen gehört einem Subunternehmer. Aus Flottenanalysen ausgeschlossen; kein LKW wird erstellt.",
       "dismiss": "Die {{count}} Einträge dieses Kennzeichens in \"{{batch}}\" verwerfen. Dasselbe Kennzeichen kann in einem anderen Batch erneut erscheinen."
+    },
+    "bulk": {
+      "selectedLabel": "{{count}} ausgewählt",
+      "selectRow": "Dieses Kennzeichen auswählen",
+      "markSubcontractor": "Als Subunternehmer markieren",
+      "subcontractoring": "Wird markiert…",
+      "subcontractorToast_one": "{{count}} Kennzeichen als Subunternehmer markiert.",
+      "subcontractorToast_other": "{{count}} Kennzeichen als Subunternehmer markiert.",
+      "clear": "Auswahl löschen"
     },
     "aliasModal": {
       "title": "Kennzeichen korrigieren",
@@ -1520,6 +1530,8 @@
       "MISSING_BASELINE": { "title": "Basiswert noch nicht definiert" }
     },
     "modal": {
+      "prev": "Zurück (← Taste)",
+      "next": "Weiter (→ Taste)",
       "comparisonTitle": "Tankungs-Vergleich",
       "previous": "Vorherige Tankung",
       "currentIssue": "Problematische Tankung",

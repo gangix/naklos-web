@@ -2,7 +2,7 @@ export type FuelProvider = 'OPET' | 'SHELL' | 'BP' | 'PETROL_OFISI' | 'GENERIC';
 
 export type FuelImportStatus = 'PROCESSING' | 'COMPLETED' | 'FAILED';
 
-export type DedupClassification = 'NEW' | 'DUPLICATE';
+export type DedupClassification = 'NEW' | 'DUPLICATE' | 'POSSIBLE_DUPLICATE';
 
 export type MappingSource = 'HEURISTIC' | 'CLAUDE' | 'EMPTY';
 

@@ -1060,13 +1060,23 @@
       "alias": "Plaka düzelt",
       "subcontractor": "Taşeron",
       "dismiss": "Yoksay",
-      "dismissInBatch": "Yoksay · {{batch}}"
+      "dismissInBatch": "Yoksay · {{batch}}",
+      "dismissMenuHeading": "Hangi partideki kayıtları yoksayayım?"
     },
     "tooltips": {
       "createTruck": "Bu plakayı yeni araç olarak kaydet. Geçmiş kayıtlar otomatik olarak yeni araca bağlanır.",
       "alias": "Yanlış yazılmış plakayı doğrusuna yönlendir (ör. 34A8C123 → 34ABC123). Bu ve gelecekteki kayıtlar doğru araca bağlanır.",
       "subcontractor": "Bu plaka taşerona ait. Filo analizlerinden dışlanır, araç oluşturulmaz.",
       "dismiss": "\"{{batch}}\" partisindeki {{count}} kaydı incelemeden kaldır. Aynı plaka başka bir partide tekrar görünebilir."
+    },
+    "bulk": {
+      "selectedLabel": "{{count}} seçildi",
+      "selectRow": "Bu plakayı seç",
+      "markSubcontractor": "Taşeron olarak işaretle",
+      "subcontractoring": "İşaretleniyor…",
+      "subcontractorToast_one": "{{count}} plaka taşeron olarak işaretlendi.",
+      "subcontractorToast_other": "{{count}} plaka taşeron olarak işaretlendi.",
+      "clear": "Seçimi temizle"
     },
     "aliasModal": {
       "title": "Plaka düzelt",
@@ -1519,6 +1529,8 @@
       "MISSING_BASELINE": { "title": "Ortalama tüketim henüz tanımlı değil" }
     },
     "modal": {
+      "prev": "Önceki (← tuşu)",
+      "next": "Sonraki (→ tuşu)",
       "comparisonTitle": "Dolum karşılaştırması",
       "previous": "Önceki dolum",
       "currentIssue": "Sorunlu dolum",

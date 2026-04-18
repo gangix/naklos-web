@@ -11,6 +11,7 @@ import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import { setPendingSample } from '../state/pendingSampleFile';
 import { formatDateTime } from '../utils/format';
 import type {
+  CommitOverride,
   DraftPreview,
   FuelImportBatchDto,
   FuelImportFormatDto,
@@ -20,8 +21,9 @@ import type {
 const classificationBadge = (c: PreviewRow['classification'], hasError: boolean) => {
   if (hasError) return { cls: 'bg-red-100 text-red-700', label: 'Hata', icon: <XCircle className="w-3 h-3" /> };
   switch (c) {
-    case 'NEW':       return { cls: 'bg-green-100 text-green-700', label: 'Yeni', icon: <CheckCircle2 className="w-3 h-3" /> };
-    case 'DUPLICATE': return { cls: 'bg-gray-200 text-gray-700', label: 'Yinelenen', icon: null };
+    case 'NEW':                return { cls: 'bg-green-100 text-green-700', label: 'Yeni', icon: <CheckCircle2 className="w-3 h-3" /> };
+    case 'DUPLICATE':          return { cls: 'bg-gray-200 text-gray-700', label: 'Yinelenen', icon: null };
+    case 'POSSIBLE_DUPLICATE': return { cls: 'bg-amber-100 text-amber-800', label: 'Olası yinelenen', icon: null };
   }
 };
 
@@ -53,6 +55,10 @@ const FuelImportPage = () => {
   const [loading, setLoading] = useState(false);
   const [committing, setCommitting] = useState(false);
   const [batches, setBatches] = useState<FuelImportBatchDto[] | null>(null);
+  /** Rows the user wants to force-import despite the POSSIBLE_DUPLICATE flag.
+   *  Keyed by rowIndex; default behaviour (unchecked) is SKIP per CommitOverride
+   *  contract, so we only record the IMPORT overrides. */
+  const [forceImport, setForceImport] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (!fleetId) return;
@@ -93,6 +99,7 @@ const FuelImportPage = () => {
       setLoading(true);
       const result = await fuelImportApi.preview(fleetId, formatId, file);
       setPreview(result);
+      setForceImport(new Set());
     } catch (err: any) {
       toast.error(err.message ?? 'Önizleme başarısız');
     } finally {
@@ -104,7 +111,11 @@ const FuelImportPage = () => {
     if (!fleetId || !preview) return;
     try {
       setCommitting(true);
-      const batch = await fuelImportApi.commit(fleetId, preview.draftId, []);
+      const overrides: CommitOverride[] = Array.from(forceImport).map((rowIndex) => ({
+        rowIndex,
+        action: 'IMPORT',
+      }));
+      const batch = await fuelImportApi.commit(fleetId, preview.draftId, overrides);
       toast.success('İçe aktarma tamamlandı');
       void loadBatches();
       navigate(`/manager/fuel-imports/${batch.id}`);
@@ -114,6 +125,14 @@ const FuelImportPage = () => {
       setCommitting(false);
     }
   };
+
+  const toggleForceImport = (rowIndex: number) =>
+    setForceImport((prev) => {
+      const next = new Set(prev);
+      if (next.has(rowIndex)) next.delete(rowIndex);
+      else next.add(rowIndex);
+      return next;
+    });
 
   const summary = preview?.summary;
 
@@ -188,12 +207,25 @@ const FuelImportPage = () => {
             </div>
           )}
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
             <StatCard label="Toplam" value={summary.total} />
             <StatCard label="Yeni" value={summary.newCount} highlight="green" />
             <StatCard label="Yinelenen" value={summary.duplicateCount} highlight="gray" />
+            <StatCard label="Olası yinelenen" value={summary.possibleDuplicateCount} highlight="yellow" />
             <StatCard label="Hata / Eşlenmemiş" value={summary.errorCount + summary.unmatchedCount} highlight="red" />
           </div>
+
+          {summary.possibleDuplicateCount > 0 && (
+            <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+              <p className="font-semibold mb-1">
+                {summary.possibleDuplicateCount} olası yinelenen kayıt var
+              </p>
+              <p className="text-amber-800">
+                Bu kayıtlar varsayılan olarak atlanacak. Aslında farklı bir dolum olduğunu düşünüyorsanız ilgili satırda
+                {' '}<strong>Yine de aktar</strong>{' '} kutusunu işaretleyin.
+              </p>
+            </div>
+          )}
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden overflow-x-auto">
             <table className="w-full text-sm">
@@ -226,6 +258,17 @@ const FuelImportPage = () => {
                           {b.icon}{b.label}
                         </span>
                         {errorText && <span className="block text-xs text-red-600">{errorText}</span>}
+                        {r.classification === 'POSSIBLE_DUPLICATE' && (
+                          <label className="mt-1 flex items-center gap-1.5 text-[11px] text-amber-800 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={forceImport.has(r.rowIndex)}
+                              onChange={() => toggleForceImport(r.rowIndex)}
+                              className="w-3.5 h-3.5 rounded border-amber-400 text-amber-600 focus:ring-amber-500 cursor-pointer"
+                            />
+                            Yine de aktar
+                          </label>
+                        )}
                       </td>
                       <td className="px-4 py-3">
                         {r.matchedTruckId

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+import { ChevronDown } from 'lucide-react';
 import { fuelReviewApi } from '../../services/api';
 import { useFleetRoster } from '../../contexts/FleetRosterContext';
 import type { UnmatchedBatchBreakdown } from '../../types/fuel';
@@ -25,6 +26,21 @@ export default function ResolutionActionMenu(
   const [aliasOpen, setAliasOpen] = useState(false);
   const [subcontractorOpen, setSubcontractorOpen] = useState(false);
   const [dismissBatch, setDismissBatch] = useState<UnmatchedBatchBreakdown | null>(null);
+  const [dismissMenuOpen, setDismissMenuOpen] = useState(false);
+  const dismissMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close the batch picker on outside-click so the row doesn't hold a stuck
+  // menu when the user moves on to another plate.
+  useEffect(() => {
+    if (!dismissMenuOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (dismissMenuRef.current && !dismissMenuRef.current.contains(e.target as Node)) {
+        setDismissMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDocClick);
+    return () => document.removeEventListener('mousedown', onDocClick);
+  }, [dismissMenuOpen]);
 
   const confirmSubcontractor = async () => {
     try {
@@ -48,7 +64,7 @@ export default function ResolutionActionMenu(
     }
   };
 
-  const showBatch = batches.length > 1;
+  const multipleBatches = batches.length > 1;
 
   // Canonical button classes lifted from TrucksPage so the fuel surface reads
   // the same as the rest of the manager area.
@@ -79,24 +95,52 @@ export default function ResolutionActionMenu(
         title={t('fuelReview.tooltips.subcontractor')}>
         {t('fuelReview.actions.subcontractor')}
       </button>
-      {batches.map((b, i) => {
-        // When the same plate appears in multiple batches, label each Yoksay
-        // with an ordinal so users can disambiguate even when filenames share
-        // a long prefix (e.g. "naklos-fuel-sample-jan.xlsx" / "...feb.xlsx").
-        // Full filename lives in the title tooltip + the batch links above.
-        const label = showBatch
-          ? `${t('fuelReview.actions.dismiss')} #${i + 1}`
-          : t('fuelReview.actions.dismiss');
-        return (
+      {/* Yoksay: single button when the plate lives in one batch, dropdown
+          with per-batch rows when it spans multiple. Prior UI rendered one
+          "Yoksay #1", "Yoksay #2" button per batch which was both cluttered
+          and confusing ("#1" meant nothing until the user read the tooltip). */}
+      {batches.length === 1 && (
+        <button
+          className={btnGhost}
+          onClick={() => setDismissBatch(batches[0])}
+          title={t('fuelReview.tooltips.dismiss', {
+            count: batches[0].entryCount,
+            batch: batches[0].batchFileName,
+          })}>
+          {t('fuelReview.actions.dismiss')}
+        </button>
+      )}
+      {multipleBatches && (
+        <div className="relative" ref={dismissMenuRef}>
           <button
-            key={b.batchId}
-            className={btnGhost}
-            onClick={() => setDismissBatch(b)}
-            title={t('fuelReview.tooltips.dismiss', { count: b.entryCount, batch: b.batchFileName })}>
-            {label}
+            className={`${btnGhost} inline-flex items-center gap-1`}
+            onClick={() => setDismissMenuOpen((v) => !v)}>
+            {t('fuelReview.actions.dismiss')}
+            <ChevronDown className="w-4 h-4 text-gray-500" />
           </button>
-        );
-      })}
+          {dismissMenuOpen && (
+            <div className="absolute right-0 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-hidden">
+              <div className="px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                {t('fuelReview.actions.dismissMenuHeading')}
+              </div>
+              {batches.map((b) => (
+                <button
+                  key={b.batchId}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 flex items-center justify-between gap-2"
+                  onClick={() => {
+                    setDismissMenuOpen(false);
+                    setDismissBatch(b);
+                  }}>
+                  <span className="truncate text-gray-800">{b.batchFileName}</span>
+                  <span className="text-xs text-gray-500 tabular-nums flex-shrink-0">
+                    {t('fuelReview.plateRow.entries', { count: b.entryCount })}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
       {createTruckOpen && (
         <AddTruckModal
           isOpen

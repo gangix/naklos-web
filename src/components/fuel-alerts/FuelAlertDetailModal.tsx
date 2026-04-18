@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, Image as ImageIcon, Phone, X } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, Image as ImageIcon, Phone, X } from 'lucide-react';
 import { toast } from 'sonner';
 import type { AnomalyPendingItem, Severity } from '../../types/fuelAnomaly';
 import { fuelAnomalyApi } from '../../services/fuelAnomalyApi';
@@ -17,6 +17,13 @@ interface Props {
   alert: AnomalyPendingItem;
   onClose: () => void;
   onAfterMutation: () => void;
+  /** Optional navigation — when provided, ← / → keys + header buttons step
+   *  through sibling alerts without closing the modal. Keeps triage in a
+   *  single focused pass instead of close-open-close-open. */
+  onPrev?: () => void;
+  onNext?: () => void;
+  /** 1-based current position in the nav sequence, for the "3 / 12" caption. */
+  position?: { current: number; total: number };
 }
 
 const stripeGradient: Record<Severity, string> = {
@@ -65,6 +72,9 @@ export default function FuelAlertDetailModal({
   alert,
   onClose,
   onAfterMutation,
+  onPrev,
+  onNext,
+  position,
 }: Props) {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -72,14 +82,23 @@ export default function FuelAlertDetailModal({
   const [confirming, setConfirming] = useState(false);
   const [dismissing, setDismissing] = useState(false);
 
-  // Escape to close
+  // Close the dismissal-reason sheet when stepping to a sibling alert —
+  // otherwise a stale reason pre-fills for a different anomaly.
+  useEffect(() => {
+    setShowReasonSheet(false);
+  }, [alert.anomalyId]);
+
+  // Key handlers: Esc closes; ← / → step siblings when available.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !confirming && !dismissing) onClose();
+      if (confirming || dismissing) return;
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft' && onPrev) onPrev();
+      else if (e.key === 'ArrowRight' && onNext) onNext();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose, confirming, dismissing]);
+  }, [onClose, onPrev, onNext, confirming, dismissing]);
 
   const ctx = useMemo(() => parseContext(alert.contextJson), [alert.contextJson]);
   const explanation = useMemo(() => richExplanation(alert), [alert]);
@@ -185,15 +204,45 @@ export default function FuelAlertDetailModal({
                 )}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={confirming || dismissing}
-              className="flex-shrink-0 w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-50 transition-colors"
-              aria-label="Kapat"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1 flex-shrink-0">
+              {position && (onPrev || onNext) && (
+                <>
+                  <button
+                    type="button"
+                    onClick={onPrev}
+                    disabled={!onPrev || confirming || dismissing}
+                    className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    aria-label={t('fuelAlerts.modal.prev')}
+                    title={t('fuelAlerts.modal.prev')}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <span className="px-1 text-xs text-slate-500 tabular-nums min-w-[48px] text-center">
+                    {position.current} / {position.total}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={onNext}
+                    disabled={!onNext || confirming || dismissing}
+                    className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    aria-label={t('fuelAlerts.modal.next')}
+                    title={t('fuelAlerts.modal.next')}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                  <div className="w-px h-6 bg-slate-200 mx-1" />
+                </>
+              )}
+              <button
+                type="button"
+                onClick={onClose}
+                disabled={confirming || dismissing}
+                className="w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 disabled:opacity-50 transition-colors"
+                aria-label="Kapat"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Plain-Turkish explanation on tinted bg */}

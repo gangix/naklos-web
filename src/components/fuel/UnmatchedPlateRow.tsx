@@ -8,12 +8,35 @@ interface Props {
   fleetId: string;
   group: UnmatchedPlateGroup;
   onResolved: () => void;
+  /** When true, render a leading checkbox for bulk selection. Off on the
+   *  batch-filtered view where bulk doesn't make sense. */
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
 }
 
-export default function UnmatchedPlateRow({ fleetId, group, onResolved }: Props) {
+export default function UnmatchedPlateRow({
+  fleetId,
+  group,
+  onResolved,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
+}: Props) {
   const { t } = useTranslation();
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 flex items-start justify-between gap-4">
+    <div className={`bg-white rounded-xl shadow-sm border p-5 flex items-start justify-between gap-4 transition-colors ${
+      selected ? 'border-primary-300 ring-1 ring-primary-200' : 'border-gray-200'
+    }`}>
+      {selectable && (
+        <input
+          type="checkbox"
+          checked={selected}
+          onChange={onToggleSelect}
+          aria-label={t('fuelReview.bulk.selectRow')}
+          className="mt-1 w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 cursor-pointer flex-shrink-0"
+        />
+      )}
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2 flex-wrap">
           <span className="text-lg font-extrabold text-gray-900 tracking-tight">{group.displayPlate}</span>
