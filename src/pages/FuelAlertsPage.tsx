@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, Filter as FilterIcon, Settings, Truck as TruckIcon } from 'lucide-react';
+import { ChevronDown, Filter as FilterIcon, Truck as TruckIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useFleet } from '../contexts/FleetContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
@@ -245,17 +244,7 @@ export default function FuelAlertsPage() {
   return (
     <div className="min-h-screen bg-warm">
       <div className="p-6 max-w-6xl mx-auto space-y-6 pb-32">
-        <div className="flex items-center justify-between gap-3">
-          <FuelSectionNav />
-          <Link
-            to="/manager/fuel-alerts/config"
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-600 border border-slate-200 bg-white hover:bg-slate-50 rounded-lg transition-colors flex-shrink-0"
-            title={t('fuelAlerts.settingsLink')}
-          >
-            <Settings className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('fuelAlerts.settingsLink')}</span>
-          </Link>
-        </div>
+        <FuelSectionNav />
 
         {/* Page header */}
         <div>

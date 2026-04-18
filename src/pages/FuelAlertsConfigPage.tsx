@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { ArrowLeft, ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import { useFleet } from '../contexts/FleetContext';
 import { fuelAnomalyApi } from '../services/fuelAnomalyApi';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
@@ -411,16 +410,11 @@ export default function FuelAlertsConfigPage() {
       <div className="p-6 max-w-4xl mx-auto space-y-6 pb-20">
         <FuelSectionNav />
 
-        {/* Page header */}
+        {/* Page header — no "back" link: FuelSectionNav above already has
+            the primary tabs + the Ayarlar disclosure highlighted, so the
+            path back to Alerts is one click away without a second affordance. */}
         <div>
-          <Link
-            to="/manager/fuel-alerts"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {t('fuelAlerts.config.backToList')}
-          </Link>
-          <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
             {t('fuelAlerts.config.pageTitle')}
           </h1>
           <p className="mt-1 text-sm text-slate-600">
