@@ -126,6 +126,8 @@ export const driverApi = {
   getMe: () => apiCall<any>('/drivers/me'),
   updateMyContact: (data: { phone?: string; email?: string }) =>
     apiCall('/drivers/me/contact', { method: 'PUT', body: JSON.stringify(data) }),
+  // Writes the current Keycloak user's locale attribute; works for managers
+  // too even though the path sits under /drivers.
   updateLocale: (locale: string) =>
     apiCall('/drivers/me/locale', { method: 'PUT', body: JSON.stringify({ locale }) }),
   getMyDocuments: () => apiCall<any[]>('/drivers/me/documents'),

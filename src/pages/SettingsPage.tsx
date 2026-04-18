@@ -118,13 +118,13 @@ const SettingsPage = () => {
   const handleDriverSelect = (driver: any) => {
     loginAsDriver(driver.id, `${driver.firstName} ${driver.lastName}`);
     setShowDriverList(false);
-    alert(`${driver.firstName} ${driver.lastName}`);
+    toast.success(`${driver.firstName} ${driver.lastName}`);
   };
 
   const handleManagerLogin = () => {
     loginAsManager();
     setShowDriverList(false);
-    alert('Fleet Manager');
+    toast.success('Fleet Manager');
   };
 
   return (
@@ -353,7 +353,7 @@ const SettingsPage = () => {
         <p className="text-xs text-gray-500 text-center mt-1">
           {t('morePage.version')}
         </p>
-        {user?.driverId && (
+        {import.meta.env.DEV && user?.driverId && (
           <p className="text-xs text-gray-400 text-center mt-2 font-mono">
             Driver UUID: {user.driverId}
           </p>
