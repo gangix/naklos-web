@@ -240,7 +240,13 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
         </div>
       </section>
 
-      {/* ============ 2. BU AY + SON DOLUM ============ */}
+      {/* ============ 2. BU AY + SON DOLUM ============
+          Hidden when no fuel data exists — otherwise every card inside
+          would render its own empty state and the user would see
+          "Yakıt kaydı yok" stacked across three surfaces on a fresh truck.
+          Efficiency hero still renders above; entries list empty state
+          (with Add CTA) renders below. */}
+      {hasAnyFuelData && (
       <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-3">
@@ -333,6 +339,7 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
           )}
         </div>
       </section>
+      )}
 
       {/* ============ 3. 6-MONTH TREND STRIP ============ */}
       {hasAnyFuelData && (

@@ -7,7 +7,7 @@ import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select, TextInput } from '../components/common/FormField';
-import { Mail, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { computeDriverWarnings } from '../utils/driverWarnings';
@@ -292,9 +292,10 @@ const DriverDetailPage = () => {
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="text-2xl text-gray-600 hover:text-gray-900 transition-colors"
+          aria-label={t('common.back')}
+          className="w-9 h-9 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 flex items-center justify-center transition-colors"
         >
-          ←
+          <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{fullName}</h1>

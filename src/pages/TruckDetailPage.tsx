@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Gauge, MapPin } from 'lucide-react';
+import { ArrowLeft, Gauge, MapPin } from 'lucide-react';
 import { truckApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
@@ -43,7 +43,7 @@ const TruckDetailPage = () => {
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
   const [showDriverSelect, setShowDriverSelect] = useState(false);
   const [assigningDriver, setAssigningDriver] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<'delete' | 'unassign' | null>(null);
+  const [confirmAction, setConfirmAction] = useState<'delete' | null>(null);
 
   useEffect(() => {
     if (!truckId) return;
@@ -131,13 +131,15 @@ const TruckDetailPage = () => {
     }
   };
 
-  const runUnassignDriver = async () => {
+  // Instant — symmetric with assign. The "already on another truck" label on
+  // the driver-select dropdown (P1-5) covers the reassignment-warning case
+  // that the old confirm modal was protecting against.
+  const handleUnassignDriver = async () => {
     if (!truckId) return;
     try {
       setAssigningDriver(true);
       const updatedTruck = await truckApi.unassignDriver(truckId);
       setTruck(updatedTruck);
-      setConfirmAction(null);
       refreshRoster();
     } catch (err) {
       console.error('Error unassigning driver:', err);
@@ -204,9 +206,10 @@ const TruckDetailPage = () => {
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={() => navigate(-1)}
-          className="text-2xl text-gray-600 hover:text-gray-900 transition-colors"
+          aria-label={t('common.back')}
+          className="w-9 h-9 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 flex items-center justify-center transition-colors"
         >
-          ←
+          <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{truck.plateNumber}</h1>
@@ -259,7 +262,7 @@ const TruckDetailPage = () => {
                         {truck.assignedDriverName}
                       </span>
                       <button
-                        onClick={() => setConfirmAction('unassign')}
+                        onClick={handleUnassignDriver}
                         disabled={assigningDriver}
                         className="text-xs text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                       >
@@ -510,18 +513,6 @@ const TruckDetailPage = () => {
           confirmLabel={t('common.archive')}
           tone="danger"
           onConfirm={runDeleteTruck}
-          onClose={() => setConfirmAction(null)}
-        />
-      )}
-
-      {confirmAction === 'unassign' && (
-        <ConfirmActionModal
-          title={t('confirmDelete.unassignDriver.title')}
-          description={t('confirmDelete.unassignDriver.description')}
-          bullets={[t('common.irreversible')]}
-          confirmLabel={t('common.remove')}
-          tone="danger"
-          onConfirm={runUnassignDriver}
           onClose={() => setConfirmAction(null)}
         />
       )}
