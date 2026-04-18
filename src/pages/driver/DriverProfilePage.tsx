@@ -292,7 +292,7 @@ const DriverProfilePage = () => {
       {/* Personal Info Card */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{t('profile.personalInfo')}</h2>
+          <h2 className="text-lg font-extrabold tracking-tight text-gray-900">{t('profile.personalInfo')}</h2>
           {!isEditing && (
             <button
               onClick={startEditing}
@@ -370,7 +370,7 @@ const DriverProfilePage = () => {
       {/* Emergency Contact Card */}
       {driver.emergencyContact && (
         <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driver.emergencyContact')}</h2>
+          <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('driver.emergencyContact')}</h2>
           <div className="space-y-3">
             <div>
               <p className="text-xs text-gray-600 mb-1">{t('driver.contactName')}</p>
@@ -390,7 +390,7 @@ const DriverProfilePage = () => {
 
       {/* Documents Section */}
       <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-3">{t('profile.documents')}</h2>
+        <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('profile.documents')}</h2>
 
         {/* Driver's License */}
         <div className="bg-white rounded-xl p-4 shadow-sm mb-3">
@@ -486,7 +486,7 @@ const DriverProfilePage = () => {
       {/* Upload history */}
       {myDocuments.length > 0 && (
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverProfile.documentHistory')}</h2>
+          <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('driverProfile.documentHistory')}</h2>
           <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
             {myDocuments.map((doc) => (
               <div key={doc.id} className="p-3">
