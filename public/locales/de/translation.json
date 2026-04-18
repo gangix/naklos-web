@@ -1077,6 +1077,8 @@
       "subcontractoring": "Wird markiert…",
       "subcontractorToast_one": "{{count}} Kennzeichen als Subunternehmer markiert.",
       "subcontractorToast_other": "{{count}} Kennzeichen als Subunternehmer markiert.",
+      "subcontractorPartialError_one": "{{count}} Kennzeichen konnte nicht markiert werden.",
+      "subcontractorPartialError_other": "{{count}} Kennzeichen konnten nicht markiert werden.",
       "clear": "Auswahl löschen"
     },
     "aliasModal": {

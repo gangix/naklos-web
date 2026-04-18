@@ -1076,6 +1076,8 @@
       "subcontractoring": "İşaretleniyor…",
       "subcontractorToast_one": "{{count}} plaka taşeron olarak işaretlendi.",
       "subcontractorToast_other": "{{count}} plaka taşeron olarak işaretlendi.",
+      "subcontractorPartialError_one": "{{count}} plaka işaretlenemedi.",
+      "subcontractorPartialError_other": "{{count}} plaka işaretlenemedi.",
       "clear": "Seçimi temizle"
     },
     "aliasModal": {

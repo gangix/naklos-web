@@ -88,7 +88,6 @@ export default function FuelAlertDetailModal({
     setShowReasonSheet(false);
   }, [alert.anomalyId]);
 
-  // Key handlers: Esc closes; ← / → step siblings when available.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (confirming || dismissing) return;

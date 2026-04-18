@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Users, X } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { fuelReviewApi } from '../../services/api';
 import { useFuelCounts } from '../../contexts/FuelCountsContext';
 import type { UnmatchedPlateGroup } from '../../types/fuel';
 import UnmatchedPlateRow from './UnmatchedPlateRow';
-import '../fuel-alerts/fuelAlertsAnimations.css';
+import FloatingSelectionBar from '../common/FloatingSelectionBar';
 
 interface Props { fleetId: string; batchId: string | null; }
 
@@ -60,19 +60,19 @@ export default function UnmatchedPlateList({ fleetId, batchId }: Props) {
     if (selected.size === 0) return;
     setBulking(true);
     const plates = Array.from(selected);
-    try {
-      const results = await Promise.allSettled(
-        plates.map((p) => fuelReviewApi.subcontractor(fleetId, p)),
-      );
-      const ok = results.filter((r) => r.status === 'fulfilled').length;
-      toast.success(t('fuelReview.bulk.subcontractorToast', { count: ok }));
-    } catch (err: any) {
-      toast.error(err?.message ?? t('fuelReview.subcontractorModal.errorDefault'));
-    } finally {
-      setBulking(false);
-      setSelected(new Set());
-      await refresh();
-    }
+    // Promise.allSettled never throws — catch branches here would be dead
+    // code. Instead, split the results so silent failures in a 50-plate op
+    // don't get swallowed into just a success toast.
+    const results = await Promise.allSettled(
+      plates.map((p) => fuelReviewApi.subcontractor(fleetId, p)),
+    );
+    const ok = results.filter((r) => r.status === 'fulfilled').length;
+    const failed = results.length - ok;
+    if (ok > 0) toast.success(t('fuelReview.bulk.subcontractorToast', { count: ok }));
+    if (failed > 0) toast.error(t('fuelReview.bulk.subcontractorPartialError', { count: failed }));
+    setBulking(false);
+    setSelected(new Set());
+    await refresh();
   };
 
   // Hide bulk scaffolding when batchId filter is active — that view already
@@ -115,71 +115,33 @@ export default function UnmatchedPlateList({ fleetId, batchId }: Props) {
         />
       ))}
 
-      {bulkEligible && selected.size > 0 && (
-        <UnmatchedFloatingBar
+      {/* Dismiss isn't offered in the floating bar because it's scoped per
+          batch — multi-batch selection would force a batch picker inside the
+          pill, defeating the "stays out of the way" pattern. Dismiss stays
+          per-row via the menu; bulk is for the semantically plate-wide
+          action (taşeron). */}
+      {bulkEligible && (
+        <FloatingSelectionBar
           count={selected.size}
-          onSubcontractor={() => void bulkSubcontractor()}
+          ariaLabel={t('fuelReview.bulk.selectedLabel', { count: selected.size })}
+          countLabel={t('fuelReview.bulk.selectedLabel', { count: selected.size })}
           onClear={() => setSelected(new Set())}
-          processing={bulking}
-        />
+          clearLabel={t('fuelReview.bulk.clear')}
+          disabled={bulking}
+        >
+          <button
+            type="button"
+            onClick={() => void bulkSubcontractor()}
+            disabled={bulking}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-60 disabled:pointer-events-none transition-colors"
+          >
+            <Users className="w-4 h-4" />
+            {bulking
+              ? t('fuelReview.bulk.subcontractoring')
+              : t('fuelReview.bulk.markSubcontractor')}
+          </button>
+        </FloatingSelectionBar>
       )}
-    </div>
-  );
-}
-
-interface BarProps {
-  count: number;
-  onSubcontractor: () => void;
-  onClear: () => void;
-  processing: boolean;
-}
-
-/** Floating pill for bulk-subcontractor. Dismiss isn't offered because it's
- *  scoped per batch — the multi-batch selection model would force the user
- *  to pick batches inside the floating bar, which defeats the "pill that
- *  stays out of the way" pattern. Keep bulk flow to what's semantically
- *  simple (taşeron = plate-wide). Dismiss stays per-row via the menu. */
-function UnmatchedFloatingBar({ count, onSubcontractor, onClear, processing }: BarProps) {
-  const { t } = useTranslation();
-  return (
-    <div className="fuel-alerts-slide-up fixed inset-x-0 bottom-4 z-40 flex justify-center pointer-events-none">
-      <div
-        role="toolbar"
-        aria-label={t('fuelReview.bulk.selectedLabel', { count })}
-        className="pointer-events-auto flex items-center gap-3 pl-4 pr-2 py-2 bg-slate-900 text-white rounded-full shadow-actionBar ring-1 ring-white/10"
-      >
-        <div className="flex items-center gap-2 px-2">
-          <div className="w-5 h-5 rounded-full bg-white/15 text-white flex items-center justify-center text-[11px] font-bold tabular-nums">
-            {count}
-          </div>
-          <span className="text-sm">{t('fuelReview.bulk.selectedLabel', { count })}</span>
-        </div>
-
-        <div className="w-px h-5 bg-white/15" />
-
-        <button
-          type="button"
-          onClick={onSubcontractor}
-          disabled={processing}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-60 disabled:pointer-events-none transition-colors"
-        >
-          <Users className="w-4 h-4" />
-          {processing
-            ? t('fuelReview.bulk.subcontractoring')
-            : t('fuelReview.bulk.markSubcontractor')}
-        </button>
-
-        <button
-          type="button"
-          onClick={onClear}
-          disabled={processing}
-          className="w-8 h-8 rounded-full hover:bg-white/10 disabled:opacity-60 disabled:pointer-events-none transition-colors flex items-center justify-center"
-          aria-label={t('fuelReview.bulk.clear')}
-          title={t('fuelReview.bulk.clear')}
-        >
-          <X className="w-4 h-4 text-slate-400" />
-        </button>
-      </div>
     </div>
   );
 }

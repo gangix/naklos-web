@@ -1077,6 +1077,8 @@
       "subcontractoring": "Marking…",
       "subcontractorToast_one": "{{count}} plate marked as subcontractor.",
       "subcontractorToast_other": "{{count}} plates marked as subcontractor.",
+      "subcontractorPartialError_one": "{{count}} plate failed to mark.",
+      "subcontractorPartialError_other": "{{count}} plates failed to mark.",
       "clear": "Clear selection"
     },
     "aliasModal": {

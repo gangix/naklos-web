@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { ChevronDown } from 'lucide-react';
 import { fuelReviewApi } from '../../services/api';
 import { useFleetRoster } from '../../contexts/FleetRosterContext';
+import { useClickOutside } from '../../hooks/useClickOutside';
 import type { UnmatchedBatchBreakdown } from '../../types/fuel';
 import AliasModal from './AliasModal';
 import ConfirmActionModal from './ConfirmActionModal';
@@ -28,19 +29,7 @@ export default function ResolutionActionMenu(
   const [dismissBatch, setDismissBatch] = useState<UnmatchedBatchBreakdown | null>(null);
   const [dismissMenuOpen, setDismissMenuOpen] = useState(false);
   const dismissMenuRef = useRef<HTMLDivElement>(null);
-
-  // Close the batch picker on outside-click so the row doesn't hold a stuck
-  // menu when the user moves on to another plate.
-  useEffect(() => {
-    if (!dismissMenuOpen) return;
-    const onDocClick = (e: MouseEvent) => {
-      if (dismissMenuRef.current && !dismissMenuRef.current.contains(e.target as Node)) {
-        setDismissMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', onDocClick);
-    return () => document.removeEventListener('mousedown', onDocClick);
-  }, [dismissMenuOpen]);
+  useClickOutside(dismissMenuOpen, dismissMenuRef, () => setDismissMenuOpen(false));
 
   const confirmSubcontractor = async () => {
     try {

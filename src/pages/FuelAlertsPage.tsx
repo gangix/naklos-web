@@ -233,6 +233,15 @@ export default function FuelAlertsPage() {
 
   if (!fleetId) return null;
 
+  // Nav index within the filtered list so the detail modal can step through
+  // siblings via ← / →. -1 when the open alert has since dropped out of the
+  // filtered view (e.g. mutation changed severity / rule filter).
+  const openIdx = openAlert
+    ? filtered.findIndex((a) => a.anomalyId === openAlert.anomalyId)
+    : -1;
+  const hasPrev = openIdx > 0;
+  const hasNext = openIdx >= 0 && openIdx < filtered.length - 1;
+
   return (
     <div className="min-h-screen bg-warm">
       <div className="p-6 max-w-6xl mx-auto space-y-6 pb-32">
@@ -427,25 +436,20 @@ export default function FuelAlertsPage() {
       </div>
 
       {/* Detail modal — keyboard ← / → step through the filtered list so
-          triaging 30 alerts doesn't require close-open-close-open. Scope the
-          nav to `filtered` (the visible set) so filters don't jump you out
-          of context. */}
-      {openAlert && fleetId && (() => {
-        const idx = filtered.findIndex((a) => a.anomalyId === openAlert.anomalyId);
-        const hasPrev = idx > 0;
-        const hasNext = idx >= 0 && idx < filtered.length - 1;
-        return (
-          <FuelAlertDetailModal
-            fleetId={fleetId}
-            alert={openAlert}
-            onClose={() => setOpenAlert(null)}
-            onAfterMutation={() => void refresh()}
-            onPrev={hasPrev ? () => setOpenAlert(filtered[idx - 1]) : undefined}
-            onNext={hasNext ? () => setOpenAlert(filtered[idx + 1]) : undefined}
-            position={idx >= 0 ? { current: idx + 1, total: filtered.length } : undefined}
-          />
-        );
-      })()}
+          triaging 30 alerts doesn't require close-open-close-open. Nav is
+          scoped to `filtered` so severity/truck/rule filters don't jump you
+          out of context. */}
+      {openAlert && fleetId && (
+        <FuelAlertDetailModal
+          fleetId={fleetId}
+          alert={openAlert}
+          onClose={() => setOpenAlert(null)}
+          onAfterMutation={() => void refresh()}
+          onPrev={hasPrev ? () => setOpenAlert(filtered[openIdx - 1]) : undefined}
+          onNext={hasNext ? () => setOpenAlert(filtered[openIdx + 1]) : undefined}
+          position={openIdx >= 0 ? { current: openIdx + 1, total: filtered.length } : undefined}
+        />
+      )}
 
       {/* Bulk dismiss modal */}
       {bulkDismissOpen && fleetId && selected.size > 0 && (
