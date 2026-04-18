@@ -1269,7 +1269,8 @@
         },
         "save": "Speichern",
         "saving": "Speichert…",
-        "saved": "Einstellungen gespeichert"
+        "saved": "Einstellungen gespeichert",
+        "rescanNote": "Bestehende Einträge werden mit den neuen Einstellungen neu geprüft."
       },
       "rules": {
         "title": "Warnregeln",
@@ -1280,6 +1281,7 @@
         "invalidJson": "Kein gültiges JSON.",
         "save": "Speichern",
         "saved": "Gespeichert",
+        "rescanNote": "Bestehende Einträge werden mit den neuen Regeln neu geprüft.",
         "ODOMETER_ROLLBACK": { "desc": "Löst aus, wenn der Kilometerstand niedriger ist als zuvor." },
         "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Löst aus, wenn die getankte Menge die Tankkapazität überschreitet." },
         "FUEL_TYPE_MISMATCH": { "desc": "Die Kraftstoffart auf dem Beleg passt nicht zum Fahrzeug." },
@@ -1319,6 +1321,7 @@
       "save": "Speichern",
       "saving": "Wird gespeichert…",
       "saved": "Einstellungen aktualisiert",
+      "rescanNote": "Die Einträge dieses Fahrzeugs werden mit den neuen Einstellungen neu geprüft.",
       "rulesTitle": "Fahrzeug-spezifische Regeln",
       "rulesEmpty": "Keine individuellen Regeln für dieses Fahrzeug.",
       "ruleOn": "An",

@@ -1268,7 +1268,8 @@
         },
         "save": "Kaydet",
         "saving": "Kaydediliyor…",
-        "saved": "Ayarlar kaydedildi"
+        "saved": "Ayarlar kaydedildi",
+        "rescanNote": "Mevcut kayıtlar yeni ayarlarla tekrar taranacak."
       },
       "rules": {
         "title": "Uyarı kuralları",
@@ -1279,6 +1280,7 @@
         "invalidJson": "Geçerli bir JSON değil.",
         "save": "Kaydet",
         "saved": "Kaydedildi",
+        "rescanNote": "Mevcut kayıtlar yeni kurallarla tekrar taranacak.",
         "ODOMETER_ROLLBACK": { "desc": "Aracın kilometresi bir önceki kayıttan küçükse tetiklenir." },
         "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Alınan yakıt, tank kapasitesini aşıyorsa tetiklenir." },
         "FUEL_TYPE_MISMATCH": { "desc": "Fişteki yakıt türü, aracın yakıt türüyle uyuşmuyor." },
@@ -1318,6 +1320,7 @@
       "save": "Kaydet",
       "saving": "Kaydediliyor…",
       "saved": "Ayarlar güncellendi",
+      "rescanNote": "Bu aracın kayıtları yeni ayarlarla tekrar taranacak.",
       "rulesTitle": "Bu araca özel kural ayarları",
       "rulesEmpty": "Bu araç için özel kural ayarı yok.",
       "ruleOn": "Açık",

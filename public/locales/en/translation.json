@@ -1269,7 +1269,8 @@
         },
         "save": "Save",
         "saving": "Saving…",
-        "saved": "Settings saved"
+        "saved": "Settings saved",
+        "rescanNote": "Existing entries will be re-scanned with the new settings."
       },
       "rules": {
         "title": "Alert rules",
@@ -1280,6 +1281,7 @@
         "invalidJson": "Not valid JSON.",
         "save": "Save",
         "saved": "Saved",
+        "rescanNote": "Existing entries will be re-scanned with the new rules.",
         "ODOMETER_ROLLBACK": { "desc": "Fires when the odometer is lower than the previous entry." },
         "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Fires when the refueled volume exceeds the truck's tank capacity." },
         "FUEL_TYPE_MISMATCH": { "desc": "Fires when the receipt's fuel type differs from the truck's fuel type." },
@@ -1319,6 +1321,7 @@
       "save": "Save",
       "saving": "Saving…",
       "saved": "Settings updated",
+      "rescanNote": "This truck's entries will be re-scanned with the new settings.",
       "rulesTitle": "Per-truck rule overrides",
       "rulesEmpty": "No custom rule overrides for this truck.",
       "ruleOn": "On",

@@ -70,7 +70,9 @@ export default function TruckAnomalyOverridesSection({ fleetId, truckId }: Props
         tankCapacityLiters: tank.length === 0 ? null : Math.floor(Number(tank)),
       });
       hydrate(next);
-      toast.success(t('fuelAlerts.overrides.saved'));
+      toast.success(t('fuelAlerts.overrides.saved'), {
+        description: t('fuelAlerts.overrides.rescanNote'),
+      });
     } catch (err) {
       console.error('Save baseline failed', err);
       toast.error(err instanceof Error ? err.message : t('fuelAlerts.toast.loadError'));

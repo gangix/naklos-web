@@ -100,7 +100,9 @@ function SettingsSection({ fleetId, initial, onSaved }: SettingsSectionProps) {
       });
       setState('saved');
       onSaved(updated);
-      toast.success(t('fuelAlerts.config.settings.saved'));
+      toast.success(t('fuelAlerts.config.settings.saved'), {
+        description: t('fuelAlerts.config.settings.rescanNote'),
+      });
       // reset the inline "saved" flash after 2s
       setTimeout(() => setState('idle'), 2000);
     } catch (err) {
@@ -257,7 +259,9 @@ function RuleRow({ fleetId, ruleCode, initial, onSaved }: RuleRowProps) {
       });
       setState('saved');
       onSaved(updated);
-      toast.success(t('fuelAlerts.config.rules.saved'));
+      toast.success(t('fuelAlerts.config.rules.saved'), {
+        description: t('fuelAlerts.config.rules.rescanNote'),
+      });
       setTimeout(() => setState('idle'), 2000);
     } catch (err) {
       console.error(`Save rule ${ruleCode} failed`, err);
