@@ -131,18 +131,18 @@ const SettingsPage = () => {
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('morePage.title')}</h1>
+        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('settings.title')}</h1>
         <div className="flex items-center justify-between mt-2">
           <div>
-            <p className="text-sm text-gray-600">{t('morePage.loggedIn')}: <span className="font-medium">{user?.name}</span></p>
-            <p className="text-xs text-gray-500">{t('morePage.role')}: {user?.role === 'driver' ? t('morePage.roleDriver') : t('morePage.roleManager')}</p>
+            <p className="text-sm text-gray-600">{t('settings.loggedIn')}: <span className="font-medium">{user?.name}</span></p>
+            <p className="text-xs text-gray-500">{t('settings.role')}: {user?.role === 'driver' ? t('settings.roleDriver') : t('settings.roleManager')}</p>
           </div>
           {import.meta.env.DEV && (
             <button
               onClick={() => setShowDriverList(!showDriverList)}
               className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
             >
-              {showDriverList ? t('morePage.close') : t('morePage.switchUser')}
+              {showDriverList ? t('settings.close') : t('settings.switchUser')}
             </button>
           )}
         </div>
@@ -193,24 +193,24 @@ const SettingsPage = () => {
       {fleetData && (
         <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900">{t('morePage.fleetSettings')}</h2>
+            <h2 className="font-bold text-gray-900">{t('settings.fleetSettings')}</h2>
           </div>
           <div className="p-5 space-y-4">
             <TextInput
-              label={t('morePage.fleetName')}
+              label={t('settings.fleetName')}
               type="text"
               value={fleetName}
               onChange={(e) => setFleetName(e.target.value)}
             />
             <TextInput
-              label={t('morePage.fleetEmail')}
+              label={t('settings.fleetEmail')}
               type="email"
               value={fleetEmail}
               onChange={(e) => setFleetEmail(e.target.value)}
-              hint={t('morePage.fleetEmailHint')}
+              hint={t('settings.fleetEmailHint')}
             />
             <TextInput
-              label={t('morePage.phone')}
+              label={t('settings.phone')}
               type="tel"
               value={fleetPhone}
               onChange={(e) => setFleetPhone(e.target.value)}
@@ -246,7 +246,7 @@ const SettingsPage = () => {
               />
             </div>
             <Select
-              label={t('morePage.currency')}
+              label={t('settings.currency')}
               value={fleetCurrency}
               onChange={(e) => setFleetCurrency(e.target.value)}
             >
@@ -261,7 +261,7 @@ const SettingsPage = () => {
                 disabled={fleetSaving}
                 className="w-full py-2.5 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 text-sm"
               >
-                {fleetSaving ? t('morePage.saving') : t('morePage.save')}
+                {fleetSaving ? t('settings.saving') : t('settings.save')}
               </button>
             </div>
           </div>
@@ -275,7 +275,7 @@ const SettingsPage = () => {
         </div>
         <div className="p-5">
           <Select
-            label={t('morePage.language')}
+            label={t('settings.language')}
             value={i18n.language}
             onChange={(e) => handleLanguageChange(e.target.value)}
           >
@@ -290,7 +290,7 @@ const SettingsPage = () => {
       {showDriverList && import.meta.env.DEV && (
         <div className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> {t('morePage.developerLogin')}</h2>
+            <h2 className="font-bold text-gray-900 flex items-center gap-1.5"><Wrench className="w-4 h-4" /> {t('settings.developerLogin')}</h2>
             <p className="text-xs text-gray-600 mt-1">{t('driverProfile.devTestHint')}</p>
           </div>
 
@@ -355,10 +355,10 @@ const SettingsPage = () => {
       {/* App Info */}
       <div className="mt-8 p-4 bg-gray-50 rounded-xl">
         <p className="text-xs text-gray-600 text-center">
-          {t('morePage.appInfo')}
+          {t('settings.appInfo')}
         </p>
         <p className="text-xs text-gray-500 text-center mt-1">
-          {t('morePage.version')}
+          {t('settings.version')}
         </p>
         {import.meta.env.DEV && user?.driverId && (
           <p className="text-xs text-gray-400 text-center mt-2 font-mono">
