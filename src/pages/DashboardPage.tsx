@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
-import { deriveTruckStatus, deriveDriverStatus, type DerivedStatus } from '../utils/derivedStatus';
+import { useDocumentAttention } from '../hooks/useDocumentAttention';
 import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 
 interface ExpiringItem {
@@ -31,6 +31,10 @@ const DashboardPage = () => {
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
   const { trucks, drivers, loading } = useFleetRoster();
+  // Same signal the nav badge uses. Previous code counted MISSING_DOCS
+  // (strictly missing dates) which disagreed with the attention row and
+  // the nav badge whenever a truck had all docs set but one expiring soon.
+  const { trucksWithWarnings, driversWithWarnings } = useDocumentAttention();
 
   const warningGroups = useMemo<EntityWarningGroup[]>(() => {
     const groups: EntityWarningGroup[] = [];
@@ -108,18 +112,6 @@ const DashboardPage = () => {
   const driverDocsCount = driverWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
   const totalDocsCount = truckDocsCount + driverDocsCount;
 
-  const truckCounts = useMemo(
-    () => trucks.reduce<Record<DerivedStatus, number>>(
-      (acc, t) => { acc[deriveTruckStatus(t)]++; return acc; },
-      { ACTIVE: 0, READY: 0, MISSING_DOCS: 0 }),
-    [trucks]);
-
-  const driverCounts = useMemo(
-    () => drivers.reduce<Record<DerivedStatus, number>>(
-      (acc, d) => { acc[deriveDriverStatus(d)]++; return acc; },
-      { ACTIVE: 0, READY: 0, MISSING_DOCS: 0 }),
-    [drivers]);
-
   if (loading) {
     return (
       <div className="p-4 flex items-center justify-center min-h-[50vh]">
@@ -148,17 +140,18 @@ const DashboardPage = () => {
           </p>
           <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
         </div>
-        {/* Quick actions — one click to the most common tasks. The KPI cards
-            below are about state; these buttons are about action. */}
+        {/* Quick actions — one click to the most common tasks. The `?add=1`
+            query param auto-opens the add-modal on the target page so the
+            user doesn't land on a list and hunt for a second button. */}
         <div className="flex gap-2 flex-wrap">
           <button
-            onClick={() => navigate('/manager/trucks')}
+            onClick={() => navigate('/manager/trucks?add=1')}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all">
             <Plus className="w-4 h-4" />
             {t('dashboard.quickActions.addTruck', { defaultValue: 'Araç ekle' })}
           </button>
           <button
-            onClick={() => navigate('/manager/drivers')}
+            onClick={() => navigate('/manager/drivers?add=1')}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
             <UserPlus className="w-4 h-4" />
             {t('dashboard.quickActions.addDriver', { defaultValue: 'Sürücü ekle' })}
@@ -186,8 +179,8 @@ const DashboardPage = () => {
             icon={Truck}
             iconTone="bg-blue-50 text-blue-600"
             total={trucks.length}
-            missingCount={truckCounts.MISSING_DOCS}
-            missingLabel={t('derivedStatus.MISSING_DOCS')}
+            attentionCount={trucksWithWarnings}
+            attentionLabel={t('dashboard.fleetStateCard.needsAttention')}
             onClick={() => navigate('/manager/trucks')}
           />
           <FleetStatCard
@@ -195,8 +188,8 @@ const DashboardPage = () => {
             icon={Users}
             iconTone="bg-emerald-50 text-emerald-600"
             total={drivers.length}
-            missingCount={driverCounts.MISSING_DOCS}
-            missingLabel={t('derivedStatus.MISSING_DOCS')}
+            attentionCount={driversWithWarnings}
+            attentionLabel={t('dashboard.fleetStateCard.needsAttention')}
             onClick={() => navigate('/manager/drivers')}
           />
         </div>
@@ -309,13 +302,13 @@ const DashboardPage = () => {
           </p>
           <div className="mt-5 flex gap-2 flex-wrap justify-center">
             <button
-              onClick={() => navigate('/manager/trucks')}
+              onClick={() => navigate('/manager/trucks?add=1')}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all">
               <Plus className="w-4 h-4" />
               {t('dashboard.quickActions.addTruck', { defaultValue: 'Araç ekle' })}
             </button>
             <button
-              onClick={() => navigate('/manager/drivers')}
+              onClick={() => navigate('/manager/drivers?add=1')}
               className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
               <UserPlus className="w-4 h-4" />
               {t('dashboard.quickActions.addDriver', { defaultValue: 'Sürücü ekle' })}
@@ -371,16 +364,18 @@ interface FleetStatCardProps {
   icon: React.ComponentType<{ className?: string }>;
   iconTone: string;
   total: number;
-  missingCount: number;
-  missingLabel: string;
+  /** Entities with at least one missing-or-expiring document — same signal
+   *  used by the top-nav badge and the dashboard attention list. */
+  attentionCount: number;
+  attentionLabel: string;
   onClick: () => void;
 }
 
 /** Calm entity-count card. Big number = total; a single red dot-chip appears
- *  below when some entities have missing documents. No "ready"/"active" chip
- *  — healthy count is just (total − missing), inferable from the big number. */
+ *  below when some entities need document attention. No "ready"/"active" chip
+ *  — healthy count is just (total − attention), inferable from the big number. */
 const FleetStatCard = ({
-  label, icon: Icon, iconTone, total, missingCount, missingLabel, onClick,
+  label, icon: Icon, iconTone, total, attentionCount, attentionLabel, onClick,
 }: FleetStatCardProps) => (
   <button
     onClick={onClick}
@@ -398,11 +393,11 @@ const FleetStatCard = ({
     <div className="flex items-baseline gap-2">
       <span className="text-3xl font-extrabold text-gray-900 tracking-tight tabular-nums">{total}</span>
     </div>
-    {missingCount > 0 && (
+    {attentionCount > 0 && (
       <div className="mt-3 text-xs">
         <span className="inline-flex items-center gap-1 text-red-700">
           <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-          {missingCount} {missingLabel}
+          {attentionCount} {attentionLabel}
         </span>
       </div>
     )}

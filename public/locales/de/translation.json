@@ -52,6 +52,9 @@
       "title": "Richten Sie Ihre Flotte ein",
       "subtitle": "Beginnen Sie mit dem ersten Fahrzeug und Fahrer. Dokumente, Kraftstoffverfolgung und Warnungen werden automatisch verknüpft."
     },
+    "fleetStateCard": {
+      "needsAttention": "benötigen Aufmerksamkeit"
+    },
     "quickActions": {
       "addTruck": "LKW hinzufügen",
       "inviteDriver": "Fahrer einladen",

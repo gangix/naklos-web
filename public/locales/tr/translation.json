@@ -50,6 +50,9 @@
       "title": "Filonuzu kurmaya başlayın",
       "subtitle": "İlk aracınızı ve sürücünüzü ekleyerek başlayın. Belgeler, yakıt takibi ve uyarılar otomatik olarak hizalanır."
     },
+    "fleetStateCard": {
+      "needsAttention": "belge bekliyor"
+    },
     "quickActions": {
       "addTruck": "Araç ekle",
       "inviteDriver": "Sürücü davet et",

@@ -23,7 +23,7 @@ const DriversPage = () => {
   const { drivers, loading: driversLoading, refresh: refreshRoster } = useFleetRoster();
   const { documentSubmissions, truckAssignmentRequests } = useData();
   const maxDrivers = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
   const [filter, setFilter] = useState<DerivedStatus | 'all'>('all');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -60,6 +60,23 @@ const DriversPage = () => {
       setTab('history');
     }
   }, [searchParams]);
+
+  // Dashboard quick-action support: `?add=1` auto-opens the add-driver modal
+  // on mount. Consumed once — the param is stripped so reloads don't re-open
+  // the modal. Falls through to the plan-limit upgrade nudge when needed.
+  useEffect(() => {
+    if (searchParams.get('add') !== '1') return;
+    if (maxDrivers !== -1 && drivers.length >= maxDrivers) {
+      setUpgradeMessage(undefined);
+      setUpgradeModalOpen(true);
+    } else {
+      setAddDriverModalOpen(true);
+    }
+    const next = new URLSearchParams(searchParams);
+    next.delete('add');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, maxDrivers, drivers.length]);
 
   // Get driver document submissions
   const driverSubmissions = useMemo(() => {

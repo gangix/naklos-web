@@ -22,7 +22,7 @@ const TrucksPage = () => {
   const { trucks, loading: trucksLoading, refresh: refreshRoster } = useFleetRoster();
   const { documentSubmissions } = useData();
   const maxTrucks = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState<'list' | 'pending' | 'history'>('list');
   const [filter, setFilter] = useState<DerivedStatus | 'all'>('all');
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -50,6 +50,23 @@ const TrucksPage = () => {
       setTab('history');
     }
   }, [searchParams]);
+
+  // Dashboard quick-action support: `?add=1` auto-opens the add-truck modal
+  // on mount. Consumed once — the param is stripped so reloads don't re-open
+  // the modal. Falls through to the plan-limit upgrade nudge when needed.
+  useEffect(() => {
+    if (searchParams.get('add') !== '1') return;
+    if (maxTrucks !== -1 && trucks.length >= maxTrucks) {
+      setUpgradeMessage(undefined);
+      setUpgradeModalOpen(true);
+    } else {
+      setAddTruckModalOpen(true);
+    }
+    const next = new URLSearchParams(searchParams);
+    next.delete('add');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, maxTrucks, trucks.length]);
 
   // Get truck document submissions
   const truckSubmissions = useMemo(() => {
