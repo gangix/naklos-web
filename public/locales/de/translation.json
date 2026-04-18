@@ -185,6 +185,7 @@
     "cancel": "Abbrechen",
     "edit": "Bearbeiten",
     "delete": "Löschen",
+    "archive": "Archivieren",
     "search": "Suchen",
     "filter": "Filtern",
     "loading": "Wird geladen...",
@@ -375,7 +376,7 @@
       "assignDriver": "Fehler beim Zuweisen des Fahrers",
       "removeDriver": "Fehler beim Entfernen des Fahrers",
       "updateStatus": "Fehler beim Aktualisieren des Status",
-      "deleteTruck": "Fehler beim Löschen des Fahrzeugs",
+      "deleteTruck": "Fehler beim Archivieren des Fahrzeugs",
       "deleteCertificate": "Fehler beim Entfernen des Zertifikats",
       "inviteFailed": "Einladung konnte nicht gesendet werden",
       "filePreparation": "Datei konnte nicht vorbereitet werden. Bitte versuchen Sie es erneut.",
@@ -612,8 +613,8 @@
     "uploadedBy": "Hochgeladen von",
     "expiryLabel": "Gültigkeit",
     "download": "Herunterladen",
-    "deleteTruck": "Fahrzeug löschen",
-    "confirmDelete": "Fahrzeug löschen? Dies kann nicht rückgängig gemacht werden.",
+    "deleteTruck": "Fahrzeug archivieren",
+    "confirmDelete": "Dieses Fahrzeug wird archiviert. Kraftstoff- und Fahrtverlauf bleiben erhalten.",
     "confirmRemoveDriver": "Fahrer entfernen?",
     "notAssigned": "Nicht zugewiesen",
     "documentNote": "Dokumente werden sofort gespeichert und sind für Ihren Vorgesetzten sichtbar."
@@ -1278,8 +1279,11 @@
   },
   "confirmDelete": {
     "truck": {
-      "title": "LKW löschen",
-      "description": "LKW mit Kennzeichen {{plate}} wird gelöscht."
+      "title": "Fahrzeug archivieren",
+      "description": "Fahrzeug mit Kennzeichen {{plate}} wird archiviert.",
+      "bulletHistory": "Kraftstoff- und Fahrtverlauf bleiben erhalten",
+      "bulletHidden": "Das Fahrzeug erscheint nicht mehr in Listen",
+      "bulletPlateReuse": "Das gleiche Kennzeichen kann für ein neues Fahrzeug wiederverwendet werden"
     },
     "driver": {
       "title": "Fahrer löschen",

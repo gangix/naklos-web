@@ -185,6 +185,7 @@
     "cancel": "İptal",
     "edit": "Düzenle",
     "delete": "Sil",
+    "archive": "Arşivle",
     "search": "Ara",
     "filter": "Filtrele",
     "loading": "Yükleniyor...",
@@ -375,7 +376,7 @@
       "assignDriver": "Sürücü atanırken hata oluştu",
       "removeDriver": "Sürücü kaldırılırken hata oluştu",
       "updateStatus": "Durum güncellenirken hata oluştu",
-      "deleteTruck": "Araç silinirken hata oluştu",
+      "deleteTruck": "Araç arşivlenirken hata oluştu",
       "deleteCertificate": "Sertifika kaldırılırken hata oluştu",
       "inviteFailed": "Davet gönderilemedi",
       "filePreparation": "Dosya hazırlanamadı. Lütfen tekrar deneyin.",
@@ -612,8 +613,8 @@
     "uploadedBy": "Yükleyen",
     "expiryLabel": "Geçerlilik",
     "download": "İndir",
-    "deleteTruck": "Aracı Sil",
-    "confirmDelete": "Bu araç silinecek. Bu işlem geri alınamaz.",
+    "deleteTruck": "Aracı Arşivle",
+    "confirmDelete": "Bu araç arşivlenecek. Yakıt ve sefer geçmişi korunur.",
     "confirmRemoveDriver": "Sürücü kaldırılsın mı?",
     "notAssigned": "Atanmadı",
     "documentNote": "Yüklediğiniz belgeler anında kaydedilir ve yöneticiniz görebilir."
@@ -1277,8 +1278,11 @@
   },
   "confirmDelete": {
     "truck": {
-      "title": "Aracı sil",
-      "description": "{{plate}} plakalı araç silinecek."
+      "title": "Aracı arşivle",
+      "description": "{{plate}} plakalı araç arşivlenecek.",
+      "bulletHistory": "Yakıt ve sefer geçmişi korunur",
+      "bulletHidden": "Araç listelerde artık görünmez",
+      "bulletPlateReuse": "Aynı plaka yeni bir araç için tekrar kullanılabilir"
     },
     "driver": {
       "title": "Sürücüyü sil",

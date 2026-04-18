@@ -485,8 +485,12 @@ const TruckDetailPage = () => {
         <ConfirmActionModal
           title={t('confirmDelete.truck.title')}
           description={t('confirmDelete.truck.description', { plate: truck.plateNumber })}
-          bullets={[t('common.irreversible')]}
-          confirmLabel={t('common.delete')}
+          bullets={[
+            t('confirmDelete.truck.bulletHistory'),
+            t('confirmDelete.truck.bulletHidden'),
+            t('confirmDelete.truck.bulletPlateReuse'),
+          ]}
+          confirmLabel={t('common.archive')}
           tone="danger"
           onConfirm={runDeleteTruck}
           onClose={() => setConfirmAction(null)}

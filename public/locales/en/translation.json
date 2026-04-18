@@ -185,6 +185,7 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
+    "archive": "Archive",
     "search": "Search",
     "filter": "Filter",
     "loading": "Loading...",
@@ -375,7 +376,7 @@
       "assignDriver": "An error occurred while assigning driver",
       "removeDriver": "An error occurred while removing driver",
       "updateStatus": "An error occurred while updating status",
-      "deleteTruck": "An error occurred while deleting truck",
+      "deleteTruck": "An error occurred while archiving truck",
       "deleteCertificate": "An error occurred while removing certificate",
       "inviteFailed": "Failed to send invitation",
       "filePreparation": "Could not prepare file. Please try again.",
@@ -612,8 +613,8 @@
     "uploadedBy": "Uploaded By",
     "expiryLabel": "Expiry",
     "download": "Download",
-    "deleteTruck": "Delete Truck",
-    "confirmDelete": "Delete this truck? This cannot be undone.",
+    "deleteTruck": "Archive Truck",
+    "confirmDelete": "This truck will be archived. Fuel and trip history are preserved.",
     "confirmRemoveDriver": "Remove this driver?",
     "notAssigned": "Not Assigned",
     "documentNote": "Documents are saved instantly and visible to your manager."
@@ -1278,8 +1279,11 @@
   },
   "confirmDelete": {
     "truck": {
-      "title": "Delete truck",
-      "description": "Truck with plate {{plate}} will be deleted."
+      "title": "Archive truck",
+      "description": "Truck with plate {{plate}} will be archived.",
+      "bulletHistory": "Fuel and trip history are preserved",
+      "bulletHidden": "The truck no longer appears in lists",
+      "bulletPlateReuse": "The same plate can be reused for a new truck"
     },
     "driver": {
       "title": "Delete driver",
