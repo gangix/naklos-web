@@ -247,6 +247,17 @@ const TruckDetailPage = () => {
       {/* Genel tab */}
       {activeTab === 'genel' && (
         <>
+          {truckWarnings.length > 0 && (
+            <EntityWarningsCard
+              warnings={truckWarnings}
+              heading={t('truckDetail.warnings.heading')}
+              action={{
+                label: t('truckDetail.warnings.goToDocs'),
+                onClick: () => setActiveTab('belgeler'),
+              }}
+            />
+          )}
+
           {/* Basic info card */}
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
             <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('truck.basicInfo')}</h2>
@@ -339,17 +350,6 @@ const TruckDetailPage = () => {
 
           {(truck.expectedLPer100KmDerived !== null || truck.expectedLPer100KmManual !== null) && (
             <FuelEfficiencyCard truck={truck} onOpenEntries={() => setActiveTab('yakit')} />
-          )}
-
-          {truckWarnings.length > 0 && (
-            <EntityWarningsCard
-              warnings={truckWarnings}
-              heading={t('truckDetail.warnings.heading')}
-              action={{
-                label: t('truckDetail.warnings.goToDocs'),
-                onClick: () => setActiveTab('belgeler'),
-              }}
-            />
           )}
 
           {/* Location card */}
