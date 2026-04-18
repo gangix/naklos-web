@@ -1,11 +1,10 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel, FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { truckApi, driverApi } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
+import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
-import type { Truck as TruckType, Driver } from '../types';
 import { deriveTruckStatus, deriveDriverStatus, type DerivedStatus } from '../utils/derivedStatus';
 import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 
@@ -31,32 +30,7 @@ const DashboardPage = () => {
   // Same gate ManagerTopNav uses — fuel surface is paid-only in prod.
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
-  const [trucks, setTrucks] = useState<TruckType[]>([]);
-  const [drivers, setDrivers] = useState<Driver[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  const loadAll = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(false);
-      const [trucksPage, driversPage] = await Promise.all([
-        truckApi.getByFleet(0, 1000),
-        driverApi.getByFleet(0, 1000),
-      ]);
-      setTrucks(trucksPage.content as TruckType[]);
-      setDrivers(driversPage.content as Driver[]);
-    } catch (err) {
-      console.error('Error loading dashboard data:', err);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadAll();
-  }, []);
+  const { trucks, drivers, loading } = useFleetRoster();
 
   const warningGroups = useMemo<EntityWarningGroup[]>(() => {
     const groups: EntityWarningGroup[] = [];
@@ -101,14 +75,18 @@ const DashboardPage = () => {
     }
 
     for (const driver of drivers) {
+      // Required vs optional rules live in computeDriverWarnings; this loop
+      // just mirrors the shape (license + SRC always checked; CPC only if
+      // the cert is on record).
       const checks: Array<[string | null | undefined, string]> = [
         [driver.licenseExpiryDate, 'doc.license'],
       ];
-      // SRC and CPC certificates — flag if missing entirely or if expiring soon
       const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
-      const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
       checks.push([srcCert?.expiryDate, 'doc.src']);
-      checks.push([cpcCert?.expiryDate, 'doc.cpc']);
+      const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
+      if (cpcCert) {
+        checks.push([cpcCert.expiryDate, 'doc.cpc']);
+      }
 
       collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, checks);
     }
@@ -146,25 +124,6 @@ const DashboardPage = () => {
     return (
       <div className="p-4 flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.myFleet')}</h1>
-        <div className="bg-white rounded-xl shadow-sm border border-red-200 p-8 text-center">
-          <AlertTriangle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">{t('dashboard.loadErrorTitle')}</h3>
-          <p className="text-sm text-gray-500 mb-6">{t('dashboard.loadErrorDescription')}</p>
-          <button
-            onClick={loadAll}
-            className="px-6 py-2.5 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
-          >
-            {t('common.retry')}
-          </button>
-        </div>
       </div>
     );
   }

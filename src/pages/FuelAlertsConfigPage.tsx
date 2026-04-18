@@ -15,6 +15,14 @@ import {
   type FleetAnomalySettings,
   type RuleCode,
 } from '../types/fuelAnomaly';
+import {
+  RULE_SCHEMAS,
+  normalizeThresholdValues,
+  parseThresholdJson,
+  serializeThresholdJson,
+  type FieldValues,
+} from '../utils/anomalyRuleSchema';
+import RuleThresholdFields from '../components/fuel-alerts/RuleThresholdFields';
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -218,46 +226,43 @@ interface RuleRowProps {
 
 function RuleRow({ fleetId, ruleCode, initial, onSaved }: RuleRowProps) {
   const { t } = useTranslation();
+  const schema = RULE_SCHEMAS[ruleCode];
+  const hasFields = schema.length > 0;
   const [enabled, setEnabled] = useState(initial?.enabled ?? true);
   const [notify, setNotify] = useState(initial?.notify ?? true);
-  const [thresholdText, setThresholdText] = useState(initial?.thresholdJson ?? '');
+  const [values, setValues] = useState<FieldValues>(() =>
+    parseThresholdJson(ruleCode, initial?.thresholdJson),
+  );
   const [expanded, setExpanded] = useState(false);
-  const [jsonError, setJsonError] = useState<string | null>(null);
   const [state, setState] = useState<SaveState>('idle');
 
-  const originalThreshold = initial?.thresholdJson ?? '';
+  const initialValues = useMemo(
+    () => parseThresholdJson(ruleCode, initial?.thresholdJson),
+    [ruleCode, initial?.thresholdJson],
+  );
+  const valuesDirty = useMemo(
+    () => schema.some((f) => values[f.key] !== initialValues[f.key]),
+    [schema, values, initialValues],
+  );
   const dirty =
     enabled !== (initial?.enabled ?? true) ||
     notify !== (initial?.notify ?? true) ||
-    thresholdText !== originalThreshold;
-
-  const validateJson = useCallback((txt: string): boolean => {
-    const trimmed = txt.trim();
-    if (trimmed.length === 0) {
-      setJsonError(null);
-      return true;
-    }
-    try {
-      JSON.parse(trimmed);
-      setJsonError(null);
-      return true;
-    } catch {
-      setJsonError(t('fuelAlerts.config.rules.invalidJson'));
-      return false;
-    }
-  }, [t]);
+    valuesDirty;
 
   const save = useCallback(async () => {
-    const trimmed = thresholdText.trim();
-    if (trimmed.length > 0 && !validateJson(trimmed)) return;
     setState('saving');
+    // Normalize once so the local form state matches exactly what's persisted.
+    // Without this, typing e.g. 30.7 rounds to 31 server-side but the UI keeps
+    // 30.7, and the dirty flag stays stuck at "unsaved changes".
+    const normalized = normalizeThresholdValues(ruleCode, values);
     try {
       const updated = await fuelAnomalyApi.updateRule(fleetId, ruleCode, {
         enabled,
         notifyEnabled: notify,
-        thresholdJson: trimmed.length === 0 ? null : trimmed,
+        thresholdJson: serializeThresholdJson(ruleCode, normalized),
       });
       setState('saved');
+      setValues(normalized);
       onSaved(updated);
       toast.success(t('fuelAlerts.config.rules.saved'), {
         description: t('fuelAlerts.config.rules.rescanNote'),
@@ -268,7 +273,7 @@ function RuleRow({ fleetId, ruleCode, initial, onSaved }: RuleRowProps) {
       setState('error');
       toast.error(err instanceof Error ? err.message : t('fuelAlerts.toast.loadError'));
     }
-  }, [fleetId, ruleCode, enabled, notify, thresholdText, onSaved, t, validateJson]);
+  }, [fleetId, ruleCode, enabled, notify, values, onSaved, t]);
 
   const severity = RULE_SEVERITY[ruleCode];
   const title = t(`fuelAlerts.rules.${ruleCode}.title`, { defaultValue: ruleCode });
@@ -304,39 +309,28 @@ function RuleRow({ fleetId, ruleCode, initial, onSaved }: RuleRowProps) {
               />
               {t('fuelAlerts.config.rules.notify')}
             </label>
-            <button
-              type="button"
-              onClick={() => setExpanded((v) => !v)}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-slate-900"
-            >
-              {expanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
-              {t('fuelAlerts.config.rules.threshold')}
-            </button>
+            {hasFields && (
+              <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 hover:text-slate-900"
+              >
+                {expanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                {t('fuelAlerts.config.rules.threshold')}
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Threshold editor */}
-      {expanded && (
-        <div className="px-5 pb-4 -mt-1">
-          <textarea
-            value={thresholdText}
-            onChange={(e) => {
-              setThresholdText(e.target.value);
-              if (jsonError) setJsonError(null);
-            }}
-            onBlur={(e) => validateJson(e.target.value)}
-            rows={4}
-            placeholder='{"ratio": 1.3}'
-            className={`w-full px-3 py-2 text-xs font-mono text-slate-800 border rounded-lg bg-slate-50 focus:outline-none focus:ring-1 ${
-              jsonError
-                ? 'border-urgent-400 focus:border-urgent-500 focus:ring-urgent-500'
-                : 'border-slate-300 focus:border-primary-500 focus:ring-primary-500'
-            }`}
+      {hasFields && expanded && (
+        <div className="px-5 pb-4 pt-1 border-t border-slate-100 bg-slate-50/40">
+          <RuleThresholdFields
+            fields={schema}
+            values={values}
+            onChange={setValues}
+            disabled={!enabled}
           />
-          {jsonError && (
-            <p className="mt-1 text-xs text-urgent-600 font-medium">{jsonError}</p>
-          )}
         </div>
       )}
 
@@ -351,7 +345,7 @@ function RuleRow({ fleetId, ruleCode, initial, onSaved }: RuleRowProps) {
           <button
             type="button"
             onClick={() => void save()}
-            disabled={state === 'saving' || Boolean(jsonError)}
+            disabled={state === 'saving'}
             className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {state === 'saving'

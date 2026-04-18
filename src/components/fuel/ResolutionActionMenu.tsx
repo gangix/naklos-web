@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { fuelReviewApi } from '../../services/api';
+import { useFleetRoster } from '../../contexts/FleetRosterContext';
 import type { UnmatchedBatchBreakdown } from '../../types/fuel';
 import AliasModal from './AliasModal';
 import ConfirmActionModal from './ConfirmActionModal';
@@ -19,6 +20,7 @@ export default function ResolutionActionMenu(
   { fleetId, normalizedPlate, displayPlate, batches, onResolved }: Props) {
 
   const { t } = useTranslation();
+  const { refresh: refreshRoster } = useFleetRoster();
   const [createTruckOpen, setCreateTruckOpen] = useState(false);
   const [aliasOpen, setAliasOpen] = useState(false);
   const [subcontractorOpen, setSubcontractorOpen] = useState(false);
@@ -107,6 +109,10 @@ export default function ResolutionActionMenu(
           onSuccess={(result) => {
             const count = result?.relinkedFuelEntryCount ?? 0;
             toast.success(t('fuelReview.createTruckPrompts.successToast', { count }));
+            // Create-truck adds a new Truck row; refresh the shared roster so
+            // the top-nav document-attention badge picks it up without forcing
+            // a page reload. alias/subcontractor/dismiss don't touch trucks.
+            refreshRoster();
             onResolved();
           }}
         />

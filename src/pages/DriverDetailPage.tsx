@@ -10,6 +10,9 @@ import { Select, TextInput } from '../components/common/FormField';
 import { Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
+import { computeDriverWarnings } from '../utils/driverWarnings';
+import { useFleetRoster } from '../contexts/FleetRosterContext';
+import EntityWarningsCard from '../components/common/EntityWarningsCard';
 import type { DocumentCategory, Driver } from '../types';
 
 const DriverDetailPage = () => {
@@ -41,6 +44,7 @@ const DriverDetailPage = () => {
   const [certificateExpiryDate, setCertificateExpiryDate] = useState('');
   const [confirmAction, setConfirmAction] = useState<'delete' | null>(null);
   const [pendingCertificateId, setPendingCertificateId] = useState<string | null>(null);
+  const { refresh: refreshRoster } = useFleetRoster();
 
   useEffect(() => {
     if (!driverId) return;
@@ -79,6 +83,8 @@ const DriverDetailPage = () => {
       default: return type;
     }
   };
+
+  const driverWarnings = driver ? computeDriverWarnings(driver) : [];
 
   if (loading) {
     return (
@@ -124,9 +130,9 @@ const DriverDetailPage = () => {
       await driverApi.updateLicense(driverId, expiryDate);
     }
 
-    // Refresh driver data
     const updatedDriver = await driverApi.getById(driverId);
     setDriver(updatedDriver);
+    refreshRoster();
   };
 
   const handleAddCertificate = async () => {
@@ -168,9 +174,9 @@ const DriverDetailPage = () => {
       setCertificateIssueDate('');
       setCertificateExpiryDate('');
 
-      // Refresh driver data
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
+      refreshRoster();
 
       toast.success(t('toast.success.certificateAdded'));
     } catch (err) {
@@ -199,6 +205,7 @@ const DriverDetailPage = () => {
       await driverApi.removeCertificate(driverId, pendingCertificateId);
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
+      refreshRoster();
       toast.success(t('toast.success.certificateRemoved'));
       setConfirmAction(null);
       setPendingCertificateId(null);
@@ -269,6 +276,7 @@ const DriverDetailPage = () => {
       await driverApi.delete(driverId);
       toast.success(t('toast.success.driverDeleted'));
       setConfirmAction(null);
+      refreshRoster();
       navigate('/manager/drivers');
     } catch (err) {
       console.error('Error deleting driver:', err);
@@ -301,6 +309,13 @@ const DriverDetailPage = () => {
           })()}
         </div>
       </div>
+
+      {driverWarnings.length > 0 && (
+        <EntityWarningsCard
+          warnings={driverWarnings}
+          heading={t('driverDetail.warnings.heading')}
+        />
+      )}
 
       {/* Contact info card */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">

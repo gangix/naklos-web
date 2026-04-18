@@ -1,14 +1,25 @@
+/** Milliseconds of today at local midnight. Callers iterating a fleet pass
+ *  this once to {@link daysUntil} to skip re-normalizing `new Date()` per
+ *  entity — cheap, but keeps the math identical across consumers. */
+export function todayMidnightMs(): number {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
 /** Days between today (midnight-normalized) and the given date. Negative when
  *  the date is in the past. Returns null for missing input. Shared helper so
- *  attention-count hooks, the dashboard, and the expiry badge all agree on
- *  the math (earlier drift: ceil vs floor on non-integer fractions). */
-export function daysUntil(dateStr: string | null | undefined): number | null {
+ *  attention-count hooks, the dashboard, warning lists, and the expiry badge
+ *  all agree on the math (earlier drift: ceil vs floor on non-integer
+ *  fractions). */
+export function daysUntil(
+  dateStr: string | null | undefined,
+  todayMs: number = todayMidnightMs(),
+): number | null {
   if (!dateStr) return null;
   const target = new Date(dateStr);
   target.setHours(0, 0, 0, 0);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return Math.floor((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  return Math.floor((target.getTime() - todayMs) / (1000 * 60 * 60 * 24));
 }
 
 /** How many days ahead we start flagging a document as "needs renewal". */

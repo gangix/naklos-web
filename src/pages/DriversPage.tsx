@@ -2,8 +2,8 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertCircle, AlertTriangle, CheckCircle, ClipboardList, Download, FileText, HardHat, Mail, Truck as TruckIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useDrivers } from '../hooks/useApiData';
 import { useFleet } from '../contexts/FleetContext';
+import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useData } from '../contexts/DataContext';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
@@ -14,11 +14,13 @@ import AddDriverModal from '../components/common/AddDriverModal';
 import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
 import type { DocumentSubmission, TruckAssignmentRequest } from '../types';
+import { computeDriverWarnings, type DriverWarning } from '../utils/driverWarnings';
+import { todayMidnightMs } from '../utils/expiry';
 
 const DriversPage = () => {
   const { t } = useTranslation();
-  const { data: drivers, loading: driversLoading, refresh } = useDrivers();
   const { plan } = useFleet();
+  const { drivers, loading: driversLoading, refresh: refreshRoster } = useFleetRoster();
   const { documentSubmissions, truckAssignmentRequests } = useData();
   const maxDrivers = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
   const [searchParams] = useSearchParams();
@@ -33,77 +35,20 @@ const DriversPage = () => {
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState<string | undefined>();
 
-  // Calculate warnings for drivers based on document expiry dates
-  const warnings = useMemo(() => {
+  /** Per-driver warnings via the shared {@link computeDriverWarnings} helper —
+   *  same SRC-required / CPC-optional semantics used on the dashboard and
+   *  driver detail page, so the list card, nav badge, and detail card all
+   *  agree on what counts as a warning. */
+  const warnings = useMemo<Array<DriverWarning & { relatedId: string }>>(() => {
     if (!drivers) return [];
-
-    const today = new Date();
-    const warningsList: Array<{
-      relatedId: string;
-      relatedType: 'driver';
-      severity: 'error' | 'warning';
-      key: string;
-      params: Record<string, string | number>;
-      type: string;
-    }> = [];
-
-    drivers.forEach((driver) => {
-      const driverName = `${driver.firstName} ${driver.lastName}`;
-
-      // Driver license
-      if (!driver.licenseExpiryDate) {
-        warningsList.push({
-          relatedId: driver.id, relatedType: 'driver', severity: 'error',
-          key: 'warning.licenseMissing', params: { driverName }, type: 'license',
-        });
-      } else {
-        const days = Math.ceil((new Date(driver.licenseExpiryDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        if (days < 0) {
-          warningsList.push({
-            relatedId: driver.id, relatedType: 'driver', severity: 'error',
-            key: 'warning.licenseExpired', params: { driverName }, type: 'license',
-          });
-        } else if (days <= 30) {
-          warningsList.push({
-            relatedId: driver.id, relatedType: 'driver',
-            severity: days <= 7 ? 'error' : 'warning',
-            key: 'warning.licenseExpiring', params: { driverName, count: days }, type: 'license',
-          });
-        }
+    const todayMs = todayMidnightMs();
+    const out: Array<DriverWarning & { relatedId: string }> = [];
+    for (const d of drivers) {
+      for (const w of computeDriverWarnings(d, todayMs)) {
+        out.push({ ...w, relatedId: d.id });
       }
-
-      // SRC mandatory
-      if (!driver.certificates?.some((c) => c.type === 'SRC')) {
-        warningsList.push({
-          relatedId: driver.id, relatedType: 'driver', severity: 'error',
-          key: 'warning.srcMissing', params: { driverName }, type: 'src',
-        });
-      }
-
-      // SRC + CPC expiry
-      (driver.certificates ?? []).forEach((cert) => {
-        const days = Math.ceil((new Date(cert.expiryDate).getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        const certName = cert.type === 'SRC' ? 'SRC' : 'CPC';
-        if (days < 0) {
-          warningsList.push({
-            relatedId: driver.id, relatedType: 'driver', severity: 'error',
-            key: 'warning.certExpired',
-            params: { driverName, certName },
-            type: cert.type.toLowerCase(),
-          });
-        } else if (days <= 30) {
-          warningsList.push({
-            relatedId: driver.id, relatedType: 'driver',
-            severity: days <= 7 ? 'error' : 'warning',
-            key: 'warning.certExpiring',
-            params: { driverName, certName, count: days },
-            type: cert.type.toLowerCase(),
-          });
-        }
-      });
-    });
-
-    return warningsList;
+    }
+    return out;
   }, [drivers]);
 
   // Handle query param for auto-tab selection
@@ -145,22 +90,11 @@ const DriversPage = () => {
     );
   }, [truckAssignmentRequests]);
 
-  // Check if a driver has any expiring documents within 7 days
-  const hasUrgentWarning = (driverId: string): boolean => {
-    return warnings.some(
-      (w) =>
-        w.relatedId === driverId &&
-        w.relatedType === 'driver' &&
-        w.severity === 'error'
-    );
-  };
+  const hasUrgentWarning = (driverId: string): boolean =>
+    warnings.some((w) => w.relatedId === driverId && w.severity === 'error');
 
-  // Get all warnings for a specific driver
-  const getDriverWarnings = (driverId: string) => {
-    return warnings.filter(
-      (w) => w.relatedId === driverId && w.relatedType === 'driver'
-    );
-  };
+  const getDriverWarnings = (driverId: string) =>
+    warnings.filter((w) => w.relatedId === driverId);
 
   // Memoize derived status per driver to avoid repeated deriveDriverStatus calls
   const statusByDriverId = useMemo(() => {
@@ -633,15 +567,13 @@ const DriversPage = () => {
       <AddDriverModal
         isOpen={addDriverModalOpen}
         onClose={() => setAddDriverModalOpen(false)}
-        onSuccess={() => {
-          refresh();
-        }}
+        onSuccess={refreshRoster}
       />
 
       <BulkImportModal
         isOpen={bulkImportOpen}
         onClose={() => setBulkImportOpen(false)}
-        onSuccess={refresh}
+        onSuccess={refreshRoster}
         entityType="driver"
       />
 
