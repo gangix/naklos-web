@@ -143,28 +143,6 @@
       "inviteDriver": "Invite driver",
       "addDriver": "Add driver",
       "importFuel": "Import fuel"
-    },
-    "hero": {
-      "label": "Compliance",
-      "validLabel": "documents valid",
-      "attentionLabel": "need attention",
-      "allClear": "All tracked documents are up to date.",
-      "cta": "Open Compliance"
-    },
-    "priorities": {
-      "heading": "Top priorities",
-      "more_one": "+ {{count}} more on Compliance",
-      "more_other": "+ {{count}} more on Compliance",
-      "resolve": "Open docs",
-      "severity": {
-        "critical": "Critical",
-        "warning": "Warning",
-        "info": "Info"
-      }
-    },
-    "trend": {
-      "heading": "Quick access",
-      "fuelAlerts": "Fuel alerts"
     }
   },
   "truck": {

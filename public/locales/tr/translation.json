@@ -141,28 +141,6 @@
       "inviteDriver": "Sürücü davet et",
       "addDriver": "Sürücü ekle",
       "importFuel": "Yakıt içe aktar"
-    },
-    "hero": {
-      "label": "Uyumluluk",
-      "validLabel": "belge geçerli",
-      "attentionLabel": "dikkat gerektiriyor",
-      "allClear": "Takipte olan tüm belgeler güncel.",
-      "cta": "Uyumluluk ekranına git"
-    },
-    "priorities": {
-      "heading": "Öncelikli işler",
-      "more_one": "+ {{count}} daha, Uyumluluk'ta gör",
-      "more_other": "+ {{count}} daha, Uyumluluk'ta gör",
-      "resolve": "Belgeleri aç",
-      "severity": {
-        "critical": "Kritik",
-        "warning": "Uyarı",
-        "info": "Bilgi"
-      }
-    },
-    "trend": {
-      "heading": "Hızlı erişim",
-      "fuelAlerts": "Yakıt uyarıları"
     }
   },
   "truck": {
