@@ -66,7 +66,7 @@
     "attention": {
       "heading": "Needs your attention",
       "fuelTitle": "Fuel alerts",
-      "fuelSubtitle": "Suspicious refuels, unmatched plates included",
+      "fuelSubtitle": "Fill-ups to review and unmatched plates",
       "fuelUnit": "alerts",
       "trucksTitle": "Truck documents",
       "trucksSubtitle": "Insurance, inspection, comprehensive expiring",
@@ -1524,8 +1524,8 @@
       "settings": {
         "title": "Fleet settings",
         "enabled": {
-          "label": "Anomaly engine",
-          "hint": "Disabling this stops all alerts from being detected."
+          "label": "Fuel performance tracking",
+          "hint": "Disabling this stops fuel consumption monitoring and fill-up reviews."
         },
         "digestHour": {
           "label": "Daily digest hour",
@@ -1552,8 +1552,8 @@
       "fields": {
         "tolerancePct": {
           "label": "Tolerance",
-          "hintTank": "How far above tank capacity counts as an anomaly.",
-          "hintOver": "How much above the truck's baseline counts as an anomaly.",
+          "hintTank": "How far above tank capacity flags a fill-up for review.",
+          "hintOver": "How much above the truck's baseline flags a fill-up for review.",
           "hintUnder": "How far below baseline is treated as possible bad data.",
           "hintPrice": "Acceptable difference between computed total and receipt total."
         },
@@ -1611,7 +1611,7 @@
       }
     },
     "overrides": {
-      "sectionTitle": "Anomaly rules",
+      "sectionTitle": "Fuel rule settings",
       "subtitle": "Baseline and rule configuration for this truck.",
       "baseline": {
         "title": "Consumption baseline",
@@ -1647,7 +1647,7 @@
       "info": "INFO"
     },
     "toteBoard": {
-      "urgent": "suspicious refuel · action needed",
+      "urgent": "needs urgent review · action required",
       "attention": "worth reviewing",
       "info": "logged for reference"
     },

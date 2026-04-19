@@ -66,7 +66,7 @@
     "attention": {
       "heading": "Erfordert Ihre Aufmerksamkeit",
       "fuelTitle": "Warnungen",
-      "fuelSubtitle": "Verdächtige Tankungen, nicht zugeordnete Kennzeichen",
+      "fuelSubtitle": "Zu prüfende Tankungen und nicht zugeordnete Kennzeichen",
       "fuelUnit": "Warnungen",
       "trucksTitle": "Fahrzeugdokumente",
       "trucksSubtitle": "Versicherung, Inspektion, Vollkasko laufen aus",
@@ -1524,8 +1524,8 @@
       "settings": {
         "title": "Flotten-Einstellungen",
         "enabled": {
-          "label": "Anomalie-Engine",
-          "hint": "Deaktivieren stoppt jede Warnung."
+          "label": "Kraftstoff-Performance-Tracking",
+          "hint": "Deaktivieren stoppt die Verbrauchsüberwachung und Tankungsprüfung."
         },
         "digestHour": {
           "label": "Tägliche Berichtszeit",
@@ -1611,7 +1611,7 @@
       }
     },
     "overrides": {
-      "sectionTitle": "Anomalie-Regeln",
+      "sectionTitle": "Kraftstoff-Regeleinstellungen",
       "subtitle": "Basiswert und Regeln für dieses Fahrzeug.",
       "baseline": {
         "title": "Verbrauchs-Basiswert",
@@ -1647,7 +1647,7 @@
       "info": "Info"
     },
     "toteBoard": {
-      "urgent": "verdächtige Tankung · Handlungsbedarf",
+      "urgent": "sofortige Prüfung · Handlungsbedarf",
       "attention": "lohnt sich zu prüfen",
       "info": "zur Dokumentation erfasst"
     },

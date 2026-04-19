@@ -1,4 +1,4 @@
-import { Truck, Users, AlertTriangle, Building2, Check, Minus, ArrowRight, Mail } from 'lucide-react';
+import { Truck, Users, AlertTriangle, Fuel, Check, Minus, ArrowRight, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -31,9 +31,9 @@ const LandingPage = () => {
       text: 'text-amber-600',
     },
     {
-      icon: Building2,
-      title: 'Müşteri Kaydı',
-      description: 'Müşterilerinizi, ödeme vadelerini ve iletişim bilgilerini düzenli tutun.',
+      icon: Fuel,
+      title: 'Yakıt Verimliliği',
+      description: 'Tüketim paternlerini, olağan dışı dolumları ve tasarruf fırsatlarını otomatik görün. Sürücünüzle birlikte daha verimli yolculuk edin.',
       accent: 'from-violet-500 to-violet-600',
       bg: 'bg-violet-50',
       text: 'text-violet-600',
@@ -93,7 +93,7 @@ const LandingPage = () => {
         </h1>
 
         <p className="text-lg md:text-xl text-gray-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-          Araçlar, sürücüler ve müşteriler için tek bir çözüm.
+          Araçlar, sürücüler ve belgeler için tek bir çözüm.
           <br className="hidden md:block" />
           Belge yenileme tarihlerini asla kaçırmayın.
         </p>
@@ -229,8 +229,8 @@ const LandingPage = () => {
               <ul className="space-y-3 mb-8 text-sm text-gray-600">
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 5 araç</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 5 sürücü</li>
-                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 3 müşteri</li>
-                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Haftalık e-posta özeti</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Belge takibi ve e-posta uyarıları</li>
+                <li className="flex items-center gap-2.5"><Minus className="w-4 h-4 text-gray-300 flex-shrink-0" /> <span className="text-gray-400">Yakıt verimliliği takibi</span></li>
                 <li className="flex items-center gap-2.5"><Minus className="w-4 h-4 text-gray-300 flex-shrink-0" /> <span className="text-gray-400">Toplu içe aktarma</span></li>
               </ul>
               <button
@@ -256,7 +256,7 @@ const LandingPage = () => {
               <ul className="space-y-3 mb-8 text-sm text-gray-600">
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 25 araç</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 25 sürücü</li>
-                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Sınırsız müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Yakıt verimliliği + olağan dışı dolum tespiti</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Haftalık e-posta özeti</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Toplu içe aktarma</li>
               </ul>
@@ -279,7 +279,7 @@ const LandingPage = () => {
               <ul className="space-y-3 mb-8 text-sm text-gray-600">
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 100 araç</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> 100 sürücü</li>
-                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Sınırsız müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Yakıt verimliliği + olağan dışı dolum tespiti</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Haftalık e-posta özeti</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-500 flex-shrink-0" /> Toplu içe aktarma</li>
               </ul>
@@ -301,7 +301,7 @@ const LandingPage = () => {
               <ul className="space-y-3 mb-8 text-sm text-gray-400">
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Sınırsız araç</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Sınırsız sürücü</li>
-                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Sınırsız müşteri</li>
+                <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Yakıt verimliliği + olağan dışı dolum tespiti</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> API erişimi</li>
                 <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-emerald-400 flex-shrink-0" /> Öncelikli destek</li>
               </ul>
