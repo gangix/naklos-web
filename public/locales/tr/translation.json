@@ -1768,6 +1768,13 @@
       "dismissBtn": {
         "title": "Sorun değil — kapat",
         "hint": "Bir nedenle açıklanabiliyorsa kapat."
+      },
+      "catB": {
+        "question": "Bu davranış sorunlu mu?",
+        "confirm": "Evet, sorunlu kaydet",
+        "confirmHint": "Kayıtlara eklenir, veri aynen kalır.",
+        "dismiss": "Hayır, kapat",
+        "dismissHint": "Neden seçeceksin."
       }
     },
     "dismissReason": {

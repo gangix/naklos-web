@@ -1771,6 +1771,13 @@
       "dismissBtn": {
         "title": "Kein Problem — schließen",
         "hint": "Schließen, wenn es eine plausible Erklärung gibt."
+      },
+      "catB": {
+        "question": "Echtes Problem?",
+        "confirm": "Ja, als Problem speichern",
+        "confirmHint": "Wird protokolliert; Daten unverändert.",
+        "dismiss": "Nein, schließen",
+        "dismissHint": "Du wählst einen Grund."
       }
     },
     "dismissReason": {

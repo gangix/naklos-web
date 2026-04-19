@@ -1771,6 +1771,13 @@
       "dismissBtn": {
         "title": "Not an issue — dismiss",
         "hint": "Dismiss if there's a reasonable explanation."
+      },
+      "catB": {
+        "question": "Is this a real issue?",
+        "confirm": "Yes, record as issue",
+        "confirmHint": "Logged in history; data unchanged.",
+        "dismiss": "No, close",
+        "dismissHint": "You'll pick a reason."
       }
     },
     "dismissReason": {
