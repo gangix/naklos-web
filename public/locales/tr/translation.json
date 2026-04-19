@@ -1753,5 +1753,92 @@
       "submit": "Kapat",
       "cancel": "Vazgeç"
     }
+  },
+  "landing": {
+    "nav": { "login": "Giriş Yap" },
+    "hero": {
+      "badge": "KOBİ filoları için",
+      "title1": "Filonuzu kolayca",
+      "title2": "yönetin",
+      "tagline": "Araçlar, sürücüler ve belgeler için tek bir çözüm. Belge yenileme tarihlerini asla kaçırmayın.",
+      "ctaPrimary": "Ücretsiz Başlayın",
+      "ctaSecondary": "Zaten hesabım var",
+      "ctaGoogle": "Google ile devam et",
+      "preview": {
+        "label": "Ana Sayfa",
+        "stat1Label": "Araç",
+        "stat2Label": "Sürücü",
+        "stat3Label": "Yakıt uyarısı",
+        "priorityTitle": "Öncelikli işler",
+        "priorityItem1": "34 ABC 123 · Muayene · 2 gün",
+        "priorityItem2": "07 XYZ 300 · Zorunlu sigorta · 8 gün",
+        "priorityCta": "Belgeleri aç"
+      }
+    },
+    "features": {
+      "vehicles": {
+        "title": "Araç Takibi",
+        "description": "Araçlarınızın sigorta, muayene ve kasko belgelerini takip edin. Son tarihleri kaçırmayın."
+      },
+      "drivers": {
+        "title": "Sürücü Yönetimi",
+        "description": "Ehliyet, SRC ve CPC belgelerini takip edin. Yenileme zamanı geldiğinde otomatik bildirim alın."
+      },
+      "docs": {
+        "title": "Belge Uyarıları",
+        "description": "Süresi dolan belgeler için otomatik uyarılar. Cezalardan ve işletme kesintilerinden kurtulun."
+      },
+      "fuel": {
+        "title": "Yakıt Verimliliği",
+        "description": "Tüketim paternlerini, olağan dışı dolumları ve tasarruf fırsatlarını otomatik görün. Sürücünüzle birlikte daha verimli yolculuk edin."
+      }
+    },
+    "benefits": {
+      "title": "Excel tablolarına son",
+      "items": {
+        "b1": "Excel tablolarına son — her şey tek bir uygulamada",
+        "b2": "Süresi geçmiş belgeler için otomatik uyarılar",
+        "b3": "Sürücüler kendi bilgilerini güncelleyebilir",
+        "b4": "Ücretsiz deneme — kredi kartı gerekmez",
+        "b5": "Türkçe arayüz, Türkçe destek"
+      },
+      "cta": "Hemen Deneyin"
+    },
+    "pricing": {
+      "tiers": {
+        "free": "Başlangıç",
+        "pro": "Profesyonel",
+        "business": "İşletme",
+        "enterprise": "Kurumsal"
+      },
+      "popular": "En Popüler",
+      "free": "Ücretsiz",
+      "perMonth": "/ay",
+      "contactPrice": "Bize ulaşın",
+      "contactUs": "Bize Ulaşın",
+      "startFree": "Ücretsiz Başla",
+      "features": {
+        "trucks5": "5 araç",
+        "trucks25": "25 araç",
+        "trucks100": "100 araç",
+        "trucksUnlimited": "Sınırsız araç",
+        "drivers5": "5 sürücü",
+        "drivers25": "25 sürücü",
+        "drivers100": "100 sürücü",
+        "driversUnlimited": "Sınırsız sürücü",
+        "docsAndEmails": "Belge takibi ve e-posta uyarıları",
+        "fuelPerformance": "Yakıt verimliliği + olağan dışı dolum tespiti",
+        "fuelPerformanceDenied": "Yakıt verimliliği takibi",
+        "weeklyDigest": "Haftalık e-posta özeti",
+        "bulkImport": "Toplu içe aktarma",
+        "apiAccess": "API erişimi",
+        "prioritySupport": "Öncelikli destek"
+      }
+    },
+    "footer": {
+      "privacy": "Gizlilik Politikası",
+      "terms": "Kullanım Şartları",
+      "copyright": "© {{year}} Naklos. Tüm hakları saklıdır."
+    }
   }
 }

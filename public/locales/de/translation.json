@@ -1756,5 +1756,92 @@
       "submit": "Schließen",
       "cancel": "Abbrechen"
     }
+  },
+  "landing": {
+    "nav": { "login": "Anmelden" },
+    "hero": {
+      "badge": "Für KMU-Flotten",
+      "title1": "Verwalten Sie Ihre Flotte",
+      "title2": "mühelos",
+      "tagline": "Eine Lösung für Fahrzeuge, Fahrer und Dokumente. Verpassen Sie keine Verlängerung mehr.",
+      "ctaPrimary": "Kostenlos starten",
+      "ctaSecondary": "Ich habe bereits ein Konto",
+      "ctaGoogle": "Weiter mit Google",
+      "preview": {
+        "label": "Übersicht",
+        "stat1Label": "Fahrzeuge",
+        "stat2Label": "Fahrer",
+        "stat3Label": "Kraftstoff-Warnungen",
+        "priorityTitle": "Top-Prioritäten",
+        "priorityItem1": "34 ABC 123 · Inspektion · 2 Tage",
+        "priorityItem2": "07 XYZ 300 · Haftpflicht · 8 Tage",
+        "priorityCta": "Dokumente öffnen"
+      }
+    },
+    "features": {
+      "vehicles": {
+        "title": "Fahrzeug-Tracking",
+        "description": "Haftpflicht, Vollkasko und Hauptuntersuchung pro Fahrzeug im Blick. Kein Termin geht verloren."
+      },
+      "drivers": {
+        "title": "Fahrer-Verwaltung",
+        "description": "Führerschein, SRC und CPC stets aktuell. Automatische Erinnerungen bei Ablauf."
+      },
+      "docs": {
+        "title": "Dokumenten-Warnungen",
+        "description": "Automatische Warnungen für auslaufende Dokumente. Vermeiden Sie Bußgelder und Ausfälle."
+      },
+      "fuel": {
+        "title": "Kraftstoff-Performance",
+        "description": "Verbrauchsmuster, ungewöhnliche Tankungen und Einsparpotenziale automatisch erkennen. Arbeiten Sie mit Ihren Fahrern für eine effizientere Flotte."
+      }
+    },
+    "benefits": {
+      "title": "Schluss mit Excel-Tabellen",
+      "items": {
+        "b1": "Eine App ersetzt Excel-Tabellen und WhatsApp-Gruppen",
+        "b2": "Automatische Warnungen für überfällige Dokumente",
+        "b3": "Fahrer aktualisieren ihre Daten selbst",
+        "b4": "Kostenlose Testphase — keine Kreditkarte erforderlich",
+        "b5": "Türkisch, Englisch und Deutsch verfügbar"
+      },
+      "cta": "Jetzt testen"
+    },
+    "pricing": {
+      "tiers": {
+        "free": "Starter",
+        "pro": "Professional",
+        "business": "Business",
+        "enterprise": "Enterprise"
+      },
+      "popular": "Am beliebtesten",
+      "free": "Kostenlos",
+      "perMonth": "/Monat",
+      "contactPrice": "Kontaktieren Sie uns",
+      "contactUs": "Kontakt",
+      "startFree": "Kostenlos starten",
+      "features": {
+        "trucks5": "5 Fahrzeuge",
+        "trucks25": "25 Fahrzeuge",
+        "trucks100": "100 Fahrzeuge",
+        "trucksUnlimited": "Unbegrenzte Fahrzeuge",
+        "drivers5": "5 Fahrer",
+        "drivers25": "25 Fahrer",
+        "drivers100": "100 Fahrer",
+        "driversUnlimited": "Unbegrenzte Fahrer",
+        "docsAndEmails": "Dokumenten-Tracking mit E-Mail-Warnungen",
+        "fuelPerformance": "Kraftstoff-Performance + Tankungs-Prüfung",
+        "fuelPerformanceDenied": "Kraftstoff-Performance-Tracking",
+        "weeklyDigest": "Wöchentlicher E-Mail-Bericht",
+        "bulkImport": "Massenimport",
+        "apiAccess": "API-Zugang",
+        "prioritySupport": "Priorisierter Support"
+      }
+    },
+    "footer": {
+      "privacy": "Datenschutz",
+      "terms": "Nutzungsbedingungen",
+      "copyright": "© {{year}} Naklos. Alle Rechte vorbehalten."
+    }
   }
 }

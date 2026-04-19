@@ -17,7 +17,17 @@ const LANGS: Record<SupportedLanguage, LangMeta> = {
   de: { native: 'Deutsch', flag: '🇩🇪' },
 };
 
-export default function LanguageSwitcher() {
+/** 'dark' (default) is tuned for the slate-900 top nav inside the app;
+ *  'light' is for surfaces with a white/neutral background such as the
+ *  public landing page. Both variants share the same popover — only the
+ *  trigger colours differ. */
+type Variant = 'dark' | 'light';
+
+interface Props {
+  variant?: Variant;
+}
+
+export default function LanguageSwitcher({ variant = 'dark' }: Props) {
   const { t } = useTranslation();
   const { language, setLanguage, supported } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -42,6 +52,24 @@ export default function LanguageSwitcher() {
 
   const current = LANGS[language];
 
+  // Trigger styling per variant. Light version sits on a white card / LP
+  // header; dark version sits on the slate-900 app top nav.
+  const triggerClass = variant === 'light'
+    ? (open
+        ? 'bg-gray-100 text-gray-900'
+        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100')
+    : (open
+        ? 'bg-white/15 text-white'
+        : 'text-slate-300 hover:text-white hover:bg-white/10');
+
+  const iconClass = variant === 'light'
+    ? (open ? 'text-gray-900' : 'text-gray-500 group-hover:text-gray-800')
+    : (open ? 'text-white' : 'text-slate-400 group-hover:text-white');
+
+  const codeClass = variant === 'light'
+    ? 'text-gray-400 group-hover:text-gray-600'
+    : 'text-slate-400 group-hover:text-slate-200';
+
   return (
     <div ref={rootRef} className="relative">
       {/* Trigger button */}
@@ -51,15 +79,11 @@ export default function LanguageSwitcher() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t('common.language')}
-        className={`group inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold tracking-tight transition-all duration-150 ${
-          open
-            ? 'bg-white/15 text-white'
-            : 'text-slate-300 hover:text-white hover:bg-white/10'
-        }`}
+        className={`group inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-semibold tracking-tight transition-all duration-150 ${triggerClass}`}
       >
-        <Globe className={`w-3.5 h-3.5 transition-colors ${open ? 'text-white' : 'text-slate-400 group-hover:text-white'}`} />
+        <Globe className={`w-3.5 h-3.5 transition-colors ${iconClass}`} />
         <span className="leading-none">{current.flag}</span>
-        <span className="leading-none uppercase text-[10px] tracking-[0.08em] text-slate-400 group-hover:text-slate-200">
+        <span className={`leading-none uppercase text-[10px] tracking-[0.08em] ${codeClass}`}>
           {language}
         </span>
       </button>
