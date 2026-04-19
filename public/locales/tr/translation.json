@@ -1665,6 +1665,14 @@
       "attention": "gözden geçirilmesi faydalı",
       "info": "kayıt altına alındı"
     },
+    "category": {
+      "label": "Kategori",
+      "all": "Tümü",
+      "dataError": "Veri hatası",
+      "behaviour": "Davranış",
+      "info": "Bilgi",
+      "excludedHint": "Bu kayıtlar zaten analiz dışında — ortalamayı etkilemiyorlar."
+    },
     "filters": {
       "all": "Tümü",
       "byTruck": "Araç",

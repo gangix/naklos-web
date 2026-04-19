@@ -1668,6 +1668,14 @@
       "attention": "lohnt sich zu prüfen",
       "info": "zur Dokumentation erfasst"
     },
+    "category": {
+      "label": "Kategorie",
+      "all": "Alle",
+      "dataError": "Datenfehler",
+      "behaviour": "Verhalten",
+      "info": "Info",
+      "excludedHint": "Diese Einträge sind bereits ausgeschlossen — beeinflussen den Durchschnitt nicht."
+    },
     "filters": {
       "all": "Alle",
       "byTruck": "Fahrzeug",

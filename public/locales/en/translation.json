@@ -1668,6 +1668,14 @@
       "attention": "worth reviewing",
       "info": "logged for reference"
     },
+    "category": {
+      "label": "Category",
+      "all": "All",
+      "dataError": "Data error",
+      "behaviour": "Behaviour",
+      "info": "Info",
+      "excludedHint": "These entries are already excluded — they don't affect the average."
+    },
     "filters": {
       "all": "All",
       "byTruck": "Truck",

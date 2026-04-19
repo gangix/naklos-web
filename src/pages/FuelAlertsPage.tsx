@@ -5,7 +5,8 @@ import { toast } from 'sonner';
 import { useFleet } from '../contexts/FleetContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { fuelAnomalyApi } from '../services/fuelAnomalyApi';
-import type { AnomalyPendingItem, Severity } from '../types/fuelAnomaly';
+import { categoryOf } from '../types/fuelAnomaly';
+import type { AnomalyCategory, AnomalyPendingItem, Severity } from '../types/fuelAnomaly';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import SeverityToteBoard, {
   type SeverityFilter,
@@ -20,6 +21,14 @@ import { formatDateTime } from '../utils/format';
 import { computeShiftRange } from '../utils/rangeSelect';
 
 const UNASSIGNED_KEY = '__unassigned__';
+
+type CategoryFilter = AnomalyCategory | 'ALL';
+
+interface SelectionBreakdown {
+  dataError: string[];
+  behaviour: string[];
+  info: string[];
+}
 
 interface Group {
   key: string;
@@ -108,6 +117,7 @@ export default function FuelAlertsPage() {
   const [lastLoadedAt, setLastLoadedAt] = useState<string | null>(null);
 
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('ALL');
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('ALL');
   const [truckFilter, setTruckFilter] = useState<string>('ALL');
   const [ruleFilter, setRuleFilter] = useState<string>('ALL');
 
@@ -149,6 +159,12 @@ export default function FuelAlertsPage() {
     return out;
   }, [items]);
 
+  const globalCategoryCounts = useMemo<Record<AnomalyCategory, number>>(() => {
+    const out: Record<AnomalyCategory, number> = { DATA_ERROR: 0, BEHAVIOUR: 0, INFO: 0 };
+    for (const it of items ?? []) out[categoryOf(it.ruleCode)] += 1;
+    return out;
+  }, [items]);
+
   // Unique trucks for the dropdown
   const truckOptions = useMemo(() => {
     const m = new Map<string, { id: string; plate: string | null }>();
@@ -169,6 +185,7 @@ export default function FuelAlertsPage() {
     const base = items ?? [];
     return base.filter((it) => {
       if (severityFilter !== 'ALL' && it.severity !== severityFilter) return false;
+      if (categoryFilter !== 'ALL' && categoryOf(it.ruleCode) !== categoryFilter) return false;
       if (truckFilter !== 'ALL') {
         const id = it.truckId ?? UNASSIGNED_KEY;
         if (id !== truckFilter) return false;
@@ -176,7 +193,24 @@ export default function FuelAlertsPage() {
       if (ruleFilter !== 'ALL' && it.ruleCode !== ruleFilter) return false;
       return true;
     });
-  }, [items, severityFilter, truckFilter, ruleFilter]);
+  }, [items, severityFilter, categoryFilter, truckFilter, ruleFilter]);
+
+  // Classifies the current selection so the bulk bar can pick between
+  // confirm-all, fix-and-confirm, and dismiss-only CTAs.
+  const selectionBreakdown = useMemo<SelectionBreakdown>(() => {
+    const out: SelectionBreakdown = { dataError: [], behaviour: [], info: [] };
+    const byId = new Map((items ?? []).map((it) => [it.anomalyId, it] as const));
+    for (const id of selected) {
+      const it = byId.get(id);
+      if (!it) continue;
+      const c = categoryOf(it.ruleCode);
+      if (c === 'DATA_ERROR') out.dataError.push(id);
+      else if (c === 'BEHAVIOUR') out.behaviour.push(id);
+      else out.info.push(id);
+    }
+    return out;
+  }, [selected, items]);
+  void selectionBreakdown;
 
   const unassignedLabel = t('fuelAlerts.card.unassignedTruck');
   const groups = useMemo(
@@ -253,7 +287,10 @@ export default function FuelAlertsPage() {
   const hasAnyData = count > 0;
   const hasVisible = filtered.length > 0;
   const anyFilterActive =
-    severityFilter !== 'ALL' || truckFilter !== 'ALL' || ruleFilter !== 'ALL';
+    severityFilter !== 'ALL' ||
+    categoryFilter !== 'ALL' ||
+    truckFilter !== 'ALL' ||
+    ruleFilter !== 'ALL';
 
   if (!fleetId) return null;
 
@@ -342,78 +379,120 @@ export default function FuelAlertsPage() {
 
             {/* Filter bar */}
             {hasAnyData && (
-              <div className="flex flex-wrap items-center gap-2">
-                <div className="inline-flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
-                  <FilterChip
-                    active={severityFilter === 'ALL'}
-                    onClick={() => setSeverityFilter('ALL')}
-                    label={t('fuelAlerts.filters.all')}
-                    count={count}
-                    countClass="text-slate-400"
-                  />
-                  <FilterChip
-                    active={severityFilter === 'CRITICAL'}
-                    onClick={() => setSeverityFilter('CRITICAL')}
-                    label={t('fuelAlerts.severity.urgent')}
-                    count={globalCounts.CRITICAL}
-                    countClass="text-urgent-600"
-                  />
-                  <FilterChip
-                    active={severityFilter === 'WARNING'}
-                    onClick={() => setSeverityFilter('WARNING')}
-                    label={t('fuelAlerts.severity.attention')}
-                    count={globalCounts.WARNING}
-                    countClass="text-attention-600"
-                  />
-                  <FilterChip
-                    active={severityFilter === 'INFO'}
-                    onClick={() => setSeverityFilter('INFO')}
-                    label={t('fuelAlerts.severity.info')}
-                    count={globalCounts.INFO}
-                    countClass="text-info-600"
-                  />
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
+                    <FilterChip
+                      active={severityFilter === 'ALL'}
+                      onClick={() => setSeverityFilter('ALL')}
+                      label={t('fuelAlerts.filters.all')}
+                      count={count}
+                      countClass="text-slate-400"
+                    />
+                    <FilterChip
+                      active={severityFilter === 'CRITICAL'}
+                      onClick={() => setSeverityFilter('CRITICAL')}
+                      label={t('fuelAlerts.severity.urgent')}
+                      count={globalCounts.CRITICAL}
+                      countClass="text-urgent-600"
+                    />
+                    <FilterChip
+                      active={severityFilter === 'WARNING'}
+                      onClick={() => setSeverityFilter('WARNING')}
+                      label={t('fuelAlerts.severity.attention')}
+                      count={globalCounts.WARNING}
+                      countClass="text-attention-600"
+                    />
+                    <FilterChip
+                      active={severityFilter === 'INFO'}
+                      onClick={() => setSeverityFilter('INFO')}
+                      label={t('fuelAlerts.severity.info')}
+                      count={globalCounts.INFO}
+                      countClass="text-info-600"
+                    />
+                  </div>
+
+                  {/* Truck dropdown */}
+                  <div className="relative">
+                    <TruckIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-3 h-3 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <select
+                      value={truckFilter}
+                      onChange={(e) => setTruckFilter(e.target.value)}
+                      className="pl-9 pr-8 py-1.5 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 appearance-none focus:outline-none focus:border-primary-500 cursor-pointer"
+                    >
+                      <option value="ALL">{t('fuelAlerts.filters.anyTruck')}</option>
+                      {truckOptions.map((o) => (
+                        <option key={o.id} value={o.id}>
+                          {o.id === UNASSIGNED_KEY
+                            ? unassignedLabel
+                            : (o.plate ?? unassignedLabel)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Rule dropdown */}
+                  <div className="relative">
+                    <FilterIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <ChevronDown className="w-3 h-3 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <select
+                      value={ruleFilter}
+                      onChange={(e) => setRuleFilter(e.target.value)}
+                      className="pl-9 pr-8 py-1.5 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 appearance-none focus:outline-none focus:border-primary-500 cursor-pointer"
+                    >
+                      <option value="ALL">{t('fuelAlerts.filters.anyRule')}</option>
+                      {ruleOptions.map((r) => (
+                        <option key={r} value={r}>
+                          {t(`fuelAlerts.rules.${r}.title`, { defaultValue: r })}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="ml-auto text-xs text-slate-500">
+                    {t('fuelAlerts.filters.lastDays')}
+                  </div>
                 </div>
 
-                {/* Truck dropdown */}
-                <div className="relative">
-                  <TruckIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <ChevronDown className="w-3 h-3 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <select
-                    value={truckFilter}
-                    onChange={(e) => setTruckFilter(e.target.value)}
-                    className="pl-9 pr-8 py-1.5 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 appearance-none focus:outline-none focus:border-primary-500 cursor-pointer"
-                  >
-                    <option value="ALL">{t('fuelAlerts.filters.anyTruck')}</option>
-                    {truckOptions.map((o) => (
-                      <option key={o.id} value={o.id}>
-                        {o.id === UNASSIGNED_KEY
-                          ? unassignedLabel
-                          : (o.plate ?? unassignedLabel)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Rule dropdown */}
-                <div className="relative">
-                  <FilterIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <ChevronDown className="w-3 h-3 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  <select
-                    value={ruleFilter}
-                    onChange={(e) => setRuleFilter(e.target.value)}
-                    className="pl-9 pr-8 py-1.5 bg-white rounded-lg border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 appearance-none focus:outline-none focus:border-primary-500 cursor-pointer"
-                  >
-                    <option value="ALL">{t('fuelAlerts.filters.anyRule')}</option>
-                    {ruleOptions.map((r) => (
-                      <option key={r} value={r}>
-                        {t(`fuelAlerts.rules.${r}.title`, { defaultValue: r })}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="ml-auto text-xs text-slate-500">
-                  {t('fuelAlerts.filters.lastDays')}
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
+                    <FilterChip
+                      active={categoryFilter === 'ALL'}
+                      onClick={() => setCategoryFilter('ALL')}
+                      label={t('fuelAlerts.category.all')}
+                      count={count}
+                      countClass="text-slate-400"
+                    />
+                    <FilterChip
+                      active={categoryFilter === 'DATA_ERROR'}
+                      onClick={() => setCategoryFilter('DATA_ERROR')}
+                      label={t('fuelAlerts.category.dataError')}
+                      count={globalCategoryCounts.DATA_ERROR}
+                      countClass="text-attention-600"
+                    />
+                    <FilterChip
+                      active={categoryFilter === 'BEHAVIOUR'}
+                      onClick={() => setCategoryFilter('BEHAVIOUR')}
+                      label={t('fuelAlerts.category.behaviour')}
+                      count={globalCategoryCounts.BEHAVIOUR}
+                      countClass="text-info-600"
+                    />
+                    {globalCategoryCounts.INFO > 0 && (
+                      <FilterChip
+                        active={categoryFilter === 'INFO'}
+                        onClick={() => setCategoryFilter('INFO')}
+                        label={t('fuelAlerts.category.info')}
+                        count={globalCategoryCounts.INFO}
+                        countClass="text-slate-400"
+                      />
+                    )}
+                  </div>
+                  {categoryFilter === 'DATA_ERROR' && (
+                    <span className="text-xs text-slate-500">
+                      {t('fuelAlerts.category.excludedHint')}
+                    </span>
+                  )}
                 </div>
               </div>
             )}
