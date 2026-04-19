@@ -1756,5 +1756,92 @@
       "submit": "Dismiss",
       "cancel": "Cancel"
     }
+  },
+  "landing": {
+    "nav": { "login": "Log in" },
+    "hero": {
+      "badge": "For SMB fleets",
+      "title1": "Manage your fleet",
+      "title2": "with ease",
+      "tagline": "One tool for vehicles, drivers and documents. Never miss a renewal again.",
+      "ctaPrimary": "Start free",
+      "ctaSecondary": "I have an account",
+      "ctaGoogle": "Continue with Google",
+      "preview": {
+        "label": "Dashboard",
+        "stat1Label": "Vehicles",
+        "stat2Label": "Drivers",
+        "stat3Label": "Fuel alerts",
+        "priorityTitle": "Top priorities",
+        "priorityItem1": "34 ABC 123 · Inspection · 2 days",
+        "priorityItem2": "07 XYZ 300 · Insurance · 8 days",
+        "priorityCta": "Open docs"
+      }
+    },
+    "features": {
+      "vehicles": {
+        "title": "Vehicle tracking",
+        "description": "Track insurance, inspection and comprehensive-cover documents for every truck. Never miss a due date."
+      },
+      "drivers": {
+        "title": "Driver management",
+        "description": "Keep license, SRC and CPC documents up to date. Automatic reminders when renewal is due."
+      },
+      "docs": {
+        "title": "Document alerts",
+        "description": "Automatic alerts for expiring documents. Avoid fines and operational downtime."
+      },
+      "fuel": {
+        "title": "Fuel performance",
+        "description": "See consumption patterns, unusual fill-ups and savings opportunities automatically. Collaborate with your drivers for a more efficient fleet."
+      }
+    },
+    "benefits": {
+      "title": "Goodbye, spreadsheets",
+      "items": {
+        "b1": "One app replaces the Excel sheet and the WhatsApp group",
+        "b2": "Automatic alerts for overdue documents",
+        "b3": "Drivers can update their own information",
+        "b4": "Free trial — no credit card required",
+        "b5": "Turkish-first product, with English and German UI"
+      },
+      "cta": "Try it now"
+    },
+    "pricing": {
+      "tiers": {
+        "free": "Starter",
+        "pro": "Professional",
+        "business": "Business",
+        "enterprise": "Enterprise"
+      },
+      "popular": "Most Popular",
+      "free": "Free",
+      "perMonth": "/mo",
+      "contactPrice": "Contact us",
+      "contactUs": "Contact Us",
+      "startFree": "Start Free",
+      "features": {
+        "trucks5": "5 vehicles",
+        "trucks25": "25 vehicles",
+        "trucks100": "100 vehicles",
+        "trucksUnlimited": "Unlimited vehicles",
+        "drivers5": "5 drivers",
+        "drivers25": "25 drivers",
+        "drivers100": "100 drivers",
+        "driversUnlimited": "Unlimited drivers",
+        "docsAndEmails": "Document tracking with email alerts",
+        "fuelPerformance": "Fuel performance + unusual fill-up detection",
+        "fuelPerformanceDenied": "Fuel performance tracking",
+        "weeklyDigest": "Weekly email digest",
+        "bulkImport": "Bulk import",
+        "apiAccess": "API access",
+        "prioritySupport": "Priority support"
+      }
+    },
+    "footer": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "copyright": "© {{year}} Naklos. All rights reserved."
+    }
   }
 }

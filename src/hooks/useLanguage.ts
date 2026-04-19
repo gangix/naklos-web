@@ -8,13 +8,43 @@ function isSupported(value: string | undefined | null): value is SupportedLangua
   return value != null && (SUPPORTED_LANGUAGES as readonly string[]).includes(value);
 }
 
+/** Pull the primary-subtag from a BCP-47 locale tag ('en-US' → 'en',
+ *  'de-AT' → 'de'). Case-insensitive. */
+function primarySubtag(tag: string): string {
+  return tag.split('-')[0].toLowerCase();
+}
+
+/** Walk navigator.languages in priority order and return the first one
+ *  whose primary subtag we support. Falls back to navigator.language for
+ *  browsers that don't expose the list. Returns null if nothing matches. */
+function fromBrowserLocale(): SupportedLanguage | null {
+  if (typeof navigator === 'undefined') return null;
+  const list = (navigator.languages && navigator.languages.length > 0)
+    ? navigator.languages
+    : [navigator.language].filter(Boolean);
+  for (const tag of list) {
+    const primary = primarySubtag(tag);
+    if (isSupported(primary)) return primary;
+  }
+  return null;
+}
+
 function readInitial(): SupportedLanguage {
+  // 1. Explicit user choice persists across sessions.
   const stored = localStorage.getItem(STORAGE_KEY);
   if (isSupported(stored)) return stored;
 
+  // 2. Signed-in users carry their preferred locale on the Keycloak token.
   const tokenLocale = (keycloak.tokenParsed as { locale?: string } | undefined)?.locale;
   if (isSupported(tokenLocale)) return tokenLocale;
 
+  // 3. First-time visitors: honour the browser's language preferences
+  //    (Accept-Language equivalent exposed as navigator.languages). A
+  //    German visitor lands on naklos.com.tr and sees German, not Turkish.
+  const fromBrowser = fromBrowserLocale();
+  if (fromBrowser) return fromBrowser;
+
+  // 4. Ultimate fallback — Turkish is the primary market.
   return 'tr';
 }
 
