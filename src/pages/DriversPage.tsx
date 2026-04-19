@@ -7,6 +7,7 @@ import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import type { DerivedStatus } from '../utils/derivedStatus';
 import AddDriverModal from '../components/common/AddDriverModal';
+import Avatar from '../components/common/Avatar';
 import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
 import { computeDriverWarnings, type DriverWarning } from '../utils/driverWarnings';
@@ -201,12 +202,13 @@ const DriversPage = () => {
               }`}
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 flex-1">
-                  <div className="flex-1">
-                    <p className="font-bold text-gray-900">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <Avatar name={`${driver.firstName} ${driver.lastName}`.trim()} size="md" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-gray-900 truncate">
                       {driver.firstName} {driver.lastName}
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">{driver.phone}</p>
+                    <p className="text-sm text-gray-600 mt-1 tabular-nums">{driver.phone}</p>
                   </div>
                   {hasWarning && (
                     <div className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded-md">
