@@ -10,7 +10,7 @@ import { formatCurrency, formatDateTime, formatTime } from '../../utils/format';
 interface Props {
   alert: AnomalyPendingItem;
   selected: boolean;
-  onToggleSelect: (anomalyId: string) => void;
+  onToggleSelect: (anomalyId: string, shiftKey: boolean) => void;
   onOpen: (alert: AnomalyPendingItem) => void;
 }
 
@@ -45,15 +45,26 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
       <SeverityStripe severity={alert.severity} />
 
       <label
-        className="flex items-center mt-1 flex-shrink-0"
-        onClick={(e) => e.stopPropagation()}
+        className="flex items-center mt-1 flex-shrink-0 cursor-pointer"
+        onClick={(e) => {
+          // Always stop propagation so clicking the checkbox never opens the
+          // row's detail modal. Only intercept shift-clicks — shiftKey lives
+          // on MouseEvent, not the input's change event, so we must read it
+          // here before letting the browser fire the normal click. Plain
+          // clicks fall through to the input's onChange (which also gets
+          // Space-key toggles from keyboard users, preserving a11y).
+          e.stopPropagation();
+          if (e.shiftKey) {
+            e.preventDefault();
+            onToggleSelect(alert.anomalyId, true);
+          }
+        }}
       >
         <input
           type="checkbox"
           checked={selected}
-          onChange={() => onToggleSelect(alert.anomalyId)}
-          onClick={(e) => e.stopPropagation()}
-          className="w-[18px] h-[18px] rounded border-[1.5px] border-slate-300 text-primary-600 focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-0 cursor-pointer"
+          onChange={() => onToggleSelect(alert.anomalyId, false)}
+          className="w-[18px] h-[18px] rounded border-[1.5px] border-slate-300 text-primary-600 focus:ring-2 focus:ring-primary-500/40 focus:ring-offset-0"
           aria-label={`${title} — seç`}
         />
       </label>
