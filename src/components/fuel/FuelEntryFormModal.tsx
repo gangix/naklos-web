@@ -80,11 +80,15 @@ export default function FuelEntryFormModal({
   const [fuelType, setFuelType] = useState<FuelType>(
     mode === 'edit' && initial ? initial.fuelType : (truckPrimaryFuelType ?? 'DIESEL'),
   );
+  // Bulk-imported entries can arrive with `liters` / `totalPrice` /
+  // `pricePerLiter` as JS numbers even though the DTO declares them as
+  // strings — Jackson BigDecimal serialization differs by endpoint. Coerce
+  // defensively so `.trim()` in validate() never crashes on a non-string.
   const [liters, setLiters] = useState<string>(
-    mode === 'edit' && initial ? initial.liters : '',
+    mode === 'edit' && initial ? String(initial.liters ?? '') : '',
   );
   const [totalPrice, setTotalPrice] = useState<string>(
-    mode === 'edit' && initial ? initial.totalPrice : '',
+    mode === 'edit' && initial ? String(initial.totalPrice ?? '') : '',
   );
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
@@ -93,16 +97,16 @@ export default function FuelEntryFormModal({
   // Optional section
   const [optionalOpen, setOptionalOpen] = useState(false);
   const [pricePerLiter, setPricePerLiter] = useState<string>(
-    mode === 'edit' && initial?.pricePerLiter ? initial.pricePerLiter : '',
+    mode === 'edit' && initial?.pricePerLiter != null ? String(initial.pricePerLiter) : '',
   );
   const [stationName, setStationName] = useState<string>(
-    mode === 'edit' && initial?.stationName ? initial.stationName : '',
+    mode === 'edit' && initial?.stationName ? String(initial.stationName) : '',
   );
   const [odometerKm, setOdometerKm] = useState<string>(
     mode === 'edit' && initial?.odometerKm != null ? String(initial.odometerKm) : '',
   );
   const [notes, setNotes] = useState<string>(
-    mode === 'edit' && initial?.notes ? initial.notes : '',
+    mode === 'edit' && initial?.notes ? String(initial.notes) : '',
   );
 
   const [errors, setErrors] = useState<FieldErrors>({});

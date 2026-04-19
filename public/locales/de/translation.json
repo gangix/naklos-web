@@ -1295,7 +1295,8 @@
     "edit": {
       "title": "Kraftstoffeintrag bearbeiten",
       "submit": "Aktualisieren",
-      "successToast": "Eintrag aktualisiert."
+      "successToast": "Eintrag aktualisiert.",
+      "importNotEditable": "Dieser Eintrag stammt aus einem Massenimport und kann nicht direkt bearbeitet werden. Wähle stattdessen 'Als fehlerhaft schließen'."
     },
     "delete": {
       "title": "Kraftstoffeintrag löschen",

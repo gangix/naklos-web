@@ -1292,7 +1292,8 @@
     "edit": {
       "title": "Yakıt kaydını düzenle",
       "submit": "Güncelle",
-      "successToast": "Kayıt güncellendi."
+      "successToast": "Kayıt güncellendi.",
+      "importNotEditable": "Bu kayıt toplu içe aktarma ile gelmiş, doğrudan düzenlenemiyor. 'Bozuk veri olarak kapat' seçeneğini kullan."
     },
     "delete": {
       "title": "Yakıt kaydını sil",
