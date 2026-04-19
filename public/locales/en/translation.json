@@ -1660,9 +1660,9 @@
       "ruleOff": "Off"
     },
     "severity": {
-      "urgent": "URGENT",
-      "attention": "ATTENTION",
-      "info": "INFO"
+      "urgent": "High",
+      "attention": "Medium",
+      "info": "Low"
     },
     "toteBoard": {
       "urgent": "needs urgent review · action required",
@@ -1672,10 +1672,10 @@
     "category": {
       "label": "Category",
       "all": "All",
-      "dataError": "Data error",
+      "dataError": "Inconsistent record",
       "behaviour": "Behaviour",
       "info": "Info",
-      "excludedHint": "These entries are already excluded — they don't affect the average."
+      "excludedHint": "These entries are already excluded — they don't affect the average. Informational."
     },
     "groupPill": {
       "excluded": "excluded"
@@ -1704,9 +1704,9 @@
       "selectedLabel": "selected",
       "clear": "Clear",
       "catA": {
-        "confirm": "Close as bad data",
+        "confirm": "Mark all as reviewed",
         "dismiss": "Restore to analysis",
-        "confirming": "Closing…",
+        "confirming": "Marking…",
         "dismissing": "Restoring…"
       },
       "catB": {
@@ -1716,12 +1716,12 @@
         "dismissing": "Closing…"
       },
       "mixed": {
-        "dataErrorCount": "{{count}} data error",
+        "dataErrorCount": "{{count}} inconsistent",
         "behaviourCount": "{{count}} behaviour"
       }
     },
     "toast": {
-      "catAClosed": "{{count}} entries closed as bad data",
+      "catAClosed": "Marked {{count}} entries as reviewed",
       "catARestored": "{{count}} entries restored to analysis",
       "catBRecorded": "{{count}} behaviours recorded as issues",
       "catBClosed": "{{count}} behaviours closed",

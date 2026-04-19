@@ -1660,9 +1660,9 @@
       "ruleOff": "Aus"
     },
     "severity": {
-      "urgent": "Dringend",
-      "attention": "Achtung",
-      "info": "Info"
+      "urgent": "Hoch",
+      "attention": "Mittel",
+      "info": "Gering"
     },
     "toteBoard": {
       "urgent": "sofortige Prüfung · Handlungsbedarf",
@@ -1672,10 +1672,10 @@
     "category": {
       "label": "Kategorie",
       "all": "Alle",
-      "dataError": "Datenfehler",
+      "dataError": "Inkonsistenter Eintrag",
       "behaviour": "Verhalten",
       "info": "Info",
-      "excludedHint": "Diese Einträge sind bereits ausgeschlossen — beeinflussen den Durchschnitt nicht."
+      "excludedHint": "Diese Einträge sind bereits ausgeschlossen — keine Auswirkung auf den Durchschnitt. Informativ."
     },
     "groupPill": {
       "excluded": "ausgeschlossen"
@@ -1704,9 +1704,9 @@
       "selectedLabel": "ausgewählt",
       "clear": "Leeren",
       "catA": {
-        "confirm": "Als fehlerhaft schließen",
+        "confirm": "Alle als gesehen",
         "dismiss": "Zur Analyse zurück",
-        "confirming": "Schließe…",
+        "confirming": "Markiere…",
         "dismissing": "Stelle wieder her…"
       },
       "catB": {
@@ -1716,12 +1716,12 @@
         "dismissing": "Schließe…"
       },
       "mixed": {
-        "dataErrorCount": "{{count}} Datenfehler",
+        "dataErrorCount": "{{count}} inkonsistent",
         "behaviourCount": "{{count}} Verhalten"
       }
     },
     "toast": {
-      "catAClosed": "{{count}} Einträge als fehlerhaft geschlossen",
+      "catAClosed": "{{count}} Einträge als gesehen markiert",
       "catARestored": "{{count}} Einträge zur Analyse zurückgestellt",
       "catBRecorded": "{{count}} Verhalten als Problem gespeichert",
       "catBClosed": "{{count}} Verhalten geschlossen",
