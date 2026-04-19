@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft, Gauge, MapPin } from 'lucide-react';
 import { truckApi } from '../services/api';
@@ -28,6 +28,7 @@ const TruckDetailPage = () => {
   const { t } = useTranslation();
   const { truckId } = useParams<{ truckId: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { fleetId, plan } = useFleet();
   const { drivers, refresh: refreshRoster } = useFleetRoster();
   // Mirrors the ManagerTopNav gate — anomaly features are a paid-plan UX.
@@ -38,7 +39,17 @@ const TruckDetailPage = () => {
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<Tab>('genel');
+  // Honor deep-link ?tab=... on mount (fuel-alerts "Kaydı düzelt" routes
+  // here with ?tab=yakit&entry=<id>). Unknown values fall back to 'genel'.
+  const initialTabFromQuery = searchParams.get('tab') as Tab | null;
+  const [activeTab, setActiveTab] = useState<Tab>(
+    initialTabFromQuery === 'yakit' || initialTabFromQuery === 'belgeler' || initialTabFromQuery === 'genel'
+      ? initialTabFromQuery
+      : 'genel',
+  );
+  const [openEditEntryId, setOpenEditEntryId] = useState<string | null>(
+    () => searchParams.get('entry'),
+  );
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploadCategory, setUploadCategory] = useState<DocumentCategory | null>(null);
   const [uploadCurrentExpiry, setUploadCurrentExpiry] = useState<string | null>(null);
@@ -86,13 +97,26 @@ const TruckDetailPage = () => {
 
   // When a manager clicks through from a "needs attention" context, default to
   // the Documents tab so they don't have to pivot after landing. Once the user
-  // actively switches tabs, stop overriding.
-  const [tabAutoPicked, setTabAutoPicked] = useState(false);
+  // actively switches tabs, stop overriding. A deep-link ?tab=... counts as
+  // an explicit choice, so we seed `tabAutoPicked` to true in that case to
+  // suppress the warnings-based override.
+  const [tabAutoPicked, setTabAutoPicked] = useState(() => !!initialTabFromQuery);
   useEffect(() => {
     if (!truck || tabAutoPicked) return;
     setTabAutoPicked(true);
     if (truckWarnings.length > 0) setActiveTab('belgeler');
   }, [truck, tabAutoPicked, truckWarnings.length]);
+
+  // Consume ?tab and ?entry once on mount so a page reload doesn't re-open
+  // the edit modal. State already holds the values we read synchronously.
+  useEffect(() => {
+    if (!searchParams.get('tab') && !searchParams.get('entry')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('tab');
+    next.delete('entry');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return (
@@ -399,6 +423,8 @@ const TruckDetailPage = () => {
             truckId={truck.id}
             truckPlate={truck.plateNumber}
             truckPrimaryFuelType={truckPrimaryFuelType}
+            openEditEntryId={openEditEntryId}
+            onEditHandled={() => setOpenEditEntryId(null)}
           />
           {anomalyUiEnabled && (
             <TruckAnomalyOverridesSection fleetId={fleetId} truckId={truck.id} />

@@ -1756,6 +1756,7 @@
         "suggestedLabel": "Önerilen",
         "fixEntry": "Kaydı düzelt",
         "fixEntryHint": "Yakıt girişindeki yanlış değeri değiştir — sonraki taramada uyarı kapanır.",
+        "fixEntryUnmatched": "Eşleşmemiş plaka — önce aracı bağla",
         "fixTruck": "Araç ayarlarını düzelt",
         "fixTruckHint": "Tank kapasitesi veya yakıt türü tanımını güncelle — sonraki taramada uyarı kapanır.",
         "altDivider": "Veri zaten doğruysa",

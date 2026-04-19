@@ -29,9 +29,21 @@ interface Props {
   truckId: string;
   truckPlate: string;
   truckPrimaryFuelType?: TruckFuelEntryDto['fuelType'];
+  /** When set (via fuel-alerts "Kaydı düzelt" deep-link), auto-open the edit
+   *  modal for this entry once the entries list resolves, then call
+   *  `onEditHandled` so the parent can clear the id. */
+  openEditEntryId?: string | null;
+  onEditHandled?: () => void;
 }
 
-export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimaryFuelType }: Props) {
+export default function TruckFuelTab({
+  fleetId,
+  truckId,
+  truckPlate,
+  truckPrimaryFuelType,
+  openEditEntryId,
+  onEditHandled,
+}: Props) {
   const { t } = useTranslation();
 
   const [entries, setEntries] = useState<TruckFuelEntryDto[]>([]);
@@ -68,6 +80,32 @@ export default function TruckFuelTab({ fleetId, truckId, truckPlate, truckPrimar
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  // Deep-link from fuel-alerts "Kaydı düzelt": once entries load, open the
+  // edit modal for the target id + scroll/highlight the row. If the entry
+  // isn't in the list (wrong truck, deleted, paged out) we still notify
+  // the parent so the id gets cleared and we don't spin on it.
+  useEffect(() => {
+    if (!openEditEntryId || entries.length === 0) return;
+    const target = entries.find((e) => e.id === openEditEntryId);
+    if (target) {
+      setFormModal({ mode: 'edit', initial: target });
+      setHighlightedId(openEditEntryId);
+      requestAnimationFrame(() => {
+        rowRefs.current[openEditEntryId]?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
+      // Mirror handleDuplicate — the highlight is a transient visual cue,
+      // not persistent state. Without this the row stays tinted forever.
+      setTimeout(() => setHighlightedId(null), 2000);
+    }
+    onEditHandled?.();
+    // Setters and the parent-owned onEditHandled are stable refs; including
+    // them would risk re-triggering the modal on every parent render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openEditEntryId, entries]);
 
   const handleSaved = async () => {
     await fetchData();

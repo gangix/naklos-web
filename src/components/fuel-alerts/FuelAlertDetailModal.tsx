@@ -38,8 +38,10 @@ interface Props {
   /** 1-based current position in the nav sequence, for the "3 / 12" caption. */
   position?: { current: number; total: number };
   /** Handler for the Cat A "edit entry" primary action. FuelAlertsPage owns
-   *  the actual routing — we just pass the entry id through. */
-  onFixEntry?: (entryId: string) => void;
+   *  the actual routing — we pass both ids so the page can deep-link into
+   *  the truck's Yakıt tab. truckId is null for unmatched-plate alerts; the
+   *  button is rendered disabled in that case and never fires. */
+  onFixEntry?: (entryId: string, truckId: string | null) => void;
 }
 
 const stripeGradient: Record<Severity, string> = {
@@ -369,7 +371,7 @@ export default function FuelAlertDetailModal({
                       <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
                         {t('fuelAlerts.modal.catA.suggestedLabel')}
                       </p>
-                      {fixTruckHref ? (
+                      {fixTarget === 'TRUCK' && fixTruckHref ? (
                         <Link
                           to={fixTruckHref}
                           className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50/30 text-left transition-colors"
@@ -380,10 +382,10 @@ export default function FuelAlertDetailModal({
                             hint={t('fuelAlerts.modal.catA.fixTruckHint')}
                           />
                         </Link>
-                      ) : (
+                      ) : fixTarget === 'ENTRY' && alert.truckId ? (
                         <button
                           type="button"
-                          onClick={() => onFixEntry?.(alert.entryId)}
+                          onClick={() => onFixEntry?.(alert.entryId, alert.truckId)}
                           className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50/30 text-left transition-colors"
                         >
                           <PrimaryFixBody
@@ -392,6 +394,26 @@ export default function FuelAlertDetailModal({
                             hint={t('fuelAlerts.modal.catA.fixEntryHint')}
                           />
                         </button>
+                      ) : (
+                        // Unmatched-plate alert: we know it's an entry-level
+                        // fix but no truck to deep-link to. Keep the card
+                        // visible so the intent reads, but disable it and
+                        // surface the "link the vehicle first" hint.
+                        <div className="w-full inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-slate-50 border-2 border-slate-200 text-left opacity-70 cursor-not-allowed">
+                          <div className="flex items-center gap-3">
+                            <span className="w-10 h-10 rounded-lg bg-slate-100 grid place-items-center text-slate-400 flex-shrink-0">
+                              <Pencil className="w-5 h-5" />
+                            </span>
+                            <div>
+                              <div className="font-bold text-sm text-slate-500">
+                                {t('fuelAlerts.modal.catA.fixEntry')}
+                              </div>
+                              <div className="text-xs text-slate-500 mt-0.5">
+                                {t('fuelAlerts.modal.catA.fixEntryUnmatched')}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       )}
                     </div>
                   )}

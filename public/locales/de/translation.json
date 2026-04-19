@@ -1759,6 +1759,7 @@
         "suggestedLabel": "Empfohlen",
         "fixEntry": "Eintrag bearbeiten",
         "fixEntryHint": "Falschen Wert im Tank-Eintrag ändern — schließt beim nächsten Scan.",
+        "fixEntryUnmatched": "Nicht zugeordnetes Kennzeichen — Fahrzeug zuerst verknüpfen",
         "fixTruck": "Fahrzeugeinstellungen",
         "fixTruckHint": "Tankgröße oder Kraftstofftyp aktualisieren — schließt beim nächsten Scan.",
         "altDivider": "Wenn die Daten korrekt sind",
