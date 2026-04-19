@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Check, X, Trash2, RotateCcw } from 'lucide-react';
+import { Check, X, RotateCcw } from 'lucide-react';
 import FloatingSelectionBar from '../common/FloatingSelectionBar';
 
 interface Breakdown {
@@ -61,9 +61,9 @@ export default function FloatingActionBar(props: Props) {
           type="button"
           onClick={props.onConfirm}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-urgent-500 hover:bg-urgent-600 disabled:opacity-60 disabled:pointer-events-none transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-confirm-500 hover:bg-confirm-600 disabled:opacity-60 disabled:pointer-events-none transition-colors"
         >
-          <Trash2 className="w-4 h-4" />
+          <Check className="w-4 h-4" />
           {confirming
             ? t('fuelAlerts.bulkBar.catA.confirming')
             : t('fuelAlerts.bulkBar.catA.confirm')}
@@ -174,9 +174,9 @@ export default function FloatingActionBar(props: Props) {
           type="button"
           onClick={props.onMixedDataErrorConfirm}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-urgent-500/90 hover:bg-urgent-500 disabled:opacity-60 disabled:pointer-events-none transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-confirm-500/90 hover:bg-confirm-500 disabled:opacity-60 disabled:pointer-events-none transition-colors"
         >
-          <Trash2 className="w-4 h-4" />
+          <Check className="w-4 h-4" />
           {t('fuelAlerts.bulkBar.catA.confirm')}
           <span className="text-white/70 text-[10px] tabular-nums">({bd.dataError})</span>
         </button>

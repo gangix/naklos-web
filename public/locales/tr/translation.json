@@ -1657,9 +1657,9 @@
       "ruleOff": "Kapalı"
     },
     "severity": {
-      "urgent": "Acil",
-      "attention": "Dikkat",
-      "info": "Bilgi"
+      "urgent": "Yüksek",
+      "attention": "Orta",
+      "info": "Düşük"
     },
     "toteBoard": {
       "urgent": "acil kontrol · müdahale gerekiyor",
@@ -1669,10 +1669,10 @@
     "category": {
       "label": "Kategori",
       "all": "Tümü",
-      "dataError": "Veri hatası",
+      "dataError": "Tutarsız kayıt",
       "behaviour": "Davranış",
       "info": "Bilgi",
-      "excludedHint": "Bu kayıtlar zaten analiz dışında — ortalamayı etkilemiyorlar."
+      "excludedHint": "Bu kayıtlar zaten analiz dışında — ortalamayı etkilemiyorlar. Sadece bilgi."
     },
     "groupPill": {
       "excluded": "analiz dışı"
@@ -1701,9 +1701,9 @@
       "selectedLabel": "seçildi",
       "clear": "Temizle",
       "catA": {
-        "confirm": "Bozuk olarak kapat",
+        "confirm": "Tümünü gördüm",
         "dismiss": "Analize geri al",
-        "confirming": "Kapatılıyor…",
+        "confirming": "İşaretleniyor…",
         "dismissing": "Geri alınıyor…"
       },
       "catB": {
@@ -1713,12 +1713,12 @@
         "dismissing": "Kapatılıyor…"
       },
       "mixed": {
-        "dataErrorCount": "{{count}} veri hatası",
+        "dataErrorCount": "{{count}} tutarsız kayıt",
         "behaviourCount": "{{count}} davranış"
       }
     },
     "toast": {
-      "catAClosed": "{{count}} kayıt bozuk veri olarak kapatıldı",
+      "catAClosed": "{{count}} kayıt gördün olarak işaretlendi",
       "catARestored": "{{count}} kayıt analize geri eklendi",
       "catBRecorded": "{{count}} davranış sorunlu olarak kaydedildi",
       "catBClosed": "{{count}} davranış kapatıldı",
@@ -1754,17 +1754,17 @@
       "ruleCodeLabel": "uyarı kodu: {{code}}",
       "catA": {
         "excludedPill": "analiz dışı — ortalamayı etkilemiyor",
-        "suggestedLabel": "Önerilen",
+        "suggestedLabel": "Öncelik",
+        "acknowledge": "Gördüm, kapat",
+        "acknowledgeHint": "Kayıt okundu olarak kapanır; veri analiz dışında kalır.",
+        "fixDivider": "İstersen düzelt",
         "fixEntry": "Kaydı düzelt",
         "fixEntryHint": "Yakıt girişindeki yanlış değeri değiştir — sonraki taramada uyarı kapanır.",
         "fixEntryUnmatched": "Eşleşmemiş plaka — önce aracı bağla",
         "fixTruck": "Araç ayarlarını düzelt",
         "fixTruckHint": "Tank kapasitesi veya yakıt türü tanımını güncelle — sonraki taramada uyarı kapanır.",
-        "altDivider": "Veri zaten doğruysa",
-        "closeAsBadData": "Bozuk veri olarak kapat",
-        "closeAsBadDataHint": "Bu kayıt sonsuza analiz dışında kalır.",
-        "closeAsBadDataBadge": "geri alınamaz",
-        "restoreToAnalysis": "Veri doğru, analize geri ekle",
+        "restoreDivider": "Sistem yanıldıysa",
+        "restoreToAnalysis": "Analize geri ekle",
         "restoreToAnalysisHint": "Bir neden seç → uyarı kapanır, entry baseline'a döner."
       },
       "catB": {

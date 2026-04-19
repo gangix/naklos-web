@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Clock, Image as ImageIcon } from 'lucide-react';
-import type { AnomalyPendingItem, RuleCode } from '../../types/fuelAnomaly';
+import { categoryOf, type AnomalyPendingItem, type RuleCode } from '../../types/fuelAnomaly';
 import SeverityBadge from './SeverityBadge';
 import SeverityStripe from './SeverityStripe';
 import { shortExplanation } from './ruleExplanation';
@@ -26,6 +26,7 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
   const ts = alert.occurredAt ?? alert.detectedAt;
   const liters = alert.liters;
   const km = alert.reportedOdometerKm;
+  const isDataError = categoryOf(alert.ruleCode) === 'DATA_ERROR';
 
   const selectedCls = selected ? 'border-primary-500 bg-primary-50/50' : 'border-transparent';
 
@@ -71,7 +72,13 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
 
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2 mb-1">
-          <SeverityBadge severity={alert.severity} size="xs" />
+          {isDataError ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-attention-50 text-attention-700 text-[10px] font-semibold uppercase tracking-wider">
+              {t('fuelAlerts.category.dataError')}
+            </span>
+          ) : (
+            <SeverityBadge severity={alert.severity} size="xs" />
+          )}
           <span className="text-xs font-semibold text-slate-900">{title}</span>
           {ts && (
             <span className="text-xs text-slate-400 tabular-nums">· {formatDateTime(ts)}</span>

@@ -10,7 +10,6 @@ import {
   Phone,
   RotateCcw,
   Settings2,
-  Trash2,
   X,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -365,16 +364,43 @@ export default function FuelAlertDetailModal({
           {!showReasonSheet && (
             <div className="px-6 py-5 border-t border-slate-100 bg-slate-50/50">
               {isDataBroken ? (
-                <div className="space-y-3">
+                <div className="space-y-4">
+                  {/* PRIMARY: calm green "Gördüm, kapat" — same treatment as
+                      Cat B confirm, so manager feels "I'm reading a report",
+                      not "I have to pick a destructive action". */}
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                      {t('fuelAlerts.modal.catA.suggestedLabel')}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleConfirm}
+                      disabled={confirming || dismissing}
+                      className="w-full group inline-flex flex-col items-start gap-0.5 px-5 py-4 rounded-xl bg-confirm-500 hover:bg-confirm-600 text-white shadow-sm hover:shadow disabled:opacity-60 disabled:pointer-events-none transition-all text-left"
+                    >
+                      <div className="flex items-center gap-2 font-bold text-sm">
+                        <Check className="w-4 h-4" strokeWidth={2.5} />
+                        {confirming ? '…' : t('fuelAlerts.modal.catA.acknowledge')}
+                      </div>
+                      <span className="text-xs font-normal text-white/80">
+                        {t('fuelAlerts.modal.catA.acknowledgeHint')}
+                      </span>
+                    </button>
+                  </div>
+
                   {showPrimaryFix && (
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
-                        {t('fuelAlerts.modal.catA.suggestedLabel')}
-                      </p>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex-1 h-px bg-slate-200" />
+                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                          {t('fuelAlerts.modal.catA.fixDivider')}
+                        </span>
+                        <div className="flex-1 h-px bg-slate-200" />
+                      </div>
                       {fixTarget === 'TRUCK' && fixTruckHref ? (
                         <Link
                           to={fixTruckHref}
-                          className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50/30 text-left transition-colors"
+                          className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border border-slate-200 hover:border-primary-400 hover:bg-primary-50/30 text-left transition-colors"
                         >
                           <PrimaryFixBody
                             icon={<Settings2 className="w-5 h-5" />}
@@ -386,7 +412,7 @@ export default function FuelAlertDetailModal({
                         <button
                           type="button"
                           onClick={() => onFixEntry?.(alert.entryId, alert.truckId)}
-                          className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50/30 text-left transition-colors"
+                          className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border border-slate-200 hover:border-primary-400 hover:bg-primary-50/30 text-left transition-colors"
                         >
                           <PrimaryFixBody
                             icon={<Pencil className="w-5 h-5" />}
@@ -399,7 +425,7 @@ export default function FuelAlertDetailModal({
                         // fix but no truck to deep-link to. Keep the card
                         // visible so the intent reads, but disable it and
                         // surface the "link the vehicle first" hint.
-                        <div className="w-full inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-slate-50 border-2 border-slate-200 text-left opacity-70 cursor-not-allowed">
+                        <div className="w-full inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-left opacity-70 cursor-not-allowed">
                           <div className="flex items-center gap-3">
                             <span className="w-10 h-10 rounded-lg bg-slate-100 grid place-items-center text-slate-400 flex-shrink-0">
                               <Pencil className="w-5 h-5" />
@@ -418,38 +444,19 @@ export default function FuelAlertDetailModal({
                     </div>
                   )}
 
-                  {/* Divider doubles as the "or" — copy reads as a prompt not a label. */}
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 h-px bg-slate-200" />
-                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
-                      {t('fuelAlerts.modal.catA.altDivider')}
-                    </span>
-                    <div className="flex-1 h-px bg-slate-200" />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={handleConfirm}
-                      disabled={confirming || dismissing}
-                      className="inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-urgent-300 hover:bg-urgent-50/30 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
-                    >
-                      <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
-                        <Trash2 className="w-4 h-4 text-urgent-500" strokeWidth={2.5} />
-                        {confirming ? '…' : t('fuelAlerts.modal.catA.closeAsBadData')}
-                      </div>
-                      <span className="text-xs text-slate-500">
-                        {t('fuelAlerts.modal.catA.closeAsBadDataHint')}
+                  <div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="flex-1 h-px bg-slate-200" />
+                      <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                        {t('fuelAlerts.modal.catA.restoreDivider')}
                       </span>
-                      <span className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded bg-urgent-50 text-urgent-700 text-[10px] font-semibold">
-                        {t('fuelAlerts.modal.catA.closeAsBadDataBadge')}
-                      </span>
-                    </button>
+                      <div className="flex-1 h-px bg-slate-200" />
+                    </div>
                     <button
                       type="button"
                       onClick={() => setShowReasonSheet(true)}
                       disabled={confirming || dismissing}
-                      className="inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
+                      className="w-full inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
                     >
                       <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
                         <RotateCcw className="w-4 h-4 text-slate-500" strokeWidth={2.5} />
