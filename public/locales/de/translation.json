@@ -1677,9 +1677,6 @@
       "info": "Info",
       "excludedHint": "Diese Einträge sind bereits ausgeschlossen — keine Auswirkung auf den Durchschnitt. Informativ."
     },
-    "groupPill": {
-      "excluded": "ausgeschlossen"
-    },
     "filters": {
       "all": "Alle",
       "byTruck": "Fahrzeug",

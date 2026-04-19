@@ -1674,9 +1674,6 @@
       "info": "Bilgi",
       "excludedHint": "Bu kayıtlar zaten analiz dışında — ortalamayı etkilemiyorlar. Sadece bilgi."
     },
-    "groupPill": {
-      "excluded": "analiz dışı"
-    },
     "filters": {
       "all": "Tümü",
       "byTruck": "Araç",
