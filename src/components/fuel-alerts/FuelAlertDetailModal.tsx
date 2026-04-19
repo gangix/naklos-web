@@ -20,6 +20,7 @@ import { formatCurrency, formatDateTime } from '../../utils/format';
 import SeverityBadge from './SeverityBadge';
 import Plate from './Plate';
 import DismissalReasonSheet from './DismissalReasonSheet';
+import ReceiptLightbox from '../fuel/ReceiptLightbox';
 import { num, parseContext, richExplanation } from './ruleExplanation';
 import { excludesEntryOnConfirm, fixTargetFor } from '../../types/fuelAnomaly';
 import './fuelAlertsAnimations.css';
@@ -99,6 +100,7 @@ export default function FuelAlertDetailModal({
   const [showReasonSheet, setShowReasonSheet] = useState(false);
   const [confirming, setConfirming] = useState(false);
   const [dismissing, setDismissing] = useState(false);
+  const [receiptOpen, setReceiptOpen] = useState(false);
 
   // Close the dismissal-reason sheet when stepping to a sibling alert —
   // otherwise a stale reason pre-fills for a different anomaly.
@@ -340,6 +342,7 @@ export default function FuelAlertDetailModal({
             {alert.hasReceipt && (
               <button
                 type="button"
+                onClick={() => setReceiptOpen(true)}
                 className="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
               >
                 <ImageIcon className="w-4 h-4 text-slate-500" />
@@ -518,6 +521,14 @@ export default function FuelAlertDetailModal({
           />
         )}
       </div>
+
+      {receiptOpen && (
+        <ReceiptLightbox
+          fleetId={fleetId}
+          entryId={alert.entryId}
+          onClose={() => setReceiptOpen(false)}
+        />
+      )}
     </div>
   );
 }

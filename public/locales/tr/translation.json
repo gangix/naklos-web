@@ -1662,9 +1662,9 @@
       "info": "Düşük"
     },
     "toteBoard": {
-      "urgent": "acil kontrol · müdahale gerekiyor",
-      "attention": "gözden geçirilmesi faydalı",
-      "info": "kayıt altına alındı"
+      "urgent": "fiziksel olarak tutarsız veya kritik",
+      "attention": "muhtemel tutarsız ya da incelenmeli",
+      "info": "bilgi amaçlı · aksiyon gerekmiyor"
     },
     "category": {
       "label": "Kategori",
