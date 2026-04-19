@@ -53,7 +53,7 @@ const TrucksPage = () => {
   }, [searchParams, maxTrucks, trucks.length, setSearchParams]);
 
   const hasUrgentWarning = (truckId: string): boolean =>
-    (warningsByTruck.get(truckId) ?? []).some((w) => w.severity === 'error');
+    (warningsByTruck.get(truckId) ?? []).some((w) => w.severity === 'CRITICAL');
 
   const getTruckWarnings = (truckId: string) => warningsByTruck.get(truckId) ?? [];
 
@@ -269,21 +269,25 @@ const TrucksPage = () => {
                 )}
               </div>
 
-              {/* Document warnings */}
+              {/* Document warnings — tiered by CRITICAL/WARNING/INFO to mirror fuel-alert palette */}
               {getTruckWarnings(truck.id).length > 0 && (
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
-                  {getTruckWarnings(truck.id).map((warning, index) => (
-                    <div
-                      key={`${truck.id}-${warning.type}-${index}`}
-                      className={`text-xs px-2 py-1 rounded ${
-                        warning.severity === 'error'
-                          ? 'bg-red-50 text-red-700'
-                          : 'bg-yellow-50 text-yellow-700'
-                      }`}
-                    >
-                      <span className="inline-flex items-center gap-1">{warning.severity === 'error' ? <AlertCircle className="w-3.5 h-3.5 text-red-500 inline flex-shrink-0" /> : <AlertTriangle className="w-3.5 h-3.5 text-orange-500 inline flex-shrink-0" />} {t(warning.key, warning.params)}</span>
-                    </div>
-                  ))}
+                  {getTruckWarnings(truck.id).map((warning, index) => {
+                    const tone =
+                      warning.severity === 'CRITICAL'
+                        ? { bg: 'bg-urgent-50 text-urgent-700', icon: <AlertCircle className="w-3.5 h-3.5 text-urgent-500 inline flex-shrink-0" /> }
+                        : warning.severity === 'WARNING'
+                        ? { bg: 'bg-attention-50 text-attention-700', icon: <AlertTriangle className="w-3.5 h-3.5 text-attention-500 inline flex-shrink-0" /> }
+                        : { bg: 'bg-info-50 text-info-700', icon: <AlertTriangle className="w-3.5 h-3.5 text-info-500 inline flex-shrink-0" /> };
+                    return (
+                      <div
+                        key={`${truck.id}-${warning.type}-${index}`}
+                        className={`text-xs px-2 py-1 rounded ${tone.bg}`}
+                      >
+                        <span className="inline-flex items-center gap-1">{tone.icon} {t(warning.key, warning.params)}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </Link>

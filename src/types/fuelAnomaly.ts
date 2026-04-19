@@ -1,12 +1,9 @@
-export type Severity = 'CRITICAL' | 'WARNING' | 'INFO';
-
-/** Tailwind bg-* class for the small severity dot used in chips, rule rows,
- *  and accordion summaries. Single source of truth — don't re-inline. */
-export const SEVERITY_DOT_CLASS: Record<Severity, string> = {
-  CRITICAL: 'bg-urgent-500',
-  WARNING: 'bg-attention-500',
-  INFO: 'bg-info-500',
-};
+// Severity and its tailwind class map live in ../severity so document
+// warnings can reuse them without importing anything fuel-specific. Re-
+// exported here for back-compat with existing fuel-alert consumers.
+export type { Severity } from './severity';
+export { SEVERITY_DOT_CLASS } from './severity';
+import type { Severity } from './severity';
 
 /** i18n key per severity — mirrors SeverityBadge's label. */
 export const SEVERITY_I18N_KEY: Record<Severity, string> = {

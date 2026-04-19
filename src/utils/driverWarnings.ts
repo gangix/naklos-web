@@ -1,14 +1,25 @@
 import type { Driver } from '../types';
+import type { Severity } from '../types/severity';
 import { daysUntil, todayMidnightMs, WARN_THRESHOLD_DAYS } from './expiry';
 
 export interface DriverWarning {
   key: string;
   params: Record<string, string | number>;
-  severity: 'error' | 'warning';
+  /** CRITICAL = expired / missing / ≤1 day left.
+   *  WARNING  = 2–14 days left.
+   *  INFO     = 15–30 days left. */
+  severity: Severity;
   type: 'license' | 'src' | 'cpc';
 }
 
-const URGENT_DAYS = 7;
+const CRITICAL_MAX_DAYS = 1;
+const WARNING_MAX_DAYS = 14;
+
+function severityFromDays(days: number): Severity {
+  if (days < 0 || days <= CRITICAL_MAX_DAYS) return 'CRITICAL';
+  if (days <= WARNING_MAX_DAYS) return 'WARNING';
+  return 'INFO';
+}
 
 /** Driver warnings with TR-KOBİ-fleet semantics:
  *  - License: always required — warn on missing/expired/expiring.
@@ -65,17 +76,17 @@ function pushExpiry(
   const days = daysUntil(date, todayMs);
   if (days === null) {
     if (keys.missing) {
-      out.push({ key: keys.missing, params: { driverName }, severity: 'error', type });
+      out.push({ key: keys.missing, params: { driverName }, severity: 'CRITICAL', type });
     }
     return;
   }
   if (days < 0) {
-    out.push({ key: keys.expired, params: { driverName }, severity: 'error', type });
+    out.push({ key: keys.expired, params: { driverName }, severity: 'CRITICAL', type });
   } else if (days <= WARN_THRESHOLD_DAYS) {
     out.push({
       key: keys.expiring,
       params: { driverName, count: days },
-      severity: days <= URGENT_DAYS ? 'error' : 'warning',
+      severity: severityFromDays(days),
       type,
     });
   }
