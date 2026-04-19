@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, LogOut, Truck, User } from 'lucide-react';
+import { ChevronDown, LogOut, Settings, Truck, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import LanguageSwitcher from '../common/LanguageSwitcher';
 
 /** Branded top bar for driver pages. Matches the slate-900 chrome of the
  *  manager top nav so the two shells read as the same product, minus the
@@ -70,8 +69,19 @@ const DriverTopBar = () => {
                   {user?.name ?? '—'}
                 </p>
               </div>
-              <div className="px-4 py-3 border-b border-gray-100">
-                <LanguageSwitcher />
+              <div className="py-1 border-b border-gray-100">
+                <NavLink
+                  to="/driver/settings"
+                  onClick={() => setOpen(false)}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2.5 px-4 py-2 text-sm transition-colors ${
+                      isActive ? 'bg-primary-50 text-primary-700 font-medium' : 'text-gray-700 hover:bg-gray-50'
+                    }`
+                  }
+                >
+                  <Settings className="w-4 h-4" />
+                  <span>{t('nav.settings', { defaultValue: 'Ayarlar' })}</span>
+                </NavLink>
               </div>
               <div className="border-t border-gray-100 py-1">
                 <button
