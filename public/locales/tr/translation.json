@@ -1665,6 +1665,17 @@
       "attention": "gözden geçirilmesi faydalı",
       "info": "kayıt altına alındı"
     },
+    "category": {
+      "label": "Kategori",
+      "all": "Tümü",
+      "dataError": "Veri hatası",
+      "behaviour": "Davranış",
+      "info": "Bilgi",
+      "excludedHint": "Bu kayıtlar zaten analiz dışında — ortalamayı etkilemiyorlar."
+    },
+    "groupPill": {
+      "excluded": "analiz dışı"
+    },
     "filters": {
       "all": "Tümü",
       "byTruck": "Araç",
@@ -1687,17 +1698,29 @@
     "bulkBar": {
       "selected": "{{count}} seçildi",
       "selectedLabel": "seçildi",
-      "confirm": "İşaretle",
-      "dismiss": "Sorun değil",
       "clear": "Temizle",
-      "confirming": "İşaretleniyor…",
-      "dismissing": "Kapatılıyor…"
+      "catA": {
+        "confirm": "Bozuk olarak kapat",
+        "dismiss": "Analize geri al",
+        "confirming": "Kapatılıyor…",
+        "dismissing": "Geri alınıyor…"
+      },
+      "catB": {
+        "confirm": "Sorunlu kaydet",
+        "dismiss": "Kapat + neden",
+        "confirming": "Kaydediliyor…",
+        "dismissing": "Kapatılıyor…"
+      },
+      "mixed": {
+        "dataErrorCount": "{{count}} veri hatası",
+        "behaviourCount": "{{count}} davranış"
+      }
     },
     "toast": {
-      "confirmed": "İşaretlendi",
-      "dismissed": "Kapatıldı",
-      "bulkDismissed": "{{dismissed}} kapatıldı, {{skipped}} atlandı",
-      "bulkConfirmed": "{{count}} uyarı işaretlendi",
+      "catAClosed": "{{count}} kayıt bozuk veri olarak kapatıldı",
+      "catARestored": "{{count}} kayıt analize geri eklendi",
+      "catBRecorded": "{{count}} davranış sorunlu olarak kaydedildi",
+      "catBClosed": "{{count}} davranış kapatıldı",
       "loadError": "Uyarılar yüklenemedi"
     },
     "rules": {
@@ -1728,21 +1751,26 @@
       "viewReceipt": "Fişi görüntüle",
       "callDriver": "Şoförü ara",
       "ruleCodeLabel": "uyarı kodu: {{code}}",
-      "confirmHint": {
-        "dataBroken": "Bu hatalı kayıt şu anda analiz dışında tutuluyor — yanlış veri aracın yakıt tüketim ortalamasını etkilemiyor. Gerçek sorun olarak işaretlersen, analiz dışında tutma işlemi kalıcı olur.",
-        "behaviour": "Bu bir veri hatası değil, gerçek bir olay. İşaretlesen aracın tüketim ortalaması değişmez; sadece kayıt altına alınır."
+      "catA": {
+        "excludedPill": "analiz dışı — ortalamayı etkilemiyor",
+        "suggestedLabel": "Önerilen",
+        "fixEntry": "Kaydı düzelt",
+        "fixEntryHint": "Yakıt girişindeki yanlış değeri değiştir — sonraki taramada uyarı kapanır.",
+        "fixTruck": "Araç ayarlarını düzelt",
+        "fixTruckHint": "Tank kapasitesi veya yakıt türü tanımını güncelle — sonraki taramada uyarı kapanır.",
+        "altDivider": "Veri zaten doğruysa",
+        "closeAsBadData": "Bozuk veri olarak kapat",
+        "closeAsBadDataHint": "Bu kayıt sonsuza analiz dışında kalır.",
+        "closeAsBadDataBadge": "geri alınamaz",
+        "restoreToAnalysis": "Veri doğru, analize geri ekle",
+        "restoreToAnalysisHint": "Bir neden seç → uyarı kapanır, entry baseline'a döner."
       },
-      "fixDataHint": "Araç bilgisi (tank kapasitesi, yakıt türü, baseline) hatalıysa, aracın ayarlarından düzelt — bir sonraki taramada uyarı otomatik kapanır.",
-      "confirmBtn": {
-        "title": "Gerçek sorun — işaretle",
-        "hint": {
-          "dataBroken": "Kalıcı olarak analiz dışında tutulur.",
-          "behaviour": "Uyarı kapatılır; veri değişmez."
-        }
-      },
-      "dismissBtn": {
-        "title": "Sorun değil — kapat",
-        "hint": "Bir nedenle açıklanabiliyorsa kapat."
+      "catB": {
+        "question": "Bu davranış sorunlu mu?",
+        "confirm": "Evet, sorunlu kaydet",
+        "confirmHint": "Kayıtlara eklenir, veri aynen kalır.",
+        "dismiss": "Hayır, kapat",
+        "dismissHint": "Neden seçeceksin."
       }
     },
     "dismissReason": {

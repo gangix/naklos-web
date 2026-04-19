@@ -1668,6 +1668,17 @@
       "attention": "lohnt sich zu prüfen",
       "info": "zur Dokumentation erfasst"
     },
+    "category": {
+      "label": "Kategorie",
+      "all": "Alle",
+      "dataError": "Datenfehler",
+      "behaviour": "Verhalten",
+      "info": "Info",
+      "excludedHint": "Diese Einträge sind bereits ausgeschlossen — beeinflussen den Durchschnitt nicht."
+    },
+    "groupPill": {
+      "excluded": "ausgeschlossen"
+    },
     "filters": {
       "all": "Alle",
       "byTruck": "Fahrzeug",
@@ -1690,17 +1701,29 @@
     "bulkBar": {
       "selected": "{{count}} ausgewählt",
       "selectedLabel": "ausgewählt",
-      "confirm": "Bestätigen",
-      "dismiss": "Kein Problem",
-      "clear": "Auswahl leeren",
-      "confirming": "Wird bestätigt…",
-      "dismissing": "Wird geschlossen…"
+      "clear": "Leeren",
+      "catA": {
+        "confirm": "Als fehlerhaft schließen",
+        "dismiss": "Zur Analyse zurück",
+        "confirming": "Schließe…",
+        "dismissing": "Stelle wieder her…"
+      },
+      "catB": {
+        "confirm": "Als Problem speichern",
+        "dismiss": "Schließen + Grund",
+        "confirming": "Speichere…",
+        "dismissing": "Schließe…"
+      },
+      "mixed": {
+        "dataErrorCount": "{{count}} Datenfehler",
+        "behaviourCount": "{{count}} Verhalten"
+      }
     },
     "toast": {
-      "confirmed": "Als echtes Problem markiert",
-      "dismissed": "Geschlossen",
-      "bulkDismissed": "{{dismissed}} geschlossen, {{skipped}} übersprungen",
-      "bulkConfirmed": "{{count}} Warnungen bestätigt",
+      "catAClosed": "{{count}} Einträge als fehlerhaft geschlossen",
+      "catARestored": "{{count}} Einträge zur Analyse zurückgestellt",
+      "catBRecorded": "{{count}} Verhalten als Problem gespeichert",
+      "catBClosed": "{{count}} Verhalten geschlossen",
       "loadError": "Warnungen konnten nicht geladen werden"
     },
     "rules": {
@@ -1731,21 +1754,26 @@
       "viewReceipt": "Beleg ansehen",
       "callDriver": "Fahrer anrufen",
       "ruleCodeLabel": "Warnungscode: {{code}}",
-      "confirmHint": {
-        "dataBroken": "Dieser fehlerhafte Eintrag ist bereits aus der Analyse ausgeschlossen — die falschen Daten verfälschen den Kraftstoffverbrauchs-Durchschnitt nicht. Als echtes Problem markieren macht den Ausschluss dauerhaft.",
-        "behaviour": "Das ist kein Dateneingabefehler, sondern ein tatsächliches Ereignis. Markieren ändert den Verbrauchsdurchschnitt des Fahrzeugs nicht; es wird nur dokumentiert."
+      "catA": {
+        "excludedPill": "ausgeschlossen — kein Einfluss auf Durchschnitt",
+        "suggestedLabel": "Empfohlen",
+        "fixEntry": "Eintrag bearbeiten",
+        "fixEntryHint": "Falschen Wert im Tank-Eintrag ändern — schließt beim nächsten Scan.",
+        "fixTruck": "Fahrzeugeinstellungen",
+        "fixTruckHint": "Tankgröße oder Kraftstofftyp aktualisieren — schließt beim nächsten Scan.",
+        "altDivider": "Wenn die Daten korrekt sind",
+        "closeAsBadData": "Als fehlerhaft schließen",
+        "closeAsBadDataHint": "Dieser Eintrag bleibt dauerhaft ausgeschlossen.",
+        "closeAsBadDataBadge": "nicht widerrufbar",
+        "restoreToAnalysis": "Daten korrekt, zurück",
+        "restoreToAnalysisHint": "Grund wählen → schließt, Eintrag zurück in Baseline."
       },
-      "fixDataHint": "Wenn die Fahrzeugkonfiguration falsch ist (Tankkapazität, Kraftstoffart, Basiswert), korrigieren Sie sie auf der Fahrzeugseite — der nächste Scan löst diese Warnung automatisch.",
-      "confirmBtn": {
-        "title": "Echtes Problem — markieren",
-        "hint": {
-          "dataBroken": "Bleibt dauerhaft aus der Analyse ausgeschlossen.",
-          "behaviour": "Warnung wird geschlossen; keine Datenänderung."
-        }
-      },
-      "dismissBtn": {
-        "title": "Kein Problem — schließen",
-        "hint": "Schließen, wenn es eine plausible Erklärung gibt."
+      "catB": {
+        "question": "Echtes Problem?",
+        "confirm": "Ja, als Problem speichern",
+        "confirmHint": "Wird protokolliert; Daten unverändert.",
+        "dismiss": "Nein, schließen",
+        "dismissHint": "Du wählst einen Grund."
       }
     },
     "dismissReason": {

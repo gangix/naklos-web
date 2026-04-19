@@ -58,6 +58,40 @@ export function excludesEntryOnConfirm(ruleCode: string): boolean {
   return RULES_EXCLUDE_ENTRY_ON_CONFIRM.has(ruleCode);
 }
 
+export type AnomalyCategory = 'DATA_ERROR' | 'BEHAVIOUR' | 'INFO';
+
+/** Classify a rule for the triage UI. DATA_ERROR mirrors the backend's
+ *  EXCLUDE_ON_CONFIRM set — entries are auto-excluded from baseline on
+ *  detection. BEHAVIOUR rules are real events that stay in analytics.
+ *  INFO is a single-member set: MISSING_BASELINE (info-only). */
+export function categoryOf(ruleCode: string): AnomalyCategory {
+  if (excludesEntryOnConfirm(ruleCode)) return 'DATA_ERROR';
+  if (ruleCode === 'MISSING_BASELINE') return 'INFO';
+  return 'BEHAVIOUR';
+}
+
+export type FixTarget = 'ENTRY' | 'TRUCK';
+
+/** Where the manager should go to fix the underlying data for a Cat A rule.
+ *  ENTRY rules point at the fuel entry itself (reading was typed wrong).
+ *  TRUCK rules point at truck settings (tank capacity / fuel type wrong).
+ *  Returns null for Cat B / INFO rules (no "fix" primary action). */
+export function fixTargetFor(ruleCode: string): FixTarget | null {
+  switch (ruleCode) {
+    case 'ODOMETER_ROLLBACK':
+    case 'ODOMETER_NOT_ADVANCING':
+    case 'PRICE_MATH_MISMATCH':
+    case 'CONSUMPTION_UNDER_BASELINE':
+      return 'ENTRY';
+    case 'VOLUME_EXCEEDS_TANK_CAPACITY':
+    case 'IMPLAUSIBLE_VOLUME_FOR_TYPE':
+    case 'FUEL_TYPE_MISMATCH':
+      return 'TRUCK';
+    default:
+      return null;
+  }
+}
+
 /** Default severity per rule — mirrors the Severity enum each rule returns
  *  on the backend. Used when you need the severity tone before a specific
  *  anomaly has been detected (e.g. the config page rule list). */

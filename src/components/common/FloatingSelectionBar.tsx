@@ -15,6 +15,11 @@ interface Props {
   /** Disables the clear button while an async action is in-flight so the
    *  user can't strip the selection mid-request. */
   disabled?: boolean;
+  /** Optional slot rendered inline next to the count label — used by the
+   *  mixed fuel-alerts variant to show a per-category breakdown strip
+   *  (e.g. "3 veri hatası · 2 davranış"). Kept small and textual so the
+   *  pill chrome doesn't need to change shape. */
+  headerExtra?: ReactNode;
   /** Action buttons for this selection bar. Each caller provides its own
    *  primary/ghost pill buttons — the shared shell handles layout, count
    *  bubble, divider, and clear. */
@@ -32,6 +37,7 @@ export default function FloatingSelectionBar({
   onClear,
   clearLabel,
   disabled = false,
+  headerExtra,
   children,
 }: Props) {
   if (count <= 0) return null;
@@ -48,6 +54,7 @@ export default function FloatingSelectionBar({
             {count}
           </div>
           <span className="text-sm">{countLabel}</span>
+          {headerExtra}
         </div>
 
         <div className="w-px h-5 bg-white/15" />
