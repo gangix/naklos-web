@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Filter as FilterIcon, Truck as TruckIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -117,6 +118,7 @@ function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Grou
 export default function FuelAlertsPage() {
   const { t } = useTranslation();
   const { fleetId } = useFleet();
+  const navigate = useNavigate();
 
   const [items, setItems] = useState<AnomalyPendingItem[] | null>(null);
   const [loading, setLoading] = useState(true);
@@ -564,6 +566,14 @@ export default function FuelAlertsPage() {
           onPrev={hasPrev ? () => setOpenAlert(filtered[openIdx - 1]) : undefined}
           onNext={hasNext ? () => setOpenAlert(filtered[openIdx + 1]) : undefined}
           position={openIdx >= 0 ? { current: openIdx + 1, total: filtered.length } : undefined}
+          onFixEntry={(entryId) => {
+            // TODO: no dedicated fuel-entry edit route exists yet. Entry edit
+            // lives inside TruckDetailPage → yakıt tab → FuelEntryFormModal, so
+            // until we add a deep link, route to the plate-resolutions page as
+            // a soft fallback — it's the closest fuel-editing surface and the
+            // manager can drill down from there.
+            navigate(`/manager/fuel-resolutions?entry=${entryId}`);
+          }}
         />
       )}
 

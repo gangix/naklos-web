@@ -1720,8 +1720,6 @@
       }
     },
     "toast": {
-      "confirmed": "Marked as real issue",
-      "dismissed": "Dismissed",
       "catAClosed": "{{count}} entries closed as bad data",
       "catARestored": "{{count}} entries restored to analysis",
       "catBRecorded": "{{count}} behaviours recorded as issues",
@@ -1756,21 +1754,19 @@
       "viewReceipt": "View receipt",
       "callDriver": "Call driver",
       "ruleCodeLabel": "alert code: {{code}}",
-      "confirmHint": {
-        "dataBroken": "This faulty entry is already excluded from analysis — the wrong data isn't skewing the truck's fuel consumption average. Marking it as a real issue makes that exclusion permanent.",
-        "behaviour": "This isn't a data error, it's a real event. Marking it doesn't change the truck's consumption average; it's just kept on record."
-      },
-      "fixDataHint": "If the truck's setup is wrong (tank capacity, fuel type, baseline), fix it on the truck page — the next scan will auto-resolve this alert.",
-      "confirmBtn": {
-        "title": "Real issue — mark",
-        "hint": {
-          "dataBroken": "Stays out of analysis permanently.",
-          "behaviour": "Warning closes; no data change."
-        }
-      },
-      "dismissBtn": {
-        "title": "Not an issue — dismiss",
-        "hint": "Dismiss if there's a reasonable explanation."
+      "catA": {
+        "excludedPill": "excluded — doesn't affect the average",
+        "suggestedLabel": "Suggested",
+        "fixEntry": "Edit entry",
+        "fixEntryHint": "Fix the wrong value on the fuel entry — alert closes on next rescan.",
+        "fixTruck": "Edit truck settings",
+        "fixTruckHint": "Update tank capacity or fuel type — alert closes on next rescan.",
+        "altDivider": "If the data is correct",
+        "closeAsBadData": "Close as bad data",
+        "closeAsBadDataHint": "This entry stays excluded from analysis forever.",
+        "closeAsBadDataBadge": "can't be undone",
+        "restoreToAnalysis": "Data is correct, restore",
+        "restoreToAnalysisHint": "Pick a reason → alert closes, entry returns to baseline."
       },
       "catB": {
         "question": "Is this a real issue?",

@@ -1,6 +1,19 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Check, ChevronLeft, ChevronRight, Image as ImageIcon, Phone, X } from 'lucide-react';
+import {
+  AlertTriangle,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+  Pencil,
+  Phone,
+  RotateCcw,
+  Settings2,
+  Trash2,
+  X,
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import type { AnomalyPendingItem, Severity } from '../../types/fuelAnomaly';
 import { fuelAnomalyApi } from '../../services/fuelAnomalyApi';
@@ -9,7 +22,7 @@ import SeverityBadge from './SeverityBadge';
 import Plate from './Plate';
 import DismissalReasonSheet from './DismissalReasonSheet';
 import { num, parseContext, richExplanation } from './ruleExplanation';
-import { excludesEntryOnConfirm } from '../../types/fuelAnomaly';
+import { excludesEntryOnConfirm, fixTargetFor } from '../../types/fuelAnomaly';
 import './fuelAlertsAnimations.css';
 
 interface Props {
@@ -24,6 +37,9 @@ interface Props {
   onNext?: () => void;
   /** 1-based current position in the nav sequence, for the "3 / 12" caption. */
   position?: { current: number; total: number };
+  /** Handler for the Cat A "edit entry" primary action. FuelAlertsPage owns
+   *  the actual routing — we just pass the entry id through. */
+  onFixEntry?: (entryId: string) => void;
 }
 
 const stripeGradient: Record<Severity, string> = {
@@ -75,6 +91,7 @@ export default function FuelAlertDetailModal({
   onPrev,
   onNext,
   position,
+  onFixEntry,
 }: Props) {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -102,6 +119,15 @@ export default function FuelAlertDetailModal({
   const ctx = useMemo(() => parseContext(alert.contextJson), [alert.contextJson]);
   const explanation = useMemo(() => richExplanation(alert), [alert]);
   const isDataBroken = excludesEntryOnConfirm(alert.ruleCode);
+  // Cat A smart routing. TRUCK variant needs truckId (unmatched plates have
+  // none → fall through to the alt actions only). ENTRY variant always has
+  // entryId, but onFixEntry is optional so we also guard on that.
+  const fixTarget = fixTargetFor(alert.ruleCode);
+  const fixTruckHref =
+    fixTarget === 'TRUCK' && alert.truckId ? `/manager/trucks/${alert.truckId}` : null;
+  const showPrimaryFix =
+    (fixTarget === 'TRUCK' && fixTruckHref !== null) ||
+    (fixTarget === 'ENTRY' && !!onFixEntry);
 
   const prevLiters = num(ctx.previousLiters);
   const prevOdo = num(ctx.previousOdo) ?? num(ctx.previousOdometerKm);
@@ -125,7 +151,7 @@ export default function FuelAlertDetailModal({
       await fuelAnomalyApi.confirm(fleetId, alert.anomalyId);
       toast.success(
         isDataBroken
-          ? t('fuelAlerts.toast.confirmed')
+          ? t('fuelAlerts.toast.catAClosed', { count: 1 })
           : t('fuelAlerts.toast.catBRecorded', { count: 1 }),
       );
       onAfterMutation();
@@ -152,7 +178,7 @@ export default function FuelAlertDetailModal({
       });
       toast.success(
         isDataBroken
-          ? t('fuelAlerts.toast.dismissed')
+          ? t('fuelAlerts.toast.catARestored', { count: 1 })
           : t('fuelAlerts.toast.catBClosed', { count: 1 }),
       );
       onAfterMutation();
@@ -258,9 +284,10 @@ export default function FuelAlertDetailModal({
               {explanation}
             </p>
             {isDataBroken && (
-              <p className="mt-2 text-xs text-slate-500">
-                {t('fuelAlerts.modal.confirmHint.dataBroken')}
-              </p>
+              <div className="mt-2 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-attention-50 text-attention-700 text-[11px] font-semibold">
+                <AlertTriangle className="w-3 h-3" />
+                {t('fuelAlerts.modal.catA.excludedPill')}
+              </div>
             )}
           </div>
 
@@ -336,27 +363,82 @@ export default function FuelAlertDetailModal({
           {!showReasonSheet && (
             <div className="px-6 py-5 border-t border-slate-100 bg-slate-50/50">
               {isDataBroken ? (
-                <>
-                  <div className="grid grid-cols-1 gap-3">
+                <div className="space-y-3">
+                  {showPrimaryFix && (
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-2">
+                        {t('fuelAlerts.modal.catA.suggestedLabel')}
+                      </p>
+                      {fixTruckHref ? (
+                        <Link
+                          to={fixTruckHref}
+                          className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50/30 text-left transition-colors"
+                        >
+                          <PrimaryFixBody
+                            icon={<Settings2 className="w-5 h-5" />}
+                            title={t('fuelAlerts.modal.catA.fixTruck')}
+                            hint={t('fuelAlerts.modal.catA.fixTruckHint')}
+                          />
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => onFixEntry?.(alert.entryId)}
+                          className="w-full group inline-flex items-center justify-between gap-2 px-4 py-3.5 rounded-xl bg-white border-2 border-primary-300 hover:border-primary-500 hover:bg-primary-50/30 text-left transition-colors"
+                        >
+                          <PrimaryFixBody
+                            icon={<Pencil className="w-5 h-5" />}
+                            title={t('fuelAlerts.modal.catA.fixEntry')}
+                            hint={t('fuelAlerts.modal.catA.fixEntryHint')}
+                          />
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Divider doubles as the "or" — copy reads as a prompt not a label. */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-slate-200" />
+                    <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                      {t('fuelAlerts.modal.catA.altDivider')}
+                    </span>
+                    <div className="flex-1 h-px bg-slate-200" />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button
                       type="button"
                       onClick={handleConfirm}
                       disabled={confirming || dismissing}
-                      className="group inline-flex flex-col items-start gap-0.5 px-5 py-4 rounded-xl bg-confirm-500 hover:bg-confirm-600 text-white shadow-sm hover:shadow disabled:opacity-60 disabled:pointer-events-none transition-all text-left"
+                      className="inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-urgent-300 hover:bg-urgent-50/30 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
                     >
-                      <div className="flex items-center gap-2 font-bold text-sm">
-                        <Check className="w-4 h-4" strokeWidth={2.5} />
-                        {confirming ? '…' : t('fuelAlerts.modal.confirmBtn.title')}
+                      <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
+                        <Trash2 className="w-4 h-4 text-urgent-500" strokeWidth={2.5} />
+                        {confirming ? '…' : t('fuelAlerts.modal.catA.closeAsBadData')}
                       </div>
-                      <span className="text-xs font-normal text-white/80">
-                        {t('fuelAlerts.modal.confirmBtn.hint.dataBroken')}
+                      <span className="text-xs text-slate-500">
+                        {t('fuelAlerts.modal.catA.closeAsBadDataHint')}
+                      </span>
+                      <span className="mt-1 inline-flex items-center px-1.5 py-0.5 rounded bg-urgent-50 text-urgent-700 text-[10px] font-semibold">
+                        {t('fuelAlerts.modal.catA.closeAsBadDataBadge')}
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowReasonSheet(true)}
+                      disabled={confirming || dismissing}
+                      className="inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
+                    >
+                      <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
+                        <RotateCcw className="w-4 h-4 text-slate-500" strokeWidth={2.5} />
+                        {t('fuelAlerts.modal.catA.restoreToAnalysis')}
+                      </div>
+                      <span className="text-xs text-slate-500">
+                        {t('fuelAlerts.modal.catA.restoreToAnalysisHint')}
                       </span>
                     </button>
                   </div>
-                  <p className="mt-3 text-xs text-slate-500">
-                    {t('fuelAlerts.modal.fixDataHint')}
-                  </p>
-                </>
+                </div>
               ) : (
                 <>
                   <p className="text-sm font-semibold text-slate-900 mb-3">
@@ -397,8 +479,9 @@ export default function FuelAlertDetailModal({
             </div>
           )}
 
-        {/* Inline reason sheet — only reachable for behaviour rules. */}
-        {showReasonSheet && !isDataBroken && (
+        {/* Inline reason sheet — both Cat A restore and Cat B dismiss use it.
+            The submit handler branches on isDataBroken inside handleDismiss. */}
+        {showReasonSheet && (
           <DismissalReasonSheet
             submitting={dismissing}
             onSubmit={handleDismiss}
@@ -475,6 +558,32 @@ function CurrentCard({ alert, curLiters, curPrice, variant }: CurrentCardProps) 
         </p>
       )}
     </div>
+  );
+}
+
+interface PrimaryFixBodyProps {
+  icon: ReactNode;
+  title: string;
+  hint: string;
+}
+
+/** Shared inner markup for the two Cat A primary actions (Link vs. button).
+ *  Only the outer element + icon/text differ, so keeping the body in one
+ *  place avoids drift if we restyle the primary card. */
+function PrimaryFixBody({ icon, title, hint }: PrimaryFixBodyProps) {
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <span className="w-10 h-10 rounded-lg bg-primary-50 grid place-items-center text-primary-600 flex-shrink-0">
+          {icon}
+        </span>
+        <div>
+          <div className="font-bold text-sm text-slate-900">{title}</div>
+          <div className="text-xs text-slate-500 mt-0.5">{hint}</div>
+        </div>
+      </div>
+      <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-primary-600 flex-shrink-0" />
+    </>
   );
 }
 

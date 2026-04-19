@@ -1720,8 +1720,6 @@
       }
     },
     "toast": {
-      "confirmed": "Als echtes Problem markiert",
-      "dismissed": "Geschlossen",
       "catAClosed": "{{count}} Einträge als fehlerhaft geschlossen",
       "catARestored": "{{count}} Einträge zur Analyse zurückgestellt",
       "catBRecorded": "{{count}} Verhalten als Problem gespeichert",
@@ -1756,21 +1754,19 @@
       "viewReceipt": "Beleg ansehen",
       "callDriver": "Fahrer anrufen",
       "ruleCodeLabel": "Warnungscode: {{code}}",
-      "confirmHint": {
-        "dataBroken": "Dieser fehlerhafte Eintrag ist bereits aus der Analyse ausgeschlossen — die falschen Daten verfälschen den Kraftstoffverbrauchs-Durchschnitt nicht. Als echtes Problem markieren macht den Ausschluss dauerhaft.",
-        "behaviour": "Das ist kein Dateneingabefehler, sondern ein tatsächliches Ereignis. Markieren ändert den Verbrauchsdurchschnitt des Fahrzeugs nicht; es wird nur dokumentiert."
-      },
-      "fixDataHint": "Wenn die Fahrzeugkonfiguration falsch ist (Tankkapazität, Kraftstoffart, Basiswert), korrigieren Sie sie auf der Fahrzeugseite — der nächste Scan löst diese Warnung automatisch.",
-      "confirmBtn": {
-        "title": "Echtes Problem — markieren",
-        "hint": {
-          "dataBroken": "Bleibt dauerhaft aus der Analyse ausgeschlossen.",
-          "behaviour": "Warnung wird geschlossen; keine Datenänderung."
-        }
-      },
-      "dismissBtn": {
-        "title": "Kein Problem — schließen",
-        "hint": "Schließen, wenn es eine plausible Erklärung gibt."
+      "catA": {
+        "excludedPill": "ausgeschlossen — kein Einfluss auf Durchschnitt",
+        "suggestedLabel": "Empfohlen",
+        "fixEntry": "Eintrag bearbeiten",
+        "fixEntryHint": "Falschen Wert im Tank-Eintrag ändern — schließt beim nächsten Scan.",
+        "fixTruck": "Fahrzeugeinstellungen",
+        "fixTruckHint": "Tankgröße oder Kraftstofftyp aktualisieren — schließt beim nächsten Scan.",
+        "altDivider": "Wenn die Daten korrekt sind",
+        "closeAsBadData": "Als fehlerhaft schließen",
+        "closeAsBadDataHint": "Dieser Eintrag bleibt dauerhaft ausgeschlossen.",
+        "closeAsBadDataBadge": "nicht widerrufbar",
+        "restoreToAnalysis": "Daten korrekt, zurück",
+        "restoreToAnalysisHint": "Grund wählen → schließt, Eintrag zurück in Baseline."
       },
       "catB": {
         "question": "Echtes Problem?",
