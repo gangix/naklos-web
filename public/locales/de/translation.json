@@ -1684,8 +1684,8 @@
       "all": "Alle",
       "byTruck": "Fahrzeug",
       "byRule": "Regel",
-      "anyTruck": "Alle Fahrzeuge",
-      "anyRule": "Alle Regeln",
+      "anyTruck": "Fahrzeug: Alle",
+      "anyRule": "Regel: Alle",
       "lastDays": "Letzte 7 Tage"
     },
     "card": {
