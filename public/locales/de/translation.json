@@ -595,7 +595,11 @@
     "placeholderCountry": "z. B. Türkei"
   },
   "driverDetail": {
-    "warnings": { "heading": "Warnungen" },
+    "warnings": { "heading": "Warnungen", "goToDocs": "Zu den Dokumenten →" },
+    "tabs": {
+      "genel": "Allgemein",
+      "belgeler": "Dokumente"
+    },
     "loadError": "Fehler beim Laden des Fahrers",
     "notFound": "Fahrer nicht gefunden",
     "goBack": "Zurück",

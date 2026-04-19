@@ -595,7 +595,11 @@
     "placeholderCountry": "e.g. Türkiye"
   },
   "driverDetail": {
-    "warnings": { "heading": "Warnings" },
+    "warnings": { "heading": "Warnings", "goToDocs": "Go to documents →" },
+    "tabs": {
+      "genel": "General",
+      "belgeler": "Documents"
+    },
     "loadError": "An error occurred while loading driver",
     "notFound": "Driver not found",
     "goBack": "Go Back",

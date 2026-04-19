@@ -593,7 +593,11 @@
     "placeholderCountry": "Örn: Türkiye"
   },
   "driverDetail": {
-    "warnings": { "heading": "Uyarılar" },
+    "warnings": { "heading": "Uyarılar", "goToDocs": "Belgelere git →" },
+    "tabs": {
+      "genel": "Genel",
+      "belgeler": "Belgeler"
+    },
     "loadError": "Sürücü yüklenirken hata oluştu",
     "notFound": "Sürücü bulunamadı",
     "goBack": "Geri Dön",

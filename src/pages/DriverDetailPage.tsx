@@ -15,6 +15,8 @@ import { useFleetRoster } from '../contexts/FleetRosterContext';
 import EntityWarningsCard from '../components/common/EntityWarningsCard';
 import type { DocumentCategory, Driver } from '../types';
 
+type Tab = 'genel' | 'belgeler';
+
 const DriverDetailPage = () => {
   const { t } = useTranslation();
   const { driverId } = useParams<{ driverId: string }>();
@@ -47,6 +49,8 @@ const DriverDetailPage = () => {
   // field — a missed reset anywhere could delete the wrong target.
   const [certDeleteId, setCertDeleteId] = useState<string | null>(null);
   const [driverDeleteOpen, setDriverDeleteOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<Tab>('genel');
+  const [tabAutoPicked, setTabAutoPicked] = useState(false);
   const { refresh: refreshRoster } = useFleetRoster();
 
   useEffect(() => {
@@ -88,6 +92,15 @@ const DriverDetailPage = () => {
   };
 
   const driverWarnings = driver ? computeDriverWarnings(driver) : [];
+
+  // When a manager clicks through from a "needs attention" context, default
+  // to the Belgeler tab so they don't have to pivot after landing. Once the
+  // user actively switches tabs, stop overriding. Mirrors TruckDetailPage.
+  useEffect(() => {
+    if (!driver || tabAutoPicked) return;
+    setTabAutoPicked(true);
+    if (driverWarnings.length > 0) setActiveTab('belgeler');
+  }, [driver, tabAutoPicked, driverWarnings.length]);
 
   if (loading) {
     return (
@@ -283,6 +296,11 @@ const DriverDetailPage = () => {
     }
   };
 
+  const tabs: { id: Tab; label: string }[] = [
+    { id: 'genel', label: t('driverDetail.tabs.genel') },
+    { id: 'belgeler', label: t('driverDetail.tabs.belgeler') },
+  ];
+
   return (
     <div className="pb-16">
       {/* Header with back button */}
@@ -308,10 +326,34 @@ const DriverDetailPage = () => {
         </div>
       </div>
 
+      {/* Tab bar — mirrors TruckDetailPage pattern */}
+      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-4">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+              activeTab === tab.id
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Genel tab */}
+      {activeTab === 'genel' && (
+        <>
       {driverWarnings.length > 0 && (
         <EntityWarningsCard
           warnings={driverWarnings}
           heading={t('driverDetail.warnings.heading')}
+          action={{
+            label: t('driverDetail.warnings.goToDocs'),
+            onClick: () => setActiveTab('belgeler'),
+          }}
         />
       )}
 
@@ -447,148 +489,6 @@ const DriverDetailPage = () => {
         </button>
       )}
 
-      {/* License info card */}
-      <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{t('driver.license')}</h2>
-          <button
-            onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
-            className="text-sm text-primary-600 font-medium"
-          >
-            {t('documentCard.manageBtn')}
-          </button>
-        </div>
-        <div className="space-y-3 mb-3">
-          <div>
-            <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
-            <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-600 mb-1">{t('driver.licenseClass')}</p>
-            <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
-          </div>
-        </div>
-        <ExpiryBadge
-          label={t('driver.licenseExpiry')}
-          date={driver.licenseExpiryDate}
-        />
-      </div>
-
-      {/* Certificates section */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-bold text-gray-900">{t('driver.certificates')}</h2>
-          <button
-            onClick={() => {
-              if (!certificateIssueDate) {
-                setCertificateIssueDate(new Date().toISOString().split('T')[0]);
-              }
-              setShowAddCertificate(true);
-            }}
-            className="text-sm text-primary-600 font-medium"
-          >
-            {t('driverDetail.addCertificate')}
-          </button>
-        </div>
-
-        {/* Add Certificate Form */}
-        {showAddCertificate && (
-          <div className="bg-primary-50 border-2 border-primary-200 rounded-lg p-4 mb-3">
-            <h3 className="text-sm font-bold text-gray-900 mb-3">{t('driverDetail.newCertificate')}</h3>
-            <div className="space-y-3">
-              <Select
-                label={t('driverDetail.certType')}
-                required
-                value={certificateType}
-                onChange={(e) => setCertificateType(e.target.value as 'SRC' | 'CPC')}
-              >
-                <option value="SRC">{t('driverDetail.srcMandatory')}</option>
-                <option value="CPC">{t('driverDetail.cpcProfessional')}</option>
-              </Select>
-              <TextInput
-                label={t('driverDetail.certificateNumber')}
-                type="text"
-                value={certificateNumber}
-                onChange={(e) => setCertificateNumber(e.target.value)}
-                placeholder=""
-              />
-              <TextInput
-                label={t('driverDetail.issueDate')}
-                type="date"
-                value={certificateIssueDate}
-                onChange={(e) => setCertificateIssueDate(e.target.value)}
-              />
-              <TextInput
-                label={t('driverDetail.expiryDate')}
-                type="date"
-                value={certificateExpiryDate}
-                onChange={(e) => setCertificateExpiryDate(e.target.value)}
-                min={new Date().toISOString().split('T')[0]}
-                hint={<>⚠️ {t('driverDetail.expiryFutureWarning')}</>}
-              />
-              <div className="flex gap-2 pt-2">
-                <button
-                  onClick={handleAddCertificate}
-                  className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
-                >
-                  {t('driverDetail.addButton')}
-                </button>
-                <button
-                  onClick={() => {
-                    setShowAddCertificate(false);
-                    setCertificateNumber('');
-                    setCertificateIssueDate('');
-                    setCertificateExpiryDate('');
-                  }}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
-                >
-                  {t('common.cancel')}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Existing Certificates List */}
-        {driver.certificates && driver.certificates.length > 0 && (
-          <div className="space-y-3">
-            {driver.certificates.map((cert, index) => (
-              <div key={index} className="bg-white rounded-xl p-4 shadow-sm">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold text-gray-900">
-                    {cert.type === 'SRC' ? t('driver.srcCertificate') : t('driver.cpcCertificate')}
-                  </h3>
-                  <button
-                    onClick={() => setCertDeleteId(cert.id)}
-                    className="text-sm text-red-600 font-medium"
-                  >
-                    {t('common.delete')}
-                  </button>
-                </div>
-                <div className="space-y-2 mb-3">
-                  <div>
-                    <p className="text-xs text-gray-600 mb-1">{t('driver.certificateNumber')}</p>
-                    <p className="text-sm font-medium text-gray-900">{cert.number}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600 mb-1">{t('driver.issueDate')}</p>
-                    <p className="text-sm font-medium text-gray-900">{formatDate(cert.issueDate)}</p>
-                  </div>
-                </div>
-                <ExpiryBadge
-                  label={t('driver.expiryDate')}
-                  date={cert.expiryDate}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {driver.certificates && driver.certificates.length === 0 && !showAddCertificate && (
-          <p className="text-sm text-gray-600">{t('driverDetail.noCertificates')}</p>
-        )}
-      </div>
-
       {/* Assigned-truck card: click-through to the truck detail. Previously a
           read-only plate display, which forced the user to navigate via the
           trucks list to reassign / see vehicle state. */}
@@ -653,44 +553,6 @@ const DriverDetailPage = () => {
         );
       })()}
 
-      {/* Document upload history (audit trail) */}
-      {documents.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverDetail.documentHistory')}</h2>
-          <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
-            {documents.map((doc) => (
-              <div key={doc.id} className="p-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-medium text-gray-900">
-                    {documentTypeLabel(doc.documentType)}
-                  </p>
-                  <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
-                </div>
-                <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
-                <div className="flex items-center justify-between mt-1">
-                  <p className="text-xs text-gray-500">
-                    {t('driverDetail.uploadedBy')}: {doc.uploadedByName || '-'}
-                  </p>
-                  <div className="flex items-center gap-3">
-                    {doc.expiryDate && (
-                      <p className="text-xs text-gray-500">
-                        {t('driverDetail.expiryLabel')}: {formatDate(doc.expiryDate)}
-                      </p>
-                    )}
-                    <button
-                      onClick={() => driverApi.downloadDocument(doc.id)}
-                      className="text-xs text-primary-600 font-medium hover:text-primary-700"
-                    >
-                      {t('common.download')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Delete driver — genuinely destructive (hard-delete, unlike truck
           archive). Red tone is semantic, but full-width at page bottom was
           overweight for a single-user action already gated by a confirm
@@ -705,6 +567,193 @@ const DriverDetailPage = () => {
           {deleting ? t('driverDetail.deletingDriver') : t('driverDetail.deleteDriver')}
         </button>
       </div>
+        </>
+      )}
+
+      {/* Belgeler tab */}
+      {activeTab === 'belgeler' && (
+        <>
+          {/* License info card */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-900">{t('driver.license')}</h2>
+              <button
+                onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                {t('documentCard.manageBtn')}
+              </button>
+            </div>
+            <div className="space-y-3 mb-3">
+              <div>
+                <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
+                <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-600 mb-1">{t('driver.licenseClass')}</p>
+                <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
+              </div>
+            </div>
+            <ExpiryBadge
+              label={t('driver.licenseExpiry')}
+              date={driver.licenseExpiryDate}
+            />
+          </div>
+
+          {/* Certificates section */}
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-900">{t('driver.certificates')}</h2>
+              <button
+                onClick={() => {
+                  if (!certificateIssueDate) {
+                    setCertificateIssueDate(new Date().toISOString().split('T')[0]);
+                  }
+                  setShowAddCertificate(true);
+                }}
+                className="text-sm text-primary-600 font-medium"
+              >
+                {t('driverDetail.addCertificate')}
+              </button>
+            </div>
+
+            {/* Add Certificate Form */}
+            {showAddCertificate && (
+              <div className="bg-primary-50 border-2 border-primary-200 rounded-lg p-4 mb-3">
+                <h3 className="text-sm font-bold text-gray-900 mb-3">{t('driverDetail.newCertificate')}</h3>
+                <div className="space-y-3">
+                  <Select
+                    label={t('driverDetail.certType')}
+                    required
+                    value={certificateType}
+                    onChange={(e) => setCertificateType(e.target.value as 'SRC' | 'CPC')}
+                  >
+                    <option value="SRC">{t('driverDetail.srcMandatory')}</option>
+                    <option value="CPC">{t('driverDetail.cpcProfessional')}</option>
+                  </Select>
+                  <TextInput
+                    label={t('driverDetail.certificateNumber')}
+                    type="text"
+                    value={certificateNumber}
+                    onChange={(e) => setCertificateNumber(e.target.value)}
+                    placeholder=""
+                  />
+                  <TextInput
+                    label={t('driverDetail.issueDate')}
+                    type="date"
+                    value={certificateIssueDate}
+                    onChange={(e) => setCertificateIssueDate(e.target.value)}
+                  />
+                  <TextInput
+                    label={t('driverDetail.expiryDate')}
+                    type="date"
+                    value={certificateExpiryDate}
+                    onChange={(e) => setCertificateExpiryDate(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    hint={<>⚠️ {t('driverDetail.expiryFutureWarning')}</>}
+                  />
+                  <div className="flex gap-2 pt-2">
+                    <button
+                      onClick={handleAddCertificate}
+                      className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700"
+                    >
+                      {t('driverDetail.addButton')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowAddCertificate(false);
+                        setCertificateNumber('');
+                        setCertificateIssueDate('');
+                        setCertificateExpiryDate('');
+                      }}
+                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+                    >
+                      {t('common.cancel')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Existing Certificates List */}
+            {driver.certificates && driver.certificates.length > 0 && (
+              <div className="space-y-3">
+                {driver.certificates.map((cert, index) => (
+                  <div key={index} className="bg-white rounded-xl p-4 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="text-sm font-bold text-gray-900">
+                        {cert.type === 'SRC' ? t('driver.srcCertificate') : t('driver.cpcCertificate')}
+                      </h3>
+                      <button
+                        onClick={() => setCertDeleteId(cert.id)}
+                        className="text-sm text-red-600 font-medium"
+                      >
+                        {t('common.delete')}
+                      </button>
+                    </div>
+                    <div className="space-y-2 mb-3">
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">{t('driver.certificateNumber')}</p>
+                        <p className="text-sm font-medium text-gray-900">{cert.number}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-600 mb-1">{t('driver.issueDate')}</p>
+                        <p className="text-sm font-medium text-gray-900">{formatDate(cert.issueDate)}</p>
+                      </div>
+                    </div>
+                    <ExpiryBadge
+                      label={t('driver.expiryDate')}
+                      date={cert.expiryDate}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {driver.certificates && driver.certificates.length === 0 && !showAddCertificate && (
+              <p className="text-sm text-gray-600">{t('driverDetail.noCertificates')}</p>
+            )}
+          </div>
+
+          {/* Document upload history (audit trail) */}
+          {documents.length > 0 && (
+            <div className="mb-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-3">{t('driverDetail.documentHistory')}</h2>
+              <div className="bg-white rounded-xl shadow-sm divide-y divide-gray-100">
+                {documents.map((doc) => (
+                  <div key={doc.id} className="p-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-medium text-gray-900">
+                        {documentTypeLabel(doc.documentType)}
+                      </p>
+                      <p className="text-xs text-gray-500">{formatDate(doc.uploadedAt)}</p>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-1 truncate">{doc.fileName}</p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-xs text-gray-500">
+                        {t('driverDetail.uploadedBy')}: {doc.uploadedByName || '-'}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        {doc.expiryDate && (
+                          <p className="text-xs text-gray-500">
+                            {t('driverDetail.expiryLabel')}: {formatDate(doc.expiryDate)}
+                          </p>
+                        )}
+                        <button
+                          onClick={() => driverApi.downloadDocument(doc.id)}
+                          className="text-xs text-primary-600 font-medium hover:text-primary-700"
+                        >
+                          {t('common.download')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Document Update Modal */}
       {uploadModalOpen && uploadCategory && (
