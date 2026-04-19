@@ -100,14 +100,18 @@ const FleetSetupPage = () => {
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder={t('fleetSetup.companyNamePlaceholder')}
               />
-              <TextInput
-                label={t('fleetSetup.taxId')}
-                required
-                type="text"
-                value={formData.taxId}
-                onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
-                placeholder={t('fleetSetup.taxIdPlaceholder')}
-              />
+              <div>
+                <TextInput
+                  label={t('fleetSetup.taxId')}
+                  type="text"
+                  value={formData.taxId}
+                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                  placeholder={t('fleetSetup.taxIdPlaceholder')}
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  {t('fleetSetup.taxIdHelper')}
+                </p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <TextInput
                   label={t('fleetSetup.email')}
