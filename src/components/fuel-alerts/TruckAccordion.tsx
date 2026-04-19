@@ -12,6 +12,10 @@ interface Props {
   plate: string | null;
   subtitle?: string;
   severityCounts: Record<Severity, number>;
+  /** Renders an "analiz dışı" pill beside the plate when the group has
+   *  at least one non-dismissed Cat A anomaly keeping entries out of
+   *  the baseline. */
+  excludedFromAnalysis?: boolean;
   defaultOpen?: boolean;
   children: ReactNode;
 }
@@ -28,6 +32,7 @@ export default function TruckAccordion({
   plate,
   subtitle,
   severityCounts,
+  excludedFromAnalysis = false,
   defaultOpen = false,
   children,
 }: Props) {
@@ -49,7 +54,14 @@ export default function TruckAccordion({
             <TruckIcon className="w-5 h-5" />
           </div>
           <div className="min-w-0">
-            <Plate plate={plate} size="lg" />
+            <div className="flex items-center gap-2">
+              <Plate plate={plate} size="lg" />
+              {excludedFromAnalysis && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-attention-50 text-attention-700 text-[10px] font-semibold uppercase tracking-wider">
+                  {t('fuelAlerts.groupPill.excluded')}
+                </span>
+              )}
+            </div>
             {subtitle && (
               <div className="text-xs text-slate-500 truncate">{subtitle}</div>
             )}

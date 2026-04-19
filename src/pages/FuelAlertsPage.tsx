@@ -37,6 +37,7 @@ interface Group {
   items: AnomalyPendingItem[];
   counts: Record<Severity, number>;
   worst: Severity;
+  excludedFromAnalysis: boolean;
 }
 
 const severityRank: Record<Severity, number> = {
@@ -89,6 +90,11 @@ function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Grou
         [a.driverFirstName, a.driverLastName].filter(Boolean).join(' '),
       )
       .find((s) => s.length > 0) ?? null;
+    // Any pending Cat A (DATA_ERROR) anomaly means this truck's entries are
+    // being held out of the baseline until the manager clears them.
+    const excludedFromAnalysis = arr.some(
+      (it) => categoryOf(it.ruleCode) === 'DATA_ERROR',
+    );
     groups.push({
       key,
       plate: firstPlate,
@@ -96,6 +102,7 @@ function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Grou
       items: arr,
       counts,
       worst,
+      excludedFromAnalysis,
     });
   }
 
@@ -521,6 +528,7 @@ export default function FuelAlertsPage() {
                     plate={g.plate}
                     subtitle={g.subtitle ?? undefined}
                     severityCounts={g.counts}
+                    excludedFromAnalysis={g.excludedFromAnalysis}
                     defaultOpen={idx === 0}
                   >
                     {g.items.map((alert) => (

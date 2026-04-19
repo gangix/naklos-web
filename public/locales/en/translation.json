@@ -1676,6 +1676,9 @@
       "info": "Info",
       "excludedHint": "These entries are already excluded — they don't affect the average."
     },
+    "groupPill": {
+      "excluded": "excluded"
+    },
     "filters": {
       "all": "All",
       "byTruck": "Truck",
