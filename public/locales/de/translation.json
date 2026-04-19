@@ -99,6 +99,12 @@
       "inviteDriver": "Fahrer einladen",
       "addDriver": "Fahrer hinzufügen",
       "importFuel": "Kraftstoff importieren"
+    },
+    "kpi": {
+      "activeFleet": "Aktive Flotte",
+      "expiringDocs": "Dokumenten-Warnungen",
+      "fuelAlerts": "Kraftstoff-Warnungen",
+      "drivers": "Fahrer"
     }
   },
   "truck": {
@@ -782,6 +788,17 @@
     "pending": "Ausstehend",
     "approved": "Genehmigt",
     "rejected": "Abgelehnt"
+  },
+  "trucks": {
+    "view": { "list": "Liste", "table": "Tabelle" },
+    "table": {
+      "plate": "Kennz.",
+      "type": "Typ",
+      "driver": "Fahrer",
+      "lastLocation": "Letzter Ort",
+      "docStatus": "Dok.",
+      "noDriver": "Nicht zugewiesen"
+    }
   },
   "trucksPage": {
     "addTruck": "+ Fahrzeug hinzufügen",

@@ -12,6 +12,7 @@ import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { computeDriverWarnings } from '../utils/driverWarnings';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
+import Avatar from '../components/common/Avatar';
 import EntityWarningsCard from '../components/common/EntityWarningsCard';
 import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Driver } from '../types';
@@ -324,8 +325,9 @@ const DriverDetailPage = () => {
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="flex-1">
-          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">{fullName}</h1>
+        <Avatar name={fullName} size="lg" className="flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 truncate">{fullName}</h1>
           {(() => {
             const status = deriveDriverStatus(driver);
             const badge = STATUS_BADGE[status];

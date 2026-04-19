@@ -97,6 +97,12 @@
       "inviteDriver": "Sürücü davet et",
       "addDriver": "Sürücü ekle",
       "importFuel": "Yakıt içe aktar"
+    },
+    "kpi": {
+      "activeFleet": "Aktif Filo",
+      "expiringDocs": "Belge Uyarısı",
+      "fuelAlerts": "Yakıt Uyarısı",
+      "drivers": "Sürücü"
     }
   },
   "truck": {
@@ -780,6 +786,17 @@
     "pending": "Bekliyor",
     "approved": "Onaylandı",
     "rejected": "Reddedildi"
+  },
+  "trucks": {
+    "view": { "list": "Liste", "table": "Tablo" },
+    "table": {
+      "plate": "Plaka",
+      "type": "Tip",
+      "driver": "Sürücü",
+      "lastLocation": "Son Konum",
+      "docStatus": "Belge",
+      "noDriver": "Atanmadı"
+    }
   },
   "trucksPage": {
     "addTruck": "+ Araç Ekle",

@@ -12,6 +12,26 @@ import { todayMidnightMs } from '../utils/expiry';
 import AddTruckModal from '../components/common/AddTruckModal';
 import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
+import ViewToggle, { type TruckView } from '../components/trucks/ViewToggle';
+import TruckTable from '../components/trucks/TruckTable';
+
+// localStorage can throw (Safari private mode, strict CSP, quota full).
+// Wrap reads/writes so the page still renders when storage is unavailable.
+function readStoredView(): TruckView {
+  try {
+    return localStorage.getItem('trucks.view') === 'table' ? 'table' : 'list';
+  } catch {
+    return 'list';
+  }
+}
+
+function writeStoredView(v: TruckView): void {
+  try {
+    localStorage.setItem('trucks.view', v);
+  } catch {
+    // noop — Safari private / storage disabled / quota full
+  }
+}
 
 const TrucksPage = () => {
   const { t } = useTranslation();
@@ -24,6 +44,10 @@ const TrucksPage = () => {
   const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);
   const [upgradeMessage, setUpgradeMessage] = useState<string | undefined>();
+  // Presentation toggle — persisted so repeat visitors land in the mode
+  // they last picked. Default 'list' preserves the pre-toggle experience.
+  const [view, setView] = useState<TruckView>(readStoredView);
+  useEffect(() => { writeStoredView(view); }, [view]);
 
   // Expiry warnings keyed by truckId. Shares the computation with
   // TruckDetailPage's Genel tab so both surfaces word warnings identically.
@@ -127,40 +151,43 @@ const TrucksPage = () => {
         </div>
       </div>
 
-      {/* Filter chips */}
-      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
-        <button
-          onClick={() => setFilter('all')}
-          className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-            filter === 'all' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
-          }`}
-        >
-          {t('truck.all')} ({trucks.length})
-        </button>
-        <button
-          onClick={() => setFilter('ACTIVE')}
-          className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-            filter === 'ACTIVE' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
-          }`}
-        >
-          {t('derivedStatus.ACTIVE')} ({statusCounts.ACTIVE})
-        </button>
-        <button
-          onClick={() => setFilter('READY')}
-          className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-            filter === 'READY' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
-          }`}
-        >
-          {t('derivedStatus.READY')} ({statusCounts.READY})
-        </button>
-        <button
-          onClick={() => setFilter('MISSING_DOCS')}
-          className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
-            filter === 'MISSING_DOCS' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
-          }`}
-        >
-          {t('derivedStatus.MISSING_DOCS')} ({statusCounts.MISSING_DOCS})
-        </button>
+      {/* Filter chips + view toggle */}
+      <div className="flex items-center gap-2 mb-4 pb-2">
+        <div className="flex gap-2 overflow-x-auto flex-1 min-w-0">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
+              filter === 'all' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {t('truck.all')} ({trucks.length})
+          </button>
+          <button
+            onClick={() => setFilter('ACTIVE')}
+            className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
+              filter === 'ACTIVE' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {t('derivedStatus.ACTIVE')} ({statusCounts.ACTIVE})
+          </button>
+          <button
+            onClick={() => setFilter('READY')}
+            className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
+              filter === 'READY' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {t('derivedStatus.READY')} ({statusCounts.READY})
+          </button>
+          <button
+            onClick={() => setFilter('MISSING_DOCS')}
+            className={`px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap ${
+              filter === 'MISSING_DOCS' ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {t('derivedStatus.MISSING_DOCS')} ({statusCounts.MISSING_DOCS})
+          </button>
+        </div>
+        <ViewToggle value={view} onChange={setView} />
       </div>
 
       {/* Truck list */}
@@ -199,7 +226,15 @@ const TrucksPage = () => {
             {t('trucksPage.noFilterResult')}
           </div>
         )}
-        {filteredTrucks.map((truck) => {
+        {view === 'table' && filteredTrucks.length > 0 && (
+          <TruckTable
+            trucks={filteredTrucks}
+            warningsByTruck={warningsByTruck}
+            hasUrgentWarning={hasUrgentWarning}
+            statusByTruckId={statusByTruckId}
+          />
+        )}
+        {view === 'list' && filteredTrucks.map((truck) => {
           const hasWarning = hasUrgentWarning(truck.id);
           return (
             <Link

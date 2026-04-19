@@ -17,6 +17,7 @@ import FuelAlertsEmpty from '../components/fuel-alerts/FuelAlertsEmpty';
 import FuelAlertDetailModal from '../components/fuel-alerts/FuelAlertDetailModal';
 import BulkDismissModal from '../components/fuel-alerts/BulkDismissModal';
 import { formatDateTime } from '../utils/format';
+import { computeShiftRange } from '../utils/rangeSelect';
 
 const UNASSIGNED_KEY = '__unassigned__';
 
@@ -111,6 +112,7 @@ export default function FuelAlertsPage() {
   const [ruleFilter, setRuleFilter] = useState<string>('ALL');
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [anchorId, setAnchorId] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<AnomalyPendingItem | null>(null);
   const [bulkConfirming, setBulkConfirming] = useState(false);
   const [bulkDismissOpen, setBulkDismissOpen] = useState(false);
@@ -182,6 +184,11 @@ export default function FuelAlertsPage() {
     [filtered, unassignedLabel],
   );
 
+  const orderedIds = useMemo(
+    () => groups.flatMap((g) => g.items.map((it) => it.anomalyId)),
+    [groups],
+  );
+
   // Prune selection whenever the visible set changes so we don't submit
   // ids that are no longer in the backend.
   useEffect(() => {
@@ -193,16 +200,34 @@ export default function FuelAlertsPage() {
     });
   }, [items]);
 
-  const toggleSelect = useCallback((id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
+  const toggleSelect = useCallback(
+    (id: string, shiftKey: boolean) => {
+      setSelected((prev) => {
+        if (shiftKey && anchorId !== null) {
+          // Gmail semantics: range-extend only ADDS to selection. To deselect,
+          // user plain-clicks — range-unselect is rarely wanted and it confuses
+          // people when it happens accidentally.
+          const range = computeShiftRange(orderedIds, anchorId, id);
+          const next = new Set(prev);
+          for (const rid of range) next.add(rid);
+          return next;
+        }
+        const next = new Set(prev);
+        if (next.has(id)) next.delete(id);
+        else next.add(id);
+        return next;
+      });
+      // Anchor advances on every click (Gmail), not stays pinned (Finder).
+      // Long triage sessions rarely want the anchor far behind.
+      setAnchorId(id);
+    },
+    [anchorId, orderedIds],
+  );
 
-  const clearSelection = useCallback(() => setSelected(new Set()), []);
+  const clearSelection = useCallback(() => {
+    setSelected(new Set());
+    setAnchorId(null);
+  }, []);
 
   const handleBulkConfirm = useCallback(async () => {
     if (!fleetId || selected.size === 0) return;

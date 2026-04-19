@@ -99,6 +99,12 @@
       "inviteDriver": "Invite driver",
       "addDriver": "Add driver",
       "importFuel": "Import fuel"
+    },
+    "kpi": {
+      "activeFleet": "Active Fleet",
+      "expiringDocs": "Document Alerts",
+      "fuelAlerts": "Fuel Alerts",
+      "drivers": "Drivers"
     }
   },
   "truck": {
@@ -782,6 +788,17 @@
     "pending": "Pending",
     "approved": "Approved",
     "rejected": "Rejected"
+  },
+  "trucks": {
+    "view": { "list": "List", "table": "Table" },
+    "table": {
+      "plate": "Plate",
+      "type": "Type",
+      "driver": "Driver",
+      "lastLocation": "Last Location",
+      "docStatus": "Docs",
+      "noDriver": "Unassigned"
+    }
   },
   "trucksPage": {
     "addTruck": "+ Add Truck",
