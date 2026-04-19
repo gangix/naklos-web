@@ -37,6 +37,7 @@ import { useLanguage } from './hooks/useLanguage';
 
 // Driver pages
 import DriverProfilePage from './pages/driver/DriverProfilePage';
+import DriverSettingsPage from './pages/driver/DriverSettingsPage';
 import DriverTruckPage from './pages/driver/DriverTruckPage';
 
 const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
@@ -258,6 +259,7 @@ function App() {
             <Route index element={<Navigate to="/driver/truck" replace />} />
             <Route path="truck" element={<DriverTruckPage />} />
             <Route path="profile" element={<DriverProfilePage />} />
+            <Route path="settings" element={<DriverSettingsPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />
