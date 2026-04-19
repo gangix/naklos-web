@@ -1665,9 +1665,9 @@
       "info": "Gering"
     },
     "toteBoard": {
-      "urgent": "sofortige Prüfung · Handlungsbedarf",
-      "attention": "lohnt sich zu prüfen",
-      "info": "zur Dokumentation erfasst"
+      "urgent": "physisch inkonsistent oder kritisch",
+      "attention": "vermutlich inkonsistent oder prüfen",
+      "info": "informativ · keine Aktion nötig"
     },
     "category": {
       "label": "Kategorie",

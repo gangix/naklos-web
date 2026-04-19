@@ -1665,9 +1665,9 @@
       "info": "Low"
     },
     "toteBoard": {
-      "urgent": "needs urgent review · action required",
-      "attention": "worth reviewing",
-      "info": "logged for reference"
+      "urgent": "physically inconsistent or critical",
+      "attention": "likely inconsistent or needs review",
+      "info": "informational · no action needed"
     },
     "category": {
       "label": "Category",
