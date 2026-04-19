@@ -1757,17 +1757,17 @@
       "ruleCodeLabel": "alert code: {{code}}",
       "catA": {
         "excludedPill": "excluded — doesn't affect the average",
-        "suggestedLabel": "Suggested",
+        "suggestedLabel": "Primary",
+        "acknowledge": "Got it, close",
+        "acknowledgeHint": "Marks as reviewed; entry stays excluded from analysis.",
+        "fixDivider": "Optionally fix",
         "fixEntry": "Edit entry",
         "fixEntryHint": "Fix the wrong value on the fuel entry — alert closes on next rescan.",
         "fixEntryUnmatched": "Unmatched plate — link the vehicle first",
         "fixTruck": "Edit truck settings",
         "fixTruckHint": "Update tank capacity or fuel type — alert closes on next rescan.",
-        "altDivider": "If the data is correct",
-        "closeAsBadData": "Close as bad data",
-        "closeAsBadDataHint": "This entry stays excluded from analysis forever.",
-        "closeAsBadDataBadge": "can't be undone",
-        "restoreToAnalysis": "Data is correct, restore",
+        "restoreDivider": "If the system is wrong",
+        "restoreToAnalysis": "Restore to analysis",
         "restoreToAnalysisHint": "Pick a reason → alert closes, entry returns to baseline."
       },
       "catB": {

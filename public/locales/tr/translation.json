@@ -1754,17 +1754,17 @@
       "ruleCodeLabel": "uyarı kodu: {{code}}",
       "catA": {
         "excludedPill": "analiz dışı — ortalamayı etkilemiyor",
-        "suggestedLabel": "Önerilen",
+        "suggestedLabel": "Öncelik",
+        "acknowledge": "Gördüm, kapat",
+        "acknowledgeHint": "Kayıt okundu olarak kapanır; veri analiz dışında kalır.",
+        "fixDivider": "İstersen düzelt",
         "fixEntry": "Kaydı düzelt",
         "fixEntryHint": "Yakıt girişindeki yanlış değeri değiştir — sonraki taramada uyarı kapanır.",
         "fixEntryUnmatched": "Eşleşmemiş plaka — önce aracı bağla",
         "fixTruck": "Araç ayarlarını düzelt",
         "fixTruckHint": "Tank kapasitesi veya yakıt türü tanımını güncelle — sonraki taramada uyarı kapanır.",
-        "altDivider": "Veri zaten doğruysa",
-        "closeAsBadData": "Bozuk veri olarak kapat",
-        "closeAsBadDataHint": "Bu kayıt sonsuza analiz dışında kalır.",
-        "closeAsBadDataBadge": "geri alınamaz",
-        "restoreToAnalysis": "Veri doğru, analize geri ekle",
+        "restoreDivider": "Sistem yanıldıysa",
+        "restoreToAnalysis": "Analize geri ekle",
         "restoreToAnalysisHint": "Bir neden seç → uyarı kapanır, entry baseline'a döner."
       },
       "catB": {
