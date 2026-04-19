@@ -97,6 +97,12 @@
       "inviteDriver": "Sürücü davet et",
       "addDriver": "Sürücü ekle",
       "importFuel": "Yakıt içe aktar"
+    },
+    "kpi": {
+      "activeFleet": "Aktif Filo",
+      "expiringDocs": "Belge Uyarısı",
+      "fuelAlerts": "Yakıt Uyarısı",
+      "drivers": "Sürücü"
     }
   },
   "truck": {

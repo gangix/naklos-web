@@ -7,6 +7,7 @@ import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { useDocumentAttention } from '../hooks/useDocumentAttention';
 import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
+import KpiStrip from '../components/dashboard/KpiStrip';
 
 interface ExpiringItem {
   /** i18n key for the document type label (e.g. 'doc.compulsoryInsurance') */
@@ -128,6 +129,7 @@ const DashboardPage = () => {
 
   return (
     <div>
+      <KpiStrip />
       {/* Header — date micro-line above the title, no border above. Tight
           margin to the KPI cards (less empty space than before). */}
       <div className="mb-5 flex items-end justify-between gap-4 flex-wrap">

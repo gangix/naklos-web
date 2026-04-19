@@ -99,6 +99,12 @@
       "inviteDriver": "Invite driver",
       "addDriver": "Add driver",
       "importFuel": "Import fuel"
+    },
+    "kpi": {
+      "activeFleet": "Active Fleet",
+      "expiringDocs": "Document Alerts",
+      "fuelAlerts": "Fuel Alerts",
+      "drivers": "Drivers"
     }
   },
   "truck": {
