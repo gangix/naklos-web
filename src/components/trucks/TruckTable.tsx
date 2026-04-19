@@ -4,7 +4,7 @@ import { AlertTriangle, MapPin } from 'lucide-react';
 import type { Truck } from '../../types';
 import type { TruckWarning } from '../../utils/truckWarnings';
 import { deriveTruckStatus, STATUS_BADGE, type DerivedStatus } from '../../utils/derivedStatus';
-import { formatRelativeTime } from '../../utils/format';
+import RelativeTime from '../common/RelativeTime';
 
 interface Props {
   trucks: Truck[];
@@ -73,7 +73,7 @@ export default function TruckTable({ trucks, warningsByTruck, hasUrgentWarning, 
                       <span>{pos.city}</span>
                       {pos.updatedAt && (
                         <span className="text-xs text-slate-400 tabular-nums">
-                          · {formatRelativeTime(pos.updatedAt)}
+                          · <RelativeTime date={pos.updatedAt} />
                         </span>
                       )}
                     </span>

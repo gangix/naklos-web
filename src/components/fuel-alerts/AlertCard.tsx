@@ -74,7 +74,7 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
           <SeverityBadge severity={alert.severity} size="xs" />
           <span className="text-xs font-semibold text-slate-900">{title}</span>
           {ts && (
-            <span className="text-xs text-slate-400">· {formatDateTime(ts)}</span>
+            <span className="text-xs text-slate-400 tabular-nums">· {formatDateTime(ts)}</span>
           )}
         </div>
 

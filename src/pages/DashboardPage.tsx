@@ -396,7 +396,7 @@ const FleetStatCard = ({
       <div className="mt-3 text-xs">
         <span className="inline-flex items-center gap-1 text-red-700">
           <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-          {attentionCount} {attentionLabel}
+          <span className="tabular-nums">{attentionCount}</span> {attentionLabel}
         </span>
       </div>
     )}
