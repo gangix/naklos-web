@@ -1296,7 +1296,7 @@
       "title": "Edit fuel record",
       "submit": "Update",
       "successToast": "Entry updated.",
-      "importNotEditable": "This entry came from a bulk import and can't be edited directly. Use 'Close as bad data' instead."
+      "importNotEditable": "This entry came from a bulk import — can't be edited directly. Use 'Got it, close' to acknowledge the alert."
     },
     "delete": {
       "title": "Delete fuel record",

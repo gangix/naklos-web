@@ -401,41 +401,11 @@ export default function FuelAlertsPage() {
               onSelect={setSeverityFilter}
             />
 
-            {/* Filter bar */}
+            {/* Filter bar — severity filter lives on the tote board above;
+                this row keeps truck + rule dropdowns + the category row below. */}
             {hasAnyData && (
               <div className="space-y-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="inline-flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
-                    <FilterChip
-                      active={severityFilter === 'ALL'}
-                      onClick={() => setSeverityFilter('ALL')}
-                      label={t('fuelAlerts.filters.all')}
-                      count={count}
-                      countClass="text-slate-400"
-                    />
-                    <FilterChip
-                      active={severityFilter === 'CRITICAL'}
-                      onClick={() => setSeverityFilter('CRITICAL')}
-                      label={t('fuelAlerts.severity.urgent')}
-                      count={globalCounts.CRITICAL}
-                      countClass="text-urgent-600"
-                    />
-                    <FilterChip
-                      active={severityFilter === 'WARNING'}
-                      onClick={() => setSeverityFilter('WARNING')}
-                      label={t('fuelAlerts.severity.attention')}
-                      count={globalCounts.WARNING}
-                      countClass="text-attention-600"
-                    />
-                    <FilterChip
-                      active={severityFilter === 'INFO'}
-                      onClick={() => setSeverityFilter('INFO')}
-                      label={t('fuelAlerts.severity.info')}
-                      count={globalCounts.INFO}
-                      countClass="text-info-600"
-                    />
-                  </div>
-
                   {/* Truck dropdown */}
                   <div className="relative">
                     <TruckIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />

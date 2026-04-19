@@ -1293,7 +1293,7 @@
       "title": "Yakıt kaydını düzenle",
       "submit": "Güncelle",
       "successToast": "Kayıt güncellendi.",
-      "importNotEditable": "Bu kayıt toplu içe aktarma ile gelmiş, doğrudan düzenlenemiyor. 'Bozuk veri olarak kapat' seçeneğini kullan."
+      "importNotEditable": "Bu kayıt toplu içe aktarma kaynaklı — doğrudan düzenlenemez. 'Gördüm, kapat' ile uyarıyı kapatabilirsin."
     },
     "delete": {
       "title": "Yakıt kaydını sil",
