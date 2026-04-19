@@ -1698,17 +1698,31 @@
     "bulkBar": {
       "selected": "{{count}} ausgewählt",
       "selectedLabel": "ausgewählt",
-      "confirm": "Bestätigen",
-      "dismiss": "Kein Problem",
-      "clear": "Auswahl leeren",
-      "confirming": "Wird bestätigt…",
-      "dismissing": "Wird geschlossen…"
+      "clear": "Leeren",
+      "catA": {
+        "confirm": "Als fehlerhaft schließen",
+        "dismiss": "Zur Analyse zurück",
+        "confirming": "Schließe…",
+        "dismissing": "Stelle wieder her…"
+      },
+      "catB": {
+        "confirm": "Als Problem speichern",
+        "dismiss": "Schließen + Grund",
+        "confirming": "Speichere…",
+        "dismissing": "Schließe…"
+      },
+      "mixed": {
+        "dataErrorCount": "{{count}} Datenfehler",
+        "behaviourCount": "{{count}} Verhalten"
+      }
     },
     "toast": {
       "confirmed": "Als echtes Problem markiert",
       "dismissed": "Geschlossen",
-      "bulkDismissed": "{{dismissed}} geschlossen, {{skipped}} übersprungen",
-      "bulkConfirmed": "{{count}} Warnungen bestätigt",
+      "catAClosed": "{{count}} Einträge als fehlerhaft geschlossen",
+      "catARestored": "{{count}} Einträge zur Analyse zurückgestellt",
+      "catBRecorded": "{{count}} Verhalten als Problem gespeichert",
+      "catBClosed": "{{count}} Verhalten geschlossen",
       "loadError": "Warnungen konnten nicht geladen werden"
     },
     "rules": {

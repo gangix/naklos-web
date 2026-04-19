@@ -125,7 +125,9 @@ export default function FuelAlertsPage() {
   const [anchorId, setAnchorId] = useState<string | null>(null);
   const [openAlert, setOpenAlert] = useState<AnomalyPendingItem | null>(null);
   const [bulkConfirming, setBulkConfirming] = useState(false);
-  const [bulkDismissOpen, setBulkDismissOpen] = useState(false);
+  const [bulkDismissScope, setBulkDismissScope] = useState<
+    'dataError' | 'behaviour' | null
+  >(null);
 
   const { refresh: refreshFuelCounts } = useFuelCounts();
 
@@ -210,7 +212,6 @@ export default function FuelAlertsPage() {
     }
     return out;
   }, [selected, items]);
-  void selectionBreakdown;
 
   const unassignedLabel = t('fuelAlerts.card.unassignedTruck');
   const groups = useMemo(
@@ -263,25 +264,39 @@ export default function FuelAlertsPage() {
     setAnchorId(null);
   }, []);
 
-  const handleBulkConfirm = useCallback(async () => {
-    if (!fleetId || selected.size === 0) return;
+  const handleCatAConfirm = useCallback(async () => {
+    const ids = selectionBreakdown.dataError;
+    if (!fleetId || ids.length === 0) return;
     setBulkConfirming(true);
-    const ids = Array.from(selected);
     try {
-      const results = await Promise.allSettled(
-        ids.map((id) => fuelAnomalyApi.confirm(fleetId, id)),
-      );
-      const ok = results.filter((r) => r.status === 'fulfilled').length;
-      toast.success(t('fuelAlerts.toast.bulkConfirmed', { count: ok }));
+      await Promise.allSettled(ids.map((id) => fuelAnomalyApi.confirm(fleetId, id)));
+      toast.success(t('fuelAlerts.toast.catAClosed', { count: ids.length }));
     } catch (err) {
-      console.error('Bulk confirm failed', err);
+      console.error('Cat A bulk confirm failed', err);
       toast.error(err instanceof Error ? err.message : t('fuelAlerts.toast.loadError'));
     } finally {
       setBulkConfirming(false);
       clearSelection();
       await refresh();
     }
-  }, [fleetId, selected, t, clearSelection, refresh]);
+  }, [fleetId, selectionBreakdown.dataError, t, clearSelection, refresh]);
+
+  const handleCatBConfirm = useCallback(async () => {
+    const ids = selectionBreakdown.behaviour;
+    if (!fleetId || ids.length === 0) return;
+    setBulkConfirming(true);
+    try {
+      await Promise.allSettled(ids.map((id) => fuelAnomalyApi.confirm(fleetId, id)));
+      toast.success(t('fuelAlerts.toast.catBRecorded', { count: ids.length }));
+    } catch (err) {
+      console.error('Cat B bulk confirm failed', err);
+      toast.error(err instanceof Error ? err.message : t('fuelAlerts.toast.loadError'));
+    } finally {
+      setBulkConfirming(false);
+      clearSelection();
+      await refresh();
+    }
+  }, [fleetId, selectionBreakdown.behaviour, t, clearSelection, refresh]);
 
   const count = items?.length ?? 0;
   const hasAnyData = count > 0;
@@ -544,34 +559,90 @@ export default function FuelAlertsPage() {
         />
       )}
 
-      {/* Bulk dismiss modal */}
-      {bulkDismissOpen && fleetId && selected.size > 0 && (
+      {/* Bulk dismiss modal — scope controls which subset + which toast */}
+      {bulkDismissScope && fleetId && (
         <BulkDismissModal
           fleetId={fleetId}
-          anomalyIds={Array.from(selected)}
-          onClose={() => setBulkDismissOpen(false)}
+          anomalyIds={
+            bulkDismissScope === 'dataError'
+              ? selectionBreakdown.dataError
+              : selectionBreakdown.behaviour
+          }
+          title={
+            bulkDismissScope === 'dataError'
+              ? t('fuelAlerts.bulkBar.catA.dismiss')
+              : t('fuelAlerts.bulkBar.catB.dismiss')
+          }
+          onClose={() => setBulkDismissScope(null)}
           onDone={(result) => {
             toast.success(
-              t('fuelAlerts.toast.bulkDismissed', {
-                dismissed: result.dismissed,
-                skipped: result.skipped + result.notFound,
-              }),
+              bulkDismissScope === 'dataError'
+                ? t('fuelAlerts.toast.catARestored', { count: result.dismissed })
+                : t('fuelAlerts.toast.catBClosed', { count: result.dismissed }),
             );
-            setBulkDismissOpen(false);
+            setBulkDismissScope(null);
             clearSelection();
             void refresh();
           }}
         />
       )}
 
-      {/* Floating action bar */}
-      <FloatingActionBar
-        count={selected.size}
-        onConfirm={() => void handleBulkConfirm()}
-        onDismiss={() => setBulkDismissOpen(true)}
-        onClear={clearSelection}
-        confirming={bulkConfirming}
-      />
+      {/* Floating action bar — variant mirrors the user's active category
+          filter; when "ALL" and the selection spans both, we surface the
+          mixed bar with a breakdown strip + smart-skip per-button counts. */}
+      {(() => {
+        const selectedCat: 'catA' | 'catB' | 'mixed' =
+          categoryFilter === 'DATA_ERROR'
+            ? 'catA'
+            : categoryFilter === 'BEHAVIOUR'
+              ? 'catB'
+              : selectionBreakdown.dataError.length > 0 &&
+                  selectionBreakdown.behaviour.length > 0
+                ? 'mixed'
+                : selectionBreakdown.dataError.length > 0
+                  ? 'catA'
+                  : 'catB';
+
+        if (selectedCat === 'catA') {
+          return (
+            <FloatingActionBar
+              variant="catA"
+              count={selected.size}
+              onConfirm={() => void handleCatAConfirm()}
+              onDismiss={() => setBulkDismissScope('dataError')}
+              onClear={clearSelection}
+              confirming={bulkConfirming}
+            />
+          );
+        }
+        if (selectedCat === 'catB') {
+          return (
+            <FloatingActionBar
+              variant="catB"
+              count={selected.size}
+              onConfirm={() => void handleCatBConfirm()}
+              onDismiss={() => setBulkDismissScope('behaviour')}
+              onClear={clearSelection}
+              confirming={bulkConfirming}
+            />
+          );
+        }
+        return (
+          <FloatingActionBar
+            variant="mixed"
+            count={selected.size}
+            breakdown={{
+              dataError: selectionBreakdown.dataError.length,
+              behaviour: selectionBreakdown.behaviour.length,
+            }}
+            onMixedBehaviourConfirm={() => void handleCatBConfirm()}
+            onMixedBehaviourDismiss={() => setBulkDismissScope('behaviour')}
+            onMixedDataErrorConfirm={() => void handleCatAConfirm()}
+            onClear={clearSelection}
+            confirming={bulkConfirming}
+          />
+        );
+      })()}
     </div>
   );
 }

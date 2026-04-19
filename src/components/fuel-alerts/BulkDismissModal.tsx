@@ -9,6 +9,10 @@ import DismissalReasonSheet from './DismissalReasonSheet';
 interface Props {
   fleetId: string;
   anomalyIds: string[];
+  /** Optional dialog title. Caller passes the category-appropriate wording
+   *  ("Analize geri al" for data errors, "Kapat + neden" for behaviour).
+   *  Falls back to a neutral phrase if omitted. */
+  title?: string;
   onClose: () => void;
   onDone: (result: BulkDismissResult) => void;
 }
@@ -16,7 +20,13 @@ interface Props {
 /** Small dialog wrapping the DismissalReasonSheet for bulk-dismiss.
  *  The sheet itself stays pristine; this shell only adds backdrop +
  *  title row announcing the selection count. */
-export default function BulkDismissModal({ fleetId, anomalyIds, onClose, onDone }: Props) {
+export default function BulkDismissModal({
+  fleetId,
+  anomalyIds,
+  title,
+  onClose,
+  onDone,
+}: Props) {
   const { t } = useTranslation();
   const [submitting, setSubmitting] = useState(false);
 
@@ -61,7 +71,7 @@ export default function BulkDismissModal({ fleetId, anomalyIds, onClose, onDone 
         <div className="px-6 pt-5 pb-3 flex items-start justify-between gap-4 border-b border-slate-100">
           <div>
             <h2 className="text-lg font-extrabold text-slate-900 tracking-tight">
-              {t('fuelAlerts.bulkBar.dismiss')}
+              {title ?? t('fuelAlerts.bulkBar.catB.dismiss')}
             </h2>
             <p className="mt-0.5 text-xs text-slate-500">
               {t('fuelAlerts.bulkBar.selected', { count: anomalyIds.length })}

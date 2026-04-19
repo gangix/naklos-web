@@ -1695,17 +1695,31 @@
     "bulkBar": {
       "selected": "{{count}} seçildi",
       "selectedLabel": "seçildi",
-      "confirm": "İşaretle",
-      "dismiss": "Sorun değil",
       "clear": "Temizle",
-      "confirming": "İşaretleniyor…",
-      "dismissing": "Kapatılıyor…"
+      "catA": {
+        "confirm": "Bozuk olarak kapat",
+        "dismiss": "Analize geri al",
+        "confirming": "Kapatılıyor…",
+        "dismissing": "Geri alınıyor…"
+      },
+      "catB": {
+        "confirm": "Sorunlu kaydet",
+        "dismiss": "Kapat + neden",
+        "confirming": "Kaydediliyor…",
+        "dismissing": "Kapatılıyor…"
+      },
+      "mixed": {
+        "dataErrorCount": "{{count}} veri hatası",
+        "behaviourCount": "{{count}} davranış"
+      }
     },
     "toast": {
       "confirmed": "İşaretlendi",
       "dismissed": "Kapatıldı",
-      "bulkDismissed": "{{dismissed}} kapatıldı, {{skipped}} atlandı",
-      "bulkConfirmed": "{{count}} uyarı işaretlendi",
+      "catAClosed": "{{count}} kayıt bozuk veri olarak kapatıldı",
+      "catARestored": "{{count}} kayıt analize geri eklendi",
+      "catBRecorded": "{{count}} davranış sorunlu olarak kaydedildi",
+      "catBClosed": "{{count}} davranış kapatıldı",
       "loadError": "Uyarılar yüklenemedi"
     },
     "rules": {

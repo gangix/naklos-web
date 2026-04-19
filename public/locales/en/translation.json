@@ -1698,17 +1698,31 @@
     "bulkBar": {
       "selected": "{{count}} selected",
       "selectedLabel": "selected",
-      "confirm": "Confirm",
-      "dismiss": "Not an issue",
       "clear": "Clear",
-      "confirming": "Confirming…",
-      "dismissing": "Dismissing…"
+      "catA": {
+        "confirm": "Close as bad data",
+        "dismiss": "Restore to analysis",
+        "confirming": "Closing…",
+        "dismissing": "Restoring…"
+      },
+      "catB": {
+        "confirm": "Record as issue",
+        "dismiss": "Close + reason",
+        "confirming": "Saving…",
+        "dismissing": "Closing…"
+      },
+      "mixed": {
+        "dataErrorCount": "{{count}} data error",
+        "behaviourCount": "{{count}} behaviour"
+      }
     },
     "toast": {
       "confirmed": "Marked as real issue",
       "dismissed": "Dismissed",
-      "bulkDismissed": "{{dismissed}} dismissed, {{skipped}} skipped",
-      "bulkConfirmed": "{{count}} alerts confirmed",
+      "catAClosed": "{{count}} entries closed as bad data",
+      "catARestored": "{{count}} entries restored to analysis",
+      "catBRecorded": "{{count}} behaviours recorded as issues",
+      "catBClosed": "{{count}} behaviours closed",
       "loadError": "Could not load alerts"
     },
     "rules": {
