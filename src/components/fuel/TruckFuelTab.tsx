@@ -82,14 +82,15 @@ export default function TruckFuelTab({
   }, [fetchData]);
 
   // Deep-link from fuel-alerts "Kaydı düzelt": once entries load, open the
-  // edit modal for the target id + scroll/highlight the row. If the entry
-  // isn't in the list (wrong truck, deleted, paged out) we still notify
-  // the parent so the id gets cleared and we don't spin on it.
+  // edit modal for the target id + scroll/highlight the row. Imported
+  // entries (source !== 'MANUAL') are NOT editable via the form — the
+  // FuelEntryRow edit button gates on source and the form's fields don't
+  // support the imported entry's shape. For imports we still scroll +
+  // highlight + explain via toast so the user sees which row matters.
   useEffect(() => {
     if (!openEditEntryId || entries.length === 0) return;
     const target = entries.find((e) => e.id === openEditEntryId);
     if (target) {
-      setFormModal({ mode: 'edit', initial: target });
       setHighlightedId(openEditEntryId);
       requestAnimationFrame(() => {
         rowRefs.current[openEditEntryId]?.scrollIntoView({
@@ -97,13 +98,15 @@ export default function TruckFuelTab({
           block: 'center',
         });
       });
-      // Mirror handleDuplicate — the highlight is a transient visual cue,
-      // not persistent state. Without this the row stays tinted forever.
       setTimeout(() => setHighlightedId(null), 2000);
+      if (target.source === 'MANUAL') {
+        setFormModal({ mode: 'edit', initial: target });
+      } else {
+        toast.info(t('fuelEntry.edit.importNotEditable'));
+      }
     }
     onEditHandled?.();
-    // Setters and the parent-owned onEditHandled are stable refs; including
-    // them would risk re-triggering the modal on every parent render.
+    // Setters + stable parent callback; including them re-triggers the effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openEditEntryId, entries]);
 
