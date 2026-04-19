@@ -1759,6 +1759,7 @@
         "suggestedLabel": "Suggested",
         "fixEntry": "Edit entry",
         "fixEntryHint": "Fix the wrong value on the fuel entry — alert closes on next rescan.",
+        "fixEntryUnmatched": "Unmatched plate — link the vehicle first",
         "fixTruck": "Edit truck settings",
         "fixTruckHint": "Update tank capacity or fuel type — alert closes on next rescan.",
         "altDivider": "If the data is correct",

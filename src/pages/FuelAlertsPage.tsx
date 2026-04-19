@@ -566,13 +566,14 @@ export default function FuelAlertsPage() {
           onPrev={hasPrev ? () => setOpenAlert(filtered[openIdx - 1]) : undefined}
           onNext={hasNext ? () => setOpenAlert(filtered[openIdx + 1]) : undefined}
           position={openIdx >= 0 ? { current: openIdx + 1, total: filtered.length } : undefined}
-          onFixEntry={(entryId) => {
-            // TODO: no dedicated fuel-entry edit route exists yet. Entry edit
-            // lives inside TruckDetailPage → yakıt tab → FuelEntryFormModal, so
-            // until we add a deep link, route to the plate-resolutions page as
-            // a soft fallback — it's the closest fuel-editing surface and the
-            // manager can drill down from there.
-            navigate(`/manager/fuel-resolutions?entry=${entryId}`);
+          onFixEntry={(entryId, truckId) => {
+            // Deep-link to the truck's Yakıt tab with the target entry id —
+            // TruckDetailPage consumes both params on mount and opens the
+            // FuelEntryFormModal in edit mode. Unmatched-plate alerts (no
+            // truckId) render the primary action disabled in the modal, so
+            // we never reach this branch without a truckId.
+            if (!truckId) return;
+            navigate(`/manager/trucks/${truckId}?tab=yakit&entry=${entryId}`);
           }}
         />
       )}
