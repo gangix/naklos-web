@@ -401,11 +401,44 @@ export default function FuelAlertsPage() {
               onSelect={setSeverityFilter}
             />
 
-            {/* Filter bar — severity filter lives on the tote board above;
-                this row keeps truck + rule dropdowns + the category row below. */}
+            {/* Single filter row: category chips (primary) + truck + rule
+                dropdowns. Severity filter lives on the tote board above. */}
             {hasAnyData && (
-              <div className="space-y-2">
+              <>
                 <div className="flex flex-wrap items-center gap-2">
+                  <div className="inline-flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
+                    <FilterChip
+                      active={categoryFilter === 'ALL'}
+                      onClick={() => setCategoryFilter('ALL')}
+                      label={t('fuelAlerts.category.all')}
+                      count={count}
+                      countClass="text-slate-400"
+                    />
+                    <FilterChip
+                      active={categoryFilter === 'DATA_ERROR'}
+                      onClick={() => setCategoryFilter('DATA_ERROR')}
+                      label={t('fuelAlerts.category.dataError')}
+                      count={globalCategoryCounts.DATA_ERROR}
+                      countClass="text-attention-600"
+                    />
+                    <FilterChip
+                      active={categoryFilter === 'BEHAVIOUR'}
+                      onClick={() => setCategoryFilter('BEHAVIOUR')}
+                      label={t('fuelAlerts.category.behaviour')}
+                      count={globalCategoryCounts.BEHAVIOUR}
+                      countClass="text-info-600"
+                    />
+                    {globalCategoryCounts.INFO > 0 && (
+                      <FilterChip
+                        active={categoryFilter === 'INFO'}
+                        onClick={() => setCategoryFilter('INFO')}
+                        label={t('fuelAlerts.category.info')}
+                        count={globalCategoryCounts.INFO}
+                        countClass="text-slate-400"
+                      />
+                    )}
+                  </div>
+
                   {/* Truck dropdown */}
                   <div className="relative">
                     <TruckIcon className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -448,47 +481,12 @@ export default function FuelAlertsPage() {
                     {t('fuelAlerts.filters.lastDays')}
                   </div>
                 </div>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="inline-flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
-                    <FilterChip
-                      active={categoryFilter === 'ALL'}
-                      onClick={() => setCategoryFilter('ALL')}
-                      label={t('fuelAlerts.category.all')}
-                      count={count}
-                      countClass="text-slate-400"
-                    />
-                    <FilterChip
-                      active={categoryFilter === 'DATA_ERROR'}
-                      onClick={() => setCategoryFilter('DATA_ERROR')}
-                      label={t('fuelAlerts.category.dataError')}
-                      count={globalCategoryCounts.DATA_ERROR}
-                      countClass="text-attention-600"
-                    />
-                    <FilterChip
-                      active={categoryFilter === 'BEHAVIOUR'}
-                      onClick={() => setCategoryFilter('BEHAVIOUR')}
-                      label={t('fuelAlerts.category.behaviour')}
-                      count={globalCategoryCounts.BEHAVIOUR}
-                      countClass="text-info-600"
-                    />
-                    {globalCategoryCounts.INFO > 0 && (
-                      <FilterChip
-                        active={categoryFilter === 'INFO'}
-                        onClick={() => setCategoryFilter('INFO')}
-                        label={t('fuelAlerts.category.info')}
-                        count={globalCategoryCounts.INFO}
-                        countClass="text-slate-400"
-                      />
-                    )}
-                  </div>
-                  {categoryFilter === 'DATA_ERROR' && (
-                    <span className="text-xs text-slate-500">
-                      {t('fuelAlerts.category.excludedHint')}
-                    </span>
-                  )}
-                </div>
-              </div>
+                {categoryFilter === 'DATA_ERROR' && (
+                  <p className="text-xs text-slate-500">
+                    {t('fuelAlerts.category.excludedHint')}
+                  </p>
+                )}
+              </>
             )}
 
             {/* Groups */}
