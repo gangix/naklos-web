@@ -781,6 +781,17 @@
     "approved": "Onaylandı",
     "rejected": "Reddedildi"
   },
+  "trucks": {
+    "view": { "list": "Liste", "table": "Tablo" },
+    "table": {
+      "plate": "Plaka",
+      "type": "Tip",
+      "driver": "Sürücü",
+      "lastLocation": "Son Konum",
+      "docStatus": "Belge",
+      "noDriver": "Atanmadı"
+    }
+  },
   "trucksPage": {
     "addTruck": "+ Araç Ekle",
     "import": "İçe Aktar",

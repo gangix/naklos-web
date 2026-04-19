@@ -783,6 +783,17 @@
     "approved": "Genehmigt",
     "rejected": "Abgelehnt"
   },
+  "trucks": {
+    "view": { "list": "Liste", "table": "Tabelle" },
+    "table": {
+      "plate": "Kennz.",
+      "type": "Typ",
+      "driver": "Fahrer",
+      "lastLocation": "Letzter Ort",
+      "docStatus": "Dok.",
+      "noDriver": "Nicht zugewiesen"
+    }
+  },
   "trucksPage": {
     "addTruck": "+ Fahrzeug hinzufügen",
     "import": "Importieren",

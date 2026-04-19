@@ -783,6 +783,17 @@
     "approved": "Approved",
     "rejected": "Rejected"
   },
+  "trucks": {
+    "view": { "list": "List", "table": "Table" },
+    "table": {
+      "plate": "Plate",
+      "type": "Type",
+      "driver": "Driver",
+      "lastLocation": "Last Location",
+      "docStatus": "Docs",
+      "noDriver": "Unassigned"
+    }
+  },
   "trucksPage": {
     "addTruck": "+ Add Truck",
     "import": "Import",
