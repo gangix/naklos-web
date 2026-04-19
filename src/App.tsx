@@ -17,7 +17,6 @@ import DriverDetailPage from './pages/DriverDetailPage';
 import ClientsPage from './pages/ClientsPage';
 import ClientDetailPage from './pages/ClientDetailPage';
 import SettingsPage from './pages/SettingsPage';
-import CompliancePage from './pages/CompliancePage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
@@ -230,7 +229,6 @@ function App() {
             <Route path="trucks/:truckId" element={<TruckDetailPage />} />
             <Route path="drivers" element={<DriversPage />} />
             <Route path="drivers/:driverId" element={<DriverDetailPage />} />
-            <Route path="compliance" element={<CompliancePage />} />
             <Route path="clients" element={<ClientsPage />} />
             <Route path="clients/:clientId" element={<ClientDetailPage />} />
             <Route path="settings" element={<SettingsPage />} />

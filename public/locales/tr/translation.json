@@ -6,53 +6,9 @@
     "invoices": "Ödemeler",
     "drivers": "Sürücüler",
     "clients": "Müşteriler",
-    "compliance": "Uyumluluk",
     "more": "Ayarlar",
     "settings": "Ayarlar",
     "fuel": "Yakıt"
-  },
-  "compliance": {
-    "title": "Uyumluluk",
-    "subtitle": "Tüm araç ve sürücü belgelerinin durumu tek bakışta.",
-    "tabs": {
-      "trucks": "Araçlar",
-      "drivers": "Sürücüler"
-    },
-    "column": {
-      "plate": "Plaka",
-      "driver": "Sürücü",
-      "compulsory": "Zorunlu Sig.",
-      "comprehensive": "Kasko",
-      "inspection": "Muayene",
-      "license": "Ehliyet",
-      "src": "SRC",
-      "cpc": "Psikoteknik"
-    },
-    "chips": {
-      "all": "Tümü",
-      "critical": "Kritik",
-      "warning": "Uyarı",
-      "info": "Bilgi",
-      "missing": "Eksik",
-      "valid": "Geçerli"
-    },
-    "cell": {
-      "missing": "Yok",
-      "expired": "Süresi dolmuş",
-      "daysLeft": "{{count}}g",
-      "valid": "Geçerli",
-      "critical": "Kritik",
-      "warning": "Uyarı",
-      "info": "Bilgi"
-    },
-    "score": {
-      "label": "Uyum"
-    },
-    "searchPlaceholder": "Plaka veya sürücü ara...",
-    "empty": {
-      "noEntities": "Henüz kayıtlı araç veya sürücü yok.",
-      "noMatches": "Filtrelere uyan kayıt bulunamadı."
-    }
   },
   "search": {
     "open": "Ara",

@@ -6,53 +6,9 @@
     "invoices": "Payments",
     "drivers": "Drivers",
     "clients": "Clients",
-    "compliance": "Compliance",
     "more": "Settings",
     "settings": "Settings",
     "fuel": "Fuel"
-  },
-  "compliance": {
-    "title": "Compliance",
-    "subtitle": "Status of every vehicle and driver document at a glance.",
-    "tabs": {
-      "trucks": "Vehicles",
-      "drivers": "Drivers"
-    },
-    "column": {
-      "plate": "Plate",
-      "driver": "Driver",
-      "compulsory": "Liability",
-      "comprehensive": "Kasko",
-      "inspection": "Inspection",
-      "license": "License",
-      "src": "SRC",
-      "cpc": "CPC"
-    },
-    "chips": {
-      "all": "All",
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info",
-      "missing": "Missing",
-      "valid": "Valid"
-    },
-    "cell": {
-      "missing": "None",
-      "expired": "Expired",
-      "daysLeft": "{{count}}d",
-      "valid": "Valid",
-      "critical": "Critical",
-      "warning": "Warning",
-      "info": "Info"
-    },
-    "score": {
-      "label": "Score"
-    },
-    "searchPlaceholder": "Search plate or driver...",
-    "empty": {
-      "noEntities": "No vehicles or drivers yet.",
-      "noMatches": "No records match the current filters."
-    }
   },
   "search": {
     "open": "Search",
