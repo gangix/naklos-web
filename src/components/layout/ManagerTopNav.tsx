@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, Settings, LogOut, Menu, X, Fuel, ClipboardCheck } from 'lucide-react';
+import { Home, Truck, Users, Settings, LogOut, Menu, X, Fuel, ClipboardCheck, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
@@ -8,6 +8,7 @@ import { useFuelCounts } from '../../contexts/FuelCountsContext';
 import { useDocumentAttention } from '../../hooks/useDocumentAttention';
 import LanguageSwitcher from '../common/LanguageSwitcher';
 import UserMenu from './UserMenu';
+import CommandPalette from '../search/CommandPalette';
 
 type NavItem = {
   id: 'dashboard' | 'trucks' | 'drivers' | 'compliance' | 'fuel';
@@ -46,6 +47,20 @@ const ManagerTopNav = () => {
   const { trucksWithWarnings, driversWithWarnings } = useDocumentAttention();
   const { total: fuelPendingCount } = useFuelCounts();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  // Global ⌘K / Ctrl+K listener. Always intercepts — preventing browser
+  // default (which is "focus address bar" in Chrome on some locales).
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   // Visible to paid plans only. FREE plans don't see the Yakıt nav entry —
   // PlanLimits.bulkImport on the backend matches this gate (FREE → 403).
@@ -140,6 +155,29 @@ const ManagerTopNav = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* ⌘K hint button — desktop only. Shows the shortcut so users
+              discover the palette without hunting. Click also opens. */}
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            aria-label={t('search.open', { defaultValue: 'Ara' })}
+            className="hidden md:inline-flex items-center gap-2 pl-2.5 pr-2 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white transition-colors group"
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span className="text-xs font-medium">{t('search.inlineLabel', { defaultValue: 'Ara' })}</span>
+            <kbd className="inline-flex items-center justify-center h-5 px-1.5 rounded bg-slate-950/40 border border-white/10 text-[10px] font-semibold text-slate-400 group-hover:text-slate-200 transition-colors">⌘K</kbd>
+          </button>
+
+          {/* Mobile search — icon only; palette adapts layout for small screens. */}
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            aria-label={t('search.open', { defaultValue: 'Ara' })}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <Search className="w-5 h-5 text-slate-300" />
+          </button>
+
           <div className="hidden md:block">
             <LanguageSwitcher />
           </div>
@@ -207,6 +245,11 @@ const ManagerTopNav = () => {
           </button>
         </nav>
       )}
+
+      {/* ⌘K palette — lives here so the keyboard listener + open button
+          share state. Renders as a portal-like fixed overlay, so the
+          fixed header context doesn't clip it. */}
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </header>
   );
 };

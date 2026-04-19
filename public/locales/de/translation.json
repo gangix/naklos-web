@@ -54,6 +54,24 @@
       "noMatches": "Keine Treffer für die aktuellen Filter."
     }
   },
+  "search": {
+    "open": "Suchen",
+    "close": "Schließen",
+    "inlineLabel": "Suchen",
+    "placeholder": "Fahrzeug oder Fahrer suchen...",
+    "noResults": "Keine Treffer gefunden.",
+    "emptyHint": "Beginne mit Kennzeichen oder Name.",
+    "group": {
+      "recent": "Zuletzt besucht",
+      "trucks": "Fahrzeuge",
+      "drivers": "Fahrer"
+    },
+    "hint": {
+      "move": "Navigieren",
+      "open": "Öffnen",
+      "close": "Schließen"
+    }
+  },
   "driverSettings": {
     "pageTitle": "Einstellungen",
     "pageSubtitle": "Deine Konto- und App-Einstellungen",

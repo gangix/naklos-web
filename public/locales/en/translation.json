@@ -54,6 +54,24 @@
       "noMatches": "No records match the current filters."
     }
   },
+  "search": {
+    "open": "Search",
+    "close": "Close",
+    "inlineLabel": "Search",
+    "placeholder": "Search vehicles or drivers...",
+    "noResults": "No matches found.",
+    "emptyHint": "Start typing a plate or a name.",
+    "group": {
+      "recent": "Recently visited",
+      "trucks": "Vehicles",
+      "drivers": "Drivers"
+    },
+    "hint": {
+      "move": "navigate",
+      "open": "open",
+      "close": "close"
+    }
+  },
   "driverSettings": {
     "pageTitle": "Settings",
     "pageSubtitle": "Your account and app preferences",

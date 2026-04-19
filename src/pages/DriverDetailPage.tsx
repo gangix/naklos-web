@@ -13,6 +13,7 @@ import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { computeDriverWarnings } from '../utils/driverWarnings';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import EntityWarningsCard from '../components/common/EntityWarningsCard';
+import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Driver } from '../types';
 
 type Tab = 'genel' | 'belgeler';
@@ -92,6 +93,17 @@ const DriverDetailPage = () => {
   };
 
   const driverWarnings = driver ? computeDriverWarnings(driver) : [];
+
+  // Record a "recent visit" so the ⌘K palette can surface this driver.
+  useEffect(() => {
+    if (!driver) return;
+    pushRecent({
+      type: 'driver',
+      id: driver.id,
+      label: `${driver.firstName} ${driver.lastName}`,
+      sublabel: driver.assignedTruckPlate ?? '',
+    });
+  }, [driver]);
 
   // When a manager clicks through from a "needs attention" context, default
   // to the Belgeler tab so they don't have to pivot after landing. Once the

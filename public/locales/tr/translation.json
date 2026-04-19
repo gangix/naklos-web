@@ -54,6 +54,24 @@
       "noMatches": "Filtrelere uyan kayıt bulunamadı."
     }
   },
+  "search": {
+    "open": "Ara",
+    "close": "Kapat",
+    "inlineLabel": "Ara",
+    "placeholder": "Araç veya sürücü ara...",
+    "noResults": "Eşleşen sonuç bulunamadı.",
+    "emptyHint": "Bir plaka ya da isim yazarak başlayın.",
+    "group": {
+      "recent": "Son ziyaret edilenler",
+      "trucks": "Araçlar",
+      "drivers": "Sürücüler"
+    },
+    "hint": {
+      "move": "gezin",
+      "open": "aç",
+      "close": "kapat"
+    }
+  },
   "driverSettings": {
     "pageTitle": "Ayarlar",
     "pageSubtitle": "Hesap ve uygulama tercihlerin",

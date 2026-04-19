@@ -18,6 +18,7 @@ import { computeTruckWarnings } from '../utils/truckWarnings';
 import TruckFuelTab from '../components/fuel/TruckFuelTab';
 import EfficiencyStatusPill from '../components/fuel/EfficiencyStatusPill';
 import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
+import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Truck } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
 
@@ -75,6 +76,13 @@ const TruckDetailPage = () => {
   }, [truckId]);
 
   const truckWarnings = truck ? computeTruckWarnings(truck) : [];
+
+  // Record a "recent visit" so the ⌘K palette can surface this truck as a
+  // quick-jump target on subsequent sessions. Fires once per load.
+  useEffect(() => {
+    if (!truck) return;
+    pushRecent({ type: 'truck', id: truck.id, label: truck.plateNumber, sublabel: truck.type });
+  }, [truck]);
 
   // When a manager clicks through from a "needs attention" context, default to
   // the Documents tab so they don't have to pivot after landing. Once the user
