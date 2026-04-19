@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Truck, Users, Settings, LogOut, Menu, X, Fuel } from 'lucide-react';
+import { Home, Truck, Users, Settings, LogOut, Menu, X, Fuel, ClipboardCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFleet } from '../../contexts/FleetContext';
@@ -10,7 +10,7 @@ import LanguageSwitcher from '../common/LanguageSwitcher';
 import UserMenu from './UserMenu';
 
 type NavItem = {
-  id: 'dashboard' | 'trucks' | 'drivers' | 'fuel';
+  id: 'dashboard' | 'trucks' | 'drivers' | 'compliance' | 'fuel';
   path: string;
   label: string;
   icon: typeof Home;
@@ -59,6 +59,10 @@ const ManagerTopNav = () => {
     { id: 'dashboard', path: '/manager/dashboard', label: t('nav.dashboard'), icon: Home },
     { id: 'trucks', path: '/manager/trucks', label: t('nav.trucks'), icon: Truck },
     { id: 'drivers', path: '/manager/drivers', label: t('nav.drivers'), icon: Users },
+    // Cross-fleet compliance matrix — no badge; the page itself shows a
+    // compliance-score pill which is a better single-glance signal than
+    // duplicating the trucks/drivers attention counts.
+    { id: 'compliance', path: '/manager/compliance', label: t('nav.compliance', { defaultValue: 'Uyumluluk' }), icon: ClipboardCheck },
     // Yakıt badge = pending anomalies + unmatched plates (`useFuelCounts`),
     // so the click destination must be the page that actually surfaces those
     // items. Alerts is the daily triage surface; Imports is an empty upload

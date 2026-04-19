@@ -6,9 +6,53 @@
     "invoices": "Zahlungen",
     "drivers": "Fahrer",
     "clients": "Kunden",
+    "compliance": "Konformität",
     "more": "Einstellungen",
     "settings": "Einstellungen",
     "fuel": "Kraftstoff"
+  },
+  "compliance": {
+    "title": "Konformität",
+    "subtitle": "Status aller Fahrzeug- und Fahrerdokumente auf einen Blick.",
+    "tabs": {
+      "trucks": "Fahrzeuge",
+      "drivers": "Fahrer"
+    },
+    "column": {
+      "plate": "Kennzeichen",
+      "driver": "Fahrer",
+      "compulsory": "Haftpflicht",
+      "comprehensive": "Vollkasko",
+      "inspection": "Inspektion",
+      "license": "Führerschein",
+      "src": "SRC",
+      "cpc": "CPC"
+    },
+    "chips": {
+      "all": "Alle",
+      "critical": "Kritisch",
+      "warning": "Warnung",
+      "info": "Info",
+      "missing": "Fehlend",
+      "valid": "Gültig"
+    },
+    "cell": {
+      "missing": "Fehlt",
+      "expired": "Abgelaufen",
+      "daysLeft": "{{count}}T",
+      "valid": "Gültig",
+      "critical": "Kritisch",
+      "warning": "Warnung",
+      "info": "Info"
+    },
+    "score": {
+      "label": "Score"
+    },
+    "searchPlaceholder": "Kennzeichen oder Fahrer suchen...",
+    "empty": {
+      "noEntities": "Noch keine Fahrzeuge oder Fahrer.",
+      "noMatches": "Keine Treffer für die aktuellen Filter."
+    }
   },
   "driverSettings": {
     "pageTitle": "Einstellungen",
