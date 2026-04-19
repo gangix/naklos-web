@@ -10,6 +10,27 @@
     "settings": "Ayarlar",
     "fuel": "Yakıt"
   },
+  "driverSettings": {
+    "pageTitle": "Ayarlar",
+    "pageSubtitle": "Hesap ve uygulama tercihlerin",
+    "accountCard": {
+      "eyebrow": "Hesap",
+      "roleLabel": "Sürücü"
+    },
+    "preferencesCard": {
+      "eyebrow": "Tercihler",
+      "languageHint": "Uygulama arayüzünün görüntüleneceği dili seç."
+    },
+    "profileCard": {
+      "eyebrow": "Profil",
+      "title": "Profil ve Belgeler",
+      "desc": "Kişisel bilgilerini düzenle, ehliyet ve sertifika belgelerini güncelle.",
+      "cta": "Profilime git"
+    },
+    "about": {
+      "version": "Naklos Sürücü • v1.0.0"
+    }
+  },
   "dashboard": {
     "title": "Kontrol Paneli",
     "revenue": "Bu Ay Gelir",

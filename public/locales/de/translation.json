@@ -10,6 +10,27 @@
     "settings": "Einstellungen",
     "fuel": "Kraftstoff"
   },
+  "driverSettings": {
+    "pageTitle": "Einstellungen",
+    "pageSubtitle": "Deine Konto- und App-Einstellungen",
+    "accountCard": {
+      "eyebrow": "Konto",
+      "roleLabel": "Fahrer"
+    },
+    "preferencesCard": {
+      "eyebrow": "Einstellungen",
+      "languageHint": "Wähle die Anzeigesprache der App."
+    },
+    "profileCard": {
+      "eyebrow": "Profil",
+      "title": "Profil & Dokumente",
+      "desc": "Persönliche Daten bearbeiten und Führerschein/Zertifikate aktualisieren.",
+      "cta": "Zu meinem Profil"
+    },
+    "about": {
+      "version": "Naklos Fahrer • v1.0.0"
+    }
+  },
   "dashboard": {
     "title": "Kontrollzentrum",
     "revenue": "Einnahmen diesen Monat",

@@ -10,6 +10,27 @@
     "settings": "Settings",
     "fuel": "Fuel"
   },
+  "driverSettings": {
+    "pageTitle": "Settings",
+    "pageSubtitle": "Your account and app preferences",
+    "accountCard": {
+      "eyebrow": "Account",
+      "roleLabel": "Driver"
+    },
+    "preferencesCard": {
+      "eyebrow": "Preferences",
+      "languageHint": "Choose the language the app is displayed in."
+    },
+    "profileCard": {
+      "eyebrow": "Profile",
+      "title": "Profile & Documents",
+      "desc": "Edit your personal info and update license/certification documents.",
+      "cta": "Go to my profile"
+    },
+    "about": {
+      "version": "Naklos Driver • v1.0.0"
+    }
+  },
   "dashboard": {
     "title": "Dashboard",
     "revenue": "Revenue This Month",
