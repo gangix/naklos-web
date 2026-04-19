@@ -1,115 +1,36 @@
-import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Truck, Users, AlertTriangle, CheckCircle, ChevronRight, Plus, UserPlus, Fuel } from 'lucide-react';
+import { Truck, Users, Plus, UserPlus, Fuel, ArrowRight, ClipboardCheck, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
-import { useDocumentAttention } from '../hooks/useDocumentAttention';
-import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
+import { computeTruckWarnings } from '../utils/truckWarnings';
+import { computeDriverWarnings } from '../utils/driverWarnings';
+import type { Severity } from '../types/severity';
+import { SEVERITY_DOT_CLASS } from '../types/severity';
 
-interface ExpiringItem {
-  /** i18n key for the document type label (e.g. 'doc.compulsoryInsurance') */
-  labelKey: string;
+interface Priority {
+  entity: 'truck' | 'driver';
+  entityId: string;
+  entityLabel: string;
+  /** Translated document label ("Zorunlu Sigorta", "Ehliyet", ...). */
+  docLabel: string;
+  /** Translated free-form issue line ("10 gün kaldı", "Süresi dolmuş", ...). */
+  issueLabel: string;
+  severity: Severity;
   daysLeft: number | null;
 }
 
-interface EntityWarningGroup {
-  entity: 'truck' | 'driver';
-  entityId: string;
-  name: string;
-  items: ExpiringItem[];
-  worstDaysLeft: number | null; // null only when ALL items are missing dates
-}
+const SEVERITY_RANK: Record<Severity, number> = { CRITICAL: 3, WARNING: 2, INFO: 1 };
 
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { plan } = useFleet();
   const { total: fuelAttentionCount } = useFuelCounts();
-  // Same gate ManagerTopNav uses — fuel surface is paid-only in prod.
+  const { trucks, drivers, loading } = useFleetRoster();
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = forceOn || (plan && plan !== 'FREE');
-  const { trucks, drivers, loading } = useFleetRoster();
-  // Same signal the nav badge uses. Previous code counted MISSING_DOCS
-  // (strictly missing dates) which disagreed with the attention row and
-  // the nav badge whenever a truck had all docs set but one expiring soon.
-  const { trucksWithWarnings, driversWithWarnings } = useDocumentAttention();
-
-  const warningGroups = useMemo<EntityWarningGroup[]>(() => {
-    const groups: EntityWarningGroup[] = [];
-
-    const collectItems = (
-      entity: 'truck' | 'driver',
-      entityId: string,
-      name: string,
-      checks: Array<[string | null | undefined, string]>
-    ) => {
-      const items: ExpiringItem[] = [];
-      for (const [date, labelKey] of checks) {
-        if (!date) {
-          items.push({ labelKey, daysLeft: null });
-          continue;
-        }
-        const days = daysUntil(date);
-        if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-          items.push({ labelKey, daysLeft: days });
-        }
-      }
-      if (items.length === 0) return;
-
-      // "Worst" = smallest daysLeft (most urgent). Missing dates go last.
-      let worstDaysLeft: number | null = null;
-      for (const item of items) {
-        if (item.daysLeft === null) continue;
-        if (worstDaysLeft === null || item.daysLeft < worstDaysLeft) {
-          worstDaysLeft = item.daysLeft;
-        }
-      }
-
-      groups.push({ entity, entityId, name, items, worstDaysLeft });
-    };
-
-    for (const truck of trucks) {
-      collectItems('truck', truck.id, truck.plateNumber, [
-        [truck.compulsoryInsuranceExpiry, 'doc.compulsoryInsurance'],
-        [truck.comprehensiveInsuranceExpiry, 'doc.comprehensiveInsurance'],
-        [truck.inspectionExpiry, 'doc.inspection'],
-      ]);
-    }
-
-    for (const driver of drivers) {
-      // Required vs optional rules live in computeDriverWarnings; this loop
-      // just mirrors the shape (license + SRC always checked; CPC only if
-      // the cert is on record).
-      const checks: Array<[string | null | undefined, string]> = [
-        [driver.licenseExpiryDate, 'doc.license'],
-      ];
-      const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
-      checks.push([srcCert?.expiryDate, 'doc.src']);
-      const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
-      if (cpcCert) {
-        checks.push([cpcCert.expiryDate, 'doc.cpc']);
-      }
-
-      collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, checks);
-    }
-
-    // Sort: expired first, then expiring soon, then groups with only missing dates last
-    groups.sort((a, b) => {
-      if (a.worstDaysLeft === null && b.worstDaysLeft === null) return 0;
-      if (a.worstDaysLeft === null) return 1;
-      if (b.worstDaysLeft === null) return -1;
-      return a.worstDaysLeft - b.worstDaysLeft;
-    });
-
-    return groups;
-  }, [trucks, drivers]);
-
-  const truckWarningGroups = warningGroups.filter((g) => g.entity === 'truck');
-  const driverWarningGroups = warningGroups.filter((g) => g.entity === 'driver');
-  const truckDocsCount = truckWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
-  const driverDocsCount = driverWarningGroups.reduce((sum, g) => sum + g.items.length, 0);
 
   if (loading) {
     return (
@@ -119,18 +40,85 @@ const DashboardPage = () => {
     );
   }
 
-  // Locale tag for date formatting — falls back to en-US if the language file
-  // doesn't define one.
+  // --- Compliance score ------------------------------------------------
+  // Total cells = every document slot across the fleet that a warning
+  // would be computed for. Attention cells = the ones returned by the
+  // warning utilities (they match the Compliance page's tier logic).
+  // Score is % of non-attention cells — the higher the percentage, the
+  // healthier the fleet.
+  const truckWarningsPerEntity = trucks.map((truck) => ({ truck, warnings: computeTruckWarnings(truck) }));
+  const driverWarningsPerEntity = drivers.map((driver) => ({ driver, warnings: computeDriverWarnings(driver) }));
+
+  // Truck has 3 doc slots (compulsory, comprehensive, inspection).
+  // Driver has 2 required (license, SRC) plus CPC only if the cert is
+  // on record — mirror the compute* rule set exactly.
+  const truckCells = trucks.length * 3;
+  const driverCells = drivers.reduce((acc, d) => {
+    const hasCpc = !!d.certificates?.find((c) => c.type === 'CPC');
+    return acc + (hasCpc ? 3 : 2);
+  }, 0);
+  const totalCells = truckCells + driverCells;
+  const attentionCells =
+    truckWarningsPerEntity.reduce((acc, x) => acc + x.warnings.length, 0) +
+    driverWarningsPerEntity.reduce((acc, x) => acc + x.warnings.length, 0);
+  const validCells = Math.max(0, totalCells - attentionCells);
+  const complianceScore = totalCells === 0 ? null : Math.round((validCells / totalCells) * 100);
+
+  // --- Top priorities --------------------------------------------------
+  // Flatten all warnings into one list, rank by severity then urgency,
+  // take 3. Each row points straight at the entity's detail page — the
+  // PR 1 auto-focus rule opens the Belgeler tab when warnings exist.
+  const priorities: Priority[] = [];
+  for (const { truck, warnings } of truckWarningsPerEntity) {
+    for (const w of warnings) {
+      priorities.push({
+        entity: 'truck',
+        entityId: truck.id,
+        entityLabel: truck.plateNumber,
+        docLabel: t(docLabelKeyForTruckType(w.type)),
+        issueLabel: t(w.key, w.params),
+        severity: w.severity,
+        daysLeft: (w.params.count as number | undefined) ?? null,
+      });
+    }
+  }
+  for (const { driver, warnings } of driverWarningsPerEntity) {
+    for (const w of warnings) {
+      priorities.push({
+        entity: 'driver',
+        entityId: driver.id,
+        entityLabel: `${driver.firstName} ${driver.lastName}`,
+        docLabel: t(docLabelKeyForDriverType(w.type)),
+        issueLabel: t(w.key, w.params),
+        severity: w.severity,
+        daysLeft: (w.params.count as number | undefined) ?? null,
+      });
+    }
+  }
+  priorities.sort((a, b) => {
+    const rankDiff = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
+    if (rankDiff !== 0) return rankDiff;
+    // Within same severity: lower daysLeft = more urgent (null = missing, goes last within tier).
+    const ad = a.daysLeft ?? Number.POSITIVE_INFINITY;
+    const bd = b.daysLeft ?? Number.POSITIVE_INFINITY;
+    return ad - bd;
+  });
+  const topPriorities = priorities.slice(0, 3);
+  const morePrioritiesCount = Math.max(0, priorities.length - topPriorities.length);
+
+  // --- Locale + header date -------------------------------------------
   const localeTag = t('common.localeTag', { defaultValue: 'en-US' });
   const today = new Date();
   const weekday = today.toLocaleDateString(localeTag, { weekday: 'long' });
   const fullDate = today.toLocaleDateString(localeTag, { day: 'numeric', month: 'long', year: 'numeric' });
 
+  const isEmptyRoster = trucks.length === 0 && drivers.length === 0;
+  const isHealthy = priorities.length === 0 && fuelAttentionCount === 0;
+
   return (
     <div>
-      {/* Header — date micro-line above the title, no border above. Tight
-          margin to the KPI cards (less empty space than before). */}
-      <div className="mb-5 flex items-end justify-between gap-4 flex-wrap">
+      {/* Header — date micro-line + title + quick actions (unchanged) */}
+      <div className="mb-6 flex items-end justify-between gap-4 flex-wrap animate-[fadeUp_300ms_ease-out]">
         <div>
           <p className="text-xs text-gray-500 mb-1">
             <span className="font-medium text-gray-600">{weekday}</span>
@@ -139,9 +127,6 @@ const DashboardPage = () => {
           </p>
           <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('dashboard.myFleet')}</h1>
         </div>
-        {/* Quick actions — one click to the most common tasks. The `?add=1`
-            query param auto-opens the add-modal on the target page so the
-            user doesn't land on a list and hunt for a second button. */}
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => navigate('/manager/trucks?add=1')}
@@ -166,293 +151,363 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Section A — FLEET STATE: entity counts, no urgency. Small status
-          dots inside each card for a quick secondary signal. */}
-      <section className="mb-6">
-        <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">
-          {t('dashboard.fleetState')}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <FleetStatCard
-            label={t('nav.trucks')}
-            icon={Truck}
-            iconTone="bg-blue-50 text-blue-600"
-            total={trucks.length}
-            attentionCount={trucksWithWarnings}
-            attentionLabel={t('dashboard.fleetStateCard.needsAttention')}
-            onClick={() => navigate('/manager/trucks')}
-          />
-          <FleetStatCard
-            label={t('nav.drivers')}
-            icon={Users}
-            iconTone="bg-emerald-50 text-emerald-600"
-            total={drivers.length}
-            attentionCount={driversWithWarnings}
-            attentionLabel={t('dashboard.fleetStateCard.needsAttention')}
-            onClick={() => navigate('/manager/drivers')}
-          />
-        </div>
-      </section>
-
-      {/* Section B was aggregate rows for fuel + trucks + drivers. Trucks/
-          drivers rows dropped: they pointed at list pages, while Section C
-          below lists the same entities with direct drill-in to the specific
-          truck/driver. Keeping both meant two rows for the same info with no
-          way to tell which to click. Fuel row stays — it's the only one
-          without a per-entity Section C counterpart. */}
-      {fuelTrackingEnabled && fuelAttentionCount > 0 && (
-        <section className="mb-6">
-          <div className="flex items-baseline justify-between mb-3">
-            <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-              {t('dashboard.attention.heading')}
-            </h2>
+      {/* ZONE 1 — Hero / Onboarding.
+          Empty roster → onboarding nudge in place of the score.
+          Otherwise a heroic compliance-health card with one CTA. */}
+      {isEmptyRoster ? (
+        <section
+          className="mb-6 animate-[fadeUp_400ms_ease-out_60ms_both]"
+        >
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-primary-50 text-primary-600 mx-auto mb-3 flex items-center justify-center">
+              <Truck className="w-7 h-7" />
+            </div>
+            <p className="text-lg font-extrabold text-gray-900 tracking-tight">
+              {t('dashboard.onboarding.title')}
+            </p>
+            <p className="text-sm text-gray-600 mt-1 max-w-md mx-auto">
+              {t('dashboard.onboarding.subtitle')}
+            </p>
+            <div className="mt-5 flex gap-2 flex-wrap justify-center">
+              <button
+                onClick={() => navigate('/manager/trucks?add=1')}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all">
+                <Plus className="w-4 h-4" />
+                {t('dashboard.quickActions.addTruck', { defaultValue: 'Araç ekle' })}
+              </button>
+              <button
+                onClick={() => navigate('/manager/drivers?add=1')}
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
+                <UserPlus className="w-4 h-4" />
+                {t('dashboard.quickActions.addDriver', { defaultValue: 'Sürücü ekle' })}
+              </button>
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <AttentionRow
-              tone="danger"
-              icon={AlertTriangle}
-              title={t('dashboard.attention.fuelTitle')}
-              subtitle={t('dashboard.attention.fuelSubtitle')}
-              count={fuelAttentionCount}
-              unit={t('dashboard.attention.fuelUnit')}
-              onClick={() => navigate('/manager/fuel-alerts')}
-            />
-          </div>
+        </section>
+      ) : (
+        <section className="mb-6 animate-[fadeUp_400ms_ease-out_60ms_both]">
+          <ComplianceHero
+            score={complianceScore}
+            validCells={validCells}
+            attentionCells={attentionCells}
+            onGo={() => navigate('/manager/compliance')}
+          />
         </section>
       )}
 
-      {/* Section C — PER-ENTITY DETAIL: expiring-document rows so the manager
-          can jump straight to the affected truck / driver. Header carries
-          the split-by-kind summary that used to live in Section B. */}
-      {warningGroups.length > 0 && (
-        <section>
-          <div className="flex items-baseline justify-between gap-3 mb-3 flex-wrap">
+      {/* ZONE 2 — Top Priorities (max 3).
+          Only renders when the fleet is populated AND has issues.
+          Replaces the old "warning list" section — instead of 20 rows of
+          equal weight, 3 bold cards with one-click resolution. */}
+      {!isEmptyRoster && topPriorities.length > 0 && (
+        <section className="mb-6 animate-[fadeUp_400ms_ease-out_140ms_both]">
+          <div className="flex items-baseline justify-between mb-3">
             <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-              {t('dashboard.detailSection')}
+              {t('dashboard.priorities.heading')}
             </h2>
-            <div className="flex items-center gap-3 text-xs text-gray-500 tabular-nums">
-              {truckWarningGroups.length > 0 && (
-                <span className="inline-flex items-center gap-1">
-                  <Truck className="w-3.5 h-3.5 text-blue-500" />
-                  {t('dashboard.attention.trucksSummary', {
-                    records: truckWarningGroups.length,
-                    docs: truckDocsCount,
-                  })}
-                </span>
-              )}
-              {driverWarningGroups.length > 0 && (
-                <span className="inline-flex items-center gap-1">
-                  <Users className="w-3.5 h-3.5 text-emerald-500" />
-                  {t('dashboard.attention.driversSummary', {
-                    records: driverWarningGroups.length,
-                    docs: driverDocsCount,
-                  })}
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden divide-y divide-gray-100">
-            {warningGroups.map((group) => (
+            {morePrioritiesCount > 0 && (
               <button
-                key={`${group.entity}-${group.entityId}`}
-                onClick={() =>
-                  navigate(
-                    group.entity === 'truck'
-                      ? `/manager/trucks/${group.entityId}`
-                      : `/manager/drivers/${group.entityId}`
-                  )
-                }
-                className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-3"
+                onClick={() => navigate('/manager/compliance')}
+                className="text-xs font-semibold text-primary-600 hover:text-primary-700 inline-flex items-center gap-1"
               >
-                <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${group.entity === 'truck' ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'}`}>
-                  {group.entity === 'truck' ? <Truck className="w-4 h-4" /> : <Users className="w-4 h-4" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">{group.name}</p>
-                  <p className="text-xs text-gray-500 truncate">
-                    {t('dashboard.docsAndList', {
-                      count: group.items.length,
-                      labels: group.items.map((i) => t(i.labelKey)).join(', '),
-                    })}
-                  </p>
-                </div>
-                <DayCount value={group.worstDaysLeft} t={t} />
-                <ChevronRight className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                {t('dashboard.priorities.more', { count: morePrioritiesCount })}
+                <ArrowRight className="w-3 h-3" />
               </button>
+            )}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {topPriorities.map((p) => (
+              <PriorityCard
+                key={`${p.entity}-${p.entityId}-${p.docLabel}`}
+                priority={p}
+                onResolve={() =>
+                  navigate(p.entity === 'truck' ? `/manager/trucks/${p.entityId}` : `/manager/drivers/${p.entityId}`)
+                }
+              />
             ))}
           </div>
         </section>
       )}
 
-      {/* Empty states: a fresh fleet (no trucks, no drivers) shouldn't read
-          as "everything is current" — it has no content to be current about.
-          Show the onboarding nudge there; reserve the green banner for the
-          genuinely-healthy case where the roster exists AND has no warnings. */}
-      {!loading && trucks.length === 0 && drivers.length === 0 && (
-        <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
-          <div className="w-12 h-12 rounded-xl bg-primary-50 text-primary-600 mx-auto mb-3 flex items-center justify-center">
-            <Truck className="w-6 h-6" />
+      {/* ZONE 2b — Healthy-state banner (only when fleet populated).
+          Replaces the old green card; now stacks under the hero so the
+          score stays the top-of-page anchor even on a perfect fleet. */}
+      {!isEmptyRoster && isHealthy && (
+        <section className="mb-6 animate-[fadeUp_400ms_ease-out_140ms_both]">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 text-center">
+            <CheckCircle className="w-9 h-9 text-emerald-500 mx-auto mb-2" />
+            <p className="text-sm font-extrabold text-emerald-900 tracking-tight">
+              {t('dashboard.allCurrent')}
+            </p>
+            <p className="text-xs text-emerald-700 mt-1">{t('dashboard.allCurrentSubtitle')}</p>
           </div>
-          <p className="text-base font-extrabold text-gray-900 tracking-tight">
-            {t('dashboard.onboarding.title')}
-          </p>
-          <p className="text-sm text-gray-600 mt-1 max-w-md mx-auto">
-            {t('dashboard.onboarding.subtitle')}
-          </p>
-          <div className="mt-5 flex gap-2 flex-wrap justify-center">
-            <button
-              onClick={() => navigate('/manager/trucks?add=1')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 hover:shadow-lg hover:shadow-primary-500/20 transition-all">
-              <Plus className="w-4 h-4" />
-              {t('dashboard.quickActions.addTruck', { defaultValue: 'Araç ekle' })}
-            </button>
-            <button
-              onClick={() => navigate('/manager/drivers?add=1')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-lg border border-primary-600 text-primary-600 hover:bg-primary-50 transition-colors">
-              <UserPlus className="w-4 h-4" />
-              {t('dashboard.quickActions.addDriver', { defaultValue: 'Sürücü ekle' })}
-            </button>
-          </div>
-        </div>
+        </section>
       )}
 
-      {!loading
-        && (trucks.length > 0 || drivers.length > 0)
-        && warningGroups.length === 0
-        && fuelAttentionCount === 0 && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
-          <CheckCircle className="w-10 h-10 text-green-500 mx-auto mb-2" />
-          <p className="text-sm font-medium text-green-900">{t('dashboard.allCurrent')}</p>
-          <p className="text-xs text-green-700 mt-1">{t('dashboard.allCurrentSubtitle')}</p>
-        </div>
+      {/* ZONE 3 — Trend strip.
+          Small compact tiles: roster counts + fuel attention (if paid).
+          Intentionally secondary weight — the score + priorities are the
+          action surface; this strip is the "quick-link" row. */}
+      {!isEmptyRoster && (
+        <section className="animate-[fadeUp_400ms_ease-out_220ms_both]">
+          <h2 className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">
+            {t('dashboard.trend.heading')}
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <TrendTile
+              label={t('nav.trucks')}
+              icon={Truck}
+              iconTone="bg-blue-50 text-blue-600"
+              value={trucks.length}
+              onClick={() => navigate('/manager/trucks')}
+            />
+            <TrendTile
+              label={t('nav.drivers')}
+              icon={Users}
+              iconTone="bg-emerald-50 text-emerald-600"
+              value={drivers.length}
+              onClick={() => navigate('/manager/drivers')}
+            />
+            {fuelTrackingEnabled && (
+              <TrendTile
+                label={t('dashboard.trend.fuelAlerts', { defaultValue: 'Yakıt uyarıları' })}
+                icon={Fuel}
+                iconTone="bg-amber-50 text-amber-600"
+                value={fuelAttentionCount}
+                alarm={fuelAttentionCount > 0}
+                onClick={() => navigate('/manager/fuel-alerts')}
+              />
+            )}
+          </div>
+        </section>
       )}
+
+      {/* Keyframes used by the fadeUp animation. Scoped via a style tag so
+          we don't have to bolt onto tailwind.config.js for a one-off. */}
+      <style>{`
+        @keyframes fadeUp {
+          0%   { opacity: 0; transform: translateY(6px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 };
 
-interface DayCountProps {
-  value: number | null;
-  t: ReturnType<typeof useTranslation>['t'];
+/** Returns the i18n key for a truck-document type's display label. */
+function docLabelKeyForTruckType(type: 'compulsory-insurance' | 'comprehensive-insurance' | 'inspection'): string {
+  if (type === 'compulsory-insurance') return 'doc.compulsoryInsurance';
+  if (type === 'comprehensive-insurance') return 'doc.comprehensiveInsurance';
+  return 'doc.inspection';
 }
 
-/** Day-counter pill with urgency colour ladder. Plain text (no mono) so
- *  it matches the rest of the utilitarian-corporate page voice. */
-const DayCount = ({ value, t }: DayCountProps) => {
-  const tone =
-    value === null ? 'text-gray-600'
-    : value < 0   ? 'text-red-700'
-    : value === 0 ? 'text-red-700'
-    : value <= 7  ? 'text-red-700'
-    :               'text-orange-600';
+/** Returns the i18n key for a driver-document type's display label. */
+function docLabelKeyForDriverType(type: 'license' | 'src' | 'cpc'): string {
+  if (type === 'license') return 'doc.license';
+  if (type === 'src') return 'doc.src';
+  return 'doc.cpc';
+}
 
-  const label =
-    value === null ? t('common.dateMissing')
-    : value < 0   ? t('common.daysExpired', { count: Math.abs(value) })
-    : value === 0 ? t('common.today')
-    :               t('common.daysRemaining', { count: value });
+// ----------------------------------------------------------------------
+// Hero — Compliance Health card.
+// ----------------------------------------------------------------------
+
+interface ComplianceHeroProps {
+  score: number | null;
+  validCells: number;
+  attentionCells: number;
+  onGo: () => void;
+}
+
+/** Heroic compliance-health card. The score sits in huge display weight
+ *  on the left; the right side lists the split and carries the single
+ *  CTA into the full Compliance matrix. Accent stripe on the left edge
+ *  and tone of the score match the compliance-score pill on the
+ *  CompliancePage so users feel the two surfaces are the same system. */
+function ComplianceHero({ score, validCells, attentionCells, onGo }: ComplianceHeroProps) {
+  const { t } = useTranslation();
+  if (score === null) {
+    // Defensive — only hit when totalCells is 0, which we already branch
+    // on at the caller (isEmptyRoster). Render nothing if it slips.
+    return null;
+  }
+  const tone =
+    score >= 95 ? 'emerald'
+    : score >= 80 ? 'info'
+    : score >= 60 ? 'attention'
+    : 'urgent';
+  const accent: { stripe: string; tag: string; tagText: string; btn: string } = {
+    emerald: {
+      stripe: 'bg-emerald-500',
+      tag: 'bg-emerald-50',
+      tagText: 'text-emerald-700',
+      btn: 'bg-emerald-600 hover:bg-emerald-700',
+    },
+    info: {
+      stripe: 'bg-info-500',
+      tag: 'bg-info-50',
+      tagText: 'text-info-700',
+      btn: 'bg-info-600 hover:bg-info-700',
+    },
+    attention: {
+      stripe: 'bg-attention-500',
+      tag: 'bg-attention-50',
+      tagText: 'text-attention-700',
+      btn: 'bg-attention-600 hover:bg-attention-700',
+    },
+    urgent: {
+      stripe: 'bg-urgent-500',
+      tag: 'bg-urgent-50',
+      tagText: 'text-urgent-700',
+      btn: 'bg-urgent-600 hover:bg-urgent-700',
+    },
+  }[tone];
 
   return (
-    <span className={`text-xs font-bold whitespace-nowrap ${tone}`}>
-      {label}
-    </span>
+    <div className="relative bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+      {/* Left accent — carries the severity signal without tinting the whole card */}
+      <div className={`absolute left-0 top-0 bottom-0 w-1 ${accent.stripe}`} aria-hidden="true" />
+      <div className="pl-6 pr-5 py-6 flex flex-col md:flex-row md:items-center gap-5 md:gap-8">
+        <div className="flex-shrink-0">
+          <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase ${accent.tag} ${accent.tagText}`}>
+            <ClipboardCheck className="w-3 h-3" />
+            {t('dashboard.hero.label')}
+          </div>
+          <div className="mt-2 flex items-baseline gap-2 leading-none">
+            <span className="text-6xl md:text-7xl font-extrabold text-gray-900 tabular-nums">%{score}</span>
+          </div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-gray-600 leading-relaxed">
+            <span className="font-bold text-gray-900 tabular-nums">{validCells}</span>
+            <span className="mx-1">/</span>
+            <span className="tabular-nums">{validCells + attentionCells}</span>{' '}
+            {t('dashboard.hero.validLabel')}
+          </p>
+          {attentionCells > 0 ? (
+            <p className="text-sm mt-1 leading-relaxed">
+              <span className={`inline-flex items-center gap-1.5 font-bold ${accent.tagText}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${accent.stripe}`} />
+                <span className="tabular-nums">{attentionCells}</span>
+                <span>{t('dashboard.hero.attentionLabel')}</span>
+              </span>
+            </p>
+          ) : (
+            <p className="text-sm mt-1 text-emerald-700 font-medium">
+              {t('dashboard.hero.allClear')}
+            </p>
+          )}
+        </div>
+        <div className="flex-shrink-0 md:self-center">
+          <button
+            onClick={onGo}
+            className={`inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold rounded-lg text-white transition-colors ${accent.btn}`}
+          >
+            {t('dashboard.hero.cta')}
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
   );
-};
+}
 
-interface FleetStatCardProps {
+// ----------------------------------------------------------------------
+// Priority card — one row in "Top Priorities" zone.
+// ----------------------------------------------------------------------
+
+interface PriorityCardProps {
+  priority: Priority;
+  onResolve: () => void;
+}
+
+/** Single priority card. Thin severity stripe on top, bold issue line,
+ *  entity + doc sub-line, and a primary-coloured "Aç" button that routes
+ *  straight to the detail page's Belgeler tab (auto-focused via the PR 1
+ *  rule when warnings exist). */
+function PriorityCard({ priority, onResolve }: PriorityCardProps) {
+  const { t } = useTranslation();
+  const severityLabel =
+    priority.severity === 'CRITICAL' ? t('dashboard.priorities.severity.critical')
+    : priority.severity === 'WARNING' ? t('dashboard.priorities.severity.warning')
+    : t('dashboard.priorities.severity.info');
+  const severityTextCls: Record<Severity, string> = {
+    CRITICAL: 'text-urgent-700',
+    WARNING: 'text-attention-700',
+    INFO: 'text-info-700',
+  };
+  const stripeCls = SEVERITY_DOT_CLASS[priority.severity].replace('bg-', 'bg-');
+  const EntityIcon = priority.entity === 'truck' ? Truck : Users;
+
+  return (
+    <div className="group relative bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md hover:border-gray-300 transition-all">
+      {/* Top severity stripe — thin, high-contrast */}
+      <div className={`h-1 ${stripeCls}`} aria-hidden="true" />
+      <div className="p-4 flex flex-col h-full">
+        <div className="flex items-center gap-2 mb-2">
+          <span className={`text-[10px] font-bold tracking-wider uppercase ${severityTextCls[priority.severity]}`}>
+            {severityLabel}
+          </span>
+          <span className="text-gray-300">·</span>
+          <span className="inline-flex items-center gap-1 text-xs text-gray-500">
+            <EntityIcon className="w-3 h-3" />
+            {priority.entityLabel}
+          </span>
+        </div>
+        <p className="text-sm font-bold text-gray-900 leading-tight">{priority.docLabel}</p>
+        <p className="text-xs text-gray-600 mt-1 tabular-nums">{priority.issueLabel}</p>
+        <div className="mt-4 flex items-center justify-end">
+          <button
+            onClick={onResolve}
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-gray-900 text-white hover:bg-black transition-colors"
+          >
+            {t('dashboard.priorities.resolve')}
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Trend tile — compact stat card in the bottom strip.
+// ----------------------------------------------------------------------
+
+interface TrendTileProps {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   iconTone: string;
-  total: number;
-  /** Entities with at least one missing-or-expiring document — same signal
-   *  used by the top-nav badge and the dashboard attention list. */
-  attentionCount: number;
-  attentionLabel: string;
+  value: number;
+  /** When true the tile shows a subtle urgent-tone background so a fleet
+   *  with many pending fuel anomalies doesn't look indistinguishable from
+   *  a clean one. */
+  alarm?: boolean;
   onClick: () => void;
 }
 
-/** Calm entity-count card. Big number = total; a single red dot-chip appears
- *  below when some entities need document attention. No "ready"/"active" chip
- *  — healthy count is just (total − attention), inferable from the big number. */
-const FleetStatCard = ({
-  label, icon: Icon, iconTone, total, attentionCount, attentionLabel, onClick,
-}: FleetStatCardProps) => (
-  <button
-    onClick={onClick}
-    className="group bg-white rounded-xl border border-gray-200 p-5 hover:border-gray-300 hover:shadow-sm transition-all text-left"
-  >
-    <div className="flex items-center justify-between mb-3">
-      <div className="flex items-center gap-2">
+function TrendTile({ label, icon: Icon, iconTone, value, alarm, onClick }: TrendTileProps) {
+  return (
+    <button
+      onClick={onClick}
+      className={`group text-left rounded-xl border p-4 transition-all ${
+        alarm
+          ? 'bg-urgent-50 border-urgent-200 hover:border-urgent-300'
+          : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm'
+      }`}
+    >
+      <div className="flex items-center justify-between mb-2">
         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${iconTone}`}>
           <Icon className="w-4 h-4" />
         </div>
-        <span className="text-sm font-semibold text-gray-700">{label}</span>
-      </div>
-      <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors" />
-    </div>
-    <div className="flex items-baseline gap-2">
-      <span className="text-3xl font-extrabold text-gray-900 tracking-tight tabular-nums">{total}</span>
-    </div>
-    {attentionCount > 0 && (
-      <div className="mt-3 text-xs">
-        <span className="inline-flex items-center gap-1 text-red-700">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-          {attentionCount} {attentionLabel}
-        </span>
-      </div>
-    )}
-  </button>
-);
-
-type AttentionTone = 'danger' | 'warning';
-
-const ATTENTION_TONE: Record<AttentionTone, string> = {
-  danger: 'bg-red-50 text-red-600',
-  warning: 'bg-amber-50 text-amber-600',
-};
-
-interface AttentionRowProps {
-  icon: React.ComponentType<{ className?: string }>;
-  tone: AttentionTone;
-  title: string;
-  subtitle: string;
-  /** Small pill next to the title (e.g. "8 belge" as sub-detail). Optional. */
-  sidePill?: string;
-  /** Big right-aligned number — must match the nav badge for this destination. */
-  count: number;
-  unit: string;
-  onClick: () => void;
-}
-
-/** Single row inside the "Dikkatinize sunulan" card. Count = same metric the
- *  nav badge shows, so the math reconciles at a glance. Rows sit inside a
- *  `divide-y` parent; no per-row border prop needed. */
-const AttentionRow = ({
-  icon: Icon, tone, title, subtitle, sidePill, count, unit, onClick,
-}: AttentionRowProps) => (
-  <button
-    onClick={onClick}
-    className="w-full flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors text-left"
-  >
-    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${ATTENTION_TONE[tone]}`}>
-      <Icon className="w-5 h-5" />
-    </div>
-    <div className="flex-1 min-w-0">
-      <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold text-gray-900">{title}</span>
-        {sidePill && (
-          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 text-[10px] font-bold tabular-nums">
-            {sidePill}
-          </span>
+        {alarm && (
+          <AlertTriangle className="w-3.5 h-3.5 text-urgent-500 opacity-0 group-hover:opacity-100 transition-opacity" />
         )}
       </div>
-      <p className="text-xs text-gray-500 mt-0.5 truncate">{subtitle}</p>
-    </div>
-    <div className="text-right flex-shrink-0">
-      <div className="text-2xl font-extrabold text-gray-900 tabular-nums leading-none">{count}</div>
-      <div className="text-[10px] text-gray-400 mt-0.5">{unit}</div>
-    </div>
-    <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-  </button>
-);
+      <div className="text-2xl font-extrabold text-gray-900 tabular-nums leading-none">{value}</div>
+      <div className="text-[11px] text-gray-500 mt-1.5 uppercase tracking-wider font-semibold">{label}</div>
+    </button>
+  );
+}
 
 export default DashboardPage;

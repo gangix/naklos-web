@@ -143,6 +143,28 @@
       "inviteDriver": "Fahrer einladen",
       "addDriver": "Fahrer hinzufügen",
       "importFuel": "Kraftstoff importieren"
+    },
+    "hero": {
+      "label": "Konformität",
+      "validLabel": "Dokumente gültig",
+      "attentionLabel": "benötigen Aufmerksamkeit",
+      "allClear": "Alle verfolgten Dokumente sind aktuell.",
+      "cta": "Konformität öffnen"
+    },
+    "priorities": {
+      "heading": "Top-Prioritäten",
+      "more_one": "+ {{count}} weitere auf Konformität",
+      "more_other": "+ {{count}} weitere auf Konformität",
+      "resolve": "Dokumente öffnen",
+      "severity": {
+        "critical": "Kritisch",
+        "warning": "Warnung",
+        "info": "Info"
+      }
+    },
+    "trend": {
+      "heading": "Schnellzugriff",
+      "fuelAlerts": "Kraftstoff-Warnungen"
     }
   },
   "truck": {
