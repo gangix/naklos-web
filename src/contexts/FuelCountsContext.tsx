@@ -61,14 +61,22 @@ export function FuelCountsProvider({ children }: { children: ReactNode }) {
     void fetchCounts();
   }, [fetchCounts]);
 
+  // Stabilize the refresh function identity so consumer components that put
+  // `refresh` in their useCallback/useEffect deps don't fire twice on mount.
+  // Previously `refresh: () => void fetchCounts()` was inlined into the
+  // value useMemo — when pending/unmatched updated after the first fetch,
+  // the memo re-ran and emitted a new refresh identity, which propagated
+  // to FuelAlertsPage and triggered a redundant listPending round-trip.
+  const refresh = useCallback(() => void fetchCounts(), [fetchCounts]);
+
   const value = useMemo<FuelCountsValue>(
     () => ({
       pending,
       unmatched,
       total: pending + unmatched,
-      refresh: () => void fetchCounts(),
+      refresh,
     }),
-    [pending, unmatched, fetchCounts],
+    [pending, unmatched, refresh],
   );
 
   return (
