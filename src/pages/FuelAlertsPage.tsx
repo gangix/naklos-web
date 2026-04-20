@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { useFleet } from '../contexts/FleetContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { fuelAnomalyApi } from '../services/fuelAnomalyApi';
-import { categoryOf } from '../types/fuelAnomaly';
+import { allowsRestoreToAnalysis, categoryOf } from '../types/fuelAnomaly';
 import type { AnomalyCategory, AnomalyPendingItem, Severity } from '../types/fuelAnomaly';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 import SeverityToteBoard, {
@@ -27,6 +27,10 @@ type CategoryFilter = AnomalyCategory | 'ALL';
 
 interface SelectionBreakdown {
   dataError: string[];
+  /** Subset of `dataError` whose rule accepts "veri doğru, analize geri ekle".
+   *  Physically-impossible rules (ROLLBACK, VOLUME_EXCEEDS_TANK_CAPACITY) are
+   *  excluded — bulk restore skips them. */
+  dataErrorRestorable: string[];
   behaviour: string[];
   info: string[];
 }
@@ -206,16 +210,29 @@ export default function FuelAlertsPage() {
 
   // Classifies the current selection so the bulk bar can pick between
   // confirm-all, fix-and-confirm, and dismiss-only CTAs.
+  // `dataErrorRestorable` is the subset of Cat A ids whose rule accepts
+  // "veri doğru, analize geri ekle" — rollback + volume-over-tank are
+  // physically impossible, so we never let bulk-restore touch them.
   const selectionBreakdown = useMemo<SelectionBreakdown>(() => {
-    const out: SelectionBreakdown = { dataError: [], behaviour: [], info: [] };
+    const out: SelectionBreakdown = {
+      dataError: [],
+      dataErrorRestorable: [],
+      behaviour: [],
+      info: [],
+    };
     const byId = new Map((items ?? []).map((it) => [it.anomalyId, it] as const));
     for (const id of selected) {
       const it = byId.get(id);
       if (!it) continue;
       const c = categoryOf(it.ruleCode);
-      if (c === 'DATA_ERROR') out.dataError.push(id);
-      else if (c === 'BEHAVIOUR') out.behaviour.push(id);
-      else out.info.push(id);
+      if (c === 'DATA_ERROR') {
+        out.dataError.push(id);
+        if (allowsRestoreToAnalysis(it.ruleCode)) out.dataErrorRestorable.push(id);
+      } else if (c === 'BEHAVIOUR') {
+        out.behaviour.push(id);
+      } else {
+        out.info.push(id);
+      }
     }
     return out;
   }, [selected, items]);
@@ -547,13 +564,15 @@ export default function FuelAlertsPage() {
         />
       )}
 
-      {/* Bulk dismiss modal — scope controls which subset + which toast */}
+      {/* Bulk dismiss modal — scope controls which subset + which toast.
+          For dataError scope we feed the RESTORABLE subset (physically-
+          impossible rules stripped); they stay selected but skipped. */}
       {bulkDismissScope && fleetId && (
         <BulkDismissModal
           fleetId={fleetId}
           anomalyIds={
             bulkDismissScope === 'dataError'
-              ? selectionBreakdown.dataError
+              ? selectionBreakdown.dataErrorRestorable
               : selectionBreakdown.behaviour
           }
           title={
@@ -563,11 +582,23 @@ export default function FuelAlertsPage() {
           }
           onClose={() => setBulkDismissScope(null)}
           onDone={(result) => {
-            toast.success(
+            const skipped =
               bulkDismissScope === 'dataError'
-                ? t('fuelAlerts.toast.catARestored', { count: result.dismissed })
-                : t('fuelAlerts.toast.catBClosed', { count: result.dismissed }),
-            );
+                ? selectionBreakdown.dataError.length -
+                  selectionBreakdown.dataErrorRestorable.length
+                : 0;
+            if (bulkDismissScope === 'dataError') {
+              toast.success(
+                skipped > 0
+                  ? t('fuelAlerts.toast.catARestoredWithSkip', {
+                      count: result.dismissed,
+                      skipped,
+                    })
+                  : t('fuelAlerts.toast.catARestored', { count: result.dismissed }),
+              );
+            } else {
+              toast.success(t('fuelAlerts.toast.catBClosed', { count: result.dismissed }));
+            }
             setBulkDismissScope(null);
             clearSelection();
             void refresh();
@@ -597,7 +628,16 @@ export default function FuelAlertsPage() {
               variant="catA"
               count={selected.size}
               onConfirm={() => void handleCatAConfirm()}
-              onDismiss={() => setBulkDismissScope('dataError')}
+              onDismiss={() => {
+                // All selected Cat A rules are physically-impossible — no
+                // honest "analize geri ekle" path. Tell the user instead of
+                // silently doing nothing.
+                if (selectionBreakdown.dataErrorRestorable.length === 0) {
+                  toast.error(t('fuelAlerts.toast.catARestoreAllBlocked'));
+                  return;
+                }
+                setBulkDismissScope('dataError');
+              }}
               onClear={clearSelection}
               confirming={bulkConfirming}
             />

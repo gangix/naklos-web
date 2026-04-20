@@ -92,6 +92,31 @@ export function fixTargetFor(ruleCode: string): FixTarget | null {
   }
 }
 
+/** Cat A rules where "Veri doğru, analize geri ekle" is a legitimate choice.
+ *  Physically-impossible rules (rollback, volume-over-tank) are excluded:
+ *  the only honest responses are fix-the-data or close-as-bad-data.
+ *
+ *  Why the split: ODOMETER_ROLLBACK and VOLUME_EXCEEDS_TANK_CAPACITY claim
+ *  physical impossibilities. "Data is actually correct" for those would
+ *  mean odometers run backwards or volumes defy the tank — no. The other
+ *  Cat A rules have legit edge cases (parked truck, partial fill, station
+ *  discount, misconfigured tank size) where the manager knows better than
+ *  the engine. */
+const CAT_A_ALLOWS_RESTORE: ReadonlySet<string> = new Set<RuleCode>([
+  'ODOMETER_NOT_ADVANCING',
+  'PRICE_MATH_MISMATCH',
+  'CONSUMPTION_UNDER_BASELINE',
+  'IMPLAUSIBLE_VOLUME_FOR_TYPE',
+  'FUEL_TYPE_MISMATCH',
+]);
+
+/** True when a Cat A anomaly can be dismissed with "data is correct".
+ *  Always true for Cat B + INFO (caller decides whether to check). */
+export function allowsRestoreToAnalysis(ruleCode: string): boolean {
+  if (categoryOf(ruleCode) !== 'DATA_ERROR') return true;
+  return CAT_A_ALLOWS_RESTORE.has(ruleCode);
+}
+
 /** Default severity per rule — mirrors the Severity enum each rule returns
  *  on the backend. Used when you need the severity tone before a specific
  *  anomaly has been detected (e.g. the config page rule list). */
