@@ -25,11 +25,16 @@ const FleetContext = createContext<FleetContextType | undefined>(undefined);
 
 export const FleetProvider = ({ children }: { children: ReactNode }) => {
   const { isFleetManager } = useAuth();
-  const [fleetId, setFleetIdState] = useState<string | null>(
-    localStorage.getItem('naklos_fleet_id') || null
-  );
+  const storedFleetId = localStorage.getItem('naklos_fleet_id') || null;
+  const [fleetId, setFleetIdState] = useState<string | null>(storedFleetId);
   const [fleet, setFleet] = useState<Fleet | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // If we booted with a stored fleetId we'll refetch its details on mount.
+  // Start in loading state so consumers (e.g. App.tsx's fuel-route gate)
+  // see the pending fetch on the very first render — otherwise plan
+  // evaluates as 'FREE' (because fleet is still null), fuel routes don't
+  // register and a direct-refresh of /manager/fuel-* flashes a 404 for a
+  // beat before the post-commit useEffect flips this to true.
+  const [isLoading, setIsLoading] = useState(Boolean(storedFleetId));
 
   const setFleetId = (id: string) => {
     setFleetIdState(id);
@@ -38,12 +43,17 @@ export const FleetProvider = ({ children }: { children: ReactNode }) => {
 
   // A user who is not a fleet manager cannot own a fleet.
   // Wipe any stale localStorage value from a previous session to prevent
-  // the app from redirect-looping between /manager and /driver.
+  // the app from redirect-looping between /manager and /driver. Also
+  // releases the loading flag — no fleet fetch is going to fire for
+  // drivers or admins, so consumers shouldn't sit in a pending state.
   useEffect(() => {
-    if (!isFleetManager && fleetId) {
-      localStorage.removeItem('naklos_fleet_id');
-      setFleetIdState(null);
-      setFleet(null);
+    if (!isFleetManager) {
+      if (fleetId) {
+        localStorage.removeItem('naklos_fleet_id');
+        setFleetIdState(null);
+        setFleet(null);
+      }
+      setIsLoading(false);
     }
   }, [isFleetManager]);
 
