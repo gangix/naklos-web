@@ -1794,86 +1794,140 @@
   "landing": {
     "nav": { "login": "Anmelden" },
     "hero": {
-      "badge": "Für KMU-Flotten",
-      "title1": "Verwalten Sie Ihre Flotte",
-      "title2": "mühelos",
-      "tagline": "Eine Lösung für Fahrzeuge, Fahrer und Dokumente. Verpassen Sie keine Verlängerung mehr.",
+      "badge": "Für türkische KMU-Flotten · KVKK-konform",
+      "title1": "Ihre Tankkarten verlieren Geld.",
+      "title2": "Wir zeigen Ihnen wo.",
+      "tagline": "Fahrzeugbezogene Anomalieregeln markieren verdächtige Tankvorgänge in dem Moment, in dem sie passieren. Inspektion, Führerschein und Versicherung — alles auf einem Bildschirm.",
       "ctaPrimary": "Kostenlos starten",
-      "ctaSecondary": "Ich habe bereits ein Konto",
-      "ctaGoogle": "Weiter mit Google",
+      "ctaPrimarySub": "Keine Kreditkarte. Kein Verkaufsgespräch.",
+      "ctaSecondary": "Ich habe ein Konto",
+      "ctaGoogle": "Mit Google fortfahren",
       "preview": {
-        "label": "Übersicht",
+        "label": "Heutige Prioritäten",
         "stat1Label": "Fahrzeuge",
         "stat2Label": "Fahrer",
         "stat3Label": "Kraftstoff-Warnungen",
         "priorityTitle": "Top-Prioritäten",
         "priorityItem1": "34 ABC 123 · Inspektion · 2 Tage",
-        "priorityItem2": "07 XYZ 300 · Haftpflicht · 8 Tage",
-        "priorityCta": "Dokumente öffnen"
+        "priorityItem2": "07 XYZ 300 · Versicherung · 8 Tage",
+        "priorityCta": "Öffnen"
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "So funktioniert's",
+      "title": "Drei Schritte — von Daten zur Aktion",
+      "subtitle": "15 Minuten Setup. Erste Anomalie in einer Woche.",
+      "steps": {
+        "s1": {
+          "title": "Laden Sie Ihr Excel hoch",
+          "desc": "Export von OPET, Shell, BP — plus Ihre Fahrzeug- und Fahrerliste. In 15 Minuten importiert."
+        },
+        "s2": {
+          "title": "Schwellenwerte einstellen",
+          "desc": "Tankvolumen, L/100 km Anomalieschwelle, Vorwarnzeit für Dokumente. Ihre Regeln."
+        },
+        "s3": {
+          "title": "Warnungen erhalten",
+          "desc": "Verdächtige Tankung → E-Mail innerhalb von Minuten. Ablaufendes Dokument → 30 Tage vorher. Monatlicher Leistungsbericht."
+        }
       }
     },
     "features": {
-      "vehicles": {
-        "title": "Fahrzeug-Tracking",
-        "description": "Haftpflicht, Vollkasko und Hauptuntersuchung pro Fahrzeug im Blick. Kein Termin geht verloren."
-      },
-      "drivers": {
-        "title": "Fahrer-Verwaltung",
-        "description": "Führerschein, SRC und CPC stets aktuell. Automatische Erinnerungen bei Ablauf."
+      "fuel": {
+        "title": "Ihre Karten geben aus. Welche davon fahren nicht?",
+        "description": "Fahrzeugbezogene Anomalieregeln markieren verdächtige Tankvorgänge. E-Mail-Warnung in Minuten. Gebaut für die Art, wie Tankkarten in der Türkei tatsächlich missbraucht werden."
       },
       "docs": {
-        "title": "Dokumenten-Warnungen",
-        "description": "Automatische Warnungen für auslaufende Dokumente. Vermeiden Sie Bußgelder und Ausfälle."
+        "title": "30 Tage Vorwarnung vor jeder Straßenkontrolle",
+        "description": "Inspektion, Führerschein, SRC, K-Belge, Versicherung — automatische Erinnerungen vor Ablauf. Vermeiden Sie ₺2.000–₺10.000 Strafen."
       },
-      "fuel": {
-        "title": "Kraftstoff-Performance",
-        "description": "Verbrauchsmuster, ungewöhnliche Tankungen und Einsparpotenziale automatisch erkennen. Arbeiten Sie mit Ihren Fahrern für eine effizientere Flotte."
+      "vehicles": {
+        "title": "Welcher Lkw verbraucht 22 L/100km, und welcher 28",
+        "description": "L/100 km, Kosten pro km, Side-by-Side-Vergleich. Das Effiziente gegen das Teure — mit Zahlen."
+      },
+      "drivers": {
+        "title": "Fügen Sie das Excel ein. Den Rest übernehmen wir.",
+        "description": "Massenimport von Fahrzeugen, Fahrern und Tankvorgängen. Keine GPS-Box, kein Terminal, keine Hardware."
       }
     },
     "benefits": {
-      "title": "Schluss mit Excel-Tabellen",
+      "title": "Auf Wiedersehen, Tabellenkalkulationen.",
       "items": {
-        "b1": "Eine App ersetzt Excel-Tabellen und WhatsApp-Gruppen",
-        "b2": "Automatische Warnungen für überfällige Dokumente",
-        "b3": "Fahrer aktualisieren ihre Daten selbst",
-        "b4": "Kostenlose Testphase — keine Kreditkarte erforderlich",
-        "b5": "Türkisch, Englisch und Deutsch verfügbar"
+        "b1": "Gebaut für den Eigentümer, der um 2 Uhr morgens aufs Handy schaut — nicht für den Buchhalter in Excel.",
+        "b2": "E-Mail-Warnung in dem Moment, in dem Liter pro 100km Ihre Schwelle überschreitet.",
+        "b3": "Keine GPS-Box, kein Terminal, keine Installation — Ihr bestehendes Tankkarten-Excel reicht.",
+        "b4": "Gründungszugang — kostenlos während des Rollouts, 30% Rabatt für 12 Monate bei Abrechnungsstart.",
+        "b5": "Türkisch zuerst. KVKK-konform. E-Mail-Support."
       },
-      "cta": "Jetzt testen"
+      "cta": "Jetzt ausprobieren"
     },
     "pricing": {
+      "eyebrow": "PREISE",
+      "title": "Preise, die Sinn machen.",
+      "subtitle": "Pro Lkw, pro Monat. Klare Preise. Keine Hardware, keine Verträge.",
+      "foundingBanner": "Gründungskunden sichern sich 30% Rabatt für 12 Monate, wenn die Abrechnung startet.",
       "tiers": {
         "free": "Starter",
-        "pro": "Professional",
+        "pro": "Owner",
         "business": "Business",
         "enterprise": "Enterprise"
       },
-      "popular": "Am beliebtesten",
+      "popular": "Am Beliebtesten",
       "free": "Kostenlos",
-      "perMonth": "/Monat",
-      "contactPrice": "Kontaktieren Sie uns",
-      "contactUs": "Kontakt",
-      "startFree": "Kostenlos starten",
+      "freeSub": "Gründungszugang · kostenlos während Rollout",
+      "perMonth": "/Lkw/Monat",
+      "contactPrice": "Kontakt",
+      "contactUs": "Sprechen wir",
+      "foundingCta": "Gründungszugang erhalten",
+      "proPrice": "₺199",
+      "businessPrice": "₺149",
+      "businessNote": "25+ Lkw",
       "features": {
-        "trucks5": "5 Fahrzeuge",
-        "trucks25": "25 Fahrzeuge",
-        "trucks100": "100 Fahrzeuge",
+        "trucks5": "Alle Module aktiv",
+        "trucks25": "Mengenrabatt (25%)",
+        "trucks100": "Individuelle Preise",
         "trucksUnlimited": "Unbegrenzte Fahrzeuge",
-        "drivers5": "5 Fahrer",
-        "drivers25": "25 Fahrer",
-        "drivers100": "100 Fahrer",
-        "driversUnlimited": "Unbegrenzte Fahrer",
-        "docsAndEmails": "Dokumenten-Tracking mit E-Mail-Warnungen",
-        "fuelPerformance": "Kraftstoff-Performance + Tankungs-Prüfung",
-        "fuelPerformanceDenied": "Kraftstoff-Performance-Tracking",
-        "weeklyDigest": "Wöchentlicher E-Mail-Bericht",
-        "bulkImport": "Massenimport",
+        "drivers5": "Keine Kreditkarte nötig",
+        "drivers25": "Für 25+ Lkw",
+        "drivers100": "Für 100+ Lkw",
+        "driversUnlimited": "Individuelle Integration + API",
+        "docsAndEmails": "Dokumentenverfolgung + Warnungen",
+        "fuelPerformance": "Kraftstoff-Anomalie + Leistung",
+        "weeklyDigest": "Wöchentliche Flottenübersicht",
+        "bulkImport": "Excel-Massenimport",
         "apiAccess": "API-Zugang",
-        "prioritySupport": "Priorisierter Support"
+        "prioritySupport": "E-Mail-Prioritätssupport"
+      }
+    },
+    "contact": {
+      "title": "Mit einem Menschen sprechen",
+      "subtitle": "Fragen zu einem Tarif, einer individuellen Integration oder einer Flotte unter 5 Lkw? Hinterlassen Sie eine Nachricht — wir antworten innerhalb von 1 Werktag.",
+      "form": {
+        "name": "Ihr Name",
+        "email": "E-Mail-Adresse",
+        "phone": "Telefon (optional)",
+        "company": "Unternehmen (optional)",
+        "fleetSize": "Wie viele Lkw?",
+        "fleetSizeOptions": {
+          "xs": "1–5",
+          "s": "6–25",
+          "m": "26–100",
+          "l": "100+"
+        },
+        "message": "Gibt es etwas, das wir wissen sollten? (optional)",
+        "consent": "Ich stimme zu, dass Naklos meine Kontaktdaten gemäß der Datenschutzerklärung verarbeitet, um auf diese Anfrage zu antworten.",
+        "submit": "Senden",
+        "submitting": "Wird gesendet…",
+        "success": "Danke — wir antworten innerhalb von 1 Werktag.",
+        "errorGeneric": "Etwas ist schiefgelaufen. Versuchen Sie es erneut oder schreiben Sie direkt an info@naklos.com.tr.",
+        "errorRateLimit": "Sie haben dies schon einige Male gesendet. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+        "validationRequired": "Erforderlich.",
+        "validationEmail": "Gültige E-Mail eingeben.",
+        "validationConsent": "Bitte akzeptieren Sie die Datenschutzerklärung, um fortzufahren."
       }
     },
     "footer": {
-      "privacy": "Datenschutz",
+      "privacy": "Datenschutzerklärung",
       "terms": "Nutzungsbedingungen",
       "copyright": "© {{year}} Naklos. Alle Rechte vorbehalten."
     }
