@@ -12,14 +12,15 @@ const gradientClass: Record<Severity, string> = {
   INFO: 'bg-gradient-to-b from-info-500 to-info-700',
 };
 
-/** 4px gradient stripe that owns the left edge of a card. Must be rendered
- *  inside a `relative` parent. Positions top-left absolutely; the parent is
- *  expected to provide rounded corners via `overflow-hidden`. */
+/** Gradient stripe on the left edge of a card. 3px wide so the severity
+ *  color is actually scannable from across the list — earlier w-1 (2px)
+ *  was too thin to register at a glance. Must render inside a `relative`
+ *  parent; parent provides rounded corners via `overflow-hidden`. */
 export default function SeverityStripe({ severity, className = '' }: Props) {
   return (
     <div
       aria-hidden="true"
-      className={`absolute left-0 top-0 bottom-0 w-1 ${gradientClass[severity]} ${className}`}
+      className={`absolute left-0 top-0 bottom-0 w-1.5 ${gradientClass[severity]} ${className}`}
     />
   );
 }

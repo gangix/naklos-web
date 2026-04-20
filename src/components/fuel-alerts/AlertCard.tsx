@@ -27,8 +27,17 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
   const liters = alert.liters;
   const km = alert.reportedOdometerKm;
   const category = categoryOf(alert.ruleCode);
+  const isCritical = alert.severity === 'CRITICAL';
 
-  const selectedCls = selected ? 'border-primary-500 bg-primary-50/50' : 'border-transparent';
+  // Selection wins over severity tint — primary-50 border signals "you
+  // picked this one". Critical-only tint (bg-urgent-50/40) draws the eye
+  // to the highest-priority rows without shouting; other severities stay
+  // white so the hierarchy reads from the row background alone.
+  const selectedCls = selected
+    ? 'border-primary-500 bg-primary-50/50'
+    : isCritical
+      ? 'border-transparent bg-urgent-50/40'
+      : 'border-transparent';
 
   return (
     <div

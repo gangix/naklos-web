@@ -71,9 +71,14 @@ function buildGroups(items: AnomalyPendingItem[], unassignedLabel: string): Grou
 
   const groups: Group[] = [];
   for (const [key, arr] of byKey.entries()) {
-    arr.sort(
-      (a, b) => new Date(b.detectedAt).getTime() - new Date(a.detectedAt).getTime(),
-    );
+    // Severity first (CRITICAL → WARNING → INFO), then most-recent within
+    // same severity. Without this, a critical rollback can sink below newer
+    // warnings in the same group — manager misses the top-priority item.
+    arr.sort((a, b) => {
+      const r = severityRank[b.severity] - severityRank[a.severity];
+      if (r !== 0) return r;
+      return new Date(b.detectedAt).getTime() - new Date(a.detectedAt).getTime();
+    });
     const counts: Record<Severity, number> = { CRITICAL: 0, WARNING: 0, INFO: 0 };
     for (const it of arr) counts[it.severity] += 1;
     let worst: Severity = 'INFO';
