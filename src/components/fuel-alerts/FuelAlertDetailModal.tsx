@@ -22,7 +22,7 @@ import Plate from './Plate';
 import DismissalReasonSheet from './DismissalReasonSheet';
 import ReceiptLightbox from '../fuel/ReceiptLightbox';
 import { num, parseContext, richExplanation } from './ruleExplanation';
-import { excludesEntryOnConfirm, fixTargetFor } from '../../types/fuelAnomaly';
+import { allowsRestoreToAnalysis, excludesEntryOnConfirm, fixTargetFor } from '../../types/fuelAnomaly';
 import './fuelAlertsAnimations.css';
 
 interface Props {
@@ -447,29 +447,31 @@ export default function FuelAlertDetailModal({
                     </div>
                   )}
 
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="flex-1 h-px bg-slate-200" />
-                      <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
-                        {t('fuelAlerts.modal.catA.restoreDivider')}
-                      </span>
-                      <div className="flex-1 h-px bg-slate-200" />
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowReasonSheet(true)}
-                      disabled={confirming || dismissing}
-                      className="w-full inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
-                    >
-                      <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
-                        <RotateCcw className="w-4 h-4 text-slate-500" strokeWidth={2.5} />
-                        {t('fuelAlerts.modal.catA.restoreToAnalysis')}
+                  {allowsRestoreToAnalysis(alert.ruleCode) && (
+                    <div>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex-1 h-px bg-slate-200" />
+                        <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                          {t('fuelAlerts.modal.catA.restoreDivider')}
+                        </span>
+                        <div className="flex-1 h-px bg-slate-200" />
                       </div>
-                      <span className="text-xs text-slate-500">
-                        {t('fuelAlerts.modal.catA.restoreToAnalysisHint')}
-                      </span>
-                    </button>
-                  </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowReasonSheet(true)}
+                        disabled={confirming || dismissing}
+                        className="w-full inline-flex flex-col items-start gap-0.5 px-4 py-3 rounded-xl bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition-colors disabled:opacity-60 disabled:pointer-events-none"
+                      >
+                        <div className="flex items-center gap-2 font-bold text-sm text-slate-900">
+                          <RotateCcw className="w-4 h-4 text-slate-500" strokeWidth={2.5} />
+                          {t('fuelAlerts.modal.catA.restoreToAnalysis')}
+                        </div>
+                        <span className="text-xs text-slate-500">
+                          {t('fuelAlerts.modal.catA.restoreToAnalysisHint')}
+                        </span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>

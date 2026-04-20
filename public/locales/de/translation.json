@@ -1709,6 +1709,8 @@
     "toast": {
       "catAClosed": "{{count}} Einträge als gesehen markiert",
       "catARestored": "{{count}} Einträge zur Analyse zurückgestellt",
+      "catARestoredWithSkip": "{{count}} zurückgestellt · {{skipped}} übersprungen (physisch unmöglich)",
+      "catARestoreAllBlocked": "Ausgewählte Einträge sind physisch unmöglich — können nicht zur Analyse zurückgestellt werden. Verwende stattdessen 'Als fehlerhaft schließen' oder 'Eintrag bearbeiten'.",
       "catBRecorded": "{{count}} Verhalten als Problem gespeichert",
       "catBClosed": "{{count}} Verhalten geschlossen",
       "loadError": "Warnungen konnten nicht geladen werden"

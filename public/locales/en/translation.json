@@ -1709,6 +1709,8 @@
     "toast": {
       "catAClosed": "Marked {{count}} entries as reviewed",
       "catARestored": "{{count}} entries restored to analysis",
+      "catARestoredWithSkip": "{{count}} restored · {{skipped}} skipped (physically impossible)",
+      "catARestoreAllBlocked": "Selected entries are physically impossible — can't be restored to analysis. Use 'Close as bad data' or 'Edit entry' instead.",
       "catBRecorded": "{{count}} behaviours recorded as issues",
       "catBClosed": "{{count}} behaviours closed",
       "loadError": "Could not load alerts"
