@@ -61,50 +61,34 @@
     "myFleet": "Meine Flotte",
     "loadErrorTitle": "Daten konnten nicht geladen werden",
     "loadErrorDescription": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-    "fleetState": "Flottenstatus",
-    "detailSection": "Dokumentdetails",
-    "attention": {
-      "heading": "Erfordert Ihre Aufmerksamkeit",
-      "fuelTitle": "Warnungen",
-      "fuelSubtitle": "Zu prüfende Tankungen und nicht zugeordnete Kennzeichen",
-      "fuelUnit": "Warnungen",
-      "trucksTitle": "Fahrzeugdokumente",
-      "trucksSubtitle": "Versicherung, Inspektion, Vollkasko laufen aus",
-      "trucksUnit": "Fahrzeuge",
-      "driversTitle": "Fahrerdokumente",
-      "driversSubtitle": "Führerschein, SRC, CPC müssen erneuert werden",
-      "driversUnit": "Fahrer",
-      "docsCount_one": "{{count}} Dokument",
-      "docsCount_other": "{{count}} Dokumente",
-      "trucksSummary_one": "{{records}} Fahrzeug · {{docs}} Dokument",
-      "trucksSummary_other": "{{records}} Fahrzeuge · {{docs}} Dokumente",
-      "driversSummary_one": "{{records}} Fahrer · {{docs}} Dokument",
-      "driversSummary_other": "{{records}} Fahrer · {{docs}} Dokumente"
+    "header": {
+      "trucks_one": "Fahrzeug",
+      "trucks_other": "Fahrzeuge",
+      "drivers_one": "Fahrer",
+      "drivers_other": "Fahrer"
     },
-    "recordsAndDocs_one": "{{records}} Eintrag · {{docs}} Dokument",
-    "recordsAndDocs_other": "{{records}} Einträge · {{docs}} Dokumente",
-    "docsAndList_one": "{{count}} Dokument · {{labels}}",
-    "docsAndList_other": "{{count}} Dokumente · {{labels}}",
+    "priority": {
+      "title": "Heute für dich",
+      "count_one": "{{count}} Eintrag",
+      "count_other": "{{count}} Einträge",
+      "fuelRow_one": "{{count}} Kraftstoff-Warnung",
+      "fuelRow_other": "{{count}} Kraftstoff-Warnungen",
+      "fuelSubtitle": "Wartet auf deine Prüfung",
+      "open": "öffnen",
+      "docList_one": "{{count}} Dokument · {{labels}}",
+      "docList_other": "{{count}} Dokumente · {{labels}}"
+    },
     "allCurrent": "Alle Dokumente sind aktuell",
     "allCurrentSubtitle": "Keine Erneuerungen in den nächsten 30 Tagen.",
     "onboarding": {
       "title": "Richten Sie Ihre Flotte ein",
       "subtitle": "Beginnen Sie mit dem ersten Fahrzeug und Fahrer. Dokumente, Kraftstoffverfolgung und Warnungen werden automatisch verknüpft."
     },
-    "fleetStateCard": {
-      "needsAttention": "benötigen Aufmerksamkeit"
-    },
     "quickActions": {
       "addTruck": "LKW hinzufügen",
       "inviteDriver": "Fahrer einladen",
       "addDriver": "Fahrer hinzufügen",
       "importFuel": "Kraftstoff importieren"
-    },
-    "kpi": {
-      "activeFleet": "Aktive Flotte",
-      "expiringDocs": "Dokumenten-Warnungen",
-      "fuelAlerts": "Kraftstoff-Warnungen",
-      "drivers": "Fahrer"
     }
   },
   "truck": {
@@ -257,8 +241,12 @@
     "dateMissing": "Datum fehlt",
     "daysExpired_one": "Seit {{count}} Tag überfällig",
     "daysExpired_other": "Seit {{count}} Tagen überfällig",
+    "daysExpiredShort_one": "{{count}}T vorbei",
+    "daysExpiredShort_other": "{{count}}T vorbei",
     "daysRemaining_one": "Noch {{count}} Tag",
     "daysRemaining_other": "Noch {{count}} Tage",
+    "daysRemainingShort_one": "{{count}} Tag",
+    "daysRemainingShort_other": "{{count}} Tage",
     "localeTag": "de-DE",
     "back": "Zurück",
     "remove": "Entfernen",
