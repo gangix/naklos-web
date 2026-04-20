@@ -1,14 +1,22 @@
+import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Filter, X } from 'lucide-react';
 import { useFleet } from '../contexts/FleetContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
+import { fuelReviewApi } from '../services/api';
 import UnmatchedPlateList from '../components/fuel/UnmatchedPlateList';
 import DismissedEntriesList from '../components/fuel/DismissedEntriesList';
+import ResolutionsList from '../components/fuel/ResolutionsList';
 import FuelSectionNav from '../components/fuel/FuelSectionNav';
 
-type Tab = 'unmatched' | 'dismissed';
+type Tab = 'unmatched' | 'dismissed' | 'resolutions';
 
+/** "Plakalar" — unified home for every plate-level decision the manager
+ *  has made or owes. Previously this page was called "İnceleme" and only
+ *  carried unmatched + dismissed; "Plaka Kuralları" was a separate page
+ *  buried under Settings. Consolidating them removes the cognitive split:
+ *  three tabs = three states of the same entity. */
 export default function FuelReviewPage() {
   const { t } = useTranslation();
   const { fleetId } = useFleet();
@@ -16,6 +24,19 @@ export default function FuelReviewPage() {
   const batchId = params.get('batchId');
   const tab = (params.get('tab') as Tab) ?? 'unmatched';
   const { unmatched: unmatchedCount } = useFuelCounts();
+
+  // Resolutions count is cheap to fetch and doesn't live in the shared
+  // fuel-counts context (that one only tracks the two action-worthy totals).
+  // Fetching here keeps the tab badge honest without touching the context.
+  const [resolutionsCount, setResolutionsCount] = useState<number | null>(null);
+  useEffect(() => {
+    if (!fleetId) return;
+    let cancelled = false;
+    fuelReviewApi.listResolutions(fleetId)
+      .then((rows) => { if (!cancelled) setResolutionsCount(rows.length); })
+      .catch(() => { if (!cancelled) setResolutionsCount(0); });
+    return () => { cancelled = true; };
+  }, [fleetId]);
 
   if (!fleetId) return null;
 
@@ -29,7 +50,9 @@ export default function FuelReviewPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto space-y-6">
       <FuelSectionNav />
-      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{t('fuelReview.pageTitle')}</h1>
+      <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+        {t('fuelReview.pageTitle')}
+      </h1>
 
       {batchId && (
         <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-center gap-3 text-sm">
@@ -64,10 +87,17 @@ export default function FuelReviewPage() {
           label={t('fuelReview.tabs.dismissed')}
           count={0}
         />
+        <TabButton
+          active={tab === 'resolutions'}
+          onClick={() => setTab('resolutions')}
+          label={t('fuelReview.tabs.resolutions')}
+          count={resolutionsCount ?? 0}
+        />
       </div>
 
       {tab === 'unmatched' && <UnmatchedPlateList fleetId={fleetId} batchId={batchId} />}
       {tab === 'dismissed' && <DismissedEntriesList fleetId={fleetId} />}
+      {tab === 'resolutions' && <ResolutionsList fleetId={fleetId} />}
     </div>
   );
 }

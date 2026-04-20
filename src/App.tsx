@@ -28,7 +28,6 @@ import FuelFormatCreatePage from './pages/FuelFormatCreatePage';
 import FuelImportPage from './pages/FuelImportPage';
 import FuelImportBatchDetailPage from './pages/FuelImportBatchDetailPage';
 import FuelReviewPage from './pages/FuelReviewPage';
-import FuelResolutionsPage from './pages/FuelResolutionsPage';
 import FuelAlertsPage from './pages/FuelAlertsPage';
 import FuelAlertsConfigPage from './pages/FuelAlertsConfigPage';
 import CookieBanner from './components/common/CookieBanner';
@@ -239,7 +238,11 @@ function App() {
                 <Route path="fuel-imports" element={<FuelImportPage />} />
                 <Route path="fuel-imports/:batchId" element={<FuelImportBatchDetailPage />} />
                 <Route path="fuel-review" element={<FuelReviewPage />} />
-                <Route path="fuel-resolutions" element={<FuelResolutionsPage />} />
+                {/* Legacy — /fuel-resolutions content now lives as the
+                    'resolutions' tab inside /fuel-review. Redirect so old
+                    bookmarks and the Cat A modal's fallback deep-link still
+                    land somewhere useful. */}
+                <Route path="fuel-resolutions" element={<Navigate to="/manager/fuel-review?tab=resolutions" replace />} />
                 <Route path="fuel-alerts" element={<FuelAlertsPage />} />
                 <Route path="fuel-alerts/config" element={<FuelAlertsConfigPage />} />
               </>

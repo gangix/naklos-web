@@ -1026,10 +1026,11 @@
     "priceEnterprise": "Individuelle Preise"
   },
   "fuelReview": {
-    "pageTitle": "Prüfung",
+    "pageTitle": "Kennzeichen",
     "tabs": {
-      "unmatched": "Nicht zugeordnete Kennzeichen",
-      "dismissed": "Ignorierte"
+      "unmatched": "Nicht zugeordnet",
+      "dismissed": "Ignoriert",
+      "resolutions": "Zuordnungen"
     },
     "dismissed": {
       "empty": "Sie haben noch keine Einträge ignoriert.",
@@ -1047,9 +1048,8 @@
     },
     "nav": {
       "imports": "Import",
-      "formats": "Formate",
-      "review": "Prüfung",
-      "resolutions": "Kennzeichen-Regeln",
+      "formats": "Dateiformate",
+      "plates": "Kennzeichen",
       "settings": "Einstellungen",
       "alertsConfig": "Warnregeln"
     },
