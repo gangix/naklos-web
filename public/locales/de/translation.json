@@ -1662,7 +1662,7 @@
       "label": "Kategorie",
       "all": "Alle",
       "dataError": "Inkonsistenter Eintrag",
-      "behaviour": "Verhalten",
+      "behaviour": "Verdächtiges Verhalten",
       "info": "Info",
       "excludedHint": "Diese Einträge sind bereits ausgeschlossen — keine Auswirkung auf den Durchschnitt. Informativ."
     },
@@ -1703,7 +1703,7 @@
       },
       "mixed": {
         "dataErrorCount": "{{count}} inkonsistent",
-        "behaviourCount": "{{count}} Verhalten"
+        "behaviourCount": "{{count}} verdächtig"
       }
     },
     "toast": {

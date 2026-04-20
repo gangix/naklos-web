@@ -26,7 +26,7 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
   const ts = alert.occurredAt ?? alert.detectedAt;
   const liters = alert.liters;
   const km = alert.reportedOdometerKm;
-  const isDataError = categoryOf(alert.ruleCode) === 'DATA_ERROR';
+  const category = categoryOf(alert.ruleCode);
 
   const selectedCls = selected ? 'border-primary-500 bg-primary-50/50' : 'border-transparent';
 
@@ -72,9 +72,13 @@ export default function AlertCard({ alert, selected, onToggleSelect, onOpen }: P
 
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2 mb-1">
-          {isDataError ? (
+          {category === 'DATA_ERROR' ? (
             <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-attention-50 text-attention-700 text-[10px] font-semibold uppercase tracking-wider">
               {t('fuelAlerts.category.dataError')}
+            </span>
+          ) : category === 'BEHAVIOUR' ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-info-50 text-info-700 text-[10px] font-semibold uppercase tracking-wider">
+              {t('fuelAlerts.category.behaviour')}
             </span>
           ) : (
             <SeverityBadge severity={alert.severity} size="xs" />
