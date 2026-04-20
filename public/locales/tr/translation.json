@@ -1023,10 +1023,11 @@
     "priceEnterprise": "Özel fiyat"
   },
   "fuelReview": {
-    "pageTitle": "İnceleme",
+    "pageTitle": "Plakalar",
     "tabs": {
-      "unmatched": "Eşleşmeyen plakalar",
-      "dismissed": "Yoksaylanlar"
+      "unmatched": "Eşleşmeyen",
+      "dismissed": "Yoksayılan",
+      "resolutions": "Eşleştirmeler"
     },
     "dismissed": {
       "empty": "Henüz yoksaydığınız bir kayıt yok.",
@@ -1044,9 +1045,8 @@
     },
     "nav": {
       "imports": "İçe Aktar",
-      "formats": "Formatlar",
-      "review": "İnceleme",
-      "resolutions": "Plaka Kuralları",
+      "formats": "Dosya Formatları",
+      "plates": "Plakalar",
       "settings": "Ayarlar",
       "alertsConfig": "Uyarı Kuralları"
     },

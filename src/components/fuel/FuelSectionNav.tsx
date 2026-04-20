@@ -6,9 +6,11 @@ import { useFuelCounts } from '../../contexts/FuelCountsContext';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
 /** Sub-nav shared across fuel pages. Daily-use tabs (Uyarılar / İçe Aktar /
- *  İnceleme) get primary weight; admin concerns (Formatlar / Kurallar) live
- *  behind a settings disclosure so the row stays focused on what the manager
- *  actually does every day. */
+ *  Plakalar) get primary weight; true config (Dosya Formatları / Uyarı
+ *  Kuralları) lives behind a settings disclosure. Plaka Kuralları moved out
+ *  of the dropdown because alias/subcontractor rules are operational data
+ *  (past plate decisions), not config — they now live as the third tab on
+ *  the Plakalar page. */
 function TabBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
@@ -20,7 +22,7 @@ function TabBadge({ count }: { count: number }) {
 
 export default function FuelSectionNav() {
   const { t } = useTranslation();
-  // Uyarılar tab shows anomaly-engine pending count; İnceleme shows the
+  // Uyarılar tab shows anomaly-engine pending count; Plakalar shows the
   // unmatched-plate count. The top-level Yakıt badge is the sum of both, so
   // splitting them here keeps the math honest when the manager drills in.
   const { pending: pendingCount, unmatched: unmatchedCount } = useFuelCounts();
@@ -28,9 +30,12 @@ export default function FuelSectionNav() {
   // the Uyarılar tab visually active while the user is on the config screen.
   const configMatch = useMatch('/manager/fuel-alerts/config');
   const location = useLocation();
-  const onConfigSurface =
-    location.pathname.startsWith('/manager/fuel-resolutions') ||
-    location.pathname.startsWith('/manager/fuel-formats');
+  // Legacy `/manager/fuel-resolutions` now redirects into Plakalar's
+  // resolutions tab — light up Plakalar while that redirect resolves. True
+  // Settings surfaces: Dosya Formatları only (Uyarı Kuralları is a child of
+  // Uyarılar visually but reached through this menu).
+  const platesMatch = location.pathname.startsWith('/manager/fuel-resolutions');
+  const onConfigSurface = location.pathname.startsWith('/manager/fuel-formats');
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -59,9 +64,8 @@ export default function FuelSectionNav() {
       </NavLink>
       <NavLink
         to="/manager/fuel-review"
-        end
-        className={({ isActive }) => `${baseClass} ${isActive ? active : idle}`}>
-        {t('fuelReview.nav.review')}
+        className={({ isActive }) => `${baseClass} ${isActive || platesMatch ? active : idle}`}>
+        {t('fuelReview.nav.plates')}
         <TabBadge count={unmatchedCount} />
       </NavLink>
 
@@ -83,14 +87,6 @@ export default function FuelSectionNav() {
             className="absolute right-0 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-hidden"
           >
             <Link
-              to="/manager/fuel-resolutions"
-              role="menuitem"
-              onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
-            >
-              {t('fuelReview.nav.resolutions')}
-            </Link>
-            <Link
               to="/manager/fuel-formats"
               role="menuitem"
               onClick={() => setMenuOpen(false)}
@@ -102,7 +98,7 @@ export default function FuelSectionNav() {
               to="/manager/fuel-alerts/config"
               role="menuitem"
               onClick={() => setMenuOpen(false)}
-              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 border-t border-gray-100"
+              className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
             >
               {t('fuelReview.nav.alertsConfig')}
             </Link>

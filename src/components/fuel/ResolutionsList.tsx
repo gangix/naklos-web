@@ -2,21 +2,26 @@ import { useEffect, useState } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { toast } from 'sonner';
 import { Trash2 } from 'lucide-react';
-import { useFleet } from '../contexts/FleetContext';
-import { fuelReviewApi } from '../services/api';
-import type { PlateResolutionDto } from '../types/fuel';
-import FuelSectionNav from '../components/fuel/FuelSectionNav';
-import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
-import ResolutionEntriesModal from '../components/fuel/ResolutionEntriesModal';
+import { fuelReviewApi } from '../../services/api';
+import type { PlateResolutionDto } from '../../types/fuel';
+import ConfirmActionModal from './ConfirmActionModal';
+import ResolutionEntriesModal from './ResolutionEntriesModal';
 
 const KIND_BADGE: Record<PlateResolutionDto['kind'], string> = {
   ALIAS: 'bg-blue-100 text-blue-700',
   SUBCONTRACTOR: 'bg-amber-100 text-amber-700',
 };
 
-export default function FuelResolutionsPage() {
+interface Props {
+  fleetId: string;
+}
+
+/** "Eşleştirmeler" — list of alias + subcontractor rules manager has
+ *  previously set. Used to be a standalone page (FuelResolutionsPage) but
+ *  now lives inside Plakalar as the third tab, parallel to UnmatchedPlateList
+ *  and DismissedEntriesList. All three are plate-decision states. */
+export default function ResolutionsList({ fleetId }: Props) {
   const { t } = useTranslation();
-  const { fleetId } = useFleet();
   const [items, setItems] = useState<PlateResolutionDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [pendingDelete, setPendingDelete] = useState<PlateResolutionDto | null>(null);
@@ -49,19 +54,11 @@ export default function FuelResolutionsPage() {
     }
   };
 
-  if (!fleetId) return null;
-
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-6">
-      <FuelSectionNav />
-      <div>
-        <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-          {t('fuelReview.resolutions.title')}
-        </h1>
-        <p className="text-sm text-gray-600 mt-1">
-          {t('fuelReview.resolutions.description')}
-        </p>
-      </div>
+    <div className="space-y-4">
+      <p className="text-sm text-gray-600">
+        {t('fuelReview.resolutions.description')}
+      </p>
 
       {loading ? (
         <p className="text-gray-500">{t('fuelReview.loading')}</p>

@@ -1026,10 +1026,11 @@
     "priceEnterprise": "Custom pricing"
   },
   "fuelReview": {
-    "pageTitle": "Review",
+    "pageTitle": "Plates",
     "tabs": {
-      "unmatched": "Unmatched plates",
-      "dismissed": "Dismissed"
+      "unmatched": "Unmatched",
+      "dismissed": "Dismissed",
+      "resolutions": "Resolutions"
     },
     "dismissed": {
       "empty": "You haven't dismissed any entries yet.",
@@ -1047,9 +1048,8 @@
     },
     "nav": {
       "imports": "Import",
-      "formats": "Formats",
-      "review": "Review",
-      "resolutions": "Plate rules",
+      "formats": "File formats",
+      "plates": "Plates",
       "settings": "Settings",
       "alertsConfig": "Alert rules"
     },
