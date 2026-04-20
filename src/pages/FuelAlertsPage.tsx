@@ -417,14 +417,18 @@ export default function FuelAlertsPage() {
                       onClick={() => setCategoryFilter('DATA_ERROR')}
                       label={t('fuelAlerts.category.dataError')}
                       count={globalCategoryCounts.DATA_ERROR}
-                      countClass="text-attention-600"
+                      countClass="text-info-600"
+                      activeClass="bg-info-600 text-white"
+                      activeCountClass="text-info-50"
                     />
                     <FilterChip
                       active={categoryFilter === 'BEHAVIOUR'}
                       onClick={() => setCategoryFilter('BEHAVIOUR')}
                       label={t('fuelAlerts.category.behaviour')}
                       count={globalCategoryCounts.BEHAVIOUR}
-                      countClass="text-info-600"
+                      countClass="text-attention-600"
+                      activeClass="bg-attention-600 text-white"
+                      activeCountClass="text-attention-50"
                     />
                     {globalCategoryCounts.INFO > 0 && (
                       <FilterChip
@@ -637,21 +641,31 @@ interface FilterChipProps {
   label: string;
   count: number;
   countClass?: string;
+  /** Override the default slate-900 active background. Used by category
+   *  chips so the active state mirrors each category's pill tone
+   *  (info for Tutarsız kayıt, attention for Şüpheli davranış). */
+  activeClass?: string;
+  /** Paired with activeClass — the count's color when the chip is active
+   *  against a coloured background. Defaults to slate-300 (for dark slate). */
+  activeCountClass?: string;
 }
 
-function FilterChip({ active, onClick, label, count, countClass = '' }: FilterChipProps) {
+function FilterChip({
+  active, onClick, label, count,
+  countClass = '',
+  activeClass = 'bg-slate-900 text-white',
+  activeCountClass = 'text-slate-300',
+}: FilterChipProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-        active
-          ? 'bg-slate-900 text-white'
-          : 'text-slate-600 hover:bg-slate-100'
+        active ? activeClass : 'text-slate-600 hover:bg-slate-100'
       }`}
     >
       {label}{' '}
-      <span className={`ml-1 tabular-nums ${active ? 'text-slate-300' : countClass}`}>
+      <span className={`ml-1 tabular-nums ${active ? activeCountClass : countClass}`}>
         {count}
       </span>
     </button>
