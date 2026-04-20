@@ -1795,8 +1795,8 @@
     "nav": { "login": "Log in" },
     "hero": {
       "badge": "For Turkish SMB fleets · KVKK-compliant",
-      "title1": "Your fuel cards are leaking.",
-      "title2": "We show you where.",
+      "title1": "The fuel leak you can't see in Excel.",
+      "title2": "We surface it the day it happens.",
       "tagline": "Per-vehicle anomaly rules flag suspicious fill-ups the moment they happen. Inspection, license and insurance — all on the same screen.",
       "ctaPrimary": "Start free",
       "ctaPrimarySub": "No credit card. No sales call.",

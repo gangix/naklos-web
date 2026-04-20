@@ -59,8 +59,8 @@ The existing `feat/landing-wedge-rewrite` branch is preserved (committed as-is, 
 │  [logo] Naklos                [lang] [Log in]   │
 ├─ Hero ───────────────────────────────────────────┤
 │  Badge: "For Turkish SMB fleets · KVKK-compliant"│
-│  H1: "Your fuel cards are leaking."              │
-│      "We show you where." (accent, not gradient) │
+│  H1: "The fuel leak you can't see in Excel."     │
+│      "We surface it the day it happens."         │
 │  Tagline (operator voice)                        │
 │  [Start free] [I have an account]                │
 │  "No credit card. No sales call."                │
@@ -92,8 +92,8 @@ Removed vs. branch: audit section, floating WhatsApp button, WhatsApp constants/
 |---|---|
 | `landing.nav.login` | "Log in" |
 | `landing.hero.badge` | "For Turkish SMB fleets · KVKK-compliant" |
-| `landing.hero.title1` | "Your fuel cards are leaking." |
-| `landing.hero.title2` | "We show you where." |
+| `landing.hero.title1` | "The fuel leak you can't see in Excel." |
+| `landing.hero.title2` | "We surface it the day it happens." |
 | `landing.hero.tagline` | "Per-vehicle anomaly rules flag suspicious fill-ups the moment they happen. Inspection, license and insurance — all on the same screen." |
 | `landing.hero.ctaPrimary` | "Start free" |
 | `landing.hero.ctaPrimarySub` | "No credit card. No sales call." |
@@ -379,7 +379,7 @@ A thin companion spec will live at `naklos/docs/superpowers/specs/2026-04-20-pub
 ## 9. Translations strategy
 
 - English (this spec) = semantic source of truth.
-- TR = primary market, requires natural phrasing not literal translation. Specific wedge lines ("Your fuel cards are leaking") must be re-expressed in Turkish idiom, not word-for-word translated.
+- TR = primary market, requires natural phrasing not literal translation. Specific wedge lines ("The fuel leak you can't see in Excel") must be re-expressed in Turkish idiom, not word-for-word translated.
 - DE = mirror EN semantics. German audience is smaller; translation quality expectation is accurate but doesn't need cultural idiom polish at TR level.
 - All three locales updated in the same PR as the landing rewrite.
 

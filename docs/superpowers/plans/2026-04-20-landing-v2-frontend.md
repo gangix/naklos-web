@@ -121,8 +121,8 @@ Find the `"landing": { … }` block (around line 1794 on main). Replace its cont
   "nav": { "login": "Log in" },
   "hero": {
     "badge": "For Turkish SMB fleets · KVKK-compliant",
-    "title1": "Your fuel cards are leaking.",
-    "title2": "We show you where.",
+    "title1": "The fuel leak you can't see in Excel.",
+    "title2": "We surface it the day it happens.",
     "tagline": "Per-vehicle anomaly rules flag suspicious fill-ups the moment they happen. Inspection, license and insurance — all on the same screen.",
     "ctaPrimary": "Start free",
     "ctaPrimarySub": "No credit card. No sales call.",
@@ -264,15 +264,15 @@ Note: keys `fuelPerformanceDenied` (from main) is removed — fuel is open to al
 
 - [ ] **Step 2: Edit `public/locales/tr/translation.json`**
 
-Replace the `"landing"` block with the Turkish version. TR is the primary market; prioritize natural Turkish idiom over literal translation. The wedge H1 "Your fuel cards are leaking / We show you where" should feel native:
+Replace the `"landing"` block with the Turkish version. TR is the primary market; prioritize natural Turkish idiom over literal translation. The wedge H1 "The fuel leak you can't see in Excel / We surface it the day it happens" should feel native:
 
 ```json
 "landing": {
   "nav": { "login": "Giriş yap" },
   "hero": {
     "badge": "Türk KOBİ filoları için · KVKK uyumlu",
-    "title1": "Yakıt kartlarınızda sızıntı var.",
-    "title2": "Size nerede olduğunu gösteriyoruz.",
+    "title1": "Excel'de göremediğiniz yakıt kaçağı.",
+    "title2": "Olduğu an yüzeye çıkarıyoruz.",
     "tagline": "Araç bazlı anomali kuralları, şüpheli dolumları anında yakalar. Muayene, ehliyet ve sigorta da aynı ekranda.",
     "ctaPrimary": "Ücretsiz başla",
     "ctaPrimarySub": "Kart yok. Satış görüşmesi yok.",
@@ -419,8 +419,8 @@ Replace the `"landing"` block with the German version (semantic mirror of EN, no
   "nav": { "login": "Anmelden" },
   "hero": {
     "badge": "Für türkische KMU-Flotten · KVKK-konform",
-    "title1": "Ihre Tankkarten verlieren Geld.",
-    "title2": "Wir zeigen Ihnen wo.",
+    "title1": "Der Kraftstoffverlust, den Excel verbirgt.",
+    "title2": "Wir machen ihn am selben Tag sichtbar.",
     "tagline": "Fahrzeugbezogene Anomalieregeln markieren verdächtige Tankvorgänge in dem Moment, in dem sie passieren. Inspektion, Führerschein und Versicherung — alles auf einem Bildschirm.",
     "ctaPrimary": "Kostenlos starten",
     "ctaPrimarySub": "Keine Kreditkarte. Kein Verkaufsgespräch.",
@@ -570,7 +570,7 @@ Expected: no errors.
 
 - [ ] **Step 6: Verify existing landing page still renders**
 
-Run: `npm run dev`. Open `/` in the browser. The page should render with the NEW copy (hero now says "Your fuel cards are leaking" etc.) — because the existing `LandingPage.tsx` reads these same keys. This confirms translations are wired. Some keys the old page uses (e.g. `fuelPerformanceDenied`) are gone, which will cause `t()` fallback-to-key behavior on those lines — that's expected until Task 12 rewrites the page.
+Run: `npm run dev`. Open `/` in the browser. The page should render with the NEW copy (hero now says "The fuel leak you can't see in Excel" etc.) — because the existing `LandingPage.tsx` reads these same keys. This confirms translations are wired. Some keys the old page uses (e.g. `fuelPerformanceDenied`) are gone, which will cause `t()` fallback-to-key behavior on those lines — that's expected until Task 12 rewrites the page.
 
 - [ ] **Step 7: Commit**
 
@@ -2012,7 +2012,7 @@ Open `http://localhost:5173` (or whatever port Vite chose).
 
 Verify:
 - Page renders with warm cream background (`#FAFAF7`), no dot grid.
-- Hero shows "Your fuel cards are leaking. / **We show you where.**" — title2 in primary blue, NO gradient.
+- Hero shows "The fuel leak you can't see in Excel. / **We surface it the day it happens.**" — title2 in primary blue, NO gradient.
 - Badge reads "For Turkish SMB fleets · KVKK-compliant" and has no pulsing animation.
 - HeroMockup shows on right, no gradient glow behind it.
 - "Start free" and "I have an account" buttons don't lift on hover — color change only.
@@ -2306,7 +2306,7 @@ Expected: no errors. Warnings are acceptable but investigate if there are any ab
 
 Run: `npm run dev`
 In the browser, switch between TR / EN / DE via the language switcher. Verify each locale:
-- Hero headline feels natural (TR: "Yakıt kartlarınızda sızıntı var.")
+- Hero headline feels natural (TR: "Excel'de göremediğiniz yakıt kaçağı.")
 - All sections render with their translated copy
 - No key-name fallback text (e.g. you should never see raw `landing.foo.bar` strings in the UI)
 - Contact form labels translate correctly
