@@ -61,50 +61,34 @@
     "myFleet": "My Fleet",
     "loadErrorTitle": "Could not load data",
     "loadErrorDescription": "An error occurred. Please try again.",
-    "fleetState": "Fleet state",
-    "detailSection": "Document detail",
-    "attention": {
-      "heading": "Needs your attention",
-      "fuelTitle": "Fuel alerts",
-      "fuelSubtitle": "Fill-ups to review and unmatched plates",
-      "fuelUnit": "alerts",
-      "trucksTitle": "Truck documents",
-      "trucksSubtitle": "Insurance, inspection, comprehensive expiring",
-      "trucksUnit": "trucks",
-      "driversTitle": "Driver documents",
-      "driversSubtitle": "License, SRC, CPC need renewal",
-      "driversUnit": "drivers",
-      "docsCount_one": "{{count}} document",
-      "docsCount_other": "{{count}} documents",
-      "trucksSummary_one": "{{records}} truck · {{docs}} doc",
-      "trucksSummary_other": "{{records}} trucks · {{docs}} docs",
-      "driversSummary_one": "{{records}} driver · {{docs}} doc",
-      "driversSummary_other": "{{records}} drivers · {{docs}} docs"
+    "header": {
+      "trucks_one": "truck",
+      "trucks_other": "trucks",
+      "drivers_one": "driver",
+      "drivers_other": "drivers"
     },
-    "recordsAndDocs_one": "{{records}} record · {{docs}} document",
-    "recordsAndDocs_other": "{{records}} records · {{docs}} documents",
-    "docsAndList_one": "{{count}} document · {{labels}}",
-    "docsAndList_other": "{{count}} documents · {{labels}}",
+    "priority": {
+      "title": "Today for you",
+      "count_one": "{{count}} item",
+      "count_other": "{{count}} items",
+      "fuelRow_one": "{{count}} fuel alert",
+      "fuelRow_other": "{{count}} fuel alerts",
+      "fuelSubtitle": "Waiting for your review",
+      "open": "open",
+      "docList_one": "{{count}} document · {{labels}}",
+      "docList_other": "{{count}} documents · {{labels}}"
+    },
     "allCurrent": "All documents up to date",
     "allCurrentSubtitle": "No renewals due in the next 30 days.",
     "onboarding": {
       "title": "Set up your fleet",
       "subtitle": "Start by adding your first truck and driver. Documents, fuel tracking, and alerts line up automatically from there."
     },
-    "fleetStateCard": {
-      "needsAttention": "need attention"
-    },
     "quickActions": {
       "addTruck": "Add truck",
       "inviteDriver": "Invite driver",
       "addDriver": "Add driver",
       "importFuel": "Import fuel"
-    },
-    "kpi": {
-      "activeFleet": "Active Fleet",
-      "expiringDocs": "Document Alerts",
-      "fuelAlerts": "Fuel Alerts",
-      "drivers": "Drivers"
     }
   },
   "truck": {
@@ -257,8 +241,12 @@
     "dateMissing": "Date missing",
     "daysExpired_one": "{{count}} day overdue",
     "daysExpired_other": "{{count}} days overdue",
+    "daysExpiredShort_one": "{{count}}d past",
+    "daysExpiredShort_other": "{{count}}d past",
     "daysRemaining_one": "{{count}} day remaining",
     "daysRemaining_other": "{{count}} days remaining",
+    "daysRemainingShort_one": "{{count}} day",
+    "daysRemainingShort_other": "{{count}} days",
     "localeTag": "en-US",
     "back": "Back",
     "remove": "Remove",

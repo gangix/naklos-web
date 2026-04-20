@@ -61,48 +61,32 @@
     "myFleet": "Filom",
     "loadErrorTitle": "Veriler yüklenemedi",
     "loadErrorDescription": "Bir hata oluştu. Lütfen tekrar deneyin.",
-    "fleetState": "Filo durumu",
-    "detailSection": "Belge detayı",
-    "attention": {
-      "heading": "Dikkatinize sunulan",
-      "fuelTitle": "Yakıt uyarısı",
-      "fuelSubtitle": "Kontrol edilecek dolumlar ve eşleşmeyen plakalar",
-      "fuelUnit": "uyarı",
-      "trucksTitle": "Araç belgesi",
-      "trucksSubtitle": "Sigorta, kasko, muayene bitiş tarihleri yaklaşıyor",
-      "trucksUnit": "araç",
-      "driversTitle": "Şoför belgesi",
-      "driversSubtitle": "Ehliyet, SRC, CPC belgeleri yenilenmeli",
-      "driversUnit": "şoför",
-      "docsCount_one": "{{count}} belge",
-      "docsCount_other": "{{count}} belge",
-      "trucksSummary": "{{records}} araç · {{docs}} belge",
-      "driversSummary": "{{records}} şoför · {{docs}} belge"
+    "header": {
+      "trucks": "araç",
+      "drivers": "sürücü"
     },
-    "recordsAndDocs_one": "{{records}} kayıt · {{docs}} belge",
-    "recordsAndDocs_other": "{{records}} kayıt · {{docs}} belge",
-    "docsAndList_one": "{{count}} belge · {{labels}}",
-    "docsAndList_other": "{{count}} belge · {{labels}}",
+    "priority": {
+      "title": "Bugün incelemelerin",
+      "count_one": "{{count}} konu",
+      "count_other": "{{count}} konu",
+      "fuelRow_one": "{{count}} yakıt uyarısı",
+      "fuelRow_other": "{{count}} yakıt uyarısı",
+      "fuelSubtitle": "İncelemeni bekliyor",
+      "open": "aç",
+      "docList_one": "{{count}} belge · {{labels}}",
+      "docList_other": "{{count}} belge · {{labels}}"
+    },
     "allCurrent": "Tüm belgeler güncel",
     "allCurrentSubtitle": "Son 30 günde yenilenecek belge yok.",
     "onboarding": {
       "title": "Filonuzu kurmaya başlayın",
       "subtitle": "İlk aracınızı ve sürücünüzü ekleyerek başlayın. Belgeler, yakıt takibi ve uyarılar otomatik olarak hizalanır."
     },
-    "fleetStateCard": {
-      "needsAttention": "belge bekliyor"
-    },
     "quickActions": {
       "addTruck": "Araç ekle",
       "inviteDriver": "Sürücü davet et",
       "addDriver": "Sürücü ekle",
       "importFuel": "Yakıt içe aktar"
-    },
-    "kpi": {
-      "activeFleet": "Aktif Filo",
-      "expiringDocs": "Belge Uyarısı",
-      "fuelAlerts": "Yakıt Uyarısı",
-      "drivers": "Sürücü"
     }
   },
   "truck": {
@@ -255,8 +239,12 @@
     "dateMissing": "Tarih eksik",
     "daysExpired_one": "{{count}} gün geçti",
     "daysExpired_other": "{{count}} gün geçti",
+    "daysExpiredShort_one": "{{count}}g geçti",
+    "daysExpiredShort_other": "{{count}}g geçti",
     "daysRemaining_one": "{{count}} gün kaldı",
     "daysRemaining_other": "{{count}} gün kaldı",
+    "daysRemainingShort_one": "{{count}} gün",
+    "daysRemainingShort_other": "{{count}} gün",
     "localeTag": "tr-TR",
     "back": "Geri Dön",
     "remove": "Kaldır",
