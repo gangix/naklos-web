@@ -1659,7 +1659,7 @@
       "label": "Kategori",
       "all": "Tümü",
       "dataError": "Tutarsız kayıt",
-      "behaviour": "Davranış",
+      "behaviour": "Şüpheli davranış",
       "info": "Bilgi",
       "excludedHint": "Bu kayıtlar zaten analiz dışında — ortalamayı etkilemiyorlar. Sadece bilgi."
     },
@@ -1700,7 +1700,7 @@
       },
       "mixed": {
         "dataErrorCount": "{{count}} tutarsız kayıt",
-        "behaviourCount": "{{count}} davranış"
+        "behaviourCount": "{{count}} şüpheli davranış"
       }
     },
     "toast": {
