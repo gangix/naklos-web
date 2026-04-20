@@ -18,7 +18,10 @@ type Props =
   | (BaseProps & {
       variant: 'catA';
       onConfirm: () => void;
-      onDismiss: () => void;
+      /** Omit to hide the "Analize geri al" button — e.g. when every
+       *  selected row hits a physically-impossible rule (rollback,
+       *  volume-over-tank) where restore is not a legitimate action. */
+      onDismiss?: () => void;
     })
   | (BaseProps & {
       variant: 'catB';
@@ -68,17 +71,19 @@ export default function FloatingActionBar(props: Props) {
             ? t('fuelAlerts.bulkBar.catA.confirming')
             : t('fuelAlerts.bulkBar.catA.confirm')}
         </button>
-        <button
-          type="button"
-          onClick={props.onDismiss}
-          disabled={busy}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-60 disabled:pointer-events-none transition-colors"
-        >
-          <RotateCcw className="w-4 h-4" />
-          {dismissing
-            ? t('fuelAlerts.bulkBar.catA.dismissing')
-            : t('fuelAlerts.bulkBar.catA.dismiss')}
-        </button>
+        {props.onDismiss && (
+          <button
+            type="button"
+            onClick={props.onDismiss}
+            disabled={busy}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-60 disabled:pointer-events-none transition-colors"
+          >
+            <RotateCcw className="w-4 h-4" />
+            {dismissing
+              ? t('fuelAlerts.bulkBar.catA.dismissing')
+              : t('fuelAlerts.bulkBar.catA.dismiss')}
+          </button>
+        )}
       </FloatingSelectionBar>
     );
   }
