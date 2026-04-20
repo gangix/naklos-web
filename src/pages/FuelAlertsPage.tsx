@@ -582,23 +582,14 @@ export default function FuelAlertsPage() {
           }
           onClose={() => setBulkDismissScope(null)}
           onDone={(result) => {
-            const skipped =
+            // Report the honest applied count. Skipped-non-restorable
+            // items are intentionally not mentioned — "no complication"
+            // was the explicit product choice.
+            toast.success(
               bulkDismissScope === 'dataError'
-                ? selectionBreakdown.dataError.length -
-                  selectionBreakdown.dataErrorRestorable.length
-                : 0;
-            if (bulkDismissScope === 'dataError') {
-              toast.success(
-                skipped > 0
-                  ? t('fuelAlerts.toast.catARestoredWithSkip', {
-                      count: result.dismissed,
-                      skipped,
-                    })
-                  : t('fuelAlerts.toast.catARestored', { count: result.dismissed }),
-              );
-            } else {
-              toast.success(t('fuelAlerts.toast.catBClosed', { count: result.dismissed }));
-            }
+                ? t('fuelAlerts.toast.catARestored', { count: result.dismissed })
+                : t('fuelAlerts.toast.catBClosed', { count: result.dismissed }),
+            );
             setBulkDismissScope(null);
             clearSelection();
             void refresh();
@@ -623,21 +614,22 @@ export default function FuelAlertsPage() {
                   : 'catB';
 
         if (selectedCat === 'catA') {
+          // Hide "Analize geri al" entirely when no selected row is
+          // restorable (every one is a physically-impossible rule).
+          // Partial selections still show the button — non-restorable
+          // ids skip silently inside the dismiss flow.
+          const anyRestorable =
+            selectionBreakdown.dataErrorRestorable.length > 0;
           return (
             <FloatingActionBar
               variant="catA"
               count={selected.size}
               onConfirm={() => void handleCatAConfirm()}
-              onDismiss={() => {
-                // All selected Cat A rules are physically-impossible — no
-                // honest "analize geri ekle" path. Tell the user instead of
-                // silently doing nothing.
-                if (selectionBreakdown.dataErrorRestorable.length === 0) {
-                  toast.error(t('fuelAlerts.toast.catARestoreAllBlocked'));
-                  return;
-                }
-                setBulkDismissScope('dataError');
-              }}
+              onDismiss={
+                anyRestorable
+                  ? () => setBulkDismissScope('dataError')
+                  : undefined
+              }
               onClear={clearSelection}
               confirming={bulkConfirming}
             />

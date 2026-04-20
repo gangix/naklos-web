@@ -1706,8 +1706,6 @@
     "toast": {
       "catAClosed": "{{count}} kayıt gördün olarak işaretlendi",
       "catARestored": "{{count}} kayıt analize geri eklendi",
-      "catARestoredWithSkip": "{{count}} kayıt analize geri eklendi · {{skipped}} atlandı (fiziksel imkansız)",
-      "catARestoreAllBlocked": "Seçilen kayıtlar fiziksel olarak imkansız — analize geri eklenemez. 'Bozuk veri olarak kapat' ya da 'Kaydı düzelt' seçeneğini kullan.",
       "catBRecorded": "{{count}} davranış sorunlu olarak kaydedildi",
       "catBClosed": "{{count}} davranış kapatıldı",
       "loadError": "Uyarılar yüklenemedi"
