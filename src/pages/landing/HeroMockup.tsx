@@ -5,7 +5,7 @@ export default function HeroMockup() {
   const { t } = useTranslation();
 
   return (
-    <div className="relative mx-auto max-w-lg">
+    <div className="relative mx-auto max-w-lg" role="img" aria-label={t('landing.hero.preview.label')}>
       {/* Browser chrome */}
       <div className="relative rounded-2xl bg-white shadow-[0_30px_80px_-20px_rgba(15,23,42,0.25)] ring-1 ring-slate-200 overflow-hidden">
         <div className="flex items-center gap-1.5 px-3 h-8 border-b border-slate-100 bg-slate-50">
