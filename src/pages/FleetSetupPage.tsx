@@ -42,7 +42,16 @@ const FleetSetupPage = () => {
     setError(null);
 
     try {
-      const payload = { ...formData, termsAcceptedVersion: TERMS_VERSION };
+      // taxId is optional (removed the required asterisk in 9568d86), but the
+      // backend still validates the VKN format on any non-null value — sending
+      // an empty string would trip that and surface as "Geçersiz istek".
+      const trimmedTaxId = formData.taxId.trim();
+      const payload = {
+        ...formData,
+        taxId: trimmedTaxId || null,
+        phone: formData.phone.trim(),
+        termsAcceptedVersion: TERMS_VERSION,
+      };
       const result: any = await fleetApi.create(payload);
       if (result.id) {
         setFleetId(result.id);
@@ -125,9 +134,12 @@ const FleetSetupPage = () => {
                   label={t('fleetSetup.phone')}
                   required
                   type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   placeholder={t('fleetSetup.phonePlaceholder')}
+                  hint={t('fleetSetup.phoneHint')}
                 />
               </div>
               <Select

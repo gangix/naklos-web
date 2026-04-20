@@ -946,6 +946,7 @@
     "emailPlaceholder": "info@sirket.com",
     "phone": "Telefon *",
     "phonePlaceholder": "+90 555 123 4567",
+    "phoneHint": "Örn: 0532 123 45 67 veya +90 532 123 45 67",
     "currency": "Para Birimi *",
     "addressInfo": "Adres Bilgileri",
     "street": "Sokak/Cadde",

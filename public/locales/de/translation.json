@@ -949,6 +949,7 @@
     "emailPlaceholder": "info@firma.com",
     "phone": "Telefon *",
     "phonePlaceholder": "+90 555 123 4567",
+    "phoneHint": "z.B. 0532 123 45 67 oder +90 532 123 45 67",
     "currency": "Währung *",
     "addressInfo": "Adresse",
     "street": "Straße",
