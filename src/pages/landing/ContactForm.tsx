@@ -192,6 +192,7 @@ export default function ContactForm() {
                 className={`w-full px-4 py-3 bg-warm-50 border rounded-xl text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary-400 ${errors.fleetSize ? 'border-urgent-500' : 'border-slate-200'}`}
                 required
                 aria-invalid={!!errors.fleetSize}
+                aria-describedby={errors.fleetSize ? 'lead-fleet-err' : undefined}
               >
                 <option value="">—</option>
                 <option value="1-5">{t('landing.contact.form.fleetSizeOptions.xs')}</option>
@@ -199,7 +200,7 @@ export default function ContactForm() {
                 <option value="26-100">{t('landing.contact.form.fleetSizeOptions.m')}</option>
                 <option value="100+">{t('landing.contact.form.fleetSizeOptions.l')}</option>
               </select>
-              {errors.fleetSize && <p className="mt-1 text-xs text-urgent-600">{errors.fleetSize}</p>}
+              {errors.fleetSize && <p id="lead-fleet-err" className="mt-1 text-xs text-urgent-600">{errors.fleetSize}</p>}
             </div>
           </div>
 
@@ -218,19 +219,21 @@ export default function ContactForm() {
           </div>
 
           <div>
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label htmlFor="lead-consent" className="flex items-start gap-3 cursor-pointer">
               <input
+                id="lead-consent"
                 type="checkbox"
                 checked={state.consent}
                 onChange={(e) => update('consent', e.target.checked)}
                 className="mt-1 w-4 h-4 accent-primary-700"
                 aria-invalid={!!errors.consent}
+                aria-describedby={errors.consent ? 'lead-consent-err' : undefined}
               />
               <span className="text-sm text-slate-700 leading-relaxed">
                 {t('landing.contact.form.consent')}
               </span>
             </label>
-            {errors.consent && <p className="mt-1 text-xs text-urgent-600 ml-7">{errors.consent}</p>}
+            {errors.consent && <p id="lead-consent-err" className="mt-1 text-xs text-urgent-600 ml-7">{errors.consent}</p>}
           </div>
 
           <button
