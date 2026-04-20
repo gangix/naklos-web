@@ -41,14 +41,17 @@ export default function TruckAccordion({
       open={defaultOpen}
       className="group mb-4 bg-white rounded-xl border border-slate-200 shadow-card overflow-hidden"
     >
-      <summary className="flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition-colors list-none cursor-pointer select-none">
-        <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform group-open:rotate-90" />
-
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+      {/* Summary stacks vertically below md — 3 severity chips with Turkish
+          labels ("1 Kritik", "5 Uyarı") need ~250px, and with a text-lg
+          mono plate, truck icon and chevron the row overflows ~600px
+          viewports, causing the chips to encroach on the plate. */}
+      <summary className="flex flex-col md:flex-row md:items-center gap-3 px-5 py-4 hover:bg-slate-50 transition-colors list-none cursor-pointer select-none">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0 transition-transform group-open:rotate-90" />
           <div className="w-10 h-10 rounded-lg bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
             <TruckIcon className="w-5 h-5" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <Plate plate={plate} size="lg" />
             {subtitle && (
               <div className="text-xs text-slate-500 truncate">{subtitle}</div>
@@ -56,7 +59,7 @@ export default function TruckAccordion({
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5 flex-shrink-0 flex-wrap justify-end">
+        <div className="flex items-center gap-1.5 flex-wrap md:flex-shrink-0 md:justify-end pl-[52px] md:pl-0">
           {chips.map((s) => (
             <span
               key={s}
