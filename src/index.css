@@ -1,5 +1,6 @@
-/* Body + display — Plus Jakarta Sans across the app, no secondary face. */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+/* Body + display — Plus Jakarta Sans across the app; JetBrains Mono reserved
+   for plate numbers, timestamps and import previews per the design system. */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;

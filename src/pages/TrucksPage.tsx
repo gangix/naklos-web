@@ -247,7 +247,7 @@ const TrucksPage = () => {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2 flex-1">
                   <div className="flex-1">
-                    <p className="font-bold text-gray-900">{truck.plateNumber}</p>
+                    <p className="font-mono font-bold tabular-nums text-gray-900">{truck.plateNumber}</p>
                     <p className="text-sm text-gray-600 mt-1">{t(`truckType.${truck.type}`, { defaultValue: truck.type })}</p>
                   </div>
                   {hasWarning && (

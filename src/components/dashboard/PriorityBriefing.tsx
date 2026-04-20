@@ -81,9 +81,9 @@ export default function PriorityBriefing({ warningGroups, fuelAttentionCount, fu
             onClick={() => navigate('/manager/fuel-alerts')}
             className="group w-full text-left hover:bg-slate-50/60 transition-colors flex items-stretch"
           >
-            <span className="w-1 bg-urgent-500 flex-shrink-0" aria-hidden="true" />
+            <span className="w-1 bg-info-500 flex-shrink-0" aria-hidden="true" />
             <div className="flex-1 flex items-center gap-3 px-4 py-3.5">
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-urgent-50 text-urgent-600">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-info-50 text-info-600">
                 <Fuel className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
@@ -94,7 +94,7 @@ export default function PriorityBriefing({ warningGroups, fuelAttentionCount, fu
                   {t('dashboard.priority.fuelSubtitle')}
                 </p>
               </div>
-              <span className="text-xs font-bold text-urgent-700 whitespace-nowrap">
+              <span className="text-xs font-bold text-info-700 whitespace-nowrap">
                 {t('dashboard.priority.open')}
               </span>
               <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0 group-hover:text-slate-600" />
