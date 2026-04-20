@@ -215,7 +215,12 @@ export function parseThresholdJson(
   const out: FieldValues = {};
   for (const field of schema) {
     const v = parsed[field.key];
-    out[field.key] = v === undefined || v === null ? field.default : v;
+    // Stored JSON is untyped; a non-scalar (object/array) would silently
+    // corrupt boolean/time fields downstream — fall back to default instead.
+    out[field.key] =
+      typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean'
+        ? v
+        : field.default;
   }
   return out;
 }
