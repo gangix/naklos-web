@@ -66,6 +66,10 @@ describe('landing translations alignment', () => {
       'landing.contact.form.validationRequired',
       'landing.contact.form.validationEmail',
       'landing.contact.form.validationConsent',
+      'landing.hero.preview.alerts.today',
+      'landing.hero.preview.alerts.fuelTitle',
+      'landing.hero.preview.alerts.docTitle',
+      'landing.hero.preview.alerts.driverTitle',
     ];
     for (const [name, keys] of [['en', enKeys], ['tr', trKeys], ['de', deKeys]] as const) {
       for (const key of required) {

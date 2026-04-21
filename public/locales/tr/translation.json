@@ -1807,7 +1807,17 @@
         "priorityTitle": "Bugün senin için",
         "priorityItem1": "34 ABC 123 · Muayene · 2 gün",
         "priorityItem2": "07 XYZ 300 · Sigorta · 8 gün",
-        "priorityCta": "Aç"
+        "priorityCta": "Aç",
+        "alerts": {
+          "today": "Bugünün uyarıları",
+          "fuelTitle": "34 ABC 123 — Olağandışı dolum",
+          "fuelDetail": "80L depoya 127L · ₺1.840 fazla",
+          "fuelWhen": "2 saat önce",
+          "docTitle": "07 XYZ 300 — Muayene",
+          "docDetail": "2 gün içinde dolacak",
+          "driverTitle": "Sürücü: Ahmet K. — Ehliyet",
+          "driverDetail": "8 gün içinde dolacak"
+        }
       }
     },
     "howItWorks": {

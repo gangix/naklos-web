@@ -1810,7 +1810,17 @@
         "priorityTitle": "Top-Prioritäten",
         "priorityItem1": "34 ABC 123 · Inspektion · 2 Tage",
         "priorityItem2": "07 XYZ 300 · Versicherung · 8 Tage",
-        "priorityCta": "Öffnen"
+        "priorityCta": "Öffnen",
+        "alerts": {
+          "today": "Heutige Warnungen",
+          "fuelTitle": "34 ABC 123 — Ungewöhnliche Tankung",
+          "fuelDetail": "127L in 80L-Tank · ₺1.840 zu viel",
+          "fuelWhen": "vor 2 Stunden",
+          "docTitle": "07 XYZ 300 — Inspektion",
+          "docDetail": "Läuft in 2 Tagen ab",
+          "driverTitle": "Fahrer: Ahmet K. — Führerschein",
+          "driverDetail": "Läuft in 8 Tagen ab"
+        }
       }
     },
     "howItWorks": {

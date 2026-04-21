@@ -1810,7 +1810,17 @@
         "priorityTitle": "Top priorities",
         "priorityItem1": "34 ABC 123 · Inspection · 2 days",
         "priorityItem2": "07 XYZ 300 · Insurance · 8 days",
-        "priorityCta": "Open"
+        "priorityCta": "Open",
+        "alerts": {
+          "today": "Today's alerts",
+          "fuelTitle": "34 ABC 123 — Unusual fill-up",
+          "fuelDetail": "127L in 80L tank · ₺1,840 over",
+          "fuelWhen": "2 hours ago",
+          "docTitle": "07 XYZ 300 — Inspection due",
+          "docDetail": "Expires in 2 days",
+          "driverTitle": "Driver: Ahmet K. — License",
+          "driverDetail": "Expires in 8 days"
+        }
       }
     },
     "howItWorks": {
