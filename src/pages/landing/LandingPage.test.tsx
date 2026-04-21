@@ -56,6 +56,8 @@ describe('LandingPage', () => {
 
     expect(screen.getAllByText(/privacy policy/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/info@naklos\.com\.tr/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/naklos teknoloji ltd/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/kvkk/i).length).toBeGreaterThanOrEqual(1);
   });
 
   it('does NOT render forbidden content (WhatsApp / audit)', () => {

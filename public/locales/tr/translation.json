@@ -1948,6 +1948,12 @@
     "footer": {
       "privacy": "Gizlilik Politikası",
       "terms": "Kullanım Koşulları",
+      "kvkk": "KVKK Aydınlatma Metni",
+      "cookies": "Çerez Politikası",
+      "foundingTerms": "Kurucu erişim şartları",
+      "legalHeading": "Naklos Teknoloji Ltd. Şti.",
+      "taxLabel": "VKN:",
+      "addressLabel": "Adres:",
       "copyright": "© {{year}} Naklos. Tüm hakları saklıdır."
     }
   },
@@ -1961,5 +1967,19 @@
     "point4": "Kurucu erişim süresince istediğiniz zaman iptal edebilirsiniz ve hiç ücret ödemezsiniz.",
     "point5": "Verileriniz sizindir. İptal ettiğinizde, hesabınıza erişiminizi korumak dışında hiçbir amaçla kullanmayız.",
     "contact": "Soru mu var? info@naklos.com.tr'ye yazın."
+  },
+  "kvkkPage": {
+    "backLink": "Naklos'a dön",
+    "draftBanner": "Bu sayfa KVKK Aydınlatma Metni için taslaktır. Lansmandan önce hukuk müşaviri tarafından nihai hali verilecek.",
+    "title": "KVKK Aydınlatma Metni",
+    "placeholder": "Naklos Teknoloji Ltd. Şti. olarak, kişisel verilerinizi 6698 sayılı Kişisel Verilerin Korunması Kanunu ('KVKK') kapsamında işliyoruz. Tam metin yakında bu sayfada yayınlanacaktır.",
+    "contact": "Sorularınız için info@naklos.com.tr'ye yazabilirsiniz."
+  },
+  "cookiePage": {
+    "backLink": "Naklos'a dön",
+    "draftBanner": "Bu sayfa Çerez Politikası için taslaktır. Lansmandan önce hukuk müşaviri tarafından nihai hali verilecek.",
+    "title": "Çerez Politikası",
+    "placeholder": "Web sitemizde oturum yönetimi ve dil tercihiniz için strictly-necessary çerezler kullanıyoruz. Üçüncü-taraf analiz veya pazarlama çerezi kullanmıyoruz. Tam metin yakında bu sayfada yayınlanacaktır.",
+    "contact": "Sorularınız için info@naklos.com.tr'ye yazabilirsiniz."
   }
 }

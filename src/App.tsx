@@ -20,6 +20,8 @@ import SettingsPage from './pages/SettingsPage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
 import FoundingTermsPage from './pages/legal/FoundingTermsPage';
+import KvkkPolicyPage from './pages/legal/KvkkPolicyPage';
+import CookiePolicyPage from './pages/legal/CookiePolicyPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
@@ -157,6 +159,8 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
+          <Route path="/kvkk" element={<KvkkPolicyPage />} />
+          <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -191,6 +195,8 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
+          <Route path="/kvkk" element={<KvkkPolicyPage />} />
+          <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
           <Route path="*" element={<FleetSetupPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -207,6 +213,8 @@ function App() {
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
+          <Route path="/kvkk" element={<KvkkPolicyPage />} />
+          <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
           <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
           {isSystemAdmin && (

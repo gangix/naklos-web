@@ -1951,6 +1951,12 @@
     "footer": {
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
+      "kvkk": "KVKK Notice",
+      "cookies": "Cookie Policy",
+      "foundingTerms": "Founding access terms",
+      "legalHeading": "Naklos Teknoloji Ltd. Şti.",
+      "taxLabel": "VKN:",
+      "addressLabel": "Adres:",
       "copyright": "© {{year}} Naklos. All rights reserved."
     }
   },
@@ -1963,6 +1969,20 @@
     "point3": "Founding access does not auto-convert to a paid plan. You have to actively confirm billing for it to start.",
     "point4": "You can cancel at any time during founding access and never be charged.",
     "point5": "Your data stays yours. Canceling means we stop using it for anything beyond keeping your account accessible to you.",
+    "contact": "Questions? Email info@naklos.com.tr."
+  },
+  "kvkkPage": {
+    "backLink": "Back to Naklos",
+    "draftBanner": "This page is a draft of the KVKK Notice. It will be reviewed by counsel before launch.",
+    "title": "KVKK Notice",
+    "placeholder": "Naklos Teknoloji Ltd. Şti. processes your personal data under Turkish Personal Data Protection Law No. 6698 ('KVKK'). The full notice will be published on this page shortly.",
+    "contact": "Questions? Email info@naklos.com.tr."
+  },
+  "cookiePage": {
+    "backLink": "Back to Naklos",
+    "draftBanner": "This page is a draft of the Cookie Policy. It will be reviewed by counsel before launch.",
+    "title": "Cookie Policy",
+    "placeholder": "We use strictly-necessary cookies for session management and your language preference. No third-party analytics or marketing cookies. The full policy will be published on this page shortly.",
     "contact": "Questions? Email info@naklos.com.tr."
   }
 }

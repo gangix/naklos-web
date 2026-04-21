@@ -1951,6 +1951,12 @@
     "footer": {
       "privacy": "Datenschutzerklärung",
       "terms": "Nutzungsbedingungen",
+      "kvkk": "KVKK-Hinweis",
+      "cookies": "Cookie-Richtlinie",
+      "foundingTerms": "Gründungszugang-Bedingungen",
+      "legalHeading": "Naklos Teknoloji Ltd. Şti.",
+      "taxLabel": "Steuernummer:",
+      "addressLabel": "Adresse:",
       "copyright": "© {{year}} Naklos. Alle Rechte vorbehalten."
     }
   },
@@ -1963,6 +1969,20 @@
     "point3": "Gründungszugang wandelt sich nicht automatisch in einen bezahlten Tarif um. Sie müssen die Abrechnung aktiv bestätigen.",
     "point4": "Sie können während des Gründungszugangs jederzeit kündigen und werden nie abgerechnet.",
     "point5": "Ihre Daten gehören Ihnen. Bei Kündigung verwenden wir sie für nichts weiter, außer Ihr Konto für Sie zugänglich zu halten.",
+    "contact": "Fragen? Schreiben Sie an info@naklos.com.tr."
+  },
+  "kvkkPage": {
+    "backLink": "Zurück zu Naklos",
+    "draftBanner": "Diese Seite ist ein Entwurf des KVKK-Hinweises. Sie wird vor dem Start von einem Anwalt überprüft.",
+    "title": "KVKK-Hinweis",
+    "placeholder": "Naklos Teknoloji Ltd. Şti. verarbeitet Ihre personenbezogenen Daten gemäß dem türkischen Datenschutzgesetz Nr. 6698 ('KVKK'). Der vollständige Hinweis wird in Kürze auf dieser Seite veröffentlicht.",
+    "contact": "Fragen? Schreiben Sie an info@naklos.com.tr."
+  },
+  "cookiePage": {
+    "backLink": "Zurück zu Naklos",
+    "draftBanner": "Diese Seite ist ein Entwurf der Cookie-Richtlinie. Sie wird vor dem Start von einem Anwalt überprüft.",
+    "title": "Cookie-Richtlinie",
+    "placeholder": "Wir verwenden ausschließlich technisch notwendige Cookies für die Sitzungsverwaltung und Ihre Spracheinstellung. Keine Drittanbieter-Analyse- oder Marketing-Cookies. Die vollständige Richtlinie wird in Kürze auf dieser Seite veröffentlicht.",
     "contact": "Fragen? Schreiben Sie an info@naklos.com.tr."
   }
 }

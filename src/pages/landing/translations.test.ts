@@ -88,6 +88,14 @@ describe('landing translations alignment', () => {
       'foundingTerms.draftBanner',
       'foundingTerms.point1',
       'foundingTerms.contact',
+      'landing.footer.legalHeading',
+      'landing.footer.kvkk',
+      'landing.footer.cookies',
+      'landing.footer.foundingTerms',
+      'kvkkPage.title',
+      'kvkkPage.placeholder',
+      'cookiePage.title',
+      'cookiePage.placeholder',
     ];
     for (const [name, keys] of [['en', enAllKeys], ['tr', trAllKeys], ['de', deAllKeys]] as const) {
       for (const key of required) {
