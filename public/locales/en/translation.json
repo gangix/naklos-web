@@ -1893,6 +1893,11 @@
       "proPrice": "₺199",
       "businessPrice": "₺149",
       "businessNote": "25+ trucks",
+      "futureLabel": "When billing ships",
+      "lockInLabel": "Founding lock-in (30% off, 12 mo)",
+      "termsLinkLabel": "Founding access terms",
+      "ownerLockInPrice": "₺139",
+      "businessLockInPrice": "₺104",
       "features": {
         "trucks5": "All modules enabled",
         "trucks25": "Volume discount (25%)",
@@ -1942,5 +1947,16 @@
       "terms": "Terms of Service",
       "copyright": "© {{year}} Naklos. All rights reserved."
     }
+  },
+  "foundingTerms": {
+    "draftBanner": "This page explains what founding access means before our billing system goes live. It will be reviewed by counsel before launch.",
+    "backLink": "Back to Naklos",
+    "title": "Founding access — what you're signing up for",
+    "point1": "Billing starts in Q2 2026 at the earliest. We'll give 30 days' notice by email before the first charge.",
+    "point2": "Founding customers get 30% off the published price for 12 months from the first billed month.",
+    "point3": "Founding access does not auto-convert to a paid plan. You have to actively confirm billing for it to start.",
+    "point4": "You can cancel at any time during founding access and never be charged.",
+    "point5": "Your data stays yours. Canceling means we stop using it for anything beyond keeping your account accessible to you.",
+    "contact": "Questions? Email info@naklos.com.tr."
   }
 }

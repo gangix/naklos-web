@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { setLeadSource } from './leadSource';
@@ -42,6 +43,10 @@ export default function Pricing() {
               <span className="text-2xl font-extrabold text-slate-900 tracking-tight">{t('landing.pricing.free')}</span>
             </div>
             <p className="text-xs text-slate-500 mb-5">{t('landing.pricing.freeSub')}</p>
+            <div className="text-[11px] text-slate-400 mb-5 -mt-3">
+              <span className="line-through">{t('landing.pricing.proPrice')}</span>
+              <span className="ml-1">· {t('landing.pricing.futureLabel')}</span>
+            </div>
             <ul className="space-y-3 mb-8 text-sm text-slate-700">
               <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-confirm-600 flex-shrink-0" aria-hidden="true" /> {t('landing.pricing.features.trucks5')}</li>
               <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-confirm-600 flex-shrink-0" aria-hidden="true" /> {t('landing.pricing.features.fuelPerformance')}</li>
@@ -66,8 +71,12 @@ export default function Pricing() {
             </div>
             <h3 className="text-sm font-bold text-primary-800 mb-1">{t('landing.pricing.tiers.pro')}</h3>
             <div className="mb-5">
-              <span className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">{t('landing.pricing.proPrice')}</span>
-              <span className="text-sm text-slate-500 font-medium">{t('landing.pricing.perMonth')}</span>
+              <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{t('landing.pricing.free')}</span>
+              <div className="text-[11px] text-slate-500 mt-1">
+                <span className="line-through">{t('landing.pricing.proPrice')}</span>
+                <span className="ml-1">→ <span className="font-semibold text-primary-800">{t('landing.pricing.ownerLockInPrice')}</span>{t('landing.pricing.perMonth')}</span>
+              </div>
+              <div className="text-[10px] text-slate-400 mt-0.5">{t('landing.pricing.lockInLabel')}</div>
             </div>
             <ul className="space-y-3 mb-8 text-sm text-slate-700">
               <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-confirm-600 flex-shrink-0" aria-hidden="true" /> {t('landing.pricing.features.fuelPerformance')}</li>
@@ -88,9 +97,13 @@ export default function Pricing() {
           <div className="bg-white rounded-2xl border border-slate-200 p-6 transition-colors hover:border-slate-300">
             <h3 className="text-sm font-bold text-slate-900 mb-1">{t('landing.pricing.tiers.business')}</h3>
             <div className="mb-1">
-              <span className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">{t('landing.pricing.businessPrice')}</span>
-              <span className="text-sm text-slate-500 font-medium">{t('landing.pricing.perMonth')}</span>
+              <span className="text-3xl font-extrabold text-slate-900 tracking-tight">{t('landing.pricing.free')}</span>
             </div>
+            <div className="text-[11px] text-slate-500 mb-1">
+              <span className="line-through">{t('landing.pricing.businessPrice')}</span>
+              <span className="ml-1">→ <span className="font-semibold text-primary-800">{t('landing.pricing.businessLockInPrice')}</span>{t('landing.pricing.perMonth')}</span>
+            </div>
+            <p className="text-xs text-slate-400 mb-1">{t('landing.pricing.lockInLabel')}</p>
             <p className="text-xs text-slate-500 mb-5">{t('landing.pricing.businessNote')}</p>
             <ul className="space-y-3 mb-8 text-sm text-slate-700">
               <li className="flex items-center gap-2.5"><Check className="w-4 h-4 text-confirm-600 flex-shrink-0" aria-hidden="true" /> {t('landing.pricing.features.fuelPerformance')}</li>
@@ -126,6 +139,15 @@ export default function Pricing() {
               {t('landing.pricing.contactUs')}
             </button>
           </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <Link
+            to="/founding-terms"
+            className="text-sm text-slate-600 hover:text-slate-900 underline decoration-slate-300 hover:decoration-slate-600 underline-offset-2 transition-colors"
+          >
+            {t('landing.pricing.termsLinkLabel')} →
+          </Link>
         </div>
       </div>
     </section>

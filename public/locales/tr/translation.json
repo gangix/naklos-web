@@ -1890,6 +1890,11 @@
       "proPrice": "₺199",
       "businessPrice": "₺149",
       "businessNote": "25+ araç",
+      "futureLabel": "Ücretlendirme başladığında",
+      "lockInLabel": "Kurucu kilidi (%30 indirim, 12 ay)",
+      "termsLinkLabel": "Kurucu erişim şartları",
+      "ownerLockInPrice": "₺139",
+      "businessLockInPrice": "₺104",
       "features": {
         "trucks5": "Tüm modüller açık",
         "trucks25": "Hacim indirimi (%25)",
@@ -1939,5 +1944,16 @@
       "terms": "Kullanım Koşulları",
       "copyright": "© {{year}} Naklos. Tüm hakları saklıdır."
     }
+  },
+  "foundingTerms": {
+    "draftBanner": "Bu sayfa, ücretlendirme sistemimiz yürürlüğe girmeden önce kurucu erişimin ne anlama geldiğini açıklar. Lansmandan önce hukuk müşaviri tarafından gözden geçirilecek.",
+    "backLink": "Naklos'a dön",
+    "title": "Kurucu erişim — ne kaydettiriyorsunuz",
+    "point1": "Ücretlendirme en erken 2026 Q2'de başlar. İlk tahsilattan 30 gün önce e-posta ile haber veririz.",
+    "point2": "Kurucu müşteriler, ilk ücretli aydan başlayarak 12 ay boyunca yayımlanan fiyatın %30 indirimli halini alır.",
+    "point3": "Kurucu erişim, otomatik olarak ücretli plana geçmez. Ücretlendirmenin başlaması için aktif olarak onaylamanız gerekir.",
+    "point4": "Kurucu erişim süresince istediğiniz zaman iptal edebilirsiniz ve hiç ücret ödemezsiniz.",
+    "point5": "Verileriniz sizindir. İptal ettiğinizde, hesabınıza erişiminizi korumak dışında hiçbir amaçla kullanmayız.",
+    "contact": "Soru mu var? info@naklos.com.tr'ye yazın."
   }
 }

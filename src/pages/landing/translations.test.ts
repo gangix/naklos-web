@@ -22,6 +22,11 @@ describe('landing translations alignment', () => {
   const trKeys = flattenKeys((tr as { landing: unknown }).landing, 'landing').sort();
   const deKeys = flattenKeys((de as { landing: unknown }).landing, 'landing').sort();
 
+  // Full-file key sets for top-level sections (e.g. foundingTerms)
+  const enAllKeys = flattenKeys(en).sort();
+  const trAllKeys = flattenKeys(tr).sort();
+  const deAllKeys = flattenKeys(de).sort();
+
   it('EN and TR landing key sets match exactly', () => {
     expect(trKeys).toEqual(enKeys);
   });
@@ -70,8 +75,17 @@ describe('landing translations alignment', () => {
       'landing.hero.preview.alerts.fuelTitle',
       'landing.hero.preview.alerts.docTitle',
       'landing.hero.preview.alerts.driverTitle',
+      'landing.pricing.futureLabel',
+      'landing.pricing.lockInLabel',
+      'landing.pricing.termsLinkLabel',
+      'landing.pricing.ownerLockInPrice',
+      'landing.pricing.businessLockInPrice',
+      'foundingTerms.title',
+      'foundingTerms.draftBanner',
+      'foundingTerms.point1',
+      'foundingTerms.contact',
     ];
-    for (const [name, keys] of [['en', enKeys], ['tr', trKeys], ['de', deKeys]] as const) {
+    for (const [name, keys] of [['en', enAllKeys], ['tr', trAllKeys], ['de', deAllKeys]] as const) {
       for (const key of required) {
         expect(keys, `missing required key ${key} in ${name}`).toContain(key);
       }

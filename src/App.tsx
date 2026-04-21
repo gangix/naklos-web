@@ -19,6 +19,7 @@ import ClientDetailPage from './pages/ClientDetailPage';
 import SettingsPage from './pages/SettingsPage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
+import FoundingTermsPage from './pages/legal/FoundingTermsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
@@ -155,6 +156,7 @@ function App() {
         <Routes>
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -188,6 +190,7 @@ function App() {
         <Routes>
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="*" element={<FleetSetupPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -203,6 +206,7 @@ function App() {
         <Routes>
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
           {isSystemAdmin && (
