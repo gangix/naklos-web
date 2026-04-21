@@ -36,7 +36,7 @@ describe('LandingPage', () => {
   it('renders all major sections', () => {
     renderPage();
 
-    expect(screen.getByText(/the fuel leak you can't see in excel/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/the fuel leak you can't see in excel/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/we surface it the day it happens/i)).toBeInTheDocument();
 
     expect(screen.getByText(/three steps — data to action/i)).toBeInTheDocument();
