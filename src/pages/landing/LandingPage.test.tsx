@@ -46,6 +46,8 @@ describe('LandingPage', () => {
 
     expect(screen.getByText(/goodbye, spreadsheets/i)).toBeInTheDocument();
 
+    expect(screen.getByText(/looking for the first ten fleets/i)).toBeInTheDocument();
+
     expect(screen.getByText(/founding customers lock in/i)).toBeInTheDocument();
     expect(screen.getAllByText(/get founding access/i).length).toBeGreaterThanOrEqual(3);
 

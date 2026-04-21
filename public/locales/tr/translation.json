@@ -1869,6 +1869,12 @@
       },
       "cta": "Şimdi dene"
     },
+    "socialProof": {
+      "eyebrow": "Kurucu müşteriler",
+      "title": "Tonu belirleyecek ilk on filoyu arıyoruz.",
+      "body": "Ürünü lansmana kadar bizimle birlikte çalıştıracak on kurucu müşteri seçiyoruz. Türkiye'de 5+ aracınız varsa, Naklos'un çözdüğü sorunu yaşıyorsanız ve ücretlendirme başladığında 12 ay boyunca %30 indirim istiyorsanız — bu sizin için.",
+      "cta": "Bize yazın"
+    },
     "pricing": {
       "eyebrow": "FİYATLANDIRMA",
       "title": "Anlaşılır fiyatlandırma.",
