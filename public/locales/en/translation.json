@@ -1794,88 +1794,195 @@
   "landing": {
     "nav": { "login": "Log in" },
     "hero": {
-      "badge": "For SMB fleets",
-      "title1": "Manage your fleet",
-      "title2": "with ease",
-      "tagline": "One tool for vehicles, drivers and documents. Never miss a renewal again.",
+      "badge": "For Turkish SMB fleets · KVKK-compliant",
+      "title1": "The fuel leak you can't see in Excel.",
+      "title2": "We surface it the day it happens.",
+      "tagline": "The fuel leak you can't see in Excel. The inspection you'll miss next month. The license that expired yesterday. Naklos surfaces them before they cost you.",
       "ctaPrimary": "Start free",
+      "ctaPrimarySub": "No credit card. No sales call.",
       "ctaSecondary": "I have an account",
       "ctaGoogle": "Continue with Google",
       "preview": {
-        "label": "Dashboard",
+        "label": "Today's priorities",
         "stat1Label": "Vehicles",
         "stat2Label": "Drivers",
         "stat3Label": "Fuel alerts",
         "priorityTitle": "Top priorities",
         "priorityItem1": "34 ABC 123 · Inspection · 2 days",
         "priorityItem2": "07 XYZ 300 · Insurance · 8 days",
-        "priorityCta": "Open docs"
+        "priorityCta": "Open",
+        "alerts": {
+          "today": "Today's alerts",
+          "fuelTitle": "34 ABC 123 — Unusual fill-up",
+          "fuelDetail": "127L in 80L tank · ₺1,840 over",
+          "fuelWhen": "2 hours ago",
+          "docTitle": "07 XYZ 300 — Inspection due",
+          "docDetail": "Expires in 2 days",
+          "driverTitle": "Driver: Ahmet K. — License",
+          "driverDetail": "Expires in 8 days"
+        }
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "Three steps — data to action",
+      "subtitle": "15-minute setup. First anomaly within a week.",
+      "steps": {
+        "s1": {
+          "title": "Upload your Excel",
+          "desc": "Export from OPET, Shell, BP — plus your vehicle and driver list. Import in 15 minutes."
+        },
+        "s2": {
+          "title": "Configure thresholds",
+          "desc": "Tank capacity, L/100 km anomaly threshold, how many days ahead to warn on docs. Your rules."
+        },
+        "s3": {
+          "title": "Get alerted",
+          "desc": "Suspicious fill-up → email in minutes. Expiring document → 30 days ahead. Monthly performance report."
+        }
       }
     },
     "features": {
-      "vehicles": {
-        "title": "Vehicle tracking",
-        "description": "Track insurance, inspection and comprehensive-cover documents for every truck. Never miss a due date."
-      },
-      "drivers": {
-        "title": "Driver management",
-        "description": "Keep license, SRC and CPC documents up to date. Automatic reminders when renewal is due."
+      "srHeading": "What Naklos does for your fleet",
+      "fuel": {
+        "title": "Your cards spend. Which ones aren't driving?",
+        "description": "Per-vehicle anomaly rules flag suspicious fill-ups. Email alert in minutes. Built for the way fuel cards actually get abused in Turkey."
       },
       "docs": {
-        "title": "Document alerts",
-        "description": "Automatic alerts for expiring documents. Avoid fines and operational downtime."
+        "title": "30-day warning before every roadside check",
+        "description": "Inspection, license, SRC, K-belge, insurance — automatic reminders before expiry. Avoid ₺2,000–₺10,000 fines."
       },
-      "fuel": {
-        "title": "Fuel performance",
-        "description": "See consumption patterns, unusual fill-ups and savings opportunities automatically. Collaborate with your drivers for a more efficient fleet."
+      "vehicles": {
+        "title": "Know which truck burns 22 L/100km, and which burns 28",
+        "description": "L/100 km, cost per km, side-by-side comparison. The efficient vs. the expensive, with numbers."
+      },
+      "drivers": {
+        "title": "Paste the Excel. We take it from there.",
+        "description": "Bulk-import vehicles, drivers and fuel transactions. No GPS box, no terminal, no hardware."
       }
     },
     "benefits": {
-      "title": "Goodbye, spreadsheets",
+      "title": "Goodbye, spreadsheets.",
       "items": {
-        "b1": "One app replaces the Excel sheet and the WhatsApp group",
-        "b2": "Automatic alerts for overdue documents",
-        "b3": "Drivers can update their own information",
-        "b4": "Free trial — no credit card required",
-        "b5": "Turkish-first product, with English and German UI"
+        "b1": "Built for the owner checking the phone at 2 AM — not the accountant in Excel.",
+        "b2": "Email alert the moment litre-per-100km goes past your threshold.",
+        "b3": "No GPS box, no terminal, no installation — your fuel-card Excel is enough.",
+        "b4": "Founding access — free during rollout, 30% off lock-in when billing ships.",
+        "b5": "Turkish-first. KVKK-compliant. Email support."
       },
       "cta": "Try it now"
     },
+    "socialProof": {
+      "eyebrow": "Founding customers",
+      "title": "Looking for the first ten fleets who'll set the tone.",
+      "body": "We're picking ten founding customers to run the product with us through launch. If you run 5+ trucks in Turkey, have the pain Naklos solves, and want 30% off for 12 months when billing ships — this is for you.",
+      "cta": "Talk to us"
+    },
     "pricing": {
+      "eyebrow": "PRICING",
+      "title": "Pricing that makes sense.",
+      "subtitle": "Per truck, per month. Plain pricing. No hardware, no contracts.",
+      "foundingBanner": "Founding customers lock in 30% off for 12 months when billing ships.",
       "tiers": {
         "free": "Starter",
-        "pro": "Professional",
+        "pro": "Owner",
         "business": "Business",
         "enterprise": "Enterprise"
       },
       "popular": "Most Popular",
       "free": "Free",
-      "perMonth": "/mo",
+      "freeSub": "founding access · free during rollout",
+      "perMonth": "/truck/mo",
       "contactPrice": "Contact us",
-      "contactUs": "Contact Us",
-      "startFree": "Start Free",
+      "contactUs": "Talk to us",
+      "foundingCta": "Get founding access",
+      "proPrice": "₺199",
+      "businessPrice": "₺149",
+      "businessNote": "25+ trucks",
+      "futureLabel": "When billing ships",
+      "lockInLabel": "Founding lock-in (30% off, 12 mo)",
+      "termsLinkLabel": "Founding access terms",
+      "ownerLockInPrice": "₺139",
+      "businessLockInPrice": "₺104",
       "features": {
-        "trucks5": "5 vehicles",
-        "trucks25": "25 vehicles",
-        "trucks100": "100 vehicles",
+        "trucks5": "All modules enabled",
+        "trucks25": "Volume discount (25%)",
+        "trucks100": "Custom pricing",
         "trucksUnlimited": "Unlimited vehicles",
-        "drivers5": "5 drivers",
-        "drivers25": "25 drivers",
-        "drivers100": "100 drivers",
-        "driversUnlimited": "Unlimited drivers",
-        "docsAndEmails": "Document tracking with email alerts",
-        "fuelPerformance": "Fuel performance + unusual fill-up detection",
-        "fuelPerformanceDenied": "Fuel performance tracking",
-        "weeklyDigest": "Weekly email digest",
-        "bulkImport": "Bulk import",
+        "drivers5": "No credit card needed",
+        "drivers25": "For 25+ trucks",
+        "drivers100": "For 100+ trucks",
+        "driversUnlimited": "Custom integration + API",
+        "docsAndEmails": "Document tracking + alerts",
+        "fuelPerformance": "Fuel anomaly + performance",
+        "weeklyDigest": "Weekly fleet digest",
+        "bulkImport": "Bulk Excel import",
         "apiAccess": "API access",
-        "prioritySupport": "Priority support"
+        "prioritySupport": "Email priority support"
+      }
+    },
+    "contact": {
+      "title": "Talk to a human",
+      "subtitle": "Questions about a tier, a custom integration, or a fleet under 5 trucks? Drop a note — we reply within 1 business day.",
+      "form": {
+        "name": "Your name",
+        "email": "Email address",
+        "phone": "Phone (optional)",
+        "company": "Company (optional)",
+        "fleetSize": "How many trucks?",
+        "fleetSizeOptions": {
+          "xs": "1–5",
+          "s": "6–25",
+          "m": "26–100",
+          "l": "100+"
+        },
+        "message": "Anything we should know? (optional)",
+        "consent": "I consent to Naklos processing my contact data per the Privacy Policy to respond to this inquiry.",
+        "submit": "Send",
+        "submitting": "Sending…",
+        "success": "Thanks — we'll reply within 1 business day.",
+        "errorGeneric": "Something went wrong. Try again, or email info@naklos.com.tr directly.",
+        "errorRateLimit": "You've sent this a few times already. Please wait a bit before trying again.",
+        "validationRequired": "Required.",
+        "validationEmail": "Enter a valid email.",
+        "validationConsent": "Please accept the privacy policy to continue."
       }
     },
     "footer": {
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
+      "kvkk": "KVKK Notice",
+      "cookies": "Cookie Policy",
+      "foundingTerms": "Founding access terms",
+      "legalHeading": "Naklos Teknoloji Ltd. Şti.",
+      "taxLabel": "VKN:",
+      "addressLabel": "Adres:",
       "copyright": "© {{year}} Naklos. All rights reserved."
     }
+  },
+  "foundingTerms": {
+    "draftBanner": "This page explains what founding access means before our billing system goes live. It will be reviewed by counsel before launch.",
+    "backLink": "Back to Naklos",
+    "title": "Founding access — what you're signing up for",
+    "point1": "Billing starts in Q2 2026 at the earliest. We'll give 30 days' notice by email before the first charge.",
+    "point2": "Founding customers get 30% off the published price for 12 months from the first billed month.",
+    "point3": "Founding access does not auto-convert to a paid plan. You have to actively confirm billing for it to start.",
+    "point4": "You can cancel at any time during founding access and never be charged.",
+    "point5": "Your data stays yours. Canceling means we stop using it for anything beyond keeping your account accessible to you.",
+    "contact": "Questions? Email info@naklos.com.tr."
+  },
+  "kvkkPage": {
+    "backLink": "Back to Naklos",
+    "draftBanner": "This page is a draft of the KVKK Notice. It will be reviewed by counsel before launch.",
+    "title": "KVKK Notice",
+    "placeholder": "Naklos Teknoloji Ltd. Şti. processes your personal data under Turkish Personal Data Protection Law No. 6698 ('KVKK'). The full notice will be published on this page shortly.",
+    "contact": "Questions? Email info@naklos.com.tr."
+  },
+  "cookiePage": {
+    "backLink": "Back to Naklos",
+    "draftBanner": "This page is a draft of the Cookie Policy. It will be reviewed by counsel before launch.",
+    "title": "Cookie Policy",
+    "placeholder": "We use strictly-necessary cookies for session management and your language preference. No third-party analytics or marketing cookies. The full policy will be published on this page shortly.",
+    "contact": "Questions? Email info@naklos.com.tr."
   }
 }

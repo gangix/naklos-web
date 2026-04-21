@@ -1789,90 +1789,197 @@
     }
   },
   "landing": {
-    "nav": { "login": "Giriş Yap" },
+    "nav": { "login": "Giriş yap" },
     "hero": {
-      "badge": "KOBİ filoları için",
-      "title1": "Filonuzu kolayca",
-      "title2": "yönetin",
-      "tagline": "Araçlar, sürücüler ve belgeler için tek bir çözüm. Belge yenileme tarihlerini asla kaçırmayın.",
-      "ctaPrimary": "Ücretsiz Başlayın",
-      "ctaSecondary": "Zaten hesabım var",
+      "badge": "Türk KOBİ filoları için · KVKK uyumlu",
+      "title1": "Excel'de göremediğiniz yakıt kaçağı.",
+      "title2": "Olduğu an yüzeye çıkarıyoruz.",
+      "tagline": "Excel'de göremediğiniz yakıt kaçağı. Gelecek ay kaçıracağınız muayene. Dün süresi dolan ehliyet. Naklos, size paraya mal olmadan önce bunları gösterir.",
+      "ctaPrimary": "Ücretsiz başla",
+      "ctaPrimarySub": "Kart yok. Satış görüşmesi yok.",
+      "ctaSecondary": "Hesabım var",
       "ctaGoogle": "Google ile devam et",
       "preview": {
-        "label": "Ana Sayfa",
-        "stat1Label": "Araç",
-        "stat2Label": "Sürücü",
-        "stat3Label": "Yakıt uyarısı",
-        "priorityTitle": "Öncelikli işler",
+        "label": "Bugünün öncelikleri",
+        "stat1Label": "Araçlar",
+        "stat2Label": "Sürücüler",
+        "stat3Label": "Yakıt uyarıları",
+        "priorityTitle": "Bugün senin için",
         "priorityItem1": "34 ABC 123 · Muayene · 2 gün",
-        "priorityItem2": "07 XYZ 300 · Zorunlu sigorta · 8 gün",
-        "priorityCta": "Belgeleri aç"
+        "priorityItem2": "07 XYZ 300 · Sigorta · 8 gün",
+        "priorityCta": "Aç",
+        "alerts": {
+          "today": "Bugünün uyarıları",
+          "fuelTitle": "34 ABC 123 — Olağandışı dolum",
+          "fuelDetail": "80L depoya 127L · ₺1.840 fazla",
+          "fuelWhen": "2 saat önce",
+          "docTitle": "07 XYZ 300 — Muayene",
+          "docDetail": "2 gün içinde dolacak",
+          "driverTitle": "Sürücü: Ahmet K. — Ehliyet",
+          "driverDetail": "8 gün içinde dolacak"
+        }
+      }
+    },
+    "howItWorks": {
+      "eyebrow": "Nasıl çalışır",
+      "title": "Üç adımda — veriden aksiyona",
+      "subtitle": "15 dakikalık kurulum. İlk anomali bir hafta içinde.",
+      "steps": {
+        "s1": {
+          "title": "Excel'ini yükle",
+          "desc": "OPET, Shell, BP ekstreni — ve araç/sürücü listeni. 15 dakikada içeride."
+        },
+        "s2": {
+          "title": "Eşikleri belirle",
+          "desc": "Depo kapasitesi, L/100 km anomali eşiği, belge uyarı süresi. Kurallar senin."
+        },
+        "s3": {
+          "title": "Uyarıları al",
+          "desc": "Şüpheli dolum → dakikalar içinde e-posta. Biten belge → 30 gün önceden. Aylık performans raporu."
+        }
       }
     },
     "features": {
-      "vehicles": {
-        "title": "Araç Takibi",
-        "description": "Araçlarınızın sigorta, muayene ve kasko belgelerini takip edin. Son tarihleri kaçırmayın."
-      },
-      "drivers": {
-        "title": "Sürücü Yönetimi",
-        "description": "Ehliyet, SRC ve CPC belgelerini takip edin. Yenileme zamanı geldiğinde otomatik bildirim alın."
+      "srHeading": "Naklos filon için ne yapıyor",
+      "fuel": {
+        "title": "Yakıt kartların harcıyor. Hangisi yol yapmıyor?",
+        "description": "Araç bazlı anomali kuralları şüpheli dolumları işaretler. Dakikalar içinde e-posta uyarı. Türkiye'de yakıt kartlarının nasıl suistimal edildiğini bilerek tasarlandı."
       },
       "docs": {
-        "title": "Belge Uyarıları",
-        "description": "Süresi dolan belgeler için otomatik uyarılar. Cezalardan ve işletme kesintilerinden kurtulun."
+        "title": "Her yol kontrolünden 30 gün önce uyarı",
+        "description": "Muayene, ehliyet, SRC, K-belgesi, sigorta — bitiş öncesi otomatik hatırlatma. ₺2.000–₺10.000 cezalardan kaçın."
       },
-      "fuel": {
-        "title": "Yakıt Verimliliği",
-        "description": "Tüketim paternlerini, olağan dışı dolumları ve tasarruf fırsatlarını otomatik görün. Sürücünüzle birlikte daha verimli yolculuk edin."
+      "vehicles": {
+        "title": "Hangi kamyon 22 L/100km yakıyor, hangisi 28",
+        "description": "L/100 km, km başına maliyet, yan yana karşılaştırma. Verimli olan, olmayan — rakamlarla."
+      },
+      "drivers": {
+        "title": "Excel'i yapıştır. Gerisini biz hallederiz.",
+        "description": "Araç, sürücü ve yakıt hareketlerini toplu olarak içeri aktar. GPS kutusu, terminal, donanım yok."
       }
     },
     "benefits": {
-      "title": "Excel tablolarına son",
+      "title": "Excel'e elveda.",
       "items": {
-        "b1": "Excel tablolarına son — her şey tek bir uygulamada",
-        "b2": "Süresi geçmiş belgeler için otomatik uyarılar",
-        "b3": "Sürücüler kendi bilgilerini güncelleyebilir",
-        "b4": "Ücretsiz deneme — kredi kartı gerekmez",
-        "b5": "Türkçe arayüz, Türkçe destek"
+        "b1": "Excel'deki muhasebeciye değil, gece 2'de telefonuna bakan patrona göre.",
+        "b2": "Litre/100km eşiğini aştığı anda e-posta uyarı.",
+        "b3": "GPS kutusu, terminal, kurulum yok — mevcut yakıt kartı Excel'in yeter.",
+        "b4": "Kurucu erişim — lansman boyunca ücretsiz, faturalamaya geçtiğimizde 12 ay %30 kilit.",
+        "b5": "Türkçe öncelikli. KVKK uyumlu. E-posta destek."
       },
-      "cta": "Hemen Deneyin"
+      "cta": "Şimdi dene"
+    },
+    "socialProof": {
+      "eyebrow": "Kurucu müşteriler",
+      "title": "Tonu belirleyecek ilk on filoyu arıyoruz.",
+      "body": "Ürünü lansmana kadar bizimle birlikte çalıştıracak on kurucu müşteri seçiyoruz. Türkiye'de 5+ aracınız varsa, Naklos'un çözdüğü sorunu yaşıyorsanız ve ücretlendirme başladığında 12 ay boyunca %30 indirim istiyorsanız — bu sizin için.",
+      "cta": "Bize yazın"
     },
     "pricing": {
+      "eyebrow": "FİYATLANDIRMA",
+      "title": "Anlaşılır fiyatlandırma.",
+      "subtitle": "Araç başına, ay başına. Düz fiyat. Donanım yok, kontrat yok.",
+      "foundingBanner": "Kurucu müşteriler, faturalamaya geçtiğimizde 12 ay boyunca %30 indirim kilitler.",
       "tiers": {
-        "free": "Başlangıç",
-        "pro": "Profesyonel",
-        "business": "İşletme",
-        "enterprise": "Kurumsal"
+        "free": "Starter",
+        "pro": "Sahip",
+        "business": "Kurumsal",
+        "enterprise": "Enterprise"
       },
       "popular": "En Popüler",
       "free": "Ücretsiz",
-      "perMonth": "/ay",
+      "freeSub": "kurucu erişim · lansman boyunca ücretsiz",
+      "perMonth": "/araç/ay",
       "contactPrice": "Bize ulaşın",
-      "contactUs": "Bize Ulaşın",
-      "startFree": "Ücretsiz Başla",
+      "contactUs": "Konuşalım",
+      "foundingCta": "Kurucu erişim al",
+      "proPrice": "₺199",
+      "businessPrice": "₺149",
+      "businessNote": "25+ araç",
+      "futureLabel": "Ücretlendirme başladığında",
+      "lockInLabel": "Kurucu kilidi (%30 indirim, 12 ay)",
+      "termsLinkLabel": "Kurucu erişim şartları",
+      "ownerLockInPrice": "₺139",
+      "businessLockInPrice": "₺104",
       "features": {
-        "trucks5": "5 araç",
-        "trucks25": "25 araç",
-        "trucks100": "100 araç",
+        "trucks5": "Tüm modüller açık",
+        "trucks25": "Hacim indirimi (%25)",
+        "trucks100": "Özel fiyatlandırma",
         "trucksUnlimited": "Sınırsız araç",
-        "drivers5": "5 sürücü",
-        "drivers25": "25 sürücü",
-        "drivers100": "100 sürücü",
-        "driversUnlimited": "Sınırsız sürücü",
-        "docsAndEmails": "Belge takibi ve e-posta uyarıları",
-        "fuelPerformance": "Yakıt verimliliği + olağan dışı dolum tespiti",
-        "fuelPerformanceDenied": "Yakıt verimliliği takibi",
-        "weeklyDigest": "Haftalık e-posta özeti",
-        "bulkImport": "Toplu içe aktarma",
+        "drivers5": "Kredi kartı gerekmez",
+        "drivers25": "25+ araç için",
+        "drivers100": "100+ araç için",
+        "driversUnlimited": "Özel entegrasyon + API",
+        "docsAndEmails": "Belge takibi + uyarılar",
+        "fuelPerformance": "Yakıt anomalisi + performans",
+        "weeklyDigest": "Haftalık filo özeti",
+        "bulkImport": "Toplu Excel içe aktarma",
         "apiAccess": "API erişimi",
-        "prioritySupport": "Öncelikli destek"
+        "prioritySupport": "E-posta öncelikli destek"
+      }
+    },
+    "contact": {
+      "title": "Bir insanla konuş",
+      "subtitle": "Bir fiyat tarifesi, özel entegrasyon ya da 5 aracın altında bir filo mu? Bir not bırak — 1 iş günü içinde dönüyoruz.",
+      "form": {
+        "name": "Adın",
+        "email": "E-posta adresi",
+        "phone": "Telefon (opsiyonel)",
+        "company": "Şirket (opsiyonel)",
+        "fleetSize": "Kaç araç?",
+        "fleetSizeOptions": {
+          "xs": "1–5",
+          "s": "6–25",
+          "m": "26–100",
+          "l": "100+"
+        },
+        "message": "Bilmemiz gereken bir şey var mı? (opsiyonel)",
+        "consent": "Bu talebe dönüş yapabilmesi için Naklos'un iletişim verilerimi Gizlilik Politikası uyarınca işlemesine onay veriyorum.",
+        "submit": "Gönder",
+        "submitting": "Gönderiliyor…",
+        "success": "Teşekkürler — 1 iş günü içinde döneceğiz.",
+        "errorGeneric": "Bir şeyler ters gitti. Tekrar dene ya da doğrudan info@naklos.com.tr'ye yaz.",
+        "errorRateLimit": "Bunu birkaç defa gönderdin. Biraz bekleyip tekrar dener misin?",
+        "validationRequired": "Zorunlu.",
+        "validationEmail": "Geçerli bir e-posta gir.",
+        "validationConsent": "Devam etmek için gizlilik politikasını kabul et."
       }
     },
     "footer": {
       "privacy": "Gizlilik Politikası",
-      "terms": "Kullanım Şartları",
+      "terms": "Kullanım Koşulları",
+      "kvkk": "KVKK Aydınlatma Metni",
+      "cookies": "Çerez Politikası",
+      "foundingTerms": "Kurucu erişim şartları",
+      "legalHeading": "Naklos Teknoloji Ltd. Şti.",
+      "taxLabel": "VKN:",
+      "addressLabel": "Adres:",
       "copyright": "© {{year}} Naklos. Tüm hakları saklıdır."
     }
+  },
+  "foundingTerms": {
+    "draftBanner": "Bu sayfa, ücretlendirme sistemimiz yürürlüğe girmeden önce kurucu erişimin ne anlama geldiğini açıklar. Lansmandan önce hukuk müşaviri tarafından gözden geçirilecek.",
+    "backLink": "Naklos'a dön",
+    "title": "Kurucu erişim — ne kaydettiriyorsunuz",
+    "point1": "Ücretlendirme en erken 2026 Q2'de başlar. İlk tahsilattan 30 gün önce e-posta ile haber veririz.",
+    "point2": "Kurucu müşteriler, ilk ücretli aydan başlayarak 12 ay boyunca yayımlanan fiyatın %30 indirimli halini alır.",
+    "point3": "Kurucu erişim, otomatik olarak ücretli plana geçmez. Ücretlendirmenin başlaması için aktif olarak onaylamanız gerekir.",
+    "point4": "Kurucu erişim süresince istediğiniz zaman iptal edebilirsiniz ve hiç ücret ödemezsiniz.",
+    "point5": "Verileriniz sizindir. İptal ettiğinizde, hesabınıza erişiminizi korumak dışında hiçbir amaçla kullanmayız.",
+    "contact": "Soru mu var? info@naklos.com.tr'ye yazın."
+  },
+  "kvkkPage": {
+    "backLink": "Naklos'a dön",
+    "draftBanner": "Bu sayfa KVKK Aydınlatma Metni için taslaktır. Lansmandan önce hukuk müşaviri tarafından nihai hali verilecek.",
+    "title": "KVKK Aydınlatma Metni",
+    "placeholder": "Naklos Teknoloji Ltd. Şti. olarak, kişisel verilerinizi 6698 sayılı Kişisel Verilerin Korunması Kanunu ('KVKK') kapsamında işliyoruz. Tam metin yakında bu sayfada yayınlanacaktır.",
+    "contact": "Sorularınız için info@naklos.com.tr'ye yazabilirsiniz."
+  },
+  "cookiePage": {
+    "backLink": "Naklos'a dön",
+    "draftBanner": "Bu sayfa Çerez Politikası için taslaktır. Lansmandan önce hukuk müşaviri tarafından nihai hali verilecek.",
+    "title": "Çerez Politikası",
+    "placeholder": "Web sitemizde oturum yönetimi ve dil tercihiniz için strictly-necessary çerezler kullanıyoruz. Üçüncü-taraf analiz veya pazarlama çerezi kullanmıyoruz. Tam metin yakında bu sayfada yayınlanacaktır.",
+    "contact": "Sorularınız için info@naklos.com.tr'ye yazabilirsiniz."
   }
 }

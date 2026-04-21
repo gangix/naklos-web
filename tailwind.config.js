@@ -32,7 +32,7 @@ export default {
           900: '#7c2d12',
         },
         urgent:    { 50:'#fef2f2', 100:'#fee2e2', 500:'#dc2626', 600:'#b91c1c', 700:'#991b1b' },
-        attention: { 50:'#fffbeb', 100:'#fef3c7', 500:'#d97706', 600:'#b45309', 700:'#92400e' },
+        attention: { 50:'#fffbeb', 100:'#fef3c7', 200:'#fde68a', 500:'#d97706', 600:'#b45309', 700:'#92400e' },
         info:      { 50:'#f0f9ff', 100:'#e0f2fe', 500:'#0284c7', 600:'#0369a1', 700:'#075985' },
         confirm:   { 500:'#16a34a', 600:'#15803d', 700:'#166534' },
         warm:      { DEFAULT:'#FAFAF7', 50:'#FAFAF7', 100:'#F4F3ED' },
@@ -40,6 +40,7 @@ export default {
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+        serif: ['Instrument Serif', 'ui-serif', 'serif'],
       },
       boxShadow: {
         card:      '0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.04)',

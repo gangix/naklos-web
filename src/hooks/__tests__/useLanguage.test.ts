@@ -27,9 +27,18 @@ beforeEach(() => {
 
 describe('useLanguage', () => {
   it('defaults to tr when no signal is present', () => {
-    const { result } = renderHook(() => useLanguage());
-    expect(result.current.language).toBe('tr');
-    expect(document.documentElement.lang).toBe('tr');
+    const origLangs = navigator.languages;
+    const origLang = navigator.language;
+    Object.defineProperty(navigator, 'languages', { value: [], configurable: true });
+    Object.defineProperty(navigator, 'language', { value: '', configurable: true });
+    try {
+      const { result } = renderHook(() => useLanguage());
+      expect(result.current.language).toBe('tr');
+      expect(document.documentElement.lang).toBe('tr');
+    } finally {
+      Object.defineProperty(navigator, 'languages', { value: origLangs, configurable: true });
+      Object.defineProperty(navigator, 'language', { value: origLang, configurable: true });
+    }
   });
 
   it('reads stored language from localStorage', () => {
@@ -40,8 +49,14 @@ describe('useLanguage', () => {
 
   it('rejects unsupported locales and falls back to tr', () => {
     localStorage.setItem('naklos.language', 'fr');
-    const { result } = renderHook(() => useLanguage());
-    expect(result.current.language).toBe('tr');
+    const origLangs = navigator.languages;
+    Object.defineProperty(navigator, 'languages', { value: ['fr-FR'], configurable: true });
+    try {
+      const { result } = renderHook(() => useLanguage());
+      expect(result.current.language).toBe('tr');
+    } finally {
+      Object.defineProperty(navigator, 'languages', { value: origLangs, configurable: true });
+    }
   });
 
   it('writes new language to localStorage and updates document.lang', () => {
