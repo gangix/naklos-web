@@ -29,6 +29,7 @@ export default function Features() {
 
   return (
     <section className="relative max-w-6xl mx-auto px-4 py-16 md:py-24">
+      <h2 className="sr-only">{t('landing.features.srHeading')}</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {features.map((feature) => {
           const Icon = feature.icon;

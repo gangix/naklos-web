@@ -1833,6 +1833,7 @@
       }
     },
     "features": {
+      "srHeading": "What Naklos does for your fleet",
       "fuel": {
         "title": "Your cards spend. Which ones aren't driving?",
         "description": "Per-vehicle anomaly rules flag suspicious fill-ups. Email alert in minutes. Built for the way fuel cards actually get abused in Turkey."

@@ -1833,6 +1833,7 @@
       }
     },
     "features": {
+      "srHeading": "Was Naklos für Ihre Flotte tut",
       "fuel": {
         "title": "Ihre Karten geben aus. Welche davon fahren nicht?",
         "description": "Fahrzeugbezogene Anomalieregeln markieren verdächtige Tankvorgänge. E-Mail-Warnung in Minuten. Gebaut für die Art, wie Tankkarten in der Türkei tatsächlich missbraucht werden."
