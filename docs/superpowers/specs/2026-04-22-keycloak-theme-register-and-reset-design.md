@@ -136,17 +136,45 @@ Layout mirrors the approved mockup in `.superpowers/brainstorm/.../register-mock
 
 ## 7. i18n
 
-Full key list lives in Section 4 of the brainstorm transcript; abbreviated here. Keys split across `messages_tr.properties`, `messages_en.properties`, `messages_de.properties`:
+Keys added to `messages_tr.properties`, `messages_en.properties`, and (new) `messages_de.properties`. Turkish values shown below; EN and DE are direct translations of the same keys.
 
-- **register.*** — title, subtitle, submit, terms HTML (3 `{n}` placeholders), terms-required error, already-have-account.
-- **emailForgot.*** — title, subtitle, submit, instruction-sent.
-- **updatePassword.*** — title, subtitle, submit.
-- **emailVerify.*** — title, subtitle (with `{0}` email placeholder), instruction2.
-- **pageExpired.*** — title, subtitle.
-- **error.*** — title, back-to-login.
-- **footer.*** — privacy, terms, KVKK, cookies.
+```properties
+# register + common
+registerTitle = Hesap oluştur
+registerSubtitle = Filonu 5 dakikada kur. Kredi kartı istemiyoruz.
+registerSubmit = Hesap oluştur
+registerTermsLabelHtml = Devam ederek <a href="{0}">Kullanım Şartları</a>, <a href="{1}">Gizlilik Politikası</a> ve <a href="{2}">KVKK Aydınlatma Metni</a>'ni kabul ediyorum.
+registerTermsRequired = Devam etmek için şartları kabul etmelisin.
+registerAlreadyHaveAccount = Zaten hesabın var mı?
 
-**DE translation:** written as a first pass by the implementer; the spec calls it out explicitly as "needs native review before GA." For pilot, DE is nice-to-have fallback — EN/TR are the real launch targets.
+# reset / update password
+emailForgotTitle = Şifreni mi unuttun?
+emailForgotSubtitle = E-posta adresini gir, sıfırlama linki gönderelim.
+emailForgotSubmit = Link gönder
+emailInstructionSent = E-postana link gönderdik. Gelen kutunu kontrol et.
+updatePasswordTitle = Yeni şifre belirle
+updatePasswordSubtitle = Güvenli bir şifre seç — en az 8 karakter.
+updatePasswordSubmit = Şifreyi kaydet
+
+# verify / expired / error
+emailVerifyTitle = E-postanı doğrula
+emailVerifySubtitle = {0} adresine bir link gönderdik. Hesabını aktifleştirmek için link'e tıkla.
+emailVerifyInstruction2 = Link ulaşmadıysa spam klasörünü kontrol et ya da yeniden gönderebilirsin.
+pageExpiredTitle = Link süresi doldu
+pageExpiredSubtitle = Güvenlik nedeniyle link geçersiz. Baştan başlayabilirsin.
+errorTitle = Bir şeyler ters gitti
+errorBackToLogin = Girişe dön
+
+# footer (shared via template.ftl)
+footerPrivacy = Gizlilik
+footerTerms = Şartlar
+footerKvkk = KVKK
+footerCookies = Çerezler
+```
+
+Placeholders use Keycloak's MessageFormat convention (`{0}`, `{1}`, `{2}`) — same pattern already used by the built-in messages.
+
+**DE translation:** written as a first pass by the implementer; the spec calls it out explicitly as "needs native review before GA." For pilot, DE is a nice-to-have fallback — EN/TR are the real launch targets.
 
 ## 8. Validation & error handling
 
@@ -164,14 +192,30 @@ Full key list lives in Section 4 of the brainstorm transcript; abbreviated here.
 
 ## 9. Data flow
 
-See Section 3 of the brainstorm transcript for the flow diagrams. Summary:
+**Registration:**
+```
+Landing ──► Keycloak register.ftl (NEW, branded)
+              └─ submit ──► realm creates user, flags VERIFY_EMAIL required action
+                            └─► login-verify-email.ftl (NEW) "E-postanı kontrol et"
+                                └─ user clicks link in email
+                                   └─► auto-login ──► naklos-web /
+                                                       └─► FleetSetupPage (unchanged)
+```
 
-- **Register** → Keycloak creates user (unverified) → `VERIFY_EMAIL` required action → `login-verify-email.ftl` → user clicks email link → auto-login → `naklos-web /` → `FleetSetupPage`.
-- **Forgot password** → `login-reset-password.ftl` → email sent → `info.ftl` confirmation → user clicks email link → `login-update-password.ftl` → auto-login.
-- **Expired link** → any stale recovery link hits `login-page-expired.ftl` → user restarts.
-- **Error** → any Keycloak server error hits `error.ftl`.
+**Forgot password:**
+```
+login.ftl "Şifremi unuttum" ──► login-reset-password.ftl (NEW)
+                                  └─ submit ──► info.ftl (NEW) "E-postana link gönderdik"
+                                                └─ user clicks link in email
+                                                   └─► login-update-password.ftl (NEW)
+                                                        └─ submit ──► auto-login
+```
 
-`FleetSetupPage.tsx` is untouched. `TERMS_VERSION` acceptance continues to happen there.
+**Edge paths:**
+- Any expired or stale recovery link → `login-page-expired.ftl` → user restarts the relevant flow.
+- Any Keycloak server-side error → `error.ftl` → user returns to login.
+
+`FleetSetupPage.tsx` and the versioned `TERMS_VERSION` acceptance it collects are untouched.
 
 ## 10. Testing
 
