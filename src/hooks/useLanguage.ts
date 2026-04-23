@@ -31,7 +31,8 @@ function fromBrowserLocale(): SupportedLanguage | null {
 
 function readInitial(): SupportedLanguage {
   // 1. Explicit user choice persists across sessions.
-  const stored = localStorage.getItem(STORAGE_KEY);
+  // Guard: localStorage is not available in SSR / Node (prerender). Fall through.
+  const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
   if (isSupported(stored)) return stored;
 
   // 2. Signed-in users carry their preferred locale on the Keycloak token.
