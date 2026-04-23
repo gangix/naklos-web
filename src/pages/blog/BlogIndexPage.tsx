@@ -9,7 +9,8 @@ export default function BlogIndexPage() {
   const locale = (i18n.language as Locale) ?? 'tr';
   // If the current locale has no posts, fall back to TR — early-stage blog
   // is likely TR-only for a while.
-  const posts = listPosts(locale).length > 0 ? listPosts(locale) : listPosts('tr');
+  const localePosts = listPosts(locale);
+  const posts = localePosts.length > 0 ? localePosts : listPosts('tr');
 
   return (
     <BlogLayout>

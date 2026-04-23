@@ -48,6 +48,7 @@ export default function BlogPostPage() {
         </div>
 
         <article
+          lang={post.frontmatter.locale}
           className="prose prose-slate max-w-none"
           dangerouslySetInnerHTML={{ __html: post.html }}
         />
