@@ -30,6 +30,7 @@ export default function Footer() {
 
           <div>
             <ul className="space-y-2">
+              <li><Link to="/blog" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.nav.blog')}</Link></li>
               <li><Link to="/privacy" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.privacy')}</Link></li>
               <li><Link to="/terms" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.terms')}</Link></li>
               <li><Link to="/kvkk" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.kvkk')}</Link></li>
