@@ -52,4 +52,11 @@ describe('buildIndexMeta', () => {
   it('does not include article:published_time', () => {
     expect(html).not.toContain('article:published_time');
   });
+
+  it('includes all four Twitter card tags', () => {
+    expect(html).toContain('<meta name="twitter:card" content="summary_large_image">');
+    expect(html).toContain('<meta name="twitter:title"');
+    expect(html).toContain('<meta name="twitter:description"');
+    expect(html).toContain('<meta name="twitter:image"');
+  });
 });

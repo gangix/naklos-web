@@ -84,6 +84,9 @@ export function buildIndexMeta(locale: string): string {
     `<meta property="og:image" content="${ogImage}">`,
     `<meta property="og:locale" content="${ogLocale(locale)}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${escapeAttr(meta.title)}">`,
+    `<meta name="twitter:description" content="${escapeAttr(meta.description)}">`,
+    `<meta name="twitter:image" content="${ogImage}">`,
     `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2)}</script>`,
   ].join('\n');
 }
