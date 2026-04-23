@@ -15,7 +15,6 @@
     "test": "vitest"
   },
   "dependencies": {
-    "gray-matter": "^4.0.3",
     "i18next": "^26.0.4",
     "i18next-http-backend": "^3.0.4",
     "keycloak-js": "^26.2.3",

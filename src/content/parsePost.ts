@@ -1,5 +1,4 @@
 // src/content/parsePost.ts
-import matter from 'gray-matter';
 import { marked } from 'marked';
 
 export type Locale = 'tr' | 'en' | 'de';
@@ -31,18 +30,44 @@ function requireField<T>(value: T | undefined, field: string): T {
   return value;
 }
 
+// Our blog posts use a flat "key: value" frontmatter only (no nested
+// mappings, no arrays). gray-matter pulled Node's Buffer into the client
+// bundle for this trivial shape; this tiny parser replaces it and is
+// browser-safe.
+function splitFrontmatter(raw: string): {
+  data: Record<string, string | number>;
+  content: string;
+} {
+  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
+  if (!m) return { data: {}, content: raw };
+  const [, yaml, content] = m;
+  const data: Record<string, string | number> = {};
+  for (const line of yaml.split(/\r?\n/)) {
+    if (!line.trim() || line.trimStart().startsWith('#')) continue;
+    const idx = line.indexOf(':');
+    if (idx < 1) continue;
+    const key = line.slice(0, idx).trim();
+    let value: string | number = line.slice(idx + 1).trim();
+    if (
+      value.length >= 2 &&
+      ((value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'")))
+    ) {
+      value = value.slice(1, -1);
+    }
+    if (/^-?\d+(\.\d+)?$/.test(value)) value = Number(value);
+    data[key] = value;
+  }
+  return { data, content };
+}
+
 export function parsePost(raw: string, filePath: string): Post {
-  const { data, content } = matter(raw);
+  const { data, content } = splitFrontmatter(raw);
 
   const slug = requireField(data.slug as string | undefined, 'slug');
   const title = requireField(data.title as string | undefined, 'title');
   const description = requireField(data.description as string | undefined, 'description');
-  const rawDate = requireField(data.date as string | Date | undefined, 'date');
-  // gray-matter/js-yaml parses bare YAML dates (2026-04-23) as Date objects.
-  // Convert back to ISO date string so consumers always get "YYYY-MM-DD".
-  const date = rawDate instanceof Date
-    ? rawDate.toISOString().slice(0, 10)
-    : String(rawDate);
+  const date = String(requireField(data.date as string | undefined, 'date'));
   const readingTimeMinutes = requireField(
     data.readingTimeMinutes as number | undefined,
     'readingTimeMinutes',
