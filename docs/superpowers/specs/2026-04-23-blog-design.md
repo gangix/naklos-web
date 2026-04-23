@@ -81,18 +81,27 @@ export function listPosts(locale: Locale): Post[];  // sorted date desc
 export function getPostWithFallback(slug: string, locale: Locale): { post: Post; usedFallback: boolean } | undefined;
 ```
 
-Implementation: `import.meta.glob('./blog/**/*.md', { query: '?raw', import: 'default', eager: true })`; for each key, `gray-matter` to split frontmatter from body, `marked` to compile body to HTML. All resolved at build time, so bundles only include what's needed.
+Implementation: `import.meta.glob('./blog/**/*.md', { query: '?raw', import: 'default', eager: true })`; for each key, `gray-matter` to split frontmatter from body, `marked` to compile body to HTML. The module is written to work in both the browser bundle (for hydration and rendering the blog index) and Node (for the prerender script importing the loader directly).
+
+**Browser-bundle cost:** `marked` (~35 KB min, ~12 KB gzipped) and `gray-matter` (~20 KB min, ~7 KB gzipped) are pulled into the browser bundle. To prevent every landing-page visitor from paying this cost, **blog routes are code-split via `React.lazy()`** in `src/App.tsx`:
+
+```tsx
+const BlogIndexPage = lazy(() => import('./pages/blog/BlogIndexPage'));
+const BlogPostPage  = lazy(() => import('./pages/blog/BlogPostPage'));
+```
+
+The blog routes are wrapped in a `<Suspense fallback={<div />}>`. Users who never visit `/blog` don't load the loader or its dependencies.
 
 ### 4.3 Routes
 
 Add to **all three** `<Routes>` blocks in `src/App.tsx`:
 
 ```tsx
-<Route path="/blog" element={<BlogIndexPage />} />
-<Route path="/blog/:slug" element={<BlogPostPage />} />
+<Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
+<Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
 ```
 
-Added to the authenticated block too so logged-in users can still read the blog from a direct link or email.
+Both components are `React.lazy()` imports (see §4.2). Added to the authenticated block too so logged-in users can still read the blog from a direct link or email. A single shared `<Suspense>` at the Routes boundary also works; the per-route form shown here keeps the change local to the two new routes.
 
 ### 4.4 Pages & components
 
@@ -134,7 +143,7 @@ All blog components are pure presentational and **SSR-safe**: no `window` / `doc
 }
 ```
 
-EN/DE versions get translated equivalents (except the fallback notice itself, which intentionally stays bilingual).
+EN/DE versions get translated equivalents. The `blog.fallbackNotice` key translates per-locale in the normal way (e.g. EN: *"This article is currently available in Turkish only."*) — the user sees it in their UI language even though the article body below is still TR.
 
 ### 4.6 Build pipeline
 
@@ -244,11 +253,11 @@ ogImage: /og/yakit-takibi.png
 
 ## 5. New dependencies
 
-| Package | Why | Dev/Runtime |
+| Package | Why | Shipped to browser? |
 |---|---|---|
-| `marked` | Compile Markdown body to HTML at build time | Runtime (pulled in by loader which is build-time evaluated via `eager: true`; not shipped to browser) |
-| `gray-matter` | Parse YAML frontmatter | Same as above |
-| `@tailwindcss/typography` | Prose styling for `<article dangerouslySetInnerHTML>` | Dev (Tailwind plugin) |
+| `marked` | Compile Markdown body to HTML | Yes, but only inside the lazy-loaded blog chunk — ~12 KB gzipped, zero cost for non-blog visitors |
+| `gray-matter` | Parse YAML frontmatter | Same as above — ~7 KB gzipped, lazy chunk only |
+| `@tailwindcss/typography` | Prose styling for `<article dangerouslySetInnerHTML>` | No (Tailwind plugin, dev-only; styles are compiled into CSS) |
 
 Everything else (`react-dom/server`, React Router's static APIs) is already in the current `react-router-dom@7` + `react-dom@19` install.
 
