@@ -63,7 +63,7 @@ export function parsePost(raw: string, filePath: string): Post {
       slug,
       title,
       description,
-      date: String(date),
+      date,
       readingTimeMinutes: Number(readingTimeMinutes),
       locale,
       ogImage: data.ogImage as string | undefined,
