@@ -23,9 +23,11 @@ const tree = (
   </StrictMode>
 );
 
-// If the server (prerender script) wrote HTML into #root, hydrate it.
-// Otherwise fall back to normal client-side mount.
-if (container.hasChildNodes()) {
+// If prerender wrote real rendered HTML into #root, hydrate it. Whitespace-only
+// text nodes (e.g. from HTML minification) don't count — we only hydrate when
+// there's an actual element present.
+const hasServerHtml = container.firstElementChild !== null;
+if (hasServerHtml) {
   hydrateRoot(container, tree);
 } else {
   createRoot(container).render(tree);

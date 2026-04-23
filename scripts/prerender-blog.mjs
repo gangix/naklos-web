@@ -29,14 +29,16 @@ async function writeHtml(path, html) {
 }
 
 function injectIntoShell(shell, bodyHtml, headHtml) {
-  // Replace <title>…</title> and inject extra <head> tags before </head>
-  // Replace the empty <div id="root"> with one containing the rendered app
-  const withHead = shell.replace('</head>', `${headHtml}\n</head>`);
-  const withBody = withHead.replace(
-    /<div id="root">[\s\S]*?<\/div>/,
-    `<div id="root">${bodyHtml}</div>`,
-  );
-  return withBody;
+  const ROOT = '<div id="root"></div>';
+  if (!shell.includes(ROOT)) {
+    throw new Error(`SPA shell at dist/index.html did not contain expected marker "${ROOT}". Did Vite change the shell format?`);
+  }
+  if (!shell.includes('</head>')) {
+    throw new Error(`SPA shell at dist/index.html did not contain </head>. The shell is malformed.`);
+  }
+  return shell
+    .replace('</head>', `${headHtml}\n</head>`)
+    .replace(ROOT, `<div id="root">${bodyHtml}</div>`);
 }
 
 async function main() {

@@ -39,6 +39,33 @@ describe('buildPostMeta', () => {
     expect(html).toContain('"@type": "BlogPosting"');
     expect(html).toContain('"datePublished": "2026-04-23"');
   });
+
+  it('escapes attribute-unsafe characters in frontmatter', () => {
+    const hostile = buildPostMeta({
+      ...postFm,
+      title: 'quote"inside',
+      description: 'less<than',
+      ogImage: '/og/ev"il.png',
+    });
+    // The raw " must not appear inside any attribute value (content="...")
+    expect(hostile).not.toContain('content="quote"inside');
+    expect(hostile).toContain('quote&quot;inside');
+    // The raw < must not appear in attribute values (the title text node is safe)
+    expect(hostile).not.toContain('less<than');
+    expect(hostile).toContain('less&lt;than');
+    // The ogImage " must be escaped in the image attribute
+    expect(hostile).not.toContain('ev"il.png"');
+    expect(hostile).toContain('ev&quot;il.png');
+  });
+
+  it('escapes </script> sequences in JSON-LD', () => {
+    const hostile = buildPostMeta({
+      ...postFm,
+      title: 'contains</script><x>',
+    });
+    expect(hostile).not.toContain('</script><x>');
+    expect(hostile).toContain('\\u003c/script>\\u003cx>');
+  });
 });
 
 describe('buildIndexMeta', () => {

@@ -18,6 +18,7 @@ function ogLocale(locale: string): string {
 export function buildPostMeta(fm: Frontmatter): string {
   const url = `${SITE_URL}/blog/${fm.slug}`;
   const ogImage = abs(fm.ogImage ?? DEFAULT_OG_IMAGE);
+  const attr = (s: string) => escapeAttr(s);
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -36,27 +37,28 @@ export function buildPostMeta(fm: Frontmatter): string {
 
   return [
     `<title>${escapeHtml(fm.title)} | ${SITE_NAME}</title>`,
-    `<meta name="description" content="${escapeAttr(fm.description)}">`,
-    `<link rel="canonical" href="${url}">`,
+    `<meta name="description" content="${attr(fm.description)}">`,
+    `<link rel="canonical" href="${attr(url)}">`,
     `<meta name="robots" content="index, follow">`,
     `<meta property="og:type" content="article">`,
-    `<meta property="og:title" content="${escapeAttr(fm.title)}">`,
-    `<meta property="og:description" content="${escapeAttr(fm.description)}">`,
-    `<meta property="og:url" content="${url}">`,
-    `<meta property="og:image" content="${ogImage}">`,
+    `<meta property="og:title" content="${attr(fm.title)}">`,
+    `<meta property="og:description" content="${attr(fm.description)}">`,
+    `<meta property="og:url" content="${attr(url)}">`,
+    `<meta property="og:image" content="${attr(ogImage)}">`,
     `<meta property="og:locale" content="${ogLocale(fm.locale)}">`,
-    `<meta property="article:published_time" content="${fm.date}">`,
+    `<meta property="article:published_time" content="${attr(fm.date)}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
-    `<meta name="twitter:title" content="${escapeAttr(fm.title)}">`,
-    `<meta name="twitter:description" content="${escapeAttr(fm.description)}">`,
-    `<meta name="twitter:image" content="${ogImage}">`,
-    `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2)}</script>`,
+    `<meta name="twitter:title" content="${attr(fm.title)}">`,
+    `<meta name="twitter:description" content="${attr(fm.description)}">`,
+    `<meta name="twitter:image" content="${attr(ogImage)}">`,
+    `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2).replace(/</g, '\\u003c')}</script>`,
   ].join('\n');
 }
 
 export function buildIndexMeta(locale: string): string {
   const url = `${SITE_URL}/blog`;
   const ogImage = abs(DEFAULT_OG_IMAGE);
+  const attr = (s: string) => escapeAttr(s);
   const titles: Record<string, { title: string; description: string }> = {
     tr: { title: 'Blog', description: 'Filo yönetimi, yakıt takibi ve nakliyat sektörü hakkında yazılar.' },
     en: { title: 'Blog', description: 'Articles about fleet management, fuel tracking, and the transport industry.' },
@@ -74,20 +76,20 @@ export function buildIndexMeta(locale: string): string {
 
   return [
     `<title>${escapeHtml(meta.title)} | ${SITE_NAME}</title>`,
-    `<meta name="description" content="${escapeAttr(meta.description)}">`,
-    `<link rel="canonical" href="${url}">`,
+    `<meta name="description" content="${attr(meta.description)}">`,
+    `<link rel="canonical" href="${attr(url)}">`,
     `<meta name="robots" content="index, follow">`,
     `<meta property="og:type" content="website">`,
-    `<meta property="og:title" content="${escapeAttr(meta.title)}">`,
-    `<meta property="og:description" content="${escapeAttr(meta.description)}">`,
-    `<meta property="og:url" content="${url}">`,
-    `<meta property="og:image" content="${ogImage}">`,
+    `<meta property="og:title" content="${attr(meta.title)}">`,
+    `<meta property="og:description" content="${attr(meta.description)}">`,
+    `<meta property="og:url" content="${attr(url)}">`,
+    `<meta property="og:image" content="${attr(ogImage)}">`,
     `<meta property="og:locale" content="${ogLocale(locale)}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
-    `<meta name="twitter:title" content="${escapeAttr(meta.title)}">`,
-    `<meta name="twitter:description" content="${escapeAttr(meta.description)}">`,
-    `<meta name="twitter:image" content="${ogImage}">`,
-    `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2)}</script>`,
+    `<meta name="twitter:title" content="${attr(meta.title)}">`,
+    `<meta name="twitter:description" content="${attr(meta.description)}">`,
+    `<meta name="twitter:image" content="${attr(ogImage)}">`,
+    `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2).replace(/</g, '\\u003c')}</script>`,
   ].join('\n');
 }
 
