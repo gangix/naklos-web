@@ -48,6 +48,15 @@ const BlogPostPage  = lazy(() => import('./pages/blog/BlogPostPage'));
 
 const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
 
+/* ---------- Blog Route Fallback ---------- */
+function BlogRouteFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-10 h-10 border-4 border-primary-700 border-t-transparent rounded-full animate-spin" />
+    </div>
+  );
+}
+
 /* ---------- Error Boundary ---------- */
 interface EBProps { children: ReactNode }
 interface EBState { hasError: boolean }
@@ -165,8 +174,8 @@ function App() {
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/kvkk" element={<KvkkPolicyPage />} />
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
-          <Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
-          <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
+          <Route path="/blog" element={<Suspense fallback={<BlogRouteFallback />}><BlogIndexPage /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={<BlogRouteFallback />}><BlogPostPage /></Suspense>} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -203,8 +212,8 @@ function App() {
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/kvkk" element={<KvkkPolicyPage />} />
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
-          <Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
-          <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
+          <Route path="/blog" element={<Suspense fallback={<BlogRouteFallback />}><BlogIndexPage /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={<BlogRouteFallback />}><BlogPostPage /></Suspense>} />
           <Route path="*" element={<FleetSetupPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -223,8 +232,8 @@ function App() {
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/kvkk" element={<KvkkPolicyPage />} />
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
-          <Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
-          <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
+          <Route path="/blog" element={<Suspense fallback={<BlogRouteFallback />}><BlogIndexPage /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={<BlogRouteFallback />}><BlogPostPage /></Suspense>} />
           <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
           {isSystemAdmin && (
