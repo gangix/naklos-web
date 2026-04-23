@@ -1,4 +1,4 @@
-import { Component, useState, useEffect } from 'react';
+import { Component, useState, useEffect, lazy, Suspense } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { Toaster } from 'sonner';
@@ -41,6 +41,10 @@ import { useLanguage } from './hooks/useLanguage';
 import DriverProfilePage from './pages/driver/DriverProfilePage';
 import DriverSettingsPage from './pages/driver/DriverSettingsPage';
 import DriverTruckPage from './pages/driver/DriverTruckPage';
+
+// Blog pages — lazy-loaded so they don't bloat the main bundle
+const BlogIndexPage = lazy(() => import('./pages/blog/BlogIndexPage'));
+const BlogPostPage  = lazy(() => import('./pages/blog/BlogPostPage'));
 
 const BASE = import.meta.env.VITE_BASE_PATH ?? '/';
 
@@ -161,6 +165,8 @@ function App() {
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/kvkk" element={<KvkkPolicyPage />} />
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
+          <Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -197,6 +203,8 @@ function App() {
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/kvkk" element={<KvkkPolicyPage />} />
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
+          <Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
           <Route path="*" element={<FleetSetupPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -215,6 +223,8 @@ function App() {
           <Route path="/founding-terms" element={<FoundingTermsPage />} />
           <Route path="/kvkk" element={<KvkkPolicyPage />} />
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
+          <Route path="/blog" element={<Suspense fallback={null}><BlogIndexPage /></Suspense>} />
+          <Route path="/blog/:slug" element={<Suspense fallback={null}><BlogPostPage /></Suspense>} />
           <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
           {isSystemAdmin && (
