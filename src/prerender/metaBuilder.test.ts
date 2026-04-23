@@ -58,6 +58,12 @@ describe('buildPostMeta', () => {
     expect(hostile).toContain('ev&quot;il.png');
   });
 
+  it('includes article:modified_time and JSON-LD dateModified', () => {
+    const html = buildPostMeta(postFm);
+    expect(html).toContain('<meta property="article:modified_time" content="2026-04-23">');
+    expect(html).toContain('"dateModified": "2026-04-23"');
+  });
+
   it('escapes </script> sequences in JSON-LD', () => {
     const hostile = buildPostMeta({
       ...postFm,

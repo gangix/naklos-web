@@ -59,24 +59,32 @@ async function main() {
 
   const shellPath = join(distDir, 'index.html');
   const shell = await readFile(shellPath, 'utf8');
-  // Strip the default <title> from the shell so our injected title is the only one
-  const shellSansTitle = shell.replace(/<title>[\s\S]*?<\/title>\s*/, '');
+  // Strip the generic title and description from the shell — the prerender
+  // script injects post-specific ones per route.
+  const shellSansMeta = shell
+    .replace(/<title>[\s\S]*?<\/title>\s*/, '')
+    .replace(/<meta\s+name="description"[^>]*>\s*/, '');
 
   // 1) /blog (TR for now; add per-locale later if EN posts exist)
   {
     const body = await renderBlogRoute('/blog', 'tr');
     const head = buildIndexMeta('tr');
-    const html = injectIntoShell(shellSansTitle, body, head);
+    const html = injectIntoShell(shellSansMeta, body, head);
     await writeHtml('blog/index.html', html);
   }
 
   // 2) /blog/:slug for every (locale, slug)
+  // TR is processed first (primary language); any slug already written is skipped
+  // so a TR post always wins over a later EN/DE post with the same slug.
+  const writtenSlugs = new Set();
   for (const locale of ['tr', 'en', 'de']) {
     for (const post of listPosts(locale)) {
+      if (writtenSlugs.has(post.frontmatter.slug)) continue;
+      writtenSlugs.add(post.frontmatter.slug);
       const urlPath = `/blog/${post.frontmatter.slug}`;
       const body = await renderBlogRoute(urlPath, locale);
       const head = buildPostMeta(post.frontmatter);
-      const html = injectIntoShell(shellSansTitle, body, head);
+      const html = injectIntoShell(shellSansMeta, body, head);
       // Path is locale-agnostic: /blog/<slug>/index.html. Locale fallback
       // covered by the SPA's client-side i18n; prerender writes the
       // canonical TR version when the post exists in TR.
