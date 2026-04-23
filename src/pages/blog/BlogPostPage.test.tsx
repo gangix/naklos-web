@@ -69,6 +69,6 @@ describe('BlogPostPage', () => {
   it('renders the CTA after the post prose', () => {
     renderAt('/blog/yakit-takibi-nasil-yapilir');
     // CTA button text comes from i18n — key "blog.cta.button" → "Ücretsiz başla →"
-    expect(screen.getByRole('link', { name: /Ücretsiz başla/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Ücretsiz başla/i })).toBeInTheDocument();
   });
 });
