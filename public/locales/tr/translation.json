@@ -1789,7 +1789,7 @@
     }
   },
   "landing": {
-    "nav": { "login": "Giriş yap" },
+    "nav": { "login": "Giriş yap", "blog": "Blog" },
     "hero": {
       "badge": "Türk KOBİ filoları için · KVKK uyumlu",
       "title1": "Excel'de göremediğiniz yakıt kaçağı.",
@@ -1981,5 +1981,19 @@
     "title": "Çerez Politikası",
     "placeholder": "Web sitemizde oturum yönetimi ve dil tercihiniz için strictly-necessary çerezler kullanıyoruz. Üçüncü-taraf analiz veya pazarlama çerezi kullanmıyoruz. Tam metin yakında bu sayfada yayınlanacaktır.",
     "contact": "Sorularınız için info@naklos.com.tr'ye yazabilirsiniz."
+  },
+  "blog": {
+    "index": {
+      "title": "Blog",
+      "subtitle": "Filo yönetimi, yakıt takibi ve nakliyat sektörü hakkında yazılar."
+    },
+    "backToBlog": "← Blog'a dön",
+    "readingTime": "{{minutes}} dk okuma",
+    "fallbackNotice": "Bu yazı şu an sadece Türkçe mevcut.",
+    "cta": {
+      "title": "Filinizin yakıt verilerini ücretsiz analiz edin",
+      "body": "OPET, Shell veya BP ekstreninizi yükleyin. İlk anomaliyi dakikalar içinde gösteririz.",
+      "button": "Ücretsiz başla →"
+    }
   }
 }

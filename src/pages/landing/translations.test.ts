@@ -96,6 +96,15 @@ describe('landing translations alignment', () => {
       'kvkkPage.placeholder',
       'cookiePage.title',
       'cookiePage.placeholder',
+      'landing.nav.blog',
+      'blog.index.title',
+      'blog.index.subtitle',
+      'blog.backToBlog',
+      'blog.readingTime',
+      'blog.fallbackNotice',
+      'blog.cta.title',
+      'blog.cta.body',
+      'blog.cta.button',
     ];
     for (const [name, keys] of [['en', enAllKeys], ['tr', trAllKeys], ['de', deAllKeys]] as const) {
       for (const key of required) {

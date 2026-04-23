@@ -21,7 +21,22 @@ vi.mock('../../components/common/LanguageSwitcher', () => ({
 const testI18n = i18n.createInstance();
 await testI18n.use(initReactI18next).init({
   lng: 'tr',
-  resources: { tr: { translation: {} } },
+  resources: {
+    tr: {
+      translation: {
+        blog: {
+          backToBlog: '← Blog\'a dön',
+          readingTime: '{{minutes}} dk okuma',
+          fallbackNotice: 'Bu yazı şu an sadece Türkçe mevcut.',
+          cta: {
+            title: 'Filinizin yakıt verilerini ücretsiz analiz edin',
+            body: 'OPET, Shell veya BP ekstreninizi yükleyin. İlk anomaliyi dakikalar içinde gösteririz.',
+            button: 'Ücretsiz başla →',
+          },
+        },
+      },
+    },
+  },
 });
 
 function renderAt(url: string) {
@@ -51,8 +66,7 @@ describe('BlogPostPage', () => {
     expect(screen.getByText('404')).toBeInTheDocument();
   });
 
-  // re-enabled in Sprint 3 once i18n keys land
-  it.skip('renders the CTA after the post prose', () => {
+  it('renders the CTA after the post prose', () => {
     renderAt('/blog/yakit-takibi-nasil-yapilir');
     // CTA button text comes from i18n — key "blog.cta.button" → "Ücretsiz başla →"
     expect(screen.getByRole('link', { name: /Ücretsiz başla/i })).toBeInTheDocument();

@@ -1792,7 +1792,7 @@
     }
   },
   "landing": {
-    "nav": { "login": "Anmelden" },
+    "nav": { "login": "Anmelden", "blog": "Blog" },
     "hero": {
       "badge": "Für türkische KMU-Flotten · KVKK-konform",
       "title1": "Der Kraftstoffverlust, den Excel verbirgt.",
@@ -1984,5 +1984,19 @@
     "title": "Cookie-Richtlinie",
     "placeholder": "Wir verwenden ausschließlich technisch notwendige Cookies für die Sitzungsverwaltung und Ihre Spracheinstellung. Keine Drittanbieter-Analyse- oder Marketing-Cookies. Die vollständige Richtlinie wird in Kürze auf dieser Seite veröffentlicht.",
     "contact": "Fragen? Schreiben Sie an info@naklos.com.tr."
+  },
+  "blog": {
+    "index": {
+      "title": "Blog",
+      "subtitle": "Artikel über Flottenmanagement, Kraftstoffverfolgung und die Transportbranche."
+    },
+    "backToBlog": "← Zurück zum Blog",
+    "readingTime": "{{minutes}} Min. Lesezeit",
+    "fallbackNotice": "Dieser Artikel ist derzeit nur auf Türkisch verfügbar.",
+    "cta": {
+      "title": "Analysieren Sie die Kraftstoffdaten Ihrer Flotte kostenlos",
+      "body": "Laden Sie Ihre OPET-, Shell- oder BP-Abrechnung hoch. Wir zeigen die erste Anomalie in wenigen Minuten.",
+      "button": "Kostenlos starten →"
+    }
   }
 }

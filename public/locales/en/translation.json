@@ -1792,7 +1792,7 @@
     }
   },
   "landing": {
-    "nav": { "login": "Log in" },
+    "nav": { "login": "Log in", "blog": "Blog" },
     "hero": {
       "badge": "For Turkish SMB fleets · KVKK-compliant",
       "title1": "The fuel leak you can't see in Excel.",
@@ -1984,5 +1984,19 @@
     "title": "Cookie Policy",
     "placeholder": "We use strictly-necessary cookies for session management and your language preference. No third-party analytics or marketing cookies. The full policy will be published on this page shortly.",
     "contact": "Questions? Email info@naklos.com.tr."
+  },
+  "blog": {
+    "index": {
+      "title": "Blog",
+      "subtitle": "Articles about fleet management, fuel tracking, and the transport industry."
+    },
+    "backToBlog": "← Back to blog",
+    "readingTime": "{{minutes}} min read",
+    "fallbackNotice": "This article is currently available in Turkish only.",
+    "cta": {
+      "title": "Analyze your fleet's fuel data for free",
+      "body": "Upload your OPET, Shell, or BP statement. We'll show the first anomaly within minutes.",
+      "button": "Start free →"
+    }
   }
 }
