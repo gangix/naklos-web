@@ -1,14 +1,15 @@
 import './i18n';
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
-import { DataProvider } from './contexts/DataContext.tsx'
-import { AuthProvider } from './contexts/AuthContext.tsx'
-import { FleetProvider } from './contexts/FleetContext.tsx'
-import ErrorBoundary from './components/common/ErrorBoundary.tsx'
+import { StrictMode } from 'react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+import './index.css';
+import App from './App.tsx';
+import { DataProvider } from './contexts/DataContext.tsx';
+import { AuthProvider } from './contexts/AuthContext.tsx';
+import { FleetProvider } from './contexts/FleetContext.tsx';
+import ErrorBoundary from './components/common/ErrorBoundary.tsx';
 
-createRoot(document.getElementById('root')!).render(
+const container = document.getElementById('root')!;
+const tree = (
   <StrictMode>
     <ErrorBoundary>
       <AuthProvider>
@@ -19,6 +20,14 @@ createRoot(document.getElementById('root')!).render(
         </FleetProvider>
       </AuthProvider>
     </ErrorBoundary>
-  </StrictMode>,
-)
+  </StrictMode>
+);
+
+// If the server (prerender script) wrote HTML into #root, hydrate it.
+// Otherwise fall back to normal client-side mount.
+if (container.hasChildNodes()) {
+  hydrateRoot(container, tree);
+} else {
+  createRoot(container).render(tree);
+}
 
