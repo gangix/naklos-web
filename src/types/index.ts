@@ -217,7 +217,17 @@ export interface TripTemplate {
 
 // Document Management Types
 export type DocumentSubmissionStatus = 'pending' | 'approved' | 'rejected';
-export type DocumentCategory = 'license' | 'src' | 'cpc' | 'compulsory-insurance' | 'comprehensive-insurance' | 'inspection';
+export type DocumentCategory =
+  | 'license'
+  | 'src'
+  | 'cpc'
+  | 'compulsory-insurance'
+  | 'comprehensive-insurance'
+  | 'inspection'
+  | 'tachograph'
+  | 'k-certificate'
+  | 'adr-vehicle'
+  | 'adr-driver';
 
 export interface DocumentSubmission {
   id: string;
