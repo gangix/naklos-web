@@ -865,7 +865,12 @@
     "cpc": "CPC-Bescheinigung",
     "compulsoryInsurance": "Kfz-Haftpflichtversicherung",
     "comprehensiveInsurance": "Vollkaskoversicherung",
-    "inspection": "Fahrzeuginspektion/TÜV"
+    "inspection": "Fahrzeuginspektion/TÜV",
+    "tachograph": "Tachograph-Kalibrierung",
+    "kCertificate": "K-Transportgenehmigung",
+    "adrVehicle": "ADR-Zertifikat (Fahrzeug)",
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten"
   },
   "plan": {
     "free": "Kostenlos",
@@ -884,7 +889,12 @@
     "inspection": "Hauptuntersuchung",
     "license": "Führerschein",
     "src": "SRC-Bescheinigung",
-    "cpc": "CPC-Bescheinigung"
+    "cpc": "CPC-Bescheinigung",
+    "tachograph": "Tachograph-Kalibrierung",
+    "kCertificate": "K-Transportgenehmigung",
+    "adrVehicle": "ADR-Zertifikat (Fahrzeug)",
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten"
   },
   "resource": {
     "truck": "Fahrzeug",

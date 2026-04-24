@@ -865,7 +865,12 @@
     "cpc": "CPC Certificate",
     "compulsoryInsurance": "Compulsory Traffic Insurance",
     "comprehensiveInsurance": "Comprehensive Insurance",
-    "inspection": "Vehicle Inspection"
+    "inspection": "Vehicle Inspection",
+    "tachograph": "Tachograph calibration",
+    "kCertificate": "K-type transport permit",
+    "adrVehicle": "ADR certificate (vehicle)",
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment"
   },
   "plan": {
     "free": "Free",
@@ -884,7 +889,12 @@
     "inspection": "Inspection",
     "license": "Driver's License",
     "src": "SRC Certificate",
-    "cpc": "CPC Certificate"
+    "cpc": "CPC Certificate",
+    "tachograph": "Tachograph calibration",
+    "kCertificate": "K-type transport permit",
+    "adrVehicle": "ADR certificate (vehicle)",
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment"
   },
   "resource": {
     "truck": "truck",

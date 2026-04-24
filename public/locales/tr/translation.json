@@ -863,7 +863,12 @@
     "cpc": "CPC Belgesi",
     "compulsoryInsurance": "Zorunlu Trafik Sigortası",
     "comprehensiveInsurance": "Kasko",
-    "inspection": "Muayene"
+    "inspection": "Muayene",
+    "tachograph": "Takograf Kalibrasyonu",
+    "kCertificate": "K Yetki Belgesi",
+    "adrVehicle": "ADR (Araç)",
+    "adrDriver": "ADR (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi"
   },
   "plan": {
     "free": "Başlangıç",
@@ -882,7 +887,12 @@
     "inspection": "Muayene",
     "license": "Ehliyet",
     "src": "SRC Belgesi",
-    "cpc": "CPC Belgesi"
+    "cpc": "CPC Belgesi",
+    "tachograph": "Takograf Kalibrasyonu",
+    "kCertificate": "K Yetki Belgesi",
+    "adrVehicle": "ADR (Araç)",
+    "adrDriver": "ADR (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi"
   },
   "resource": {
     "truck": "araç",
