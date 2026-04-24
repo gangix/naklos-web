@@ -107,6 +107,9 @@
     "compulsoryInsurance": "Zorunlu Trafik Sigortası",
     "comprehensiveInsurance": "Kasko",
     "inspection": "Muayene",
+    "tachograph": "Takograf Kalibrasyonu",
+    "kCertificate": "K Yetki Belgesi",
+    "adrVehicle": "ADR (Araç)",
     "expiryDate": "Son Geçerlilik Tarihi",
     "basicInfo": "Temel Bilgiler",
     "documents": "Belgeler",
@@ -129,6 +132,8 @@
     "licenseNumber": "Ehliyet No",
     "licenseClass": "Ehliyet Sınıfı",
     "licenseExpiry": "Ehliyet Geçerlilik",
+    "adrDriver": "ADR Belgesi (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi",
     "certificates": "Sertifikalar",
     "srcCertificate": "SRC Belgesi",
     "cpcCertificate": "CPC Belgesi",
@@ -652,7 +657,10 @@
     "cpcProfessional": "CPC (Profesyonel Yeterlilik Kartı)",
     "certificateNumber": "Sertifika Numarası *",
     "issueDate": "Veriliş Tarihi *",
-    "expiryDate": "Son Geçerlilik Tarihi *"
+    "expiryDate": "Son Geçerlilik Tarihi *",
+    "certFileLabel": "Belge dosyası (PDF veya fotoğraf)",
+    "certSrcFileRequired": "SRC belgesi için dosya yüklemek zorunlu.",
+    "certUploadFailedToast": "Sertifika kaydedildi ancak belge dosyası yüklenemedi. Sertifika kartından tekrar dener misin?"
   },
   "truckDetail": {
     "tabs": {
@@ -860,7 +868,12 @@
     "cpc": "CPC Belgesi",
     "compulsoryInsurance": "Zorunlu Trafik Sigortası",
     "comprehensiveInsurance": "Kasko",
-    "inspection": "Muayene"
+    "inspection": "Muayene",
+    "tachograph": "Takograf Kalibrasyonu",
+    "kCertificate": "K Yetki Belgesi",
+    "adrVehicle": "ADR (Araç)",
+    "adrDriver": "ADR (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi"
   },
   "plan": {
     "free": "Başlangıç",
@@ -879,7 +892,12 @@
     "inspection": "Muayene",
     "license": "Ehliyet",
     "src": "SRC Belgesi",
-    "cpc": "CPC Belgesi"
+    "cpc": "CPC Belgesi",
+    "tachograph": "Takograf Kalibrasyonu",
+    "kCertificate": "K Yetki Belgesi",
+    "adrVehicle": "ADR (Araç)",
+    "adrDriver": "ADR (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi"
   },
   "resource": {
     "truck": "araç",

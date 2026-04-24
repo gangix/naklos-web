@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
-import { Select, TextInput } from '../components/common/FormField';
+import { FileInput, Select, TextInput } from '../components/common/FormField';
 import { ArrowLeft, ChevronRight, Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
@@ -46,6 +46,7 @@ const DriverDetailPage = () => {
   const [certificateNumber, setCertificateNumber] = useState('');
   const [certificateIssueDate, setCertificateIssueDate] = useState('');
   const [certificateExpiryDate, setCertificateExpiryDate] = useState('');
+  const [certificateFile, setCertificateFile] = useState<File | null>(null);
   // Separate the two delete confirm paths so they can't collide. Earlier
   // they shared `confirmAction === 'delete'` + a secondary `pendingCertificateId`
   // field — a missed reset anywhere could delete the wrong target.
@@ -144,7 +145,7 @@ const DriverDetailPage = () => {
 
   const fullName = `${driver.firstName} ${driver.lastName}`;
 
-  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string) => {
+  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string | null) => {
     setUploadCategory(category);
     setUploadCurrentExpiry(currentExpiry);
     setUploadModalOpen(true);
@@ -169,6 +170,13 @@ const DriverDetailPage = () => {
 
     if (!certificateNumber || !certificateIssueDate || !certificateExpiryDate) {
       toast.warning(t('toast.warning.fillAllFields'));
+      return;
+    }
+
+    // SRC is mandatory in Turkey for commercial freight — require the file so
+    // the cert record isn't created without the underlying document.
+    if (certificateType === 'SRC' && !certificateFile) {
+      toast.error(t('driverDetail.certSrcFileRequired'));
       return;
     }
 
@@ -197,11 +205,28 @@ const DriverDetailPage = () => {
         expiryDate: certificateExpiryDate,
       });
 
+      // Upload the file (if provided). Non-fatal on failure: the structured
+      // cert already exists, the manager is told to retry from the doc tile.
+      if (certificateFile) {
+        try {
+          await driverApi.uploadDocument(
+            driverId,
+            certificateFile,
+            certificateType === 'SRC' ? 'src' : 'cpc',
+            certificateExpiryDate,
+          );
+        } catch (uploadErr) {
+          console.error('Cert file upload failed after addCertificate', uploadErr);
+          toast.warning(t('driverDetail.certUploadFailedToast'));
+        }
+      }
+
       // Reset form
       setShowAddCertificate(false);
       setCertificateNumber('');
       setCertificateIssueDate('');
       setCertificateExpiryDate('');
+      setCertificateFile(null);
 
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
@@ -614,6 +639,34 @@ const DriverDetailPage = () => {
             />
           </div>
 
+          {/* ADR (Driver) */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-900">{t('driver.adrDriver')}</h2>
+              <button
+                onClick={() => handleDocumentUpdate('adr-driver', null)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                {t('documentCard.manageBtn')}
+              </button>
+            </div>
+            <ExpiryBadge label="" date={null} />
+          </div>
+
+          {/* Psikoteknik */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-900">{t('driver.psychotechnical')}</h2>
+              <button
+                onClick={() => handleDocumentUpdate('psychotechnical', null)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                {t('documentCard.manageBtn')}
+              </button>
+            </div>
+            <ExpiryBadge label="" date={null} />
+          </div>
+
           {/* Certificates section */}
           <div className="mb-4">
             <div className="flex items-center justify-between mb-3">
@@ -666,6 +719,13 @@ const DriverDetailPage = () => {
                     min={new Date().toISOString().split('T')[0]}
                     hint={<>⚠️ {t('driverDetail.expiryFutureWarning')}</>}
                   />
+                  <FileInput
+                    label={t('driverDetail.certFileLabel')}
+                    required={certificateType === 'SRC'}
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(file) => setCertificateFile(file)}
+                    selectedFileName={certificateFile?.name ?? null}
+                  />
                   <div className="flex gap-2 pt-2">
                     <button
                       onClick={handleAddCertificate}
@@ -679,6 +739,7 @@ const DriverDetailPage = () => {
                         setCertificateNumber('');
                         setCertificateIssueDate('');
                         setCertificateExpiryDate('');
+                        setCertificateFile(null);
                       }}
                       className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
                     >

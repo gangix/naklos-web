@@ -81,6 +81,11 @@ const SimpleDocumentUpdateModal = ({
       'compulsory-insurance': t('categoryLabel.compulsoryInsurance'),
       'comprehensive-insurance': t('categoryLabel.comprehensiveInsurance'),
       inspection: t('categoryLabel.inspection'),
+      tachograph: t('categoryLabel.tachograph'),
+      'k-certificate': t('categoryLabel.kCertificate'),
+      'adr-vehicle': t('categoryLabel.adrVehicle'),
+      'adr-driver': t('categoryLabel.adrDriver'),
+      psychotechnical: t('categoryLabel.psychotechnical'),
     };
     return labels[cat];
   };

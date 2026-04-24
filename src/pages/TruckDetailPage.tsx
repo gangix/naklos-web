@@ -210,9 +210,15 @@ const TruckDetailPage = () => {
       updateData.inspectionExpiry = expiryDate;
     }
 
-    await truckApi.updateDocuments(truckId, updateData);
+    // For new categories (tachograph, k-certificate, adr-vehicle) there's no
+    // denormalized expiry field on the Truck entity yet — the modal already
+    // uploaded the document; skip the empty updateDocuments call. Backend sync
+    // for those expiries is tracked as a followup.
+    if (Object.keys(updateData).length > 0) {
+      await truckApi.updateDocuments(truckId, updateData);
+    }
 
-    // Refresh truck data
+    // Refresh truck data — document list or denormalized field may have changed.
     const updatedTruck = await truckApi.getById(truckId);
     setTruck(updatedTruck);
     refreshRoster();
@@ -486,6 +492,57 @@ const TruckDetailPage = () => {
                 <ExpiryBadge
                   label=""
                   date={truck.inspectionExpiry}
+                />
+              </div>
+
+              {/* Tachograph */}
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.tachograph')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('tachograph', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={null}
+                />
+              </div>
+
+              {/* K-type transport permit */}
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.kCertificate')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('k-certificate', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={null}
+                />
+              </div>
+
+              {/* ADR (vehicle) */}
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.adrVehicle')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('adr-vehicle', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={null}
                 />
               </div>
             </div>

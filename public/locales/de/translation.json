@@ -109,6 +109,9 @@
     "compulsoryInsurance": "Kfz-Haftpflichtversicherung",
     "comprehensiveInsurance": "Vollkaskoversicherung",
     "inspection": "Fahrzeuginspektion/TÜV",
+    "tachograph": "Tachograph-Kalibrierung",
+    "kCertificate": "K-Transportgenehmigung",
+    "adrVehicle": "ADR-Zertifikat (Fahrzeug)",
     "expiryDate": "Ablaufdatum",
     "basicInfo": "Grunddaten",
     "documents": "Dokumente",
@@ -131,6 +134,8 @@
     "licenseNumber": "Führerscheinnummer",
     "licenseClass": "Führerscheinklasse",
     "licenseExpiry": "Führerschein gültig bis",
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten",
     "certificates": "Zertifikate",
     "srcCertificate": "SRC-Bescheinigung",
     "cpcCertificate": "CPC-Bescheinigung",
@@ -654,7 +659,10 @@
     "cpcProfessional": "CPC (Bescheinigung über die berufliche Befähigung)",
     "certificateNumber": "Bescheinigungsnummer *",
     "issueDate": "Ausstellungsdatum *",
-    "expiryDate": "Ablaufdatum *"
+    "expiryDate": "Ablaufdatum *",
+    "certFileLabel": "Zertifikatsdatei (PDF oder Foto)",
+    "certSrcFileRequired": "Für das SRC-Zertifikat ist eine Dokumentdatei erforderlich.",
+    "certUploadFailedToast": "Zertifikat gespeichert, aber die Datei konnte nicht hochgeladen werden. Bitte über die Zertifikatskarte erneut versuchen."
   },
   "truckDetail": {
     "tabs": {
@@ -862,7 +870,12 @@
     "cpc": "CPC-Bescheinigung",
     "compulsoryInsurance": "Kfz-Haftpflichtversicherung",
     "comprehensiveInsurance": "Vollkaskoversicherung",
-    "inspection": "Fahrzeuginspektion/TÜV"
+    "inspection": "Fahrzeuginspektion/TÜV",
+    "tachograph": "Tachograph-Kalibrierung",
+    "kCertificate": "K-Transportgenehmigung",
+    "adrVehicle": "ADR-Zertifikat (Fahrzeug)",
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten"
   },
   "plan": {
     "free": "Kostenlos",
@@ -881,7 +894,12 @@
     "inspection": "Hauptuntersuchung",
     "license": "Führerschein",
     "src": "SRC-Bescheinigung",
-    "cpc": "CPC-Bescheinigung"
+    "cpc": "CPC-Bescheinigung",
+    "tachograph": "Tachograph-Kalibrierung",
+    "kCertificate": "K-Transportgenehmigung",
+    "adrVehicle": "ADR-Zertifikat (Fahrzeug)",
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten"
   },
   "resource": {
     "truck": "Fahrzeug",

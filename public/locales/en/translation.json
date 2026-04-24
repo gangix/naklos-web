@@ -109,6 +109,9 @@
     "compulsoryInsurance": "Compulsory Traffic Insurance",
     "comprehensiveInsurance": "Comprehensive Insurance",
     "inspection": "Vehicle Inspection",
+    "tachograph": "Tachograph calibration",
+    "kCertificate": "K-type transport permit",
+    "adrVehicle": "ADR certificate (vehicle)",
     "expiryDate": "Expiry Date",
     "basicInfo": "Basic Info",
     "documents": "Documents",
@@ -131,6 +134,8 @@
     "licenseNumber": "License No",
     "licenseClass": "License Class",
     "licenseExpiry": "License Expiry",
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment",
     "certificates": "Certificates",
     "srcCertificate": "SRC Certificate",
     "cpcCertificate": "CPC Certificate",
@@ -654,7 +659,10 @@
     "cpcProfessional": "CPC (Certificate of Professional Competence)",
     "certificateNumber": "Certificate number *",
     "issueDate": "Issue date *",
-    "expiryDate": "Expiry date *"
+    "expiryDate": "Expiry date *",
+    "certFileLabel": "Certificate file (PDF or photo)",
+    "certSrcFileRequired": "A document file is required for the SRC certificate.",
+    "certUploadFailedToast": "Certificate saved, but the file failed to upload. Please retry from the certificate card."
   },
   "truckDetail": {
     "tabs": {
@@ -862,7 +870,12 @@
     "cpc": "CPC Certificate",
     "compulsoryInsurance": "Compulsory Traffic Insurance",
     "comprehensiveInsurance": "Comprehensive Insurance",
-    "inspection": "Vehicle Inspection"
+    "inspection": "Vehicle Inspection",
+    "tachograph": "Tachograph calibration",
+    "kCertificate": "K-type transport permit",
+    "adrVehicle": "ADR certificate (vehicle)",
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment"
   },
   "plan": {
     "free": "Free",
@@ -881,7 +894,12 @@
     "inspection": "Inspection",
     "license": "Driver's License",
     "src": "SRC Certificate",
-    "cpc": "CPC Certificate"
+    "cpc": "CPC Certificate",
+    "tachograph": "Tachograph calibration",
+    "kCertificate": "K-type transport permit",
+    "adrVehicle": "ADR certificate (vehicle)",
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment"
   },
   "resource": {
     "truck": "truck",
