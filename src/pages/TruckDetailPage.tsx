@@ -210,9 +210,15 @@ const TruckDetailPage = () => {
       updateData.inspectionExpiry = expiryDate;
     }
 
-    await truckApi.updateDocuments(truckId, updateData);
+    // For new categories (tachograph, k-certificate, adr-vehicle) there's no
+    // denormalized expiry field on the Truck entity yet — the modal already
+    // uploaded the document; skip the empty updateDocuments call. Backend sync
+    // for those expiries is tracked as a followup.
+    if (Object.keys(updateData).length > 0) {
+      await truckApi.updateDocuments(truckId, updateData);
+    }
 
-    // Refresh truck data
+    // Refresh truck data — document list or denormalized field may have changed.
     const updatedTruck = await truckApi.getById(truckId);
     setTruck(updatedTruck);
     refreshRoster();
