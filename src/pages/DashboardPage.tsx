@@ -15,7 +15,11 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { plan } = useFleet();
-  const { total: fuelAttentionCount } = useFuelCounts();
+  const {
+    total: fuelAttentionCount,
+    worstPendingSeverity: fuelWorstSeverity,
+    pendingBreakdown: fuelBreakdown,
+  } = useFuelCounts();
   // Same gate ManagerTopNav uses — fuel surface is paid-only in prod.
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = Boolean(forceOn || (plan && plan !== 'FREE'));
@@ -181,6 +185,8 @@ const DashboardPage = () => {
           warningGroups={warningGroups}
           fuelAttentionCount={fuelAttentionCount}
           fuelEnabled={fuelTrackingEnabled}
+          fuelWorstSeverity={fuelWorstSeverity}
+          fuelBreakdown={fuelBreakdown}
         />
       )}
 
