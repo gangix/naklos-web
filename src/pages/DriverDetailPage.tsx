@@ -145,7 +145,7 @@ const DriverDetailPage = () => {
 
   const fullName = `${driver.firstName} ${driver.lastName}`;
 
-  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string) => {
+  const handleDocumentUpdate = (category: DocumentCategory, currentExpiry: string | null) => {
     setUploadCategory(category);
     setUploadCurrentExpiry(currentExpiry);
     setUploadModalOpen(true);
@@ -637,6 +637,34 @@ const DriverDetailPage = () => {
               label={t('driver.licenseExpiry')}
               date={driver.licenseExpiryDate}
             />
+          </div>
+
+          {/* ADR (Driver) */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-900">{t('driver.adrDriver')}</h2>
+              <button
+                onClick={() => handleDocumentUpdate('adr-driver', null)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                {t('documentCard.manageBtn')}
+              </button>
+            </div>
+            <ExpiryBadge label="" date={null} />
+          </div>
+
+          {/* Psikoteknik */}
+          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-lg font-bold text-gray-900">{t('driver.psychotechnical')}</h2>
+              <button
+                onClick={() => handleDocumentUpdate('psychotechnical', null)}
+                className="text-sm text-primary-600 font-medium"
+              >
+                {t('documentCard.manageBtn')}
+              </button>
+            </div>
+            <ExpiryBadge label="" date={null} />
           </div>
 
           {/* Certificates section */}

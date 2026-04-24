@@ -134,6 +134,8 @@
     "licenseNumber": "Führerscheinnummer",
     "licenseClass": "Führerscheinklasse",
     "licenseExpiry": "Führerschein gültig bis",
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten",
     "certificates": "Zertifikate",
     "srcCertificate": "SRC-Bescheinigung",
     "cpcCertificate": "CPC-Bescheinigung",

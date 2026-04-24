@@ -134,6 +134,8 @@
     "licenseNumber": "License No",
     "licenseClass": "License Class",
     "licenseExpiry": "License Expiry",
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment",
     "certificates": "Certificates",
     "srcCertificate": "SRC Certificate",
     "cpcCertificate": "CPC Certificate",

@@ -132,6 +132,8 @@
     "licenseNumber": "Ehliyet No",
     "licenseClass": "Ehliyet Sınıfı",
     "licenseExpiry": "Ehliyet Geçerlilik",
+    "adrDriver": "ADR Belgesi (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi",
     "certificates": "Sertifikalar",
     "srcCertificate": "SRC Belgesi",
     "cpcCertificate": "CPC Belgesi",
