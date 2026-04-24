@@ -4,7 +4,7 @@
 
 **Revision (2026-04-24):** The original plan bundled "add document upload to AddTruckModal / AddDriverModal" with "add four new document categories." During execution the first commit (`b622b838`, revert `27ab31d`) was deemed unnecessary: the Add flows are already fine — the Truck/Driver detail pages already offer full upload via `SimpleDocumentUpdateModal`. The real info-only gap is the **driver SRC/CPC certificate add form** (`DriverDetailPage.tsx:635-690`), where a structured cert record is created (`driverApi.addCertificate`) without any file attachment. This revision scopes the work to that gap plus the four new document categories from the original Phase B.
 
-**Goal:** (1) In the driver detail page's SRC/CPC cert add form, accept a document file alongside the structured info — **required for SRC**, **optional for CPC** — and upload it via the existing `driverApi.uploadDocument` endpoint right after the structured cert is created. (2) Add four new document categories — `tachograph`, `k-certificate`, `adr-vehicle`, `adr-driver` — that fleet managers can upload and manage just like the existing six.
+**Goal:** (1) In the driver detail page's SRC/CPC cert add form, accept a document file alongside the structured info — **required for SRC**, **optional for CPC** — and upload it via the existing `driverApi.uploadDocument` endpoint right after the structured cert is created. (2) Add five new document categories — `tachograph`, `k-certificate`, `adr-vehicle`, `adr-driver`, `psychotechnical` — that fleet managers can upload and manage just like the existing six. (Psikoteknik was added mid-execution as an extra driver-side doc.)
 
 **Architecture:** Pure frontend change. For (1), the existing `handleAddCertificate` gains a two-step finish: create the structured cert via `driverApi.addCertificate`, then (if a file was attached) upload the bytes via `driverApi.uploadDocument(driverId, file, 'src' | 'cpc', expiryDate)`. Upload failures are non-fatal — the cert is already created and the manager is notified to retry via the doc tile. For (2), extend the `DocumentCategory` union in `src/types/index.ts`, add category labels to the two existing document modals, wire new i18n keys, and render new document tiles on `TruckDetailPage.tsx` (3 tiles) / `DriverDetailPage.tsx` (1 tile). The backend (`document_type VARCHAR(50)`, no enum) already accepts any string; no backend migration required.
 
@@ -293,7 +293,9 @@ EOF
 
 ---
 
-## Task 2: Extend `DocumentCategory` union (+4)
+## Task 2: Extend `DocumentCategory` union (+5)
+
+> **Status:** ✅ DONE. Shipped in two commits — `f7d68f5` added 4 categories (tachograph, k-certificate, adr-vehicle, adr-driver); `a0e0922` added the 5th (psychotechnical). Remaining tasks (3, 5) cover all 5 new categories in the label maps + tiles.
 
 **Files:**
 - Modify: `src/types/index.ts:220`
@@ -379,6 +381,7 @@ const getCategoryLabel = (cat: DocumentCategory) => {
     'k-certificate': t('categoryLabel.kCertificate'),
     'adr-vehicle': t('categoryLabel.adrVehicle'),
     'adr-driver': t('categoryLabel.adrDriver'),
+    psychotechnical: t('categoryLabel.psychotechnical'),
   };
   return labels[cat];
 };
@@ -386,7 +389,7 @@ const getCategoryLabel = (cat: DocumentCategory) => {
 
 - [ ] **Step 2: Same update in `DocumentUploadModal`**
 
-Mirror the same map in `DocumentUploadModal.tsx:83-93`.
+Mirror the same map in `DocumentUploadModal.tsx:83-93` — include all 5 new entries (tachograph, k-certificate, adr-vehicle, adr-driver, psychotechnical).
 
 - [ ] **Step 3: Typecheck**
 
@@ -412,7 +415,8 @@ In `public/locales/tr/translation.json`, extend the existing `"categoryLabel"` b
     "tachograph": "Takograf Kalibrasyonu",
     "kCertificate": "K Yetki Belgesi",
     "adrVehicle": "ADR (Araç)",
-    "adrDriver": "ADR (Sürücü)"
+    "adrDriver": "ADR (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi"
   },
 ```
 
@@ -429,7 +433,8 @@ Also extend the `"doc"` block (lines 876-883):
     "tachograph": "Takograf Kalibrasyonu",
     "kCertificate": "K Yetki Belgesi",
     "adrVehicle": "ADR (Araç)",
-    "adrDriver": "ADR (Sürücü)"
+    "adrDriver": "ADR (Sürücü)",
+    "psychotechnical": "Psikoteknik Belgesi"
   },
 ```
 
@@ -441,7 +446,8 @@ Also extend the `"doc"` block (lines 876-883):
     "tachograph": "Tachograph calibration",
     "kCertificate": "K-type transport permit",
     "adrVehicle": "ADR certificate (vehicle)",
-    "adrDriver": "ADR certificate (driver)"
+    "adrDriver": "ADR certificate (driver)",
+    "psychotechnical": "Psychotechnical assessment"
 ```
 
 - [ ] **Step 6: Same keys — German**
@@ -452,7 +458,8 @@ Also extend the `"doc"` block (lines 876-883):
     "tachograph": "Tachograph-Kalibrierung",
     "kCertificate": "K-Transportgenehmigung",
     "adrVehicle": "ADR-Zertifikat (Fahrzeug)",
-    "adrDriver": "ADR-Zertifikat (Fahrer)"
+    "adrDriver": "ADR-Zertifikat (Fahrer)",
+    "psychotechnical": "Psychotechnisches Gutachten"
 ```
 
 - [ ] **Step 7: Commit**
@@ -567,7 +574,7 @@ EOF
 
 ---
 
-## Task 5: Render ADR-driver tile on `DriverDetailPage`
+## Task 5: Render adr-driver + psikoteknik tiles on `DriverDetailPage`
 
 **Files:**
 - Modify: `src/pages/DriverDetailPage.tsx` (near the existing `license` / `src` / `cpc` doc tiles — around line 595)
@@ -575,23 +582,37 @@ EOF
 - Modify: `public/locales/en/translation.json`
 - Modify: `public/locales/de/translation.json`
 
-- [ ] **Step 1: Add one new tile after the cpc tile**
+- [ ] **Step 1: Add two new tiles after the cpc tile**
 
-Mirror the existing cpc tile pattern with `category='adr-driver'`, `date={null}`, and the `driverDetail.docAdrDriverAction` label key.
+Mirror the existing cpc tile pattern twice — once with `category='adr-driver'` / label `driverDetail.docAdrDriverAction`, once with `category='psychotechnical'` / label `driverDetail.docPsychotechnicalAction`. Both use `date={null}` (the Driver entity has no denormalized expiry field for these; the tile stays date-less until the backend sync followup lands).
 
 - [ ] **Step 2: Add i18n keys**
 
-TR: `"docAdrDriverAction": "ADR Belgesini yönet"`
-EN: `"docAdrDriverAction": "Manage ADR certificate"`
-DE: `"docAdrDriverAction": "ADR-Zertifikat verwalten"`
+TR:
+```json
+    "docAdrDriverAction": "ADR Belgesini yönet",
+    "docPsychotechnicalAction": "Psikoteknik Belgesini yönet"
+```
+
+EN:
+```json
+    "docAdrDriverAction": "Manage ADR certificate",
+    "docPsychotechnicalAction": "Manage psychotechnical"
+```
+
+DE:
+```json
+    "docAdrDriverAction": "ADR-Zertifikat verwalten",
+    "docPsychotechnicalAction": "Psychotechnik verwalten"
+```
 
 - [ ] **Step 3: Typecheck + commit**
 
 ```bash
 cd /Users/olcay.bilir/IdeaProjects/naklos-web
-npx tsc --noEmit
+npx tsc -p tsconfig.app.json --noEmit
 git add src/pages/DriverDetailPage.tsx public/locales/tr/translation.json public/locales/en/translation.json public/locales/de/translation.json
-git commit -m "DriverDetailPage: render adr-driver doc tile"
+git commit -m "DriverDetailPage: render adr-driver and psychotechnical doc tiles"
 ```
 
 ---
