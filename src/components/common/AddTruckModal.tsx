@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../../contexts/FleetContext';
 import { truckApi } from '../../services/api';
-import { Select, TextInput } from './FormField';
+import { FileInput, Select, TextInput } from './FormField';
 
 interface AddTruckModalProps {
   isOpen: boolean;
@@ -36,12 +36,27 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess, prefillPlate, onSubmit }: A
   const { fleetId } = useFleet();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  type TruckDocFormEntry = { file: File | null; expiryDate: string };
+  type TruckDocKey = 'compulsory-insurance' | 'comprehensive-insurance' | 'inspection';
+  const emptyDoc: TruckDocFormEntry = { file: null, expiryDate: '' };
+
   const [formData, setFormData] = useState({
     plateNumber: prefillPlate ?? '',
     type: 'SMALL_TRUCK',
     capacityKg: 3500,
     cargoVolumeM3: 20,
   });
+
+  const [docs, setDocs] = useState<Record<TruckDocKey, TruckDocFormEntry>>({
+    'compulsory-insurance': { ...emptyDoc },
+    'comprehensive-insurance': { ...emptyDoc },
+    'inspection': { ...emptyDoc },
+  });
+
+  const updateDoc = (key: TruckDocKey, patch: Partial<TruckDocFormEntry>) => {
+    setDocs((prev) => ({ ...prev, [key]: { ...prev[key], ...patch } }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,6 +162,41 @@ const AddTruckModal = ({ isOpen, onClose, onSuccess, prefillPlate, onSubmit }: A
               value={formData.cargoVolumeM3}
               onChange={(e) => setFormData({ ...formData, cargoVolumeM3: Number(e.target.value) })}
             />
+
+            <div className="pt-4 border-t border-gray-200">
+              <details className="group">
+                <summary className="cursor-pointer text-sm font-medium text-gray-700 hover:text-primary-600 list-none flex items-center justify-between">
+                  <span>{t('addTruck.docsSectionTitle')}</span>
+                  <span className="text-xs text-gray-500 group-open:hidden">{t('addTruck.docsSectionExpand')}</span>
+                  <span className="text-xs text-gray-500 hidden group-open:inline">{t('addTruck.docsSectionCollapse')}</span>
+                </summary>
+                <p className="mt-2 text-xs text-gray-600">{t('addTruck.docsSectionHint')}</p>
+
+                <div className="mt-3 space-y-4">
+                  {(['compulsory-insurance', 'comprehensive-insurance', 'inspection'] as const).map((key) => (
+                    <div key={key} className="rounded-lg border border-gray-200 p-3 space-y-2">
+                      <p className="text-sm font-medium text-gray-900">{t(`categoryLabel.${
+                        key === 'compulsory-insurance' ? 'compulsoryInsurance'
+                        : key === 'comprehensive-insurance' ? 'comprehensiveInsurance'
+                        : 'inspection'
+                      }`)}</p>
+                      <FileInput
+                        label={t('addTruck.docFileLabel')}
+                        accept=".pdf,.jpg,.jpeg,.png"
+                        onChange={(file) => updateDoc(key, { file })}
+                        selectedFileName={docs[key].file?.name ?? null}
+                      />
+                      <TextInput
+                        label={t('addTruck.docExpiryLabel')}
+                        type="date"
+                        value={docs[key].expiryDate}
+                        onChange={(e) => updateDoc(key, { expiryDate: e.target.value })}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </details>
+            </div>
 
             <div className="flex gap-3 pt-4">
               <button

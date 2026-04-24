@@ -993,7 +993,14 @@
     "typeLargeTruck": "Büyük Kamyon (24 ton)",
     "typeTir": "TIR (Çekici)",
     "typeFlatbed": "Açık Kasa",
-    "typeRefrigerated": "Soğutuculu Kamyon"
+    "typeRefrigerated": "Soğutuculu Kamyon",
+    "docsSectionTitle": "Belgeleri şimdi yükle (isteğe bağlı)",
+    "docsSectionHint": "Aşağıdaki belgeleri şimdi yükleyebilirsin; boş bırakırsan araç \"belge eksik\" olarak işaretlenir ve sonra detay sayfasından ekleyebilirsin.",
+    "docsSectionExpand": "Aç",
+    "docsSectionCollapse": "Kapat",
+    "docFileLabel": "Belge dosyası (PDF veya fotoğraf)",
+    "docExpiryLabel": "Geçerlilik tarihi",
+    "docUploadFailedToast": "Araç oluşturuldu ancak bazı belgeler yüklenemedi: {{names}}. Detay sayfasından tekrar dener misin?"
   },
   "addClient": {
     "title": "Müşteri Ekle",

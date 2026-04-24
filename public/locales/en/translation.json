@@ -996,7 +996,14 @@
     "typeLargeTruck": "Large Truck (24 t)",
     "typeTir": "Articulated TIR (Tractor)",
     "typeFlatbed": "Flatbed",
-    "typeRefrigerated": "Refrigerated Truck"
+    "typeRefrigerated": "Refrigerated Truck",
+    "docsSectionTitle": "Upload documents now (optional)",
+    "docsSectionHint": "You can upload these documents now; leaving them blank marks the truck as \"missing documents\" — you can add them later from the detail page.",
+    "docsSectionExpand": "Expand",
+    "docsSectionCollapse": "Collapse",
+    "docFileLabel": "Document file (PDF or photo)",
+    "docExpiryLabel": "Expiry date",
+    "docUploadFailedToast": "Truck created, but some documents failed to upload: {{names}}. Please retry from the detail page."
   },
   "addClient": {
     "title": "Add Client",
