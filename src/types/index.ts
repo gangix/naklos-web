@@ -227,7 +227,8 @@ export type DocumentCategory =
   | 'tachograph'
   | 'k-certificate'
   | 'adr-vehicle'
-  | 'adr-driver';
+  | 'adr-driver'
+  | 'psychotechnical';
 
 export interface DocumentSubmission {
   id: string;
