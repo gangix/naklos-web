@@ -996,14 +996,7 @@
     "typeLargeTruck": "Großer Lkw (24 t)",
     "typeTir": "Sattelzug (TIR)",
     "typeFlatbed": "Pritschenwagen",
-    "typeRefrigerated": "Kühlfahrzeug",
-    "docsSectionTitle": "Dokumente jetzt hochladen (optional)",
-    "docsSectionHint": "Du kannst diese Dokumente jetzt hochladen; wenn du sie leer lässt, wird das Fahrzeug als \"Dokumente fehlen\" markiert — du kannst sie später über die Detailseite ergänzen.",
-    "docsSectionExpand": "Öffnen",
-    "docsSectionCollapse": "Schließen",
-    "docFileLabel": "Dokumentdatei (PDF oder Foto)",
-    "docExpiryLabel": "Ablaufdatum",
-    "docUploadFailedToast": "Fahrzeug angelegt, aber einige Dokumente konnten nicht hochgeladen werden: {{names}}. Bitte über die Detailseite erneut versuchen."
+    "typeRefrigerated": "Kühlfahrzeug"
   },
   "addClient": {
     "title": "Kunde hinzufügen",
