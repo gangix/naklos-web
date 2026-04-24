@@ -654,7 +654,12 @@
     "cpcProfessional": "CPC (Bescheinigung über die berufliche Befähigung)",
     "certificateNumber": "Bescheinigungsnummer *",
     "issueDate": "Ausstellungsdatum *",
-    "expiryDate": "Ablaufdatum *"
+    "expiryDate": "Ablaufdatum *",
+    "certFileLabel": "Zertifikatsdatei (PDF oder Foto)",
+    "requiredMarker": "(erforderlich)",
+    "optionalMarker": "(optional)",
+    "certSrcFileRequired": "Für das SRC-Zertifikat ist eine Dokumentdatei erforderlich.",
+    "certUploadFailedToast": "Zertifikat gespeichert, aber die Datei konnte nicht hochgeladen werden. Bitte über die Zertifikatskarte erneut versuchen."
   },
   "truckDetail": {
     "tabs": {

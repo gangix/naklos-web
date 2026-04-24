@@ -652,7 +652,12 @@
     "cpcProfessional": "CPC (Profesyonel Yeterlilik Kartı)",
     "certificateNumber": "Sertifika Numarası *",
     "issueDate": "Veriliş Tarihi *",
-    "expiryDate": "Son Geçerlilik Tarihi *"
+    "expiryDate": "Son Geçerlilik Tarihi *",
+    "certFileLabel": "Belge dosyası (PDF veya fotoğraf)",
+    "requiredMarker": "(zorunlu)",
+    "optionalMarker": "(opsiyonel)",
+    "certSrcFileRequired": "SRC belgesi için dosya yüklemek zorunlu.",
+    "certUploadFailedToast": "Sertifika kaydedildi ancak belge dosyası yüklenemedi. Sertifika kartından tekrar dener misin?"
   },
   "truckDetail": {
     "tabs": {

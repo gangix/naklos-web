@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import ExpiryBadge from '../components/common/ExpiryBadge';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
-import { Select, TextInput } from '../components/common/FormField';
+import { FileInput, Select, TextInput } from '../components/common/FormField';
 import { ArrowLeft, ChevronRight, Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
@@ -46,6 +46,7 @@ const DriverDetailPage = () => {
   const [certificateNumber, setCertificateNumber] = useState('');
   const [certificateIssueDate, setCertificateIssueDate] = useState('');
   const [certificateExpiryDate, setCertificateExpiryDate] = useState('');
+  const [certificateFile, setCertificateFile] = useState<File | null>(null);
   // Separate the two delete confirm paths so they can't collide. Earlier
   // they shared `confirmAction === 'delete'` + a secondary `pendingCertificateId`
   // field — a missed reset anywhere could delete the wrong target.
@@ -172,6 +173,13 @@ const DriverDetailPage = () => {
       return;
     }
 
+    // SRC is mandatory in Turkey for commercial freight — require the file so
+    // the cert record isn't created without the underlying document.
+    if (certificateType === 'SRC' && !certificateFile) {
+      toast.error(t('driverDetail.certSrcFileRequired'));
+      return;
+    }
+
     // Client-side validation: check if expiry date is in the future
     const expiryDate = new Date(certificateExpiryDate);
     const today = new Date();
@@ -197,11 +205,28 @@ const DriverDetailPage = () => {
         expiryDate: certificateExpiryDate,
       });
 
+      // Upload the file (if provided). Non-fatal on failure: the structured
+      // cert already exists, the manager is told to retry from the doc tile.
+      if (certificateFile) {
+        try {
+          await driverApi.uploadDocument(
+            driverId,
+            certificateFile,
+            certificateType === 'SRC' ? 'src' : 'cpc',
+            certificateExpiryDate,
+          );
+        } catch (uploadErr) {
+          console.error('Cert file upload failed after addCertificate', uploadErr);
+          toast.warning(t('driverDetail.certUploadFailedToast'));
+        }
+      }
+
       // Reset form
       setShowAddCertificate(false);
       setCertificateNumber('');
       setCertificateIssueDate('');
       setCertificateExpiryDate('');
+      setCertificateFile(null);
 
       const updatedDriver = await driverApi.getById(driverId);
       setDriver(updatedDriver);
@@ -666,6 +691,16 @@ const DriverDetailPage = () => {
                     min={new Date().toISOString().split('T')[0]}
                     hint={<>⚠️ {t('driverDetail.expiryFutureWarning')}</>}
                   />
+                  <FileInput
+                    label={
+                      certificateType === 'SRC'
+                        ? `${t('driverDetail.certFileLabel')} ${t('driverDetail.requiredMarker')}`
+                        : `${t('driverDetail.certFileLabel')} ${t('driverDetail.optionalMarker')}`
+                    }
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    onChange={(file) => setCertificateFile(file)}
+                    selectedFileName={certificateFile?.name ?? null}
+                  />
                   <div className="flex gap-2 pt-2">
                     <button
                       onClick={handleAddCertificate}
@@ -679,6 +714,7 @@ const DriverDetailPage = () => {
                         setCertificateNumber('');
                         setCertificateIssueDate('');
                         setCertificateExpiryDate('');
+                        setCertificateFile(null);
                       }}
                       className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
                     >

@@ -654,7 +654,12 @@
     "cpcProfessional": "CPC (Certificate of Professional Competence)",
     "certificateNumber": "Certificate number *",
     "issueDate": "Issue date *",
-    "expiryDate": "Expiry date *"
+    "expiryDate": "Expiry date *",
+    "certFileLabel": "Certificate file (PDF or photo)",
+    "requiredMarker": "(required)",
+    "optionalMarker": "(optional)",
+    "certSrcFileRequired": "A document file is required for the SRC certificate.",
+    "certUploadFailedToast": "Certificate saved, but the file failed to upload. Please retry from the certificate card."
   },
   "truckDetail": {
     "tabs": {
