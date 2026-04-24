@@ -488,6 +488,57 @@ const TruckDetailPage = () => {
                   date={truck.inspectionExpiry}
                 />
               </div>
+
+              {/* Tachograph */}
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.tachograph')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('tachograph', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={null}
+                />
+              </div>
+
+              {/* K-type transport permit */}
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.kCertificate')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('k-certificate', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={null}
+                />
+              </div>
+
+              {/* ADR (vehicle) */}
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.adrVehicle')}</h3>
+                  <button
+                    onClick={() => handleDocumentUpdate('adr-vehicle', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge
+                  label=""
+                  date={null}
+                />
+              </div>
             </div>
           </div>
 
