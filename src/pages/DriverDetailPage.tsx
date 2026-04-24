@@ -692,11 +692,8 @@ const DriverDetailPage = () => {
                     hint={<>⚠️ {t('driverDetail.expiryFutureWarning')}</>}
                   />
                   <FileInput
-                    label={
-                      certificateType === 'SRC'
-                        ? `${t('driverDetail.certFileLabel')} ${t('driverDetail.requiredMarker')}`
-                        : `${t('driverDetail.certFileLabel')} ${t('driverDetail.optionalMarker')}`
-                    }
+                    label={t('driverDetail.certFileLabel')}
+                    required={certificateType === 'SRC'}
                     accept=".pdf,.jpg,.jpeg,.png"
                     onChange={(file) => setCertificateFile(file)}
                     selectedFileName={certificateFile?.name ?? null}
