@@ -1,39 +1,48 @@
-import { Truck } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
-import LanguageSwitcher from '../../components/common/LanguageSwitcher';
 
-export default function Header() {
+const Header = () => {
   const { t } = useTranslation();
-  const { login } = useAuth();
+  const { register, login } = useAuth();
 
   return (
-    <header className="relative bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-20">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-primary-700 flex items-center justify-center">
-            <Truck className="w-5 h-5 text-white" />
+    <header className="border-b border-slate-200 bg-warm sticky top-0 z-30 backdrop-blur-sm bg-warm/90">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary-700 flex items-center justify-center text-white font-extrabold text-sm">
+            N
           </div>
-          <span className="text-xl font-extrabold tracking-tight text-slate-900">Naklos</span>
-        </Link>
-        <div className="flex items-center gap-1">
-          <Link
-            to="/blog"
-            className="px-3 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            {t('landing.nav.blog')}
-          </Link>
-          <LanguageSwitcher variant="light" />
-          <div className="w-px h-5 bg-slate-200 mx-1" aria-hidden="true" />
+          <span className="font-extrabold text-slate-900 tracking-tight">naklos</span>
+          <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-confirm-500/10 text-confirm-700 border border-confirm-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-confirm-500" aria-hidden="true" />
+            BETA · ücretsiz
+          </span>
+        </div>
+        <nav className="hidden md:flex items-center gap-7 text-sm text-slate-600 font-medium">
+          <a href="#features" className="hover:text-slate-900 transition-colors">{t('landing.nav.features')}</a>
+          <a href="#compare" className="hover:text-slate-900 transition-colors">{t('landing.nav.comparison')}</a>
+          <a href="#pricing" className="hover:text-slate-900 transition-colors">{t('landing.nav.pricing')}</a>
+          <a href="#faq" className="hover:text-slate-900 transition-colors">{t('landing.nav.faq')}</a>
+        </nav>
+        <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={login}
-            className="px-4 py-2 text-sm font-semibold text-primary-700 hover:text-primary-800 hover:bg-primary-50 rounded-lg transition-colors"
+            className="hidden sm:inline text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
           >
             {t('landing.nav.login')}
+          </button>
+          <button
+            type="button"
+            onClick={register}
+            className="px-4 py-1.5 bg-primary-700 hover:bg-primary-800 text-white text-sm font-bold rounded-lg transition-colors"
+          >
+            {t('landing.hero.cta')}
           </button>
         </div>
       </div>
     </header>
   );
-}
+};
+
+export default Header;
