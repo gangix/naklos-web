@@ -114,9 +114,17 @@
     "goToFuel": "Go to fuel",
     "goToMaintenance": "Go to maintenance",
     "kind": {
-      "doc": "Document",
+      "doc": "Documents",
       "fuel": "Fuel",
       "maintenance": "Maintenance"
+    },
+    "counts": {
+      "critical_one": "{{count}} urgent",
+      "critical_other": "{{count}} urgent",
+      "warning_one": "{{count}} warning",
+      "warning_other": "{{count}} warnings",
+      "info_one": "{{count}} info",
+      "info_other": "{{count}} info"
     }
   },
   "maintenance": {

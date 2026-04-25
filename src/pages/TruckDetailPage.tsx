@@ -419,6 +419,7 @@ const TruckDetailPage = () => {
           <EntityWarningsRollup
             warnings={truckEntityWarnings}
             entityType="truck"
+            groupByKind
             onNavigate={(w) => {
               if (w.kind === 'doc') setActiveTab('belgeler');
               else if (w.kind === 'maintenance') setActiveTab('bakim');

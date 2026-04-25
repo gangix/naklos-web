@@ -112,9 +112,17 @@
     "goToFuel": "Yakıt'a git",
     "goToMaintenance": "Bakım'a git",
     "kind": {
-      "doc": "Belge",
+      "doc": "Belgeler",
       "fuel": "Yakıt",
       "maintenance": "Bakım"
+    },
+    "counts": {
+      "critical_one": "{{count}} acil",
+      "critical_other": "{{count}} acil",
+      "warning_one": "{{count}} uyarı",
+      "warning_other": "{{count}} uyarı",
+      "info_one": "{{count}} bilgi",
+      "info_other": "{{count}} bilgi"
     }
   },
   "maintenance": {

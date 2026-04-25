@@ -114,9 +114,17 @@
     "goToFuel": "Zum Kraftstoff",
     "goToMaintenance": "Zur Wartung",
     "kind": {
-      "doc": "Dokument",
+      "doc": "Dokumente",
       "fuel": "Kraftstoff",
       "maintenance": "Wartung"
+    },
+    "counts": {
+      "critical_one": "{{count}} dringend",
+      "critical_other": "{{count}} dringend",
+      "warning_one": "{{count}} Warnung",
+      "warning_other": "{{count}} Warnungen",
+      "info_one": "{{count}} Info",
+      "info_other": "{{count}} Info"
     }
   },
   "maintenance": {
