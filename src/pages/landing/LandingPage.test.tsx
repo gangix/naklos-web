@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import i18n from 'i18next';
-import enRes from '../../../public/locales/en/translation.json';
+import trRes from '../../../public/locales/tr/translation.json';
 import LandingPage from '../LandingPage';
 
+// Auth context used by Hero / Pricing / FinalCTA / Header for register/login CTAs
 vi.mock('../../contexts/AuthContext', () => ({
   useAuth: () => ({
     login: vi.fn(),
@@ -18,10 +19,18 @@ vi.mock('../../components/common/LanguageSwitcher', () => ({
   default: () => <div data-testid="language-switcher" />,
 }));
 
+// Pricing + FinalCTA fetch /api/public/founding-status on mount.
+// Stub the publicApi so the test doesn't try to hit the network.
+vi.mock('../../services/publicApi', () => ({
+  publicApi: {
+    foundingStatus: () => Promise.resolve({ taken: 3, remaining: 7 }),
+  },
+}));
+
 const testI18n = i18n.createInstance();
 await testI18n.use(initReactI18next).init({
-  lng: 'en',
-  resources: { en: { translation: enRes } },
+  lng: 'tr',
+  resources: { tr: { translation: trRes } },
 });
 
 const renderPage = () => render(
@@ -33,38 +42,40 @@ const renderPage = () => render(
 );
 
 describe('LandingPage', () => {
-  it('renders all major sections', () => {
+  it('renders all major sections (Hero / Features / Comparison / Pricing / FAQ / FinalCTA)', () => {
     renderPage();
 
-    expect(screen.getAllByText(/the fuel leak you can't see in excel/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/we surface it the day it happens/i)).toBeInTheDocument();
+    // Hero
+    expect(screen.getAllByText(/excel'i bırakın/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/filonuzu/i).length).toBeGreaterThanOrEqual(1);
 
-    expect(screen.getByText(/three steps — data to action/i)).toBeInTheDocument();
-    expect(screen.getByText(/upload your excel/i)).toBeInTheDocument();
+    // Features (3 pillars)
+    expect(screen.getByText(/üç şey, doğru yapılmış/i)).toBeInTheDocument();
 
-    expect(screen.getAllByText(/your cards spend\. which ones aren't driving\?/i).length).toBeGreaterThanOrEqual(1);
+    // Comparison
+    expect(screen.getByText(/adil bir karşılaştırma/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/goodbye, spreadsheets/i)).toBeInTheDocument();
+    // Pricing — beta banner + cards
+    expect(screen.getByText(/anlaşılır fiyatlandırma/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/looking for the first ten fleets/i)).toBeInTheDocument();
+    // FAQ
+    expect(screen.getByText(/sık sorulan sorular/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/founding customers lock in/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/get founding access/i).length).toBeGreaterThanOrEqual(3);
+    // Final CTA — "10 dakika" line
+    expect(screen.getByText(/10 dakika/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/talk to a human/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/your name/i)).toBeInTheDocument();
-
-    expect(screen.getAllByText(/privacy policy/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/info@naklos\.com\.tr/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/naklos teknoloji ltd/i).length).toBeGreaterThanOrEqual(1);
+    // Footer links
     expect(screen.getAllByText(/kvkk/i).length).toBeGreaterThanOrEqual(1);
   });
 
-  it('does NOT render forbidden content (WhatsApp / audit)', () => {
+  it('does NOT render forbidden content (floating widget / removed sections)', () => {
     renderPage();
 
-    expect(screen.queryByText(/whatsapp/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/free fuel audit/i)).not.toBeInTheDocument();
+    // WhatsApp floating widget removed (text mention in FAQ support copy is fine)
     expect(screen.queryByText(/wa\.me/)).not.toBeInTheDocument();
+    // Old marketing audit CTA removed
+    expect(screen.queryByText(/free fuel audit/i)).not.toBeInTheDocument();
+    // HowItWorks section removed from the landing flow
+    expect(screen.queryByText(/three steps — data to action/i)).not.toBeInTheDocument();
   });
 });

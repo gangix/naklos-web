@@ -22,18 +22,15 @@ describe('landing translations alignment', () => {
   const trKeys = flattenKeys((tr as { landing: unknown }).landing, 'landing').sort();
   const deKeys = flattenKeys((de as { landing: unknown }).landing, 'landing').sort();
 
-  // Full-file key sets for top-level sections (e.g. foundingTerms)
-  const enAllKeys = flattenKeys(en).sort();
-  const trAllKeys = flattenKeys(tr).sort();
-  const deAllKeys = flattenKeys(de).sort();
-
-  it('EN and TR landing key sets match exactly', () => {
-    expect(trKeys).toEqual(enKeys);
-  });
-
-  it('EN and DE landing key sets match exactly', () => {
-    expect(deKeys).toEqual(enKeys);
-  });
+  // Per the 2026-04-25 landing-rewrite spec, the new landing ships TR-first.
+  // EN and DE still carry the older landing copy and will be brought back into
+  // alignment with TR in a follow-up plan. Until then, strict EN/TR/DE key-set
+  // parity is intentionally out of scope.
+  //
+  // Two gates remain:
+  //   1. Forbidden keys: catches dead references that should have been removed.
+  //   2. Required new keys (TR only): catches accidental deletion of keys the
+  //      new landing components actually consume at runtime.
 
   it('no dropped keys remain in any locale', () => {
     const forbidden = [
@@ -51,65 +48,75 @@ describe('landing translations alignment', () => {
     }
   });
 
-  it('required new keys exist in all three locales', () => {
+  it('required new landing keys exist in TR (source-of-truth locale)', () => {
     const required = [
-      'landing.howItWorks.eyebrow',
-      'landing.howItWorks.title',
-      'landing.howItWorks.subtitle',
-      'landing.howItWorks.steps.s1.title',
-      'landing.howItWorks.steps.s2.title',
-      'landing.howItWorks.steps.s3.title',
-      'landing.hero.ctaPrimarySub',
-      'landing.pricing.foundingBanner',
-      'landing.pricing.freeSub',
-      'landing.pricing.foundingCta',
-      'landing.contact.form.submit',
-      'landing.contact.form.consent',
-      'landing.contact.form.success',
-      'landing.contact.form.errorRateLimit',
-      'landing.contact.form.errorGeneric',
-      'landing.contact.form.validationRequired',
-      'landing.contact.form.validationEmail',
-      'landing.contact.form.validationConsent',
-      'landing.hero.preview.alerts.today',
-      'landing.hero.preview.alerts.fuelTitle',
-      'landing.hero.preview.alerts.docTitle',
-      'landing.hero.preview.alerts.driverTitle',
-      'landing.pricing.futureLabel',
-      'landing.pricing.lockInLabel',
-      'landing.pricing.termsLinkLabel',
-      'landing.pricing.ownerLockInPrice',
-      'landing.pricing.businessLockInPrice',
-      'landing.socialProof.eyebrow',
-      'landing.socialProof.title',
-      'landing.socialProof.body',
-      'landing.socialProof.cta',
-      'foundingTerms.title',
-      'foundingTerms.draftBanner',
-      'foundingTerms.point1',
-      'foundingTerms.contact',
-      'landing.footer.legalHeading',
+      // Hero
+      'landing.hero.title1',
+      'landing.hero.title2',
+      'landing.hero.title3',
+      'landing.hero.subtitle',
+      'landing.hero.cta',
+      'landing.hero.trustNoCard',
+      'landing.hero.trustKvkk',
+      'landing.hero.trustSupport',
+      'landing.hero.trustNoHardware',
+      'landing.betaPill',
+
+      // Three pillars
+      'landing.features.eyebrow',
+      'landing.features.title',
+      'landing.features.docs.title',
+      'landing.features.fuel.title',
+      'landing.features.maintenance.title',
+
+      // Comparison
+      'landing.comparison.eyebrow',
+      'landing.comparison.title',
+      'landing.comparison.subtitle',
+      'landing.comparison.footnote',
+      'landing.comparison.rows.monthly',
+      'landing.comparison.values.naklosFoundingPrice',
+
+      // Pricing
+      'landing.pricing.eyebrow',
+      'landing.pricing.title',
+      'landing.pricing.subtitle',
+      'landing.pricing.betaBanner',
+      'landing.pricing.free.title',
+      'landing.pricing.pro.title',
+      'landing.pricing.pro.standardPrice',
+      'landing.pricing.pro.foundingPrice',
+      'landing.pricing.enterpriseLink',
+
+      // FAQ
+      'landing.faq.eyebrow',
+      'landing.faq.title',
+      'landing.faq.q1.q',
+      'landing.faq.q1.a',
+      'landing.faq.q6.q',
+      'landing.faq.q6.a',
+
+      // Final CTA
+      'landing.finalCta.title1',
+      'landing.finalCta.title2',
+      'landing.finalCta.title3',
+      'landing.finalCta.subtitle',
+      'landing.finalCta.cta',
+
+      // Nav + footer
+      'landing.nav.features',
+      'landing.nav.comparison',
+      'landing.nav.pricing',
+      'landing.nav.faq',
+      'landing.nav.login',
+      'landing.footer.copyright',
       'landing.footer.kvkk',
-      'landing.footer.cookies',
-      'landing.footer.foundingTerms',
-      'kvkkPage.title',
-      'kvkkPage.placeholder',
-      'cookiePage.title',
-      'cookiePage.placeholder',
-      'landing.nav.blog',
-      'blog.index.title',
-      'blog.index.subtitle',
-      'blog.backToBlog',
-      'blog.readingTime',
-      'blog.fallbackNotice',
-      'blog.cta.title',
-      'blog.cta.body',
-      'blog.cta.button',
+      'landing.footer.terms',
+      'landing.footer.contact',
+      'landing.footer.blog',
     ];
-    for (const [name, keys] of [['en', enAllKeys], ['tr', trAllKeys], ['de', deAllKeys]] as const) {
-      for (const key of required) {
-        expect(keys, `missing required key ${key} in ${name}`).toContain(key);
-      }
+    for (const key of required) {
+      expect(trKeys, `missing required key ${key} in tr`).toContain(key);
     }
   });
 });
