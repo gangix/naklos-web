@@ -421,8 +421,13 @@ const TruckDetailPage = () => {
             entityType="truck"
             onNavigate={(w) => {
               if (w.kind === 'doc') setActiveTab('belgeler');
-              else if (w.kind === 'fuel') setActiveTab('yakit');
-              else setActiveTab('bakim');
+              else if (w.kind === 'maintenance') setActiveTab('bakim');
+              // Fuel anomalies live on the fuel-alerts page (the canonical
+              // confirm/dismiss surface). The truck's Yakıt tab is fuel
+              // ENTRIES, which doesn't surface anomalies — sending the
+              // manager there leaves them stuck. Land on /fuel-alerts
+              // filtered to this truck instead.
+              else if (w.kind === 'fuel') navigate(`/manager/fuel-alerts?truckId=${truckId}`);
             }}
           />
 

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, Filter as FilterIcon, Truck as TruckIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -127,10 +127,28 @@ export default function FuelAlertsPage() {
   const [error, setError] = useState<string | null>(null);
   const [lastLoadedAt, setLastLoadedAt] = useState<string | null>(null);
 
+  // Deep-link: when arriving from a per-truck rollup CTA (e.g. TruckDetail's
+  // EntityWarningsRollup), seed the truck filter from ?truckId so the manager
+  // lands directly on that truck's anomalies. Consumed once on mount; user
+  // edits to the dropdown afterward stay sticky.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialTruckFilter = searchParams.get('truckId') ?? 'ALL';
+
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>('ALL');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('ALL');
-  const [truckFilter, setTruckFilter] = useState<string>('ALL');
+  const [truckFilter, setTruckFilter] = useState<string>(initialTruckFilter);
   const [ruleFilter, setRuleFilter] = useState<string>('ALL');
+
+  // Strip ?truckId from the URL once consumed so a page reload doesn't
+  // re-seed the filter (matches the same pattern TruckDetailPage uses for
+  // its ?tab / ?entry deep-link params).
+  useEffect(() => {
+    if (!searchParams.get('truckId')) return;
+    const next = new URLSearchParams(searchParams);
+    next.delete('truckId');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [anchorId, setAnchorId] = useState<string | null>(null);
