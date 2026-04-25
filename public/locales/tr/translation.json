@@ -922,7 +922,14 @@
     "noTruckDesc": "Size bir araç atanmamış. Lütfen yöneticinizle iletişime geçin.",
     "update": "Güncelle",
     "upload": "Yükle",
-    "recentFuelEntries": "Son yakıt kayıtlarım"
+    "recentFuelEntries": "Son yakıt kayıtlarım",
+    "maintenance": {
+      "title": "Bakım",
+      "logService": "Servis girdim",
+      "noSchedules": "Henüz bakım takvimi yok. Filo yöneticinizle iletişime geçin.",
+      "subtitle_one": "{{count}} aktif bakım takvimi",
+      "subtitle_other": "{{count}} aktif bakım takvimi"
+    }
   },
   "categoryLabel": {
     "license": "Ehliyet",

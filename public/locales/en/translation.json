@@ -924,7 +924,14 @@
     "noTruckDesc": "You have not been assigned a truck. Please contact your manager.",
     "update": "Update",
     "upload": "Upload",
-    "recentFuelEntries": "My recent fuel records"
+    "recentFuelEntries": "My recent fuel records",
+    "maintenance": {
+      "title": "Maintenance",
+      "logService": "Log service",
+      "noSchedules": "No maintenance schedules yet. Contact your fleet manager.",
+      "subtitle_one": "{{count}} active schedule",
+      "subtitle_other": "{{count}} active schedules"
+    }
   },
   "categoryLabel": {
     "license": "License",

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Truck as TruckIcon, Fuel, Pencil, Trash2 } from 'lucide-react';
+import { Truck as TruckIcon, Fuel, Pencil, Trash2, Wrench } from 'lucide-react';
 import { toast } from 'sonner';
 import { driverApi, truckApi } from '../../services/api';
 import { fuelEntryApi } from '../../services/fuelEntryApi';
+import { driverMaintenanceApi } from '../../services/driverMaintenanceApi';
 import { useTranslation } from 'react-i18next';
 import { formatDateTime, formatRelativeTime } from '../../utils/format';
 import ExpiryBadge from '../../components/common/ExpiryBadge';
@@ -10,10 +11,12 @@ import EntityWarningsCard from '../../components/common/EntityWarningsCard';
 import DocumentUploadModal from '../../components/common/DocumentUploadModal';
 import FuelEntryFormModal from '../../components/fuel/FuelEntryFormModal';
 import ConfirmActionModal from '../../components/fuel/ConfirmActionModal';
+import LogRecordModal from '../../components/maintenance/LogRecordModal';
 import { useLocationSharing } from '../../contexts/LocationSharingContext';
 import { computeTruckWarnings } from '../../utils/truckWarnings';
 import type { Driver, Truck, DocumentCategory } from '../../types';
 import type { TruckFuelEntryDto } from '../../types/fuel';
+import type { MaintenanceScheduleDto, MaintenanceRecordRequest } from '../../types/maintenance';
 
 const DriverTruckPage = () => {
   const { t } = useTranslation();
@@ -27,6 +30,8 @@ const DriverTruckPage = () => {
   const [fuelEntries, setFuelEntries] = useState<TruckFuelEntryDto[]>([]);
   const [editEntry, setEditEntry] = useState<TruckFuelEntryDto | null>(null);
   const [deleteEntry, setDeleteEntry] = useState<TruckFuelEntryDto | null>(null);
+  const [maintenanceSchedules, setMaintenanceSchedules] = useState<MaintenanceScheduleDto[]>([]);
+  const [serviceModalOpen, setServiceModalOpen] = useState(false);
   const locationSharing = useLocationSharing();
 
   const reloadFuelEntries = async () => {
@@ -41,6 +46,11 @@ const DriverTruckPage = () => {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (!assignedTruck) return;
+    driverMaintenanceApi.listSchedules().then(setMaintenanceSchedules).catch(() => setMaintenanceSchedules([]));
+  }, [assignedTruck]);
 
   const reloadTruck = async () => {
     // Drivers can't call /trucks/{id} (manager-only); use /trucks/my-truck.
@@ -240,7 +250,46 @@ const DriverTruckPage = () => {
         </div>
       )}
 
-      <div className="mb-4">
+      {/* Maintenance — driver logs a service */}
+      <div className="mt-6 bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <Wrench className="w-5 h-5 text-slate-600" />
+            <h2 className="text-base font-semibold text-gray-900">{t('driverTruck.maintenance.title')}</h2>
+          </div>
+          <button
+            type="button"
+            onClick={() => setServiceModalOpen(true)}
+            disabled={maintenanceSchedules.length === 0}
+            className="text-sm font-semibold text-primary-600 hover:text-primary-700 disabled:text-gray-400 disabled:cursor-not-allowed"
+          >
+            {t('driverTruck.maintenance.logService')}
+          </button>
+        </div>
+        {maintenanceSchedules.length === 0 ? (
+          <p className="text-sm text-gray-500">{t('driverTruck.maintenance.noSchedules')}</p>
+        ) : (
+          <p className="text-xs text-gray-600">
+            {t('driverTruck.maintenance.subtitle', { count: maintenanceSchedules.length })}
+          </p>
+        )}
+      </div>
+
+      {serviceModalOpen && assignedTruck && (
+        <LogRecordModal
+          schedules={maintenanceSchedules}
+          onClose={() => setServiceModalOpen(false)}
+          onLogged={() => {
+            // Optimistic refresh — fetch schedules again so nextDue reflects the new record
+            driverMaintenanceApi.listSchedules().then(setMaintenanceSchedules).catch(() => {});
+          }}
+          submitHandler={(scheduleId: string, body: MaintenanceRecordRequest) =>
+            driverMaintenanceApi.logRecord(scheduleId, body)
+          }
+        />
+      )}
+
+      <div className="mb-4 mt-6">
         <h2 className="text-lg font-extrabold tracking-tight text-gray-900 mb-3">{t('truck.documents')}</h2>
 
         <div className="bg-white rounded-xl p-4 shadow-sm mb-3">

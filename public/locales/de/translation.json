@@ -924,7 +924,14 @@
     "noTruckDesc": "Ihnen wurde kein Fahrzeug zugewiesen. Bitte wenden Sie sich an Ihren Vorgesetzten.",
     "update": "Aktualisieren",
     "upload": "Hochladen",
-    "recentFuelEntries": "Meine letzten Kraftstoffeinträge"
+    "recentFuelEntries": "Meine letzten Kraftstoffeinträge",
+    "maintenance": {
+      "title": "Wartung",
+      "logService": "Service eintragen",
+      "noSchedules": "Noch keine Wartungspläne. Wenden Sie sich an Ihren Flottenmanager.",
+      "subtitle_one": "{{count}} aktiver Wartungsplan",
+      "subtitle_other": "{{count}} aktive Wartungspläne"
+    }
   },
   "categoryLabel": {
     "license": "Führerschein",
