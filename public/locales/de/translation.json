@@ -99,6 +99,57 @@
       "importFuel": "Kraftstoff importieren"
     }
   },
+  "maintenance": {
+    "sectionTitle": "Wartung",
+    "addRecord": "Service eintragen",
+    "noSchedules": "Keine Wartungspläne gefunden.",
+    "scheduleEdit": "Bearbeiten",
+    "scheduleSave": "Speichern",
+    "scheduleCancel": "Abbrechen",
+    "kind": {
+      "OIL": "Ölwechsel",
+      "BRAKE": "Bremsenservice",
+      "TRANSMISSION": "Getriebe",
+      "GEARBOX": "Schaltgetriebe",
+      "TIRE_ROTATION": "Reifenwechsel",
+      "INSPECTION": "HU/AU",
+      "CUSTOM": "Sonstige"
+    },
+    "intervalKm": "Alle {{km}} km",
+    "intervalMonths": "Alle {{months}} Monate",
+    "intervalBoth": "Alle {{months}} Monate / {{km}} km",
+    "noInterval": "Kein Intervall angegeben",
+    "lastServiced": "Letzter Service",
+    "nextDue": "Nächste Fälligkeit",
+    "intervalKmLabel": "Km-Intervall",
+    "intervalMonthsLabel": "Monatsintervall",
+    "lastServicedAtLabel": "Letztes Servicedatum",
+    "lastServicedKmLabel": "Kilometerstand beim letzten Service",
+    "customLabelLabel": "Bezeichnung des Services",
+    "kindLabel": "Wartungsart",
+    "recordsTitle": "Servicehistorie",
+    "noRecords": "Noch keine Serviceeinträge vorhanden.",
+    "logModal": {
+      "title": "Service eintragen",
+      "schedule": "Welche Wartung?",
+      "performedAt": "Datum",
+      "performedKm": "Kilometerstand",
+      "cost": "Betrag",
+      "currency": "Währung",
+      "shopName": "Werkstattname",
+      "shopCity": "Stadt",
+      "notes": "Notizen (optional)",
+      "submit": "Speichern",
+      "cancel": "Abbrechen"
+    },
+    "errors": {
+      "intervalRequired": "Bitte mindestens ein Intervall angeben (km oder Monate).",
+      "intervalPositive": "Das Intervall muss größer als null sein.",
+      "customLabelRequired": "Bitte einen Namen für den benutzerdefinierten Service eingeben.",
+      "performedAtRequired": "Servicedatum ist erforderlich.",
+      "costPaired": "Wenn ein Betrag angegeben wird, ist auch die Währung erforderlich."
+    }
+  },
   "truck": {
     "title": "Fahrzeuge",
     "available": "Verfügbar",

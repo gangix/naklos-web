@@ -99,6 +99,57 @@
       "importFuel": "Import fuel"
     }
   },
+  "maintenance": {
+    "sectionTitle": "Maintenance",
+    "addRecord": "Log service",
+    "noSchedules": "No maintenance schedules found.",
+    "scheduleEdit": "Edit",
+    "scheduleSave": "Save",
+    "scheduleCancel": "Cancel",
+    "kind": {
+      "OIL": "Oil change",
+      "BRAKE": "Brake service",
+      "TRANSMISSION": "Transmission",
+      "GEARBOX": "Gearbox",
+      "TIRE_ROTATION": "Tyre rotation",
+      "INSPECTION": "Inspection",
+      "CUSTOM": "Custom"
+    },
+    "intervalKm": "Every {{km}} km",
+    "intervalMonths": "Every {{months}} months",
+    "intervalBoth": "Every {{months}} months / {{km}} km",
+    "noInterval": "No interval set",
+    "lastServiced": "Last serviced",
+    "nextDue": "Next due",
+    "intervalKmLabel": "Km interval",
+    "intervalMonthsLabel": "Month interval",
+    "lastServicedAtLabel": "Last service date",
+    "lastServicedKmLabel": "Last service odometer",
+    "customLabelLabel": "Custom service name",
+    "kindLabel": "Service type",
+    "recordsTitle": "Service history",
+    "noRecords": "No service records yet.",
+    "logModal": {
+      "title": "Log service",
+      "schedule": "Which service?",
+      "performedAt": "Date",
+      "performedKm": "Odometer",
+      "cost": "Amount",
+      "currency": "Currency",
+      "shopName": "Workshop name",
+      "shopCity": "City",
+      "notes": "Notes (optional)",
+      "submit": "Save",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "intervalRequired": "Enter at least one interval (km or months).",
+      "intervalPositive": "Interval must be greater than zero.",
+      "customLabelRequired": "Enter a name for the custom service.",
+      "performedAtRequired": "Service date is required.",
+      "costPaired": "If you enter an amount, currency is also required."
+    }
+  },
   "truck": {
     "title": "Trucks",
     "available": "Available",

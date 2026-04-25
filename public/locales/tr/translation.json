@@ -97,6 +97,57 @@
       "importFuel": "Yakıt içe aktar"
     }
   },
+  "maintenance": {
+    "sectionTitle": "Bakım",
+    "addRecord": "Yeni servis",
+    "noSchedules": "Bakım takvimi bulunamadı.",
+    "scheduleEdit": "Düzenle",
+    "scheduleSave": "Kaydet",
+    "scheduleCancel": "İptal",
+    "kind": {
+      "OIL": "Motor yağı",
+      "BRAKE": "Fren bakımı",
+      "TRANSMISSION": "Şanzıman",
+      "GEARBOX": "Vites kutusu",
+      "TIRE_ROTATION": "Lastik rotasyonu",
+      "INSPECTION": "Muayene",
+      "CUSTOM": "Özel"
+    },
+    "intervalKm": "Her {{km}} km",
+    "intervalMonths": "Her {{months}} ay",
+    "intervalBoth": "Her {{months}} ay / {{km}} km",
+    "noInterval": "Aralık girilmemiş",
+    "lastServiced": "Son servis",
+    "nextDue": "Sıradaki",
+    "intervalKmLabel": "Km aralığı",
+    "intervalMonthsLabel": "Ay aralığı",
+    "lastServicedAtLabel": "Son servis tarihi",
+    "lastServicedKmLabel": "Son servis kilometresi",
+    "customLabelLabel": "Özel bakım adı",
+    "kindLabel": "Bakım türü",
+    "recordsTitle": "Geçmiş servisler",
+    "noRecords": "Henüz servis kaydı yok.",
+    "logModal": {
+      "title": "Servis kaydı ekle",
+      "schedule": "Hangi bakım?",
+      "performedAt": "Tarih",
+      "performedKm": "Kilometre",
+      "cost": "Tutar",
+      "currency": "Para birimi",
+      "shopName": "Servis adı",
+      "shopCity": "Şehir",
+      "notes": "Notlar (opsiyonel)",
+      "submit": "Kaydet",
+      "cancel": "İptal"
+    },
+    "errors": {
+      "intervalRequired": "Km veya ay aralıklarından birini girin.",
+      "intervalPositive": "Aralık sıfırdan büyük olmalı.",
+      "customLabelRequired": "Özel bakım için ad girin.",
+      "performedAtRequired": "Servis tarihi gerekli.",
+      "costPaired": "Tutar girilirse para birimi de gerekli."
+    }
+  },
   "truck": {
     "title": "Araçlar",
     "available": "Müsait",
