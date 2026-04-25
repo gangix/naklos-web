@@ -18,6 +18,7 @@ import { computeTruckWarnings } from '../utils/truckWarnings';
 import TruckFuelTab from '../components/fuel/TruckFuelTab';
 import EfficiencyStatusPill from '../components/fuel/EfficiencyStatusPill';
 import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
+import MaintenanceTab from '../components/maintenance/MaintenanceTab';
 import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Truck } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
@@ -116,6 +117,16 @@ const TruckDetailPage = () => {
     next.delete('entry');
     setSearchParams(next, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Hash-scroll: if the URL contains #maintenance, scroll to the section
+  // after the component mounts (defer to next tick so DOM is ready).
+  useEffect(() => {
+    if (window.location.hash === '#maintenance') {
+      setTimeout(() => {
+        document.getElementById('maintenance-section')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
   }, []);
 
   if (loading) {
@@ -586,6 +597,11 @@ const TruckDetailPage = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Maintenance section — always visible, hash-scrollable via #maintenance */}
+      {fleetId && truckId && (
+        <MaintenanceTab fleetId={fleetId} truckId={truckId} />
       )}
 
       {/* Document Update Modal */}
