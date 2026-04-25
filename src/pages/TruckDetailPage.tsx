@@ -98,10 +98,12 @@ const TruckDetailPage = () => {
 
   // When a manager clicks through from a "needs attention" context, default to
   // the Documents tab so they don't have to pivot after landing. Once the user
-  // actively switches tabs, stop overriding. A deep-link ?tab=... counts as
-  // an explicit choice, so we seed `tabAutoPicked` to true in that case to
-  // suppress the warnings-based override.
-  const [tabAutoPicked, setTabAutoPicked] = useState(() => !!initialTabFromQuery);
+  // actively switches tabs, stop overriding. A deep-link ?tab=... or
+  // #maintenance counts as an explicit choice, so we seed `tabAutoPicked` to
+  // true in those cases to suppress the warnings-based override.
+  const [tabAutoPicked, setTabAutoPicked] = useState(
+    () => !!initialTabFromQuery || (typeof window !== 'undefined' && window.location.hash === '#maintenance'),
+  );
   useEffect(() => {
     if (!truck || tabAutoPicked) return;
     setTabAutoPicked(true);

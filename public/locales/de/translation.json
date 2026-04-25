@@ -84,7 +84,9 @@
       "fuelInfo_other": "{{count}} Info",
       "open": "öffnen",
       "docList_one": "{{count}} Dokument · {{labels}}",
-      "docList_other": "{{count}} Dokumente · {{labels}}"
+      "docList_other": "{{count}} Dokumente · {{labels}}",
+      "maintenanceList_one": "{{count}} Wartung · {{labels}}",
+      "maintenanceList_other": "{{count}} Wartungen · {{labels}}"
     },
     "allCurrent": "Alle Dokumente sind aktuell",
     "allCurrentSubtitle": "Keine Erneuerungen in den nächsten 30 Tagen.",

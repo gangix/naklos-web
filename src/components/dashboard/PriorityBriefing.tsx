@@ -263,10 +263,15 @@ export default function PriorityBriefing({
                     )}
                   </p>
                   <p className="text-xs text-slate-500 truncate">
-                    {t('dashboard.priority.docList', {
-                      count: group.items.length,
-                      labels: docsSummary,
-                    })}
+                    {t(
+                      isMaintenance
+                        ? 'dashboard.priority.maintenanceList'
+                        : 'dashboard.priority.docList',
+                      {
+                        count: group.items.length,
+                        labels: docsSummary,
+                      },
+                    )}
                   </p>
                 </div>
                 <DayLabel value={group.worstDaysLeft} t={t} tone={tone} />

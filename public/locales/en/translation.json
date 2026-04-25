@@ -84,7 +84,9 @@
       "fuelInfo_other": "{{count}} info",
       "open": "open",
       "docList_one": "{{count}} document · {{labels}}",
-      "docList_other": "{{count}} documents · {{labels}}"
+      "docList_other": "{{count}} documents · {{labels}}",
+      "maintenanceList_one": "{{count}} item · {{labels}}",
+      "maintenanceList_other": "{{count}} items · {{labels}}"
     },
     "allCurrent": "All documents up to date",
     "allCurrentSubtitle": "No renewals due in the next 30 days.",

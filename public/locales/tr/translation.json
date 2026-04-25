@@ -82,7 +82,9 @@
       "fuelInfo_other": "{{count}} bilgi",
       "open": "aç",
       "docList_one": "{{count}} belge · {{labels}}",
-      "docList_other": "{{count}} belge · {{labels}}"
+      "docList_other": "{{count}} belge · {{labels}}",
+      "maintenanceList_one": "{{count}} bakım · {{labels}}",
+      "maintenanceList_other": "{{count}} bakım · {{labels}}"
     },
     "allCurrent": "Tüm belgeler güncel",
     "allCurrentSubtitle": "Son 30 günde yenilenecek belge yok.",
