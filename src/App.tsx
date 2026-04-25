@@ -14,8 +14,6 @@ import TrucksPage from './pages/TrucksPage';
 import TruckDetailPage from './pages/TruckDetailPage';
 import DriversPage from './pages/DriversPage';
 import DriverDetailPage from './pages/DriverDetailPage';
-import ClientsPage from './pages/ClientsPage';
-import ClientDetailPage from './pages/ClientDetailPage';
 import SettingsPage from './pages/SettingsPage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
@@ -259,8 +257,6 @@ function App() {
             <Route path="trucks/:truckId" element={<TruckDetailPage />} />
             <Route path="drivers" element={<DriversPage />} />
             <Route path="drivers/:driverId" element={<DriverDetailPage />} />
-            <Route path="clients" element={<ClientsPage />} />
-            <Route path="clients/:clientId" element={<ClientDetailPage />} />
             <Route path="settings" element={<SettingsPage />} />
             {fuelTrackingEnabled && (
               <>
