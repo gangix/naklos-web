@@ -1,55 +1,27 @@
-import { Truck } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-const CONTACT_EMAIL = 'info@naklos.com.tr';
-
-// Legal placeholders — swap for real values once the Ltd. Şti. is
-// registered. 'TBD' is more honest than an invented tax number.
-const TAX_OFFICE = 'TBD';
-const TAX_NUMBER = 'TBD';
-const ADDRESS_CITY = 'İstanbul, Türkiye';
-
-export default function Footer() {
+const Footer = () => {
   const { t } = useTranslation();
+
   return (
-    <footer className="relative border-t border-slate-100 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 text-sm">
-          <div>
-            <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-7 h-7 rounded-lg bg-primary-700 flex items-center justify-center">
-                <Truck className="w-3.5 h-3.5 text-white" aria-hidden="true" />
-              </div>
-              <span className="font-extrabold text-slate-900 tracking-tight">Naklos</span>
-            </div>
-            <p className="font-semibold text-slate-700">{t('landing.footer.legalHeading')}</p>
-            <p className="text-slate-500 mt-1">{t('landing.footer.addressLabel')} {ADDRESS_CITY}</p>
-            <p className="text-slate-500">{t('landing.footer.taxLabel')} {TAX_OFFICE} / {TAX_NUMBER}</p>
+    <footer className="bg-white border-t border-slate-200 py-10">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-primary-700 flex items-center justify-center text-white font-extrabold text-xs">
+            N
           </div>
-
-          <div>
-            <ul className="space-y-2">
-              <li><Link to="/blog" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.nav.blog')}</Link></li>
-              <li><Link to="/privacy" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.privacy')}</Link></li>
-              <li><Link to="/terms" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.terms')}</Link></li>
-              <li><Link to="/kvkk" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.kvkk')}</Link></li>
-              <li><Link to="/cerez-politikasi" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.cookies')}</Link></li>
-              <li><Link to="/founding-terms" className="text-slate-600 hover:text-slate-900 transition-colors">{t('landing.footer.foundingTerms')}</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="text-slate-600 hover:text-slate-900 transition-colors">
-              {CONTACT_EMAIL}
-            </a>
-          </div>
+          <span className="font-extrabold text-slate-900 tracking-tight">naklos</span>
+          <span className="text-xs text-slate-500 ml-2">{t('landing.footer.copyright')}</span>
         </div>
-
-        <p className="text-xs text-slate-500 text-center border-t border-slate-100 pt-6">
-          {t('landing.footer.copyright', { year: new Date().getFullYear() })}
-        </p>
+        <div className="flex items-center gap-6 text-xs text-slate-500">
+          <a href="/kvkk" className="hover:text-slate-900 transition-colors">{t('landing.footer.kvkk')}</a>
+          <a href="/sartlar" className="hover:text-slate-900 transition-colors">{t('landing.footer.terms')}</a>
+          <a href="/iletisim" className="hover:text-slate-900 transition-colors">{t('landing.footer.contact')}</a>
+          <a href="/blog" className="hover:text-slate-900 transition-colors">{t('landing.footer.blog')}</a>
+        </div>
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;
