@@ -727,7 +727,8 @@
     "tabs": {
       "genel": "General",
       "yakit": "Fuel entries",
-      "belgeler": "Documents"
+      "belgeler": "Documents",
+      "bakim": "Maintenance"
     },
     "efficiency": {
       "heading": "Fuel efficiency",

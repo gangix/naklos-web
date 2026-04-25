@@ -727,7 +727,8 @@
     "tabs": {
       "genel": "Allgemein",
       "yakit": "Kraftstoff-Einträge",
-      "belgeler": "Dokumente"
+      "belgeler": "Dokumente",
+      "bakim": "Wartung"
     },
     "efficiency": {
       "heading": "Kraftstoff-Effizienz",

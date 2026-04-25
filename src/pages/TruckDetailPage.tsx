@@ -23,7 +23,7 @@ import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Truck } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
 
-type Tab = 'genel' | 'yakit' | 'belgeler';
+type Tab = 'genel' | 'yakit' | 'belgeler' | 'bakim';
 
 const TruckDetailPage = () => {
   const { t } = useTranslation();
@@ -119,13 +119,12 @@ const TruckDetailPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Hash-scroll: if the URL contains #maintenance, scroll to the section
-  // after the component mounts (defer to next tick so DOM is ready).
+  // Deep-link: dashboard's maintenance row navigates here with #maintenance.
+  // Switch to the Bakım tab on mount so the user lands directly on it instead
+  // of having to find the tab manually after the page loads.
   useEffect(() => {
     if (window.location.hash === '#maintenance') {
-      setTimeout(() => {
-        document.getElementById('maintenance-section')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
+      setActiveTab('bakim');
     }
   }, []);
 
@@ -255,6 +254,7 @@ const TruckDetailPage = () => {
     { id: 'genel', label: t('truckDetail.tabs.genel') },
     { id: 'yakit', label: t('truckDetail.tabs.yakit') },
     { id: 'belgeler', label: t('truckDetail.tabs.belgeler') },
+    { id: 'bakim', label: t('truckDetail.tabs.bakim') },
   ];
 
   const complianceDocs = documents.filter((doc) => doc.documentType !== 'fuel-receipt');
@@ -599,8 +599,7 @@ const TruckDetailPage = () => {
         </>
       )}
 
-      {/* Maintenance section — always visible, hash-scrollable via #maintenance */}
-      {fleetId && truckId && (
+      {activeTab === 'bakim' && fleetId && truckId && (
         <MaintenanceTab fleetId={fleetId} truckId={truckId} />
       )}
 

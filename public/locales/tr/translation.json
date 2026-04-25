@@ -725,7 +725,8 @@
     "tabs": {
       "genel": "Genel",
       "yakit": "Yakıt Kayıtları",
-      "belgeler": "Belgeler"
+      "belgeler": "Belgeler",
+      "bakim": "Bakım"
     },
     "efficiency": {
       "heading": "Yakıt Verimliliği",
