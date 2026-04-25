@@ -26,11 +26,6 @@ function worstWarning(warnings: TruckWarning[]): TruckWarning | null {
   });
 }
 
-const TYPE_LABEL_KEY: Record<TruckWarning['type'], string> = {
-  'compulsory-insurance': 'trucksPage.compulsoryInsurance',
-  'comprehensive-insurance': 'trucksPage.comprehensiveInsurance',
-  'inspection': 'trucksPage.inspection',
-};
 
 /** Dense alternative to the card grid. Same data, lower pixel cost. Row
  *  links to the truck detail page; docStatus cell shows the worst expiring
@@ -137,7 +132,7 @@ export default function TruckTable({ trucks, warningsByTruck, hasUrgentWarning, 
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${toneClasses[tone]}`}
                       >
                         <span className="truncate max-w-[8rem]">
-                          {t(TYPE_LABEL_KEY[worst.type])}
+                          {t(worst.key, worst.params)}
                         </span>
                         <span className="text-[10px] opacity-80">·</span>
                         <span className="tabular-nums whitespace-nowrap">{dayLabel}</span>

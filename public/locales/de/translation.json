@@ -842,6 +842,10 @@
     "approved": "Genehmigt",
     "rejected": "Abgelehnt"
   },
+  "truckTable": {
+    "fuelAnomaly": "Kraftstoff: {{rule}}",
+    "maintenanceDue": "Wartung: {{label}}"
+  },
   "clientsPage": {
     "addClient": "Kunde hinzufügen",
     "searchPlaceholder": "Kunde suchen...",

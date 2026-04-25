@@ -4,10 +4,13 @@ import { AlertCircle, AlertTriangle, Download, MapPin, Truck as TruckIcon } from
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
+import { useFuelCounts } from '../contexts/FuelCountsContext';
+import { useMaintenanceWarnings } from '../contexts/MaintenanceWarningsContext';
 import { formatDecimal, formatRelativeTime } from '../utils/format';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import type { DerivedStatus } from '../utils/derivedStatus';
 import { computeTruckWarnings } from '../utils/truckWarnings';
+import { severityFromDays } from '../utils/severity';
 import { todayMidnightMs } from '../utils/expiry';
 import AddTruckModal from '../components/common/AddTruckModal';
 import BulkImportModal from '../components/common/BulkImportModal';
@@ -49,14 +52,46 @@ const TrucksPage = () => {
   const [view, setView] = useState<TruckView>(readStoredView);
   useEffect(() => { writeStoredView(view); }, [view]);
 
+  const { pendingItems: allFuelAnomalies } = useFuelCounts();
+  const { groups: maintenanceGroups } = useMaintenanceWarnings();
+
   // Expiry warnings keyed by truckId. Shares the computation with
   // TruckDetailPage's Genel tab so both surfaces word warnings identically.
+  // Fuel anomalies and maintenance warnings are layered in afterwards so the
+  // list card, table docStatus cell, and urgency sort all reflect them.
   const warningsByTruck = useMemo(() => {
     const todayMs = todayMidnightMs();
     const map = new Map<string, ReturnType<typeof computeTruckWarnings>>();
     for (const t of trucks) map.set(t.id, computeTruckWarnings(t, todayMs));
+    // Layer in fuel anomalies
+    for (const anomaly of allFuelAnomalies) {
+      if (!anomaly.truckId) continue;
+      const existing = map.get(anomaly.truckId) ?? [];
+      existing.push({
+        key: 'truckTable.fuelAnomaly',
+        params: { rule: anomaly.ruleCode },
+        severity: anomaly.severity,
+        type: 'compulsory-insurance' as const,
+        daysLeft: 0,
+      });
+      map.set(anomaly.truckId, existing);
+    }
+    // Layer in maintenance warnings
+    for (const group of maintenanceGroups) {
+      for (const item of group.items) {
+        const existing = map.get(group.truckId) ?? [];
+        existing.push({
+          key: 'truckTable.maintenanceDue',
+          params: { label: item.label },
+          severity: severityFromDays(item.daysLeft),
+          type: 'inspection' as const,
+          daysLeft: item.daysLeft,
+        });
+        map.set(group.truckId, existing);
+      }
+    }
     return map;
-  }, [trucks]);
+  }, [trucks, allFuelAnomalies, maintenanceGroups]);
 
   // Dashboard quick-action support: `?add=1` auto-opens the add-truck modal
   // on mount. Consumed once — the param is stripped so reloads don't re-open

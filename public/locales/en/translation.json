@@ -842,6 +842,10 @@
     "approved": "Approved",
     "rejected": "Rejected"
   },
+  "truckTable": {
+    "fuelAnomaly": "Fuel: {{rule}}",
+    "maintenanceDue": "Maintenance: {{label}}"
+  },
   "clientsPage": {
     "addClient": "Add Client",
     "searchPlaceholder": "Search client...",

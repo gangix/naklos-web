@@ -840,6 +840,10 @@
     "approved": "Onaylandı",
     "rejected": "Reddedildi"
   },
+  "truckTable": {
+    "fuelAnomaly": "Yakıt: {{rule}}",
+    "maintenanceDue": "Bakım: {{label}}"
+  },
   "clientsPage": {
     "addClient": "Müşteri Ekle",
     "searchPlaceholder": "Müşteri ara...",
