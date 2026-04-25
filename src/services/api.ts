@@ -218,6 +218,16 @@ export const driverApi = {
     }),
 };
 
+/**
+ * Partial-update payload for `truckApi.updateDocuments` — the BE accepts any
+ * subset of these denormalized expiry fields and updates only what's set.
+ */
+export interface TruckDocumentExpiryUpdate {
+  compulsoryInsuranceExpiry?: string;
+  comprehensiveInsuranceExpiry?: string;
+  inspectionExpiry?: string;
+}
+
 // Truck API — fleet is derived from JWT
 export const truckApi = {
   register: (data: any) =>
@@ -235,7 +245,7 @@ export const truckApi = {
       body: JSON.stringify(rows),
     }),
   getById: (id: string) => apiCall<Truck>(`/trucks/${id}`),
-  updateDocuments: (id: string, data: any) =>
+  updateDocuments: (id: string, data: TruckDocumentExpiryUpdate) =>
     apiCall<Truck>(`/trucks/${id}/documents`, {
       method: 'PUT',
       body: JSON.stringify(data),

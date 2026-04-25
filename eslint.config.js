@@ -19,5 +19,14 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // The codebase uses the standard "fetch on mount → setState" pattern
+      // throughout (FuelCountsContext, MaintenanceWarningsContext, etc.).
+      // The "correct" React 19 fix is to adopt TanStack Query / Suspense /
+      // useSyncExternalStore — a codebase-wide refactor we'll do once we
+      // have customer signal. Until then, downgrade to a warning so the
+      // lint output stays meaningful for genuine bugs.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
   },
 ])

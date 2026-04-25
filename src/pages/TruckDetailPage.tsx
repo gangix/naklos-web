@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft, Gauge, MapPin } from 'lucide-react';
-import { truckApi } from '../services/api';
+import { truckApi, type TruckDocumentExpiryUpdate } from '../services/api';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useTranslation } from 'react-i18next';
@@ -294,7 +294,7 @@ const TruckDetailPage = () => {
   const handleDocumentSave = async (category: DocumentCategory, expiryDate: string) => {
     if (!truckId) return;
 
-    const updateData: any = {};
+    const updateData: TruckDocumentExpiryUpdate = {};
 
     if (category === 'compulsory-insurance') {
       updateData.compulsoryInsuranceExpiry = expiryDate;
@@ -331,8 +331,11 @@ const TruckDetailPage = () => {
     }
   };
 
-  // Map Truck type's fuelType field to the UC-4 union if available
-  const truckPrimaryFuelType = (truck as any).primaryFuelType as TruckFuelEntryDto['fuelType'] | undefined;
+  // Map Truck type's fuelType field to the UC-4 union if available. The BE
+  // shape may include a primaryFuelType field that isn't yet on the Truck
+  // domain type — narrow via an inline intersection rather than `as any` so
+  // type-checking still catches typos in the property name.
+  const truckPrimaryFuelType = (truck as Truck & { primaryFuelType?: TruckFuelEntryDto['fuelType'] }).primaryFuelType;
 
   const tabs: { id: Tab; label: React.ReactNode }[] = [
     { id: 'genel', label: t('truckDetail.tabs.genel') },
