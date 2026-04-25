@@ -10,6 +10,8 @@ export interface TruckWarning {
    *  INFO     = 15–30 days left (heads-up, no immediate action). */
   severity: Severity;
   type: 'compulsory-insurance' | 'comprehensive-insurance' | 'inspection';
+  /** Days until expiry. Negative = already expired. null = date missing. */
+  daysLeft: number | null;
 }
 
 /** CRITICAL range: expired (<0), today (0), or tomorrow (1). Acting today is
@@ -66,6 +68,7 @@ function checkOne(
         params: { plate: truck.plateNumber },
         severity: 'CRITICAL',
         type,
+        daysLeft: null,
       });
     }
     return;
@@ -76,6 +79,7 @@ function checkOne(
       params: { plate: truck.plateNumber },
       severity: 'CRITICAL',
       type,
+      daysLeft: days,
     });
   } else if (days <= WARN_THRESHOLD_DAYS) {
     out.push({
@@ -83,6 +87,7 @@ function checkOne(
       params: { plate: truck.plateNumber, count: days },
       severity: severityFromDays(days),
       type,
+      daysLeft: days,
     });
   }
 }

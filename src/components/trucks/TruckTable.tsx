@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import type { Truck } from '../../types';
 import type { TruckWarning } from '../../utils/truckWarnings';
 import { deriveTruckStatus, STATUS_BADGE, type DerivedStatus } from '../../utils/derivedStatus';
@@ -13,9 +13,28 @@ interface Props {
   statusByTruckId?: Map<string, DerivedStatus>;
 }
 
+/** Pick the single most-urgent warning from the list.
+ *  Sort key: expired/missing < soonest positive daysLeft.
+ *  Among positives, smallest daysLeft wins. null (missing date) goes last. */
+function worstWarning(warnings: TruckWarning[]): TruckWarning | null {
+  if (warnings.length === 0) return null;
+  return warnings.reduce((best, w) => {
+    // null < any negative < any positive
+    if (best.daysLeft === null) return best;
+    if (w.daysLeft === null) return best;
+    return w.daysLeft < best.daysLeft ? w : best;
+  });
+}
+
+const TYPE_LABEL_KEY: Record<TruckWarning['type'], string> = {
+  'compulsory-insurance': 'trucksPage.compulsoryInsurance',
+  'comprehensive-insurance': 'trucksPage.comprehensiveInsurance',
+  'inspection': 'trucksPage.inspection',
+};
+
 /** Dense alternative to the card grid. Same data, lower pixel cost. Row
- *  links to the truck detail page; warnings are summarised as a single
- *  pill so the table can stay scannable at 20+ rows. */
+ *  links to the truck detail page; docStatus cell shows the worst expiring
+ *  doc's label + day-pill so managers can triage without clicking each row. */
 export default function TruckTable({ trucks, warningsByTruck, hasUrgentWarning, statusByTruckId }: Props) {
   const { t } = useTranslation();
 
@@ -41,6 +60,36 @@ export default function TruckTable({ trucks, warningsByTruck, hasUrgentWarning, 
             const ds = statusByTruckId?.get(truck.id) ?? deriveTruckStatus(truck);
             const badge = STATUS_BADGE[ds];
             const pos = truck.lastPosition;
+            const worst = worstWarning(warnings);
+
+            // Day-pill label — mirrors DayLabel in PriorityBriefing
+            const dayLabel = worst
+              ? worst.daysLeft === null
+                ? t('common.dateMissing')
+                : worst.daysLeft < 0
+                  ? t('common.daysExpiredShort', { count: Math.abs(worst.daysLeft) })
+                  : worst.daysLeft === 0
+                    ? t('common.today')
+                    : t('common.daysRemainingShort', { count: worst.daysLeft })
+              : null;
+
+            // Severity tone for the cell
+            const tone: 'urgent' | 'attention' | 'info' | null = worst
+              ? worst.daysLeft === null
+                ? 'info'
+                : worst.daysLeft <= 7
+                  ? 'urgent'
+                  : worst.daysLeft <= 30
+                    ? 'attention'
+                    : 'info'
+              : null;
+
+            const toneClasses: Record<'urgent' | 'attention' | 'info', string> = {
+              urgent: 'bg-urgent-50 text-urgent-700',
+              attention: 'bg-attention-50 text-attention-700',
+              info: 'bg-slate-100 text-slate-600',
+            };
+
             return (
               <tr
                 key={truck.id}
@@ -82,16 +131,22 @@ export default function TruckTable({ trucks, warningsByTruck, hasUrgentWarning, 
                   )}
                 </td>
                 <td className={td}>
-                  {warnings.length > 0 ? (
-                    <span
-                      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${
-                        urgent
-                          ? 'bg-urgent-50 text-urgent-700'
-                          : 'bg-attention-50 text-attention-700'
-                      }`}
-                    >
-                      <AlertTriangle className="w-3.5 h-3.5" />
-                      <span className="tabular-nums">{warnings.length}</span>
+                  {worst && tone ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${toneClasses[tone]}`}
+                      >
+                        <span className="truncate max-w-[8rem]">
+                          {t(TYPE_LABEL_KEY[worst.type])}
+                        </span>
+                        <span className="text-[10px] opacity-80">·</span>
+                        <span className="tabular-nums whitespace-nowrap">{dayLabel}</span>
+                      </span>
+                      {warnings.length > 1 && (
+                        <span className="text-[10px] font-semibold text-slate-400 tabular-nums">
+                          +{warnings.length - 1}
+                        </span>
+                      )}
                     </span>
                   ) : (
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold ${badge.bg} ${badge.text}`}>

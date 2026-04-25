@@ -94,15 +94,34 @@ const TrucksPage = () => {
     return acc;
   }, [statusByTruckId]);
 
-  // Filter and sort trucks (warnings to the top)
+  // Filter and sort trucks by urgency: expired/missing first, then soonest
+  // positive daysLeft, then no-warning trucks. Mirrors the dashboard priority
+  // briefing sort so the table and the dashboard agree on what's most urgent.
   const filteredTrucks = useMemo(() => {
     const filtered = filter === 'all' ? trucks : trucks.filter((truck) => statusByTruckId.get(truck.id) === filter);
-    return filtered.sort((a, b) => {
-      const aHasWarning = hasUrgentWarning(a.id);
-      const bHasWarning = hasUrgentWarning(b.id);
-      if (aHasWarning && !bHasWarning) return -1;
-      if (!aHasWarning && bHasWarning) return 1;
-      return 0;
+
+    // Derive the "worst" daysLeft per truck for sort purposes.
+    // Tier: 0 = urgent (≤7 or negative), 1 = attention (8–30), 2 = info/missing, 3 = no warnings.
+    function urgencyTier(truckId: string): { tier: number; daysLeft: number } {
+      const ws = warningsByTruck.get(truckId) ?? [];
+      if (ws.length === 0) return { tier: 3, daysLeft: Infinity };
+      // Find worst (smallest daysLeft, null goes to end of tier 2)
+      let worst: number | null = null;
+      for (const w of ws) {
+        if (w.daysLeft === null) continue;
+        if (worst === null || w.daysLeft < worst) worst = w.daysLeft;
+      }
+      if (worst === null) return { tier: 2, daysLeft: Infinity }; // all missing dates
+      if (worst <= 7) return { tier: 0, daysLeft: worst };
+      if (worst <= 30) return { tier: 1, daysLeft: worst };
+      return { tier: 2, daysLeft: worst };
+    }
+
+    return [...filtered].sort((a, b) => {
+      const ua = urgencyTier(a.id);
+      const ub = urgencyTier(b.id);
+      if (ua.tier !== ub.tier) return ua.tier - ub.tier;
+      return ua.daysLeft - ub.daysLeft;
     });
   }, [filter, warningsByTruck, trucks, statusByTruckId]);
 
