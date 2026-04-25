@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { driverApi } from '../services/api';
@@ -13,9 +13,13 @@ import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { computeDriverWarnings } from '../utils/driverWarnings';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import Avatar from '../components/common/Avatar';
-import EntityWarningsCard from '../components/common/EntityWarningsCard';
+import EntityWarningsRollup from '../components/common/EntityWarningsRollup';
+import TabSeverityBadge from '../components/common/TabSeverityBadge';
 import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Driver } from '../types';
+import type { EntityWarning } from '../types/entityWarning';
+import { worstSeverity, severityFromDays } from '../utils/severity';
+import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 
 type Tab = 'genel' | 'belgeler';
 
@@ -95,6 +99,39 @@ const DriverDetailPage = () => {
   };
 
   const driverWarnings = driver ? computeDriverWarnings(driver) : [];
+
+  const driverEntityWarnings = useMemo<EntityWarning[]>(() => {
+    if (!driver) return [];
+    const warnings: EntityWarning[] = [];
+
+    // License (mandatory)
+    if (!driver.licenseExpiryDate) {
+      warnings.push({ kind: 'doc', severity: 'CRITICAL', labelKey: 'doc.license', daysLeft: null, isMandatory: true });
+    } else {
+      const days = daysUntil(driver.licenseExpiryDate);
+      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
+        warnings.push({ kind: 'doc', severity: severityFromDays(days), labelKey: 'doc.license', daysLeft: days, isMandatory: true });
+      }
+    }
+
+    // SRC, CPC (optional — missing doesn't surface)
+    const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
+    if (srcCert?.expiryDate) {
+      const days = daysUntil(srcCert.expiryDate);
+      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
+        warnings.push({ kind: 'doc', severity: severityFromDays(days), labelKey: 'doc.src', daysLeft: days, isMandatory: false });
+      }
+    }
+    const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
+    if (cpcCert?.expiryDate) {
+      const days = daysUntil(cpcCert.expiryDate);
+      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
+        warnings.push({ kind: 'doc', severity: severityFromDays(days), labelKey: 'doc.cpc', daysLeft: days, isMandatory: false });
+      }
+    }
+
+    return warnings;
+  }, [driver]);
 
   // Record a "recent visit" so the ⌘K palette can surface this driver.
   useEffect(() => {
@@ -334,9 +371,20 @@ const DriverDetailPage = () => {
     }
   };
 
-  const tabs: { id: Tab; label: string }[] = [
+  const tabs: { id: Tab; label: React.ReactNode }[] = [
     { id: 'genel', label: t('driverDetail.tabs.genel') },
-    { id: 'belgeler', label: t('driverDetail.tabs.belgeler') },
+    {
+      id: 'belgeler',
+      label: (
+        <span className="inline-flex items-center">
+          {t('driverDetail.tabs.belgeler')}
+          <TabSeverityBadge
+            severity={worstSeverity(driverEntityWarnings)}
+            count={driverEntityWarnings.filter((w) => w.severity !== 'INFO').length}
+          />
+        </span>
+      ),
+    },
   ];
 
   return (
@@ -385,16 +433,11 @@ const DriverDetailPage = () => {
       {/* Genel tab */}
       {activeTab === 'genel' && (
         <>
-      {driverWarnings.length > 0 && (
-        <EntityWarningsCard
-          warnings={driverWarnings}
-          heading={t('driverDetail.warnings.heading')}
-          action={{
-            label: t('driverDetail.warnings.goToDocs'),
-            onClick: () => setActiveTab('belgeler'),
-          }}
-        />
-      )}
+      <EntityWarningsRollup
+        warnings={driverEntityWarnings}
+        entityType="driver"
+        onNavigate={() => setActiveTab('belgeler')}
+      />
 
       {/* Contact info card */}
       <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
