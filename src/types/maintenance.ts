@@ -38,3 +38,49 @@ export interface MaintenanceDueGroup {
 export interface MaintenanceDueResponse {
   groups: MaintenanceDueGroup[];
 }
+
+export interface MaintenanceScheduleDto {
+  id: string;
+  truckId: string;
+  fleetId: string;
+  kind: MaintenanceKind;
+  customLabel: string | null;
+  intervalKm: number | null;
+  intervalMonths: number | null;
+  lastServicedAt: string;     // ISO date YYYY-MM-DD
+  lastServicedKm: number | null;
+  nextDueAt: string | null;
+  nextDueKm: number | null;
+}
+
+export interface MaintenanceScheduleRequest {
+  kind: MaintenanceKind;
+  customLabel?: string | null;
+  intervalKm?: number | null;
+  intervalMonths?: number | null;
+  lastServicedAt: string;
+  lastServicedKm?: number | null;
+}
+
+export interface MaintenanceRecordDto {
+  id: string;
+  scheduleId: string;
+  truckId: string;
+  performedAt: string;
+  performedKm: number | null;
+  costMinor: number | null;
+  costCurrency: string | null;
+  notes: string | null;
+  shopName: string | null;
+  shopCity: string | null;
+}
+
+export interface MaintenanceRecordRequest {
+  performedAt: string;
+  performedKm?: number | null;
+  costMinor?: number | null;
+  costCurrency?: string | null;
+  notes?: string | null;
+  shopName?: string | null;
+  shopCity?: string | null;
+}
