@@ -10,6 +10,13 @@ import LogRecordModal from './LogRecordModal';
 interface Props {
   fleetId: string;
   truckId: string;
+  /** When provided, MaintenanceTab uses these instead of fetching its own.
+   *  Allows the parent (TruckDetailPage) to hoist the fetch when it needs
+   *  schedules elsewhere (e.g. the rollup card). */
+  schedules?: MaintenanceScheduleDto[];
+  /** Called whenever schedules change (after edit, after record-log) so the
+   *  parent can keep its hoisted state in sync. */
+  onSchedulesChanged?: (schedules: MaintenanceScheduleDto[]) => void;
 }
 
 // ── Inline RecordRow ────────────────────────────────────────────────────────
@@ -72,41 +79,52 @@ function RecordRow({ record, schedules }: RecordRowProps) {
 
 // ── MaintenanceTab ──────────────────────────────────────────────────────────
 
-export default function MaintenanceTab({ fleetId, truckId }: Props) {
+export default function MaintenanceTab(props: Props) {
+  const { fleetId, truckId } = props;
   const { t } = useTranslation();
   const { refresh: refreshWarnings } = useMaintenanceWarnings();
 
-  const [schedules, setSchedules] = useState<MaintenanceScheduleDto[]>([]);
+  const [localSchedules, setLocalSchedules] = useState<MaintenanceScheduleDto[]>(props.schedules ?? []);
+  const schedules = props.schedules ?? localSchedules;
+
   const [records, setRecords] = useState<MaintenanceRecordDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [logModalOpen, setLogModalOpen] = useState(false);
 
-  async function fetchAll() {
-    setLoading(true);
-    setError(null);
-    try {
-      const [sched, recs] = await Promise.all([
-        maintenanceApi.listSchedules(fleetId, truckId),
-        maintenanceApi.listRecords(fleetId, truckId),
-      ]);
-      setSchedules(sched);
-      // newest first
-      setRecords([...recs].sort((a, b) => b.performedAt.localeCompare(a.performedAt)));
-    } catch {
-      setError(t('common.error'));
-    } finally {
-      setLoading(false);
-    }
-  }
+  // Self-fetch only when the parent doesn't supply schedules
+  useEffect(() => {
+    if (props.schedules !== undefined) return;
+    if (!fleetId || !truckId) return;
+    maintenanceApi.listSchedules(fleetId, truckId)
+      .then(setLocalSchedules)
+      .catch(() => setLocalSchedules([]));
+  }, [fleetId, truckId, props.schedules]);
+
+  // Keep local mirror in sync with prop changes (when parent re-fetches)
+  useEffect(() => {
+    if (props.schedules !== undefined) setLocalSchedules(props.schedules);
+  }, [props.schedules]);
+
+  const setSchedulesAndNotify = (next: MaintenanceScheduleDto[]) => {
+    setLocalSchedules(next);
+    props.onSchedulesChanged?.(next);
+  };
 
   useEffect(() => {
-    void fetchAll();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!fleetId || !truckId) return;
+    setLoading(true);
+    setError(null);
+    maintenanceApi.listRecords(fleetId, truckId)
+      .then((recs) => {
+        setRecords([...recs].sort((a, b) => b.performedAt.localeCompare(a.performedAt)));
+      })
+      .catch(() => setError(t('common.error')))
+      .finally(() => setLoading(false));
   }, [fleetId, truckId]);
 
   function handleScheduleUpdated(updated: MaintenanceScheduleDto) {
-    setSchedules((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    setSchedulesAndNotify(schedules.map((s) => (s.id === updated.id ? updated : s)));
     refreshWarnings();
   }
 
@@ -115,7 +133,7 @@ export default function MaintenanceTab({ fleetId, truckId }: Props) {
     // Re-fetch schedules so next-due advances
     try {
       const fresh = await maintenanceApi.listSchedules(fleetId, truckId);
-      setSchedules(fresh);
+      setSchedulesAndNotify(fresh);
     } catch {
       // non-critical — UI will be slightly stale until next refresh
     }

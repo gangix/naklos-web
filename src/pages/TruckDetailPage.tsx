@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ArrowLeft, Gauge, MapPin } from 'lucide-react';
@@ -8,7 +8,6 @@ import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useTranslation } from 'react-i18next';
 import { formatDate, formatDecimal } from '../utils/format';
 import ExpiryBadge from '../components/common/ExpiryBadge';
-import EntityWarningsCard from '../components/common/EntityWarningsCard';
 import SimpleDocumentUpdateModal from '../components/common/SimpleDocumentUpdateModal';
 import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
@@ -20,8 +19,16 @@ import EfficiencyStatusPill from '../components/fuel/EfficiencyStatusPill';
 import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
 import MaintenanceTab from '../components/maintenance/MaintenanceTab';
 import { pushRecent } from '../utils/recentEntities';
+import { useFuelCounts } from '../contexts/FuelCountsContext';
+import { maintenanceApi } from '../services/maintenanceApi';
+import EntityWarningsRollup from '../components/common/EntityWarningsRollup';
+import TabSeverityBadge from '../components/common/TabSeverityBadge';
 import type { DocumentCategory, Truck } from '../types';
 import type { TruckFuelEntryDto } from '../types/fuel';
+import type { EntityWarning } from '../types/entityWarning';
+import type { MaintenanceScheduleDto } from '../types/maintenance';
+import { worstSeverity, severityFromDays } from '../utils/severity';
+import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 
 type Tab = 'genel' | 'yakit' | 'belgeler' | 'bakim';
 
@@ -89,6 +96,16 @@ const TruckDetailPage = () => {
 
   const truckWarnings = truck ? computeTruckWarnings(truck) : [];
 
+  const { pendingItems: allFuelAnomalies } = useFuelCounts();
+  const [maintenanceSchedules, setMaintenanceSchedules] = useState<MaintenanceScheduleDto[]>([]);
+
+  useEffect(() => {
+    if (!fleetId || !truckId) return;
+    maintenanceApi.listSchedules(fleetId, truckId)
+      .then(setMaintenanceSchedules)
+      .catch(() => setMaintenanceSchedules([]));
+  }, [fleetId, truckId]);
+
   // Record a "recent visit" so the ⌘K palette can surface this truck as a
   // quick-jump target on subsequent sessions. Fires once per load.
   useEffect(() => {
@@ -129,6 +146,71 @@ const TruckDetailPage = () => {
       setActiveTab('bakim');
     }
   }, []);
+
+  const truckEntityWarnings = useMemo<EntityWarning[]>(() => {
+    if (!truck) return [];
+
+    const warnings: EntityWarning[] = [];
+
+    // Doc warnings (mandatory + within 30 days, OR mandatory + missing)
+    const docs: Array<{ date: string | null; key: string; mandatory: boolean }> = [
+      { date: truck.compulsoryInsuranceExpiry,    key: 'doc.compulsoryInsurance',    mandatory: true },
+      { date: truck.comprehensiveInsuranceExpiry, key: 'doc.comprehensiveInsurance', mandatory: true },
+      { date: truck.inspectionExpiry,             key: 'doc.inspection',             mandatory: true },
+    ];
+    for (const d of docs) {
+      if (!d.date) {
+        if (d.mandatory) {
+          warnings.push({ kind: 'doc', severity: 'CRITICAL', labelKey: d.key, daysLeft: null, isMandatory: true });
+        }
+        continue;
+      }
+      const days = daysUntil(d.date);
+      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
+        warnings.push({
+          kind: 'doc',
+          severity: severityFromDays(days),
+          labelKey: d.key,
+          daysLeft: days,
+          isMandatory: d.mandatory,
+        });
+      }
+    }
+
+    // Fuel anomalies for THIS truck
+    for (const a of allFuelAnomalies) {
+      if (a.truckId !== truckId) continue;
+      warnings.push({
+        kind: 'fuel',
+        severity: a.severity,
+        ruleCode: a.ruleCode,
+        detectedAt: a.detectedAt,
+        anomalyId: a.anomalyId,
+      });
+    }
+
+    // Maintenance schedules due within 30 days
+    const todayMs = Date.now();
+    for (const s of maintenanceSchedules) {
+      if (!s.nextDueAt) continue;
+      const days = Math.ceil((new Date(s.nextDueAt).getTime() - todayMs) / (1000 * 60 * 60 * 24));
+      if (days > 30) continue;
+      warnings.push({
+        kind: 'maintenance',
+        severity: severityFromDays(days),
+        label: s.kind === 'CUSTOM' ? (s.customLabel ?? s.kind) : t(`maintenance.kind.${s.kind}`),
+        daysLeft: days,
+        scheduleId: s.id,
+        reason: 'TIME',
+      });
+    }
+
+    return warnings;
+  }, [truck, truckId, allFuelAnomalies, maintenanceSchedules, t]);
+
+  const docWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'doc'), [truckEntityWarnings]);
+  const fuelWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'fuel'), [truckEntityWarnings]);
+  const maintenanceWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'maintenance'), [truckEntityWarnings]);
 
   if (loading) {
     return (
@@ -252,11 +334,44 @@ const TruckDetailPage = () => {
   // Map Truck type's fuelType field to the UC-4 union if available
   const truckPrimaryFuelType = (truck as any).primaryFuelType as TruckFuelEntryDto['fuelType'] | undefined;
 
-  const tabs: { id: Tab; label: string }[] = [
+  const tabs: { id: Tab; label: React.ReactNode }[] = [
     { id: 'genel', label: t('truckDetail.tabs.genel') },
-    { id: 'yakit', label: t('truckDetail.tabs.yakit') },
-    { id: 'bakim', label: t('truckDetail.tabs.bakim') },
-    { id: 'belgeler', label: t('truckDetail.tabs.belgeler') },
+    {
+      id: 'yakit',
+      label: (
+        <span className="inline-flex items-center">
+          {t('truckDetail.tabs.yakit')}
+          <TabSeverityBadge
+            severity={worstSeverity(fuelWarnings)}
+            count={fuelWarnings.filter((w) => w.severity !== 'INFO').length}
+          />
+        </span>
+      ),
+    },
+    {
+      id: 'bakim',
+      label: (
+        <span className="inline-flex items-center">
+          {t('truckDetail.tabs.bakim')}
+          <TabSeverityBadge
+            severity={worstSeverity(maintenanceWarnings)}
+            count={maintenanceWarnings.filter((w) => w.severity !== 'INFO').length}
+          />
+        </span>
+      ),
+    },
+    {
+      id: 'belgeler',
+      label: (
+        <span className="inline-flex items-center">
+          {t('truckDetail.tabs.belgeler')}
+          <TabSeverityBadge
+            severity={worstSeverity(docWarnings)}
+            count={docWarnings.filter((w) => w.severity !== 'INFO').length}
+          />
+        </span>
+      ),
+    },
   ];
 
   const complianceDocs = documents.filter((doc) => doc.documentType !== 'fuel-receipt');
@@ -298,16 +413,15 @@ const TruckDetailPage = () => {
       {/* Genel tab */}
       {activeTab === 'genel' && (
         <>
-          {truckWarnings.length > 0 && (
-            <EntityWarningsCard
-              warnings={truckWarnings}
-              heading={t('truckDetail.warnings.heading')}
-              action={{
-                label: t('truckDetail.warnings.goToDocs'),
-                onClick: () => setActiveTab('belgeler'),
-              }}
-            />
-          )}
+          <EntityWarningsRollup
+            warnings={truckEntityWarnings}
+            entityType="truck"
+            onNavigate={(w) => {
+              if (w.kind === 'doc') setActiveTab('belgeler');
+              else if (w.kind === 'fuel') setActiveTab('yakit');
+              else setActiveTab('bakim');
+            }}
+          />
 
           {/* Basic info card */}
           <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200 mb-4">
@@ -602,7 +716,12 @@ const TruckDetailPage = () => {
       )}
 
       {activeTab === 'bakim' && fleetId && truckId && (
-        <MaintenanceTab fleetId={fleetId} truckId={truckId} />
+        <MaintenanceTab
+          fleetId={fleetId}
+          truckId={truckId}
+          schedules={maintenanceSchedules}
+          onSchedulesChanged={setMaintenanceSchedules}
+        />
       )}
 
       {/* Document Update Modal */}
