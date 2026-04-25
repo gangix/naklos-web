@@ -7,6 +7,7 @@ import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { useMaintenanceWarnings } from '../contexts/MaintenanceWarningsContext';
 import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
+import { severityFromDays, worstSeverity } from '../utils/severity';
 import PriorityBriefing, {
   type PriorityDocGroup,
   type PriorityDocItem,
@@ -34,22 +35,25 @@ const DashboardPage = () => {
       entity: 'truck' | 'driver',
       entityId: string,
       name: string,
-      checks: Array<[string | null | undefined, string]>,
+      checks: Array<{ date: string | null | undefined; labelKey: string; mandatory: boolean }>,
     ) => {
       const items: PriorityDocItem[] = [];
-      for (const [date, labelKey] of checks) {
+      for (const { date, labelKey, mandatory } of checks) {
         if (!date) {
-          items.push({ labelKey, daysLeft: null });
+          // Missing date: only emit when mandatory (optional-missing stays hidden,
+          // matching the prior behaviour for non-mandatory docs).
+          if (mandatory) {
+            items.push({ labelKey, daysLeft: null, severity: 'CRITICAL' });
+          }
           continue;
         }
         const days = daysUntil(date);
         if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-          items.push({ labelKey, daysLeft: days });
+          items.push({ labelKey, daysLeft: days, severity: severityFromDays(days) });
         }
       }
       if (items.length === 0) return;
 
-      // "Worst" = smallest daysLeft (most urgent). Missing dates go last.
       let worstDaysLeft: number | null = null;
       for (const item of items) {
         if (item.daysLeft === null) continue;
@@ -57,27 +61,34 @@ const DashboardPage = () => {
           worstDaysLeft = item.daysLeft;
         }
       }
+      const worstSev = worstSeverity(items.map((i) => ({
+        kind: 'doc' as const,
+        severity: i.severity,
+        labelKey: i.labelKey,
+        daysLeft: i.daysLeft,
+        isMandatory: false,
+      })));
 
-      groups.push({ entity, entityId, name, items, worstDaysLeft });
+      groups.push({ entity, entityId, name, items, worstDaysLeft, worstSeverity: worstSev });
     };
 
     for (const truck of trucks) {
       collectItems('truck', truck.id, truck.plateNumber, [
-        [truck.compulsoryInsuranceExpiry, 'doc.compulsoryInsurance'],
-        [truck.comprehensiveInsuranceExpiry, 'doc.comprehensiveInsurance'],
-        [truck.inspectionExpiry, 'doc.inspection'],
+        { date: truck.compulsoryInsuranceExpiry,    labelKey: 'doc.compulsoryInsurance',    mandatory: true },
+        { date: truck.comprehensiveInsuranceExpiry, labelKey: 'doc.comprehensiveInsurance', mandatory: true },
+        { date: truck.inspectionExpiry,             labelKey: 'doc.inspection',             mandatory: true },
       ]);
     }
 
     for (const driver of drivers) {
-      const checks: Array<[string | null | undefined, string]> = [
-        [driver.licenseExpiryDate, 'doc.license'],
+      const checks: Array<{ date: string | null | undefined; labelKey: string; mandatory: boolean }> = [
+        { date: driver.licenseExpiryDate, labelKey: 'doc.license', mandatory: true },
       ];
       const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
-      checks.push([srcCert?.expiryDate, 'doc.src']);
+      checks.push({ date: srcCert?.expiryDate, labelKey: 'doc.src', mandatory: false });
       const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
       if (cpcCert) {
-        checks.push([cpcCert.expiryDate, 'doc.cpc']);
+        checks.push({ date: cpcCert.expiryDate, labelKey: 'doc.cpc', mandatory: false });
       }
 
       collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, checks);
@@ -95,17 +106,28 @@ const DashboardPage = () => {
   }, [trucks, drivers]);
 
   const maintenanceWarningGroups = useMemo<PriorityDocGroup[]>(() => {
-    return maintenanceGroups.map((g) => ({
-      entity: 'truck-maintenance' as const,
-      entityId: g.truckId,
-      name: g.plate,
-      items: g.items.map((i) => ({
+    return maintenanceGroups.map((g) => {
+      const items: PriorityDocItem[] = g.items.map((i) => ({
         labelKey: '',
         rawLabel: i.label,
         daysLeft: i.daysLeft,
-      })),
-      worstDaysLeft: g.worstDaysLeft,
-    }));
+        severity: severityFromDays(i.daysLeft),
+      }));
+      return {
+        entity: 'truck-maintenance' as const,
+        entityId: g.truckId,
+        name: g.plate,
+        items,
+        worstDaysLeft: g.worstDaysLeft,
+        worstSeverity: worstSeverity(items.map((i) => ({
+          kind: 'doc' as const,
+          severity: i.severity,
+          labelKey: i.labelKey,
+          daysLeft: i.daysLeft,
+          isMandatory: false,
+        }))),
+      };
+    });
   }, [maintenanceGroups]);
 
   const warningGroups = useMemo<PriorityDocGroup[]>(() => {

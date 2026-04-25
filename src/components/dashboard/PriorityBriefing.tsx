@@ -9,6 +9,8 @@ export interface PriorityDocItem {
   labelKey: string;
   rawLabel?: string;     // pre-localized label (used by BE-supplied maintenance items)
   daysLeft: number | null;
+  /** Drives row tone. Mandatory missing → CRITICAL even with daysLeft=null. */
+  severity: import('../../types/severity').Severity;
 }
 
 export interface PriorityDocGroup {
@@ -17,6 +19,8 @@ export interface PriorityDocGroup {
   name: string;
   items: PriorityDocItem[];
   worstDaysLeft: number | null;
+  /** Worst severity among items. Used for row tone. */
+  worstSeverity: import('../../types/severity').Severity;
 }
 
 interface Props {
@@ -121,9 +125,7 @@ export default function PriorityBriefing({
   const criticalCount = useMemo(() => {
     const fuelCritical =
       showFuelRow && fuelWorstSeverity === 'CRITICAL' ? fuelBreakdown.critical : 0;
-    const docCritical = warningGroups.filter(
-      (g) => g.worstDaysLeft !== null && g.worstDaysLeft <= 7,
-    ).length;
+    const docCritical = warningGroups.filter((g) => g.worstSeverity === 'CRITICAL').length;
     return fuelCritical + docCritical;
   }, [showFuelRow, fuelWorstSeverity, fuelBreakdown.critical, warningGroups]);
 
@@ -213,7 +215,9 @@ export default function PriorityBriefing({
         )}
 
         {rows.map((group, index) => {
-          const tone = toneFromDays(group.worstDaysLeft);
+          const tone: Tone =
+            group.worstSeverity === 'CRITICAL' ? 'urgent' :
+            group.worstSeverity === 'WARNING'  ? 'attention' : 'info';
           const isMaintenance = group.entity === 'truck-maintenance';
           const isTruck = group.entity === 'truck';
           const isDriver = group.entity === 'driver';
