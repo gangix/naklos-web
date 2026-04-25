@@ -2,15 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Wrench } from 'lucide-react';
 import { maintenanceApi } from '../../services/maintenanceApi';
-import type { MaintenanceRecordDto, MaintenanceScheduleDto } from '../../types/maintenance';
+import type { MaintenanceRecordDto, MaintenanceRecordRequest, MaintenanceScheduleDto } from '../../types/maintenance';
 
 interface Props {
-  fleetId: string;
-  truckId: string;
+  fleetId?: string;
+  truckId?: string;
   schedules: MaintenanceScheduleDto[];
   defaultScheduleId?: string;
   onClose: () => void;
   onLogged: (record: MaintenanceRecordDto) => void;
+  /** When provided, overrides the default manager API call. fleetId/truckId are not required in that case. */
+  submitHandler?: (scheduleId: string, body: MaintenanceRecordRequest) => Promise<MaintenanceRecordDto>;
 }
 
 function scheduleLabel(s: MaintenanceScheduleDto, t: (k: string) => string): string {
@@ -25,6 +27,7 @@ export default function LogRecordModal({
   defaultScheduleId,
   onClose,
   onLogged,
+  submitHandler,
 }: Props) {
   const { t } = useTranslation();
   const firstInputRef = useRef<HTMLSelectElement>(null);
@@ -94,9 +97,17 @@ export default function LogRecordModal({
       shopCity: shopCity.trim() !== '' ? shopCity.trim() : null,
     };
 
+    if (process.env.NODE_ENV !== 'production' && !submitHandler && (!fleetId || !truckId)) {
+      throw new Error('LogRecordModal: fleetId and truckId are required when submitHandler is not provided');
+    }
+
+    const submit = submitHandler
+      ? (id: string, body: MaintenanceRecordRequest) => submitHandler(id, body)
+      : (id: string, body: MaintenanceRecordRequest) => maintenanceApi.logRecord(fleetId!, truckId!, id, body);
+
     setSubmitting(true);
     try {
-      const record = await maintenanceApi.logRecord(fleetId, truckId, scheduleId, body);
+      const record = await submit(scheduleId, body);
       onLogged(record);
       onClose();
     } catch {
