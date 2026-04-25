@@ -2,6 +2,7 @@ import Header from './landing/Header';
 import Hero from './landing/Hero';
 import HowItWorks from './landing/HowItWorks';
 import Features from './landing/Features';
+import Comparison from './landing/Comparison';
 import Benefits from './landing/Benefits';
 import SocialProof from './landing/SocialProof';
 import Pricing from './landing/Pricing';
@@ -15,6 +16,7 @@ export default function LandingPage() {
       <Hero />
       <HowItWorks />
       <Features />
+      <Comparison />
       <Benefits />
       <SocialProof />
       <Pricing />
