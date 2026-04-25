@@ -1,17 +1,18 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Truck, Users, Fuel } from 'lucide-react';
+import { ChevronRight, Truck, Users, Fuel, Wrench } from 'lucide-react';
 import type { Severity } from '../../types/severity';
 import type { FuelPendingBreakdown } from '../../contexts/FuelCountsContext';
 
 export interface PriorityDocItem {
   labelKey: string;
+  rawLabel?: string;     // pre-localized label (used by BE-supplied maintenance items)
   daysLeft: number | null;
 }
 
 export interface PriorityDocGroup {
-  entity: 'truck' | 'driver';
+  entity: 'truck' | 'driver' | 'truck-maintenance';
   entityId: string;
   name: string;
   items: PriorityDocItem[];
@@ -213,11 +214,15 @@ export default function PriorityBriefing({
 
         {rows.map((group, index) => {
           const tone = toneFromDays(group.worstDaysLeft);
+          const isMaintenance = group.entity === 'truck-maintenance';
           const isTruck = group.entity === 'truck';
-          const href = isTruck
-            ? `/manager/trucks/${group.entityId}`
-            : `/manager/drivers/${group.entityId}`;
-          const docsSummary = group.items.map((i) => t(i.labelKey)).join(', ');
+          const isDriver = group.entity === 'driver';
+          const href = isDriver
+            ? `/manager/drivers/${group.entityId}`
+            : isMaintenance
+              ? `/manager/trucks/${group.entityId}#maintenance`
+              : `/manager/trucks/${group.entityId}`;
+          const docsSummary = group.items.map((i) => i.rawLabel ?? t(i.labelKey)).join(', ');
           // Stagger — fuel row (if present) takes slot 0, so doc rows
           // continue from slot 1. Cap at 240ms so long lists don't crawl.
           const slot = (showFuelRow ? 1 : 0) + index;
@@ -238,10 +243,14 @@ export default function PriorityBriefing({
               <div className="flex-1 flex items-center gap-3 px-4 py-3.5">
                 <div
                   className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    isTruck ? 'bg-blue-50 text-blue-500' : 'bg-emerald-50 text-emerald-500'
+                    isMaintenance
+                      ? 'bg-slate-100 text-slate-600'
+                      : isTruck
+                        ? 'bg-blue-50 text-blue-500'
+                        : 'bg-emerald-50 text-emerald-500'
                   }`}
                 >
-                  {isTruck ? <Truck className="w-4 h-4" /> : <Users className="w-4 h-4" />}
+                  {isMaintenance ? <Wrench className="w-4 h-4" /> : isTruck ? <Truck className="w-4 h-4" /> : <Users className="w-4 h-4" />}
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-slate-900 flex items-center gap-1.5">
