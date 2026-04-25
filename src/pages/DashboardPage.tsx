@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
+import { useMaintenanceWarnings } from '../contexts/MaintenanceWarningsContext';
 import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 import PriorityBriefing, {
   type PriorityDocGroup,
@@ -20,12 +21,13 @@ const DashboardPage = () => {
     worstPendingSeverity: fuelWorstSeverity,
     pendingBreakdown: fuelBreakdown,
   } = useFuelCounts();
+  const { groups: maintenanceGroups } = useMaintenanceWarnings();
   // Same gate ManagerTopNav uses — fuel surface is paid-only in prod.
   const forceOn = import.meta.env.VITE_FEATURE_FUEL_TRACKING === 'true';
   const fuelTrackingEnabled = Boolean(forceOn || (plan && plan !== 'FREE'));
   const { trucks, drivers, loading } = useFleetRoster();
 
-  const warningGroups = useMemo<PriorityDocGroup[]>(() => {
+  const docWarningGroups = useMemo<PriorityDocGroup[]>(() => {
     const groups: PriorityDocGroup[] = [];
 
     const collectItems = (
@@ -91,6 +93,31 @@ const DashboardPage = () => {
 
     return groups;
   }, [trucks, drivers]);
+
+  const maintenanceWarningGroups = useMemo<PriorityDocGroup[]>(() => {
+    return maintenanceGroups.map((g) => ({
+      entity: 'truck-maintenance' as const,
+      entityId: g.truckId,
+      name: g.plate,
+      items: g.items.map((i) => ({
+        labelKey: '',
+        rawLabel: i.label,
+        daysLeft: i.daysLeft,
+      })),
+      worstDaysLeft: g.worstDaysLeft,
+    }));
+  }, [maintenanceGroups]);
+
+  const warningGroups = useMemo<PriorityDocGroup[]>(() => {
+    const merged = [...docWarningGroups, ...maintenanceWarningGroups];
+    merged.sort((a, b) => {
+      if (a.worstDaysLeft === null && b.worstDaysLeft === null) return 0;
+      if (a.worstDaysLeft === null) return 1;
+      if (b.worstDaysLeft === null) return -1;
+      return a.worstDaysLeft - b.worstDaysLeft;
+    });
+    return merged;
+  }, [docWarningGroups, maintenanceWarningGroups]);
 
   if (loading) {
     return (
