@@ -101,6 +101,24 @@
       "importFuel": "Kraftstoff importieren"
     }
   },
+  "entityWarnings": {
+    "title": {
+      "truck_one": "Für dieses Fahrzeug · {{count}} Eintrag",
+      "truck_other": "Für dieses Fahrzeug · {{count}} Einträge",
+      "driver_one": "Für diesen Fahrer · {{count}} Eintrag",
+      "driver_other": "Für diesen Fahrer · {{count}} Einträge"
+    },
+    "criticalSuffix_one": "({{count}} dringend)",
+    "criticalSuffix_other": "({{count}} dringend)",
+    "goToDocs": "Zu den Dokumenten",
+    "goToFuel": "Zum Kraftstoff",
+    "goToMaintenance": "Zur Wartung",
+    "kind": {
+      "doc": "Dokument",
+      "fuel": "Kraftstoff",
+      "maintenance": "Wartung"
+    }
+  },
   "maintenance": {
     "sectionTitle": "Wartung",
     "addRecord": "Service eintragen",
@@ -604,7 +622,10 @@
     "placeholderCountry": "z. B. Türkei"
   },
   "driverDetail": {
-    "warnings": { "heading": "Warnungen", "goToDocs": "Zu den Dokumenten →" },
+    "warnings": {
+      "heading": "Warnungen",
+      "goToDocs": "Zu den Dokumenten →"
+    },
     "tabs": {
       "genel": "Allgemein",
       "belgeler": "Dokumente"
@@ -779,7 +800,10 @@
     "rejected": "Abgelehnt"
   },
   "trucks": {
-    "view": { "list": "Liste", "table": "Tabelle" },
+    "view": {
+      "list": "Liste",
+      "table": "Tabelle"
+    },
     "table": {
       "plate": "Kennz.",
       "type": "Typ",
@@ -1595,8 +1619,12 @@
           "label": "Tageslimit",
           "hint": "Mehr als diese Anzahl Betankungen pro Fahrzeug pro Tag wird markiert."
         },
-        "weekdayStart": { "label": "Werktag Start" },
-        "weekdayEnd": { "label": "Werktag Ende" },
+        "weekdayStart": {
+          "label": "Werktag Start"
+        },
+        "weekdayEnd": {
+          "label": "Werktag Ende"
+        },
         "includeWeekends": {
           "label": "Wochenenden einbeziehen",
           "hint": "Samstag–Sonntag zählen zu jeder Uhrzeit als außerhalb der Dienstzeit."
@@ -1605,9 +1633,15 @@
           "label": "Mindestfüllmenge",
           "hint": "Kleinere Betankungen (z. B. AdBlue) werden von dieser Regel übersprungen."
         },
-        "implausibleDiesel": { "label": "Diesel-Obergrenze" },
-        "implausibleGasoline": { "label": "Benzin-Obergrenze" },
-        "implausibleAdblue": { "label": "AdBlue-Obergrenze" },
+        "implausibleDiesel": {
+          "label": "Diesel-Obergrenze"
+        },
+        "implausibleGasoline": {
+          "label": "Benzin-Obergrenze"
+        },
+        "implausibleAdblue": {
+          "label": "AdBlue-Obergrenze"
+        },
         "minEntries": {
           "label": "Benötigte Einträge",
           "hint": "Fahrzeuge mit weniger Einträgen erhalten einen 'Kein Basiswert'-Hinweis."
@@ -1622,18 +1656,42 @@
         "save": "Speichern",
         "saved": "Gespeichert",
         "rescanNote": "Bestehende Einträge werden mit den neuen Regeln neu geprüft.",
-        "ODOMETER_ROLLBACK": { "desc": "Löst aus, wenn der Kilometerstand niedriger ist als zuvor." },
-        "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Löst aus, wenn die getankte Menge die Tankkapazität überschreitet." },
-        "FUEL_TYPE_MISMATCH": { "desc": "Die Kraftstoffart auf dem Beleg passt nicht zum Fahrzeug." },
-        "CONSUMPTION_OVER_BASELINE": { "desc": "Verbrauch übersteigt den Basiswert um das konfigurierte Verhältnis." },
-        "CONSUMPTION_UNDER_BASELINE": { "desc": "Verbrauch weit unter Basiswert — wahrscheinlich Datenfehler." },
-        "RAPID_REFUEL": { "desc": "Dasselbe Fahrzeug tankt zweimal innerhalb kurzer Zeit." },
-        "EXCESSIVE_DAILY_FREQUENCY": { "desc": "Ungewöhnlich viele Tankvorgänge an einem Tag." },
-        "OFF_HOURS_PURCHASE": { "desc": "Tanken außerhalb der konfigurierten Arbeitszeiten." },
-        "ODOMETER_NOT_ADVANCING": { "desc": "Aufeinanderfolgende Tankvorgänge ohne Kilometeränderung." },
-        "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "desc": "Menge wirkt unplausibel für diese Kraftstoffart (z. B. Diesel in einem E-Fahrzeug)." },
-        "PRICE_MATH_MISMATCH": { "desc": "Einzelpreis × Liter stimmt nicht mit dem Gesamtbetrag überein." },
-        "MISSING_BASELINE": { "desc": "Basiswert ist noch nicht aus genügend Tankungen berechnet." }
+        "ODOMETER_ROLLBACK": {
+          "desc": "Löst aus, wenn der Kilometerstand niedriger ist als zuvor."
+        },
+        "VOLUME_EXCEEDS_TANK_CAPACITY": {
+          "desc": "Löst aus, wenn die getankte Menge die Tankkapazität überschreitet."
+        },
+        "FUEL_TYPE_MISMATCH": {
+          "desc": "Die Kraftstoffart auf dem Beleg passt nicht zum Fahrzeug."
+        },
+        "CONSUMPTION_OVER_BASELINE": {
+          "desc": "Verbrauch übersteigt den Basiswert um das konfigurierte Verhältnis."
+        },
+        "CONSUMPTION_UNDER_BASELINE": {
+          "desc": "Verbrauch weit unter Basiswert — wahrscheinlich Datenfehler."
+        },
+        "RAPID_REFUEL": {
+          "desc": "Dasselbe Fahrzeug tankt zweimal innerhalb kurzer Zeit."
+        },
+        "EXCESSIVE_DAILY_FREQUENCY": {
+          "desc": "Ungewöhnlich viele Tankvorgänge an einem Tag."
+        },
+        "OFF_HOURS_PURCHASE": {
+          "desc": "Tanken außerhalb der konfigurierten Arbeitszeiten."
+        },
+        "ODOMETER_NOT_ADVANCING": {
+          "desc": "Aufeinanderfolgende Tankvorgänge ohne Kilometeränderung."
+        },
+        "IMPLAUSIBLE_VOLUME_FOR_TYPE": {
+          "desc": "Menge wirkt unplausibel für diese Kraftstoffart (z. B. Diesel in einem E-Fahrzeug)."
+        },
+        "PRICE_MATH_MISMATCH": {
+          "desc": "Einzelpreis × Liter stimmt nicht mit dem Gesamtbetrag überein."
+        },
+        "MISSING_BASELINE": {
+          "desc": "Basiswert ist noch nicht aus genügend Tankungen berechnet."
+        }
       }
     },
     "overrides": {
@@ -1733,18 +1791,42 @@
       "loadError": "Warnungen konnten nicht geladen werden"
     },
     "rules": {
-      "ODOMETER_ROLLBACK": { "title": "Kilometerstand zurückgesetzt" },
-      "VOLUME_EXCEEDS_TANK_CAPACITY": { "title": "Volumen übersteigt Tankkapazität" },
-      "FUEL_TYPE_MISMATCH": { "title": "Kraftstoffart passt nicht" },
-      "CONSUMPTION_OVER_BASELINE": { "title": "Höherer Verbrauch als erwartet" },
-      "CONSUMPTION_UNDER_BASELINE": { "title": "Geringerer Verbrauch als erwartet" },
-      "RAPID_REFUEL": { "title": "Erneutes Tanken in kurzer Zeit" },
-      "EXCESSIVE_DAILY_FREQUENCY": { "title": "Zu viele Tankvorgänge an einem Tag" },
-      "OFF_HOURS_PURCHASE": { "title": "Tanken außerhalb der Arbeitszeit" },
-      "ODOMETER_NOT_ADVANCING": { "title": "Kilometerstand unverändert" },
-      "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "title": "Unplausible Menge für Kraftstoffart" },
-      "PRICE_MATH_MISMATCH": { "title": "Preis-Menge-Abweichung" },
-      "MISSING_BASELINE": { "title": "Basiswert noch nicht definiert" }
+      "ODOMETER_ROLLBACK": {
+        "title": "Kilometerstand zurückgesetzt"
+      },
+      "VOLUME_EXCEEDS_TANK_CAPACITY": {
+        "title": "Volumen übersteigt Tankkapazität"
+      },
+      "FUEL_TYPE_MISMATCH": {
+        "title": "Kraftstoffart passt nicht"
+      },
+      "CONSUMPTION_OVER_BASELINE": {
+        "title": "Höherer Verbrauch als erwartet"
+      },
+      "CONSUMPTION_UNDER_BASELINE": {
+        "title": "Geringerer Verbrauch als erwartet"
+      },
+      "RAPID_REFUEL": {
+        "title": "Erneutes Tanken in kurzer Zeit"
+      },
+      "EXCESSIVE_DAILY_FREQUENCY": {
+        "title": "Zu viele Tankvorgänge an einem Tag"
+      },
+      "OFF_HOURS_PURCHASE": {
+        "title": "Tanken außerhalb der Arbeitszeit"
+      },
+      "ODOMETER_NOT_ADVANCING": {
+        "title": "Kilometerstand unverändert"
+      },
+      "IMPLAUSIBLE_VOLUME_FOR_TYPE": {
+        "title": "Unplausible Menge für Kraftstoffart"
+      },
+      "PRICE_MATH_MISMATCH": {
+        "title": "Preis-Menge-Abweichung"
+      },
+      "MISSING_BASELINE": {
+        "title": "Basiswert noch nicht definiert"
+      }
     },
     "modal": {
       "prev": "Zurück (← Taste)",
@@ -1810,7 +1892,10 @@
     }
   },
   "landing": {
-    "nav": { "login": "Anmelden", "blog": "Blog" },
+    "nav": {
+      "login": "Anmelden",
+      "blog": "Blog"
+    },
     "hero": {
       "badge": "Für türkische KMU-Flotten · KVKK-konform",
       "title1": "Der Kraftstoffverlust, den Excel verbirgt.",

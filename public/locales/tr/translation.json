@@ -99,6 +99,24 @@
       "importFuel": "Yakıt içe aktar"
     }
   },
+  "entityWarnings": {
+    "title": {
+      "truck_one": "Bu araç için · {{count}} konu",
+      "truck_other": "Bu araç için · {{count}} konu",
+      "driver_one": "Bu sürücü için · {{count}} konu",
+      "driver_other": "Bu sürücü için · {{count}} konu"
+    },
+    "criticalSuffix_one": "({{count}} acil)",
+    "criticalSuffix_other": "({{count}} acil)",
+    "goToDocs": "Belgelere git",
+    "goToFuel": "Yakıt'a git",
+    "goToMaintenance": "Bakım'a git",
+    "kind": {
+      "doc": "Belge",
+      "fuel": "Yakıt",
+      "maintenance": "Bakım"
+    }
+  },
   "maintenance": {
     "sectionTitle": "Bakım",
     "addRecord": "Yeni servis",
@@ -602,7 +620,10 @@
     "placeholderCountry": "Örn: Türkiye"
   },
   "driverDetail": {
-    "warnings": { "heading": "Uyarılar", "goToDocs": "Belgelere git →" },
+    "warnings": {
+      "heading": "Uyarılar",
+      "goToDocs": "Belgelere git →"
+    },
     "tabs": {
       "genel": "Genel",
       "belgeler": "Belgeler"
@@ -777,7 +798,10 @@
     "rejected": "Reddedildi"
   },
   "trucks": {
-    "view": { "list": "Liste", "table": "Tablo" },
+    "view": {
+      "list": "Liste",
+      "table": "Tablo"
+    },
     "table": {
       "plate": "Plaka",
       "type": "Tip",
@@ -1592,8 +1616,12 @@
           "label": "Günlük üst sınır",
           "hint": "Bu sayıyı aşan günlük dolumlar uyarı oluşturur."
         },
-        "weekdayStart": { "label": "Hafta içi başlangıç" },
-        "weekdayEnd": { "label": "Hafta içi bitiş" },
+        "weekdayStart": {
+          "label": "Hafta içi başlangıç"
+        },
+        "weekdayEnd": {
+          "label": "Hafta içi bitiş"
+        },
         "includeWeekends": {
           "label": "Hafta sonlarını dahil et",
           "hint": "Cumartesi-pazar dolumları her saatte mesai dışı sayılır."
@@ -1602,9 +1630,15 @@
           "label": "Asgari dolum",
           "hint": "Bu miktarın altındaki dolumlar (ör. AdBlue) kurala dahil edilmez."
         },
-        "implausibleDiesel": { "label": "Dizel üst sınır" },
-        "implausibleGasoline": { "label": "Benzin üst sınır" },
-        "implausibleAdblue": { "label": "AdBlue üst sınır" },
+        "implausibleDiesel": {
+          "label": "Dizel üst sınır"
+        },
+        "implausibleGasoline": {
+          "label": "Benzin üst sınır"
+        },
+        "implausibleAdblue": {
+          "label": "AdBlue üst sınır"
+        },
         "minEntries": {
           "label": "Gereken kayıt sayısı",
           "hint": "Bu kadar kaydı olmayan araçlar için 'baz tüketim yok' uyarısı çıkar."
@@ -1619,18 +1653,42 @@
         "save": "Kaydet",
         "saved": "Kaydedildi",
         "rescanNote": "Mevcut kayıtlar yeni kurallarla tekrar taranacak.",
-        "ODOMETER_ROLLBACK": { "desc": "Aracın kilometresi bir önceki kayıttan küçükse tetiklenir." },
-        "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Alınan yakıt, tank kapasitesini aşıyorsa tetiklenir." },
-        "FUEL_TYPE_MISMATCH": { "desc": "Fişteki yakıt türü, aracın yakıt türüyle uyuşmuyor." },
-        "CONSUMPTION_OVER_BASELINE": { "desc": "Tüketim, aracın ortalamasını belirli bir oranın üzerinde aştıysa." },
-        "CONSUMPTION_UNDER_BASELINE": { "desc": "Tüketim beklenenin çok altında — muhtemel veri hatası." },
-        "RAPID_REFUEL": { "desc": "Aynı araç çok kısa sürede iki kez dolduruldu." },
-        "EXCESSIVE_DAILY_FREQUENCY": { "desc": "Aynı gün içinde aşırı sayıda dolum yapıldıysa." },
-        "OFF_HOURS_PURCHASE": { "desc": "Çalışma saatleri dışında yapılan dolum." },
-        "ODOMETER_NOT_ADVANCING": { "desc": "Peş peşe dolumlarda kilometre değişmediyse." },
-        "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "desc": "Yakıt türüne göre mantıksız miktarda dolum (örn. elektrikli araca dizel)." },
-        "PRICE_MATH_MISMATCH": { "desc": "Birim fiyat × litre, toplam tutarla eşleşmiyor." },
-        "MISSING_BASELINE": { "desc": "Ortalama tüketim henüz yeterli dolumla hesaplanmadı." }
+        "ODOMETER_ROLLBACK": {
+          "desc": "Aracın kilometresi bir önceki kayıttan küçükse tetiklenir."
+        },
+        "VOLUME_EXCEEDS_TANK_CAPACITY": {
+          "desc": "Alınan yakıt, tank kapasitesini aşıyorsa tetiklenir."
+        },
+        "FUEL_TYPE_MISMATCH": {
+          "desc": "Fişteki yakıt türü, aracın yakıt türüyle uyuşmuyor."
+        },
+        "CONSUMPTION_OVER_BASELINE": {
+          "desc": "Tüketim, aracın ortalamasını belirli bir oranın üzerinde aştıysa."
+        },
+        "CONSUMPTION_UNDER_BASELINE": {
+          "desc": "Tüketim beklenenin çok altında — muhtemel veri hatası."
+        },
+        "RAPID_REFUEL": {
+          "desc": "Aynı araç çok kısa sürede iki kez dolduruldu."
+        },
+        "EXCESSIVE_DAILY_FREQUENCY": {
+          "desc": "Aynı gün içinde aşırı sayıda dolum yapıldıysa."
+        },
+        "OFF_HOURS_PURCHASE": {
+          "desc": "Çalışma saatleri dışında yapılan dolum."
+        },
+        "ODOMETER_NOT_ADVANCING": {
+          "desc": "Peş peşe dolumlarda kilometre değişmediyse."
+        },
+        "IMPLAUSIBLE_VOLUME_FOR_TYPE": {
+          "desc": "Yakıt türüne göre mantıksız miktarda dolum (örn. elektrikli araca dizel)."
+        },
+        "PRICE_MATH_MISMATCH": {
+          "desc": "Birim fiyat × litre, toplam tutarla eşleşmiyor."
+        },
+        "MISSING_BASELINE": {
+          "desc": "Ortalama tüketim henüz yeterli dolumla hesaplanmadı."
+        }
       }
     },
     "overrides": {
@@ -1730,18 +1788,42 @@
       "loadError": "Uyarılar yüklenemedi"
     },
     "rules": {
-      "ODOMETER_ROLLBACK": { "title": "Kilometre geriye gitmiş" },
-      "VOLUME_EXCEEDS_TANK_CAPACITY": { "title": "Tank kapasitesinin üstünde dolum" },
-      "FUEL_TYPE_MISMATCH": { "title": "Yakıt türü aracıyla uyuşmuyor" },
-      "CONSUMPTION_OVER_BASELINE": { "title": "Beklenenden fazla yakıt" },
-      "CONSUMPTION_UNDER_BASELINE": { "title": "Beklenenden az yakıt" },
-      "RAPID_REFUEL": { "title": "Kısa sürede ikinci dolum" },
-      "EXCESSIVE_DAILY_FREQUENCY": { "title": "Aynı günde çok fazla dolum" },
-      "OFF_HOURS_PURCHASE": { "title": "Mesai dışı dolum" },
-      "ODOMETER_NOT_ADVANCING": { "title": "Kilometre değişmemiş" },
-      "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "title": "Bu yakıt türü için mantıksız miktar" },
-      "PRICE_MATH_MISMATCH": { "title": "Fiyat-miktar uyuşmazlığı" },
-      "MISSING_BASELINE": { "title": "Ortalama tüketim henüz tanımlı değil" }
+      "ODOMETER_ROLLBACK": {
+        "title": "Kilometre geriye gitmiş"
+      },
+      "VOLUME_EXCEEDS_TANK_CAPACITY": {
+        "title": "Tank kapasitesinin üstünde dolum"
+      },
+      "FUEL_TYPE_MISMATCH": {
+        "title": "Yakıt türü aracıyla uyuşmuyor"
+      },
+      "CONSUMPTION_OVER_BASELINE": {
+        "title": "Beklenenden fazla yakıt"
+      },
+      "CONSUMPTION_UNDER_BASELINE": {
+        "title": "Beklenenden az yakıt"
+      },
+      "RAPID_REFUEL": {
+        "title": "Kısa sürede ikinci dolum"
+      },
+      "EXCESSIVE_DAILY_FREQUENCY": {
+        "title": "Aynı günde çok fazla dolum"
+      },
+      "OFF_HOURS_PURCHASE": {
+        "title": "Mesai dışı dolum"
+      },
+      "ODOMETER_NOT_ADVANCING": {
+        "title": "Kilometre değişmemiş"
+      },
+      "IMPLAUSIBLE_VOLUME_FOR_TYPE": {
+        "title": "Bu yakıt türü için mantıksız miktar"
+      },
+      "PRICE_MATH_MISMATCH": {
+        "title": "Fiyat-miktar uyuşmazlığı"
+      },
+      "MISSING_BASELINE": {
+        "title": "Ortalama tüketim henüz tanımlı değil"
+      }
     },
     "modal": {
       "prev": "Önceki (← tuşu)",
@@ -1807,7 +1889,10 @@
     }
   },
   "landing": {
-    "nav": { "login": "Giriş yap", "blog": "Blog" },
+    "nav": {
+      "login": "Giriş yap",
+      "blog": "Blog"
+    },
     "hero": {
       "badge": "Türk KOBİ filoları için · KVKK uyumlu",
       "title1": "Excel'de göremediğiniz yakıt kaçağı.",

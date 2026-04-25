@@ -101,6 +101,24 @@
       "importFuel": "Import fuel"
     }
   },
+  "entityWarnings": {
+    "title": {
+      "truck_one": "For this truck · {{count}} item",
+      "truck_other": "For this truck · {{count}} items",
+      "driver_one": "For this driver · {{count}} item",
+      "driver_other": "For this driver · {{count}} items"
+    },
+    "criticalSuffix_one": "({{count}} urgent)",
+    "criticalSuffix_other": "({{count}} urgent)",
+    "goToDocs": "Go to documents",
+    "goToFuel": "Go to fuel",
+    "goToMaintenance": "Go to maintenance",
+    "kind": {
+      "doc": "Document",
+      "fuel": "Fuel",
+      "maintenance": "Maintenance"
+    }
+  },
   "maintenance": {
     "sectionTitle": "Maintenance",
     "addRecord": "Log service",
@@ -604,7 +622,10 @@
     "placeholderCountry": "e.g. Türkiye"
   },
   "driverDetail": {
-    "warnings": { "heading": "Warnings", "goToDocs": "Go to documents →" },
+    "warnings": {
+      "heading": "Warnings",
+      "goToDocs": "Go to documents →"
+    },
     "tabs": {
       "genel": "General",
       "belgeler": "Documents"
@@ -779,7 +800,10 @@
     "rejected": "Rejected"
   },
   "trucks": {
-    "view": { "list": "List", "table": "Table" },
+    "view": {
+      "list": "List",
+      "table": "Table"
+    },
     "table": {
       "plate": "Plate",
       "type": "Type",
@@ -1595,8 +1619,12 @@
           "label": "Daily cap",
           "hint": "More than this many refills per truck per day is flagged."
         },
-        "weekdayStart": { "label": "Weekday start" },
-        "weekdayEnd": { "label": "Weekday end" },
+        "weekdayStart": {
+          "label": "Weekday start"
+        },
+        "weekdayEnd": {
+          "label": "Weekday end"
+        },
         "includeWeekends": {
           "label": "Include weekends",
           "hint": "Saturday–Sunday refills count as off-hours at any time."
@@ -1605,9 +1633,15 @@
           "label": "Minimum refill volume",
           "hint": "Refills smaller than this (e.g. AdBlue) are skipped by this rule."
         },
-        "implausibleDiesel": { "label": "Diesel ceiling" },
-        "implausibleGasoline": { "label": "Gasoline ceiling" },
-        "implausibleAdblue": { "label": "AdBlue ceiling" },
+        "implausibleDiesel": {
+          "label": "Diesel ceiling"
+        },
+        "implausibleGasoline": {
+          "label": "Gasoline ceiling"
+        },
+        "implausibleAdblue": {
+          "label": "AdBlue ceiling"
+        },
         "minEntries": {
           "label": "Required entries",
           "hint": "Trucks with fewer entries get a 'no baseline' notice."
@@ -1622,18 +1656,42 @@
         "save": "Save",
         "saved": "Saved",
         "rescanNote": "Existing entries will be re-scanned with the new rules.",
-        "ODOMETER_ROLLBACK": { "desc": "Fires when the odometer is lower than the previous entry." },
-        "VOLUME_EXCEEDS_TANK_CAPACITY": { "desc": "Fires when the refueled volume exceeds the truck's tank capacity." },
-        "FUEL_TYPE_MISMATCH": { "desc": "Fires when the receipt's fuel type differs from the truck's fuel type." },
-        "CONSUMPTION_OVER_BASELINE": { "desc": "Fires when consumption exceeds the baseline by the configured ratio." },
-        "CONSUMPTION_UNDER_BASELINE": { "desc": "Fires when consumption is far below baseline — likely data error." },
-        "RAPID_REFUEL": { "desc": "Fires when the same truck refuels twice within a short window." },
-        "EXCESSIVE_DAILY_FREQUENCY": { "desc": "Fires when a truck refuels unusually often within a single day." },
-        "OFF_HOURS_PURCHASE": { "desc": "Refuels outside of configured working hours." },
-        "ODOMETER_NOT_ADVANCING": { "desc": "Fires when consecutive refuels show no odometer change." },
-        "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "desc": "Volume looks implausible for this fuel type (e.g. diesel in an EV)." },
-        "PRICE_MATH_MISMATCH": { "desc": "Unit price × liters doesn't match the total amount on the receipt." },
-        "MISSING_BASELINE": { "desc": "Baseline consumption hasn't been established from enough refuels yet." }
+        "ODOMETER_ROLLBACK": {
+          "desc": "Fires when the odometer is lower than the previous entry."
+        },
+        "VOLUME_EXCEEDS_TANK_CAPACITY": {
+          "desc": "Fires when the refueled volume exceeds the truck's tank capacity."
+        },
+        "FUEL_TYPE_MISMATCH": {
+          "desc": "Fires when the receipt's fuel type differs from the truck's fuel type."
+        },
+        "CONSUMPTION_OVER_BASELINE": {
+          "desc": "Fires when consumption exceeds the baseline by the configured ratio."
+        },
+        "CONSUMPTION_UNDER_BASELINE": {
+          "desc": "Fires when consumption is far below baseline — likely data error."
+        },
+        "RAPID_REFUEL": {
+          "desc": "Fires when the same truck refuels twice within a short window."
+        },
+        "EXCESSIVE_DAILY_FREQUENCY": {
+          "desc": "Fires when a truck refuels unusually often within a single day."
+        },
+        "OFF_HOURS_PURCHASE": {
+          "desc": "Refuels outside of configured working hours."
+        },
+        "ODOMETER_NOT_ADVANCING": {
+          "desc": "Fires when consecutive refuels show no odometer change."
+        },
+        "IMPLAUSIBLE_VOLUME_FOR_TYPE": {
+          "desc": "Volume looks implausible for this fuel type (e.g. diesel in an EV)."
+        },
+        "PRICE_MATH_MISMATCH": {
+          "desc": "Unit price × liters doesn't match the total amount on the receipt."
+        },
+        "MISSING_BASELINE": {
+          "desc": "Baseline consumption hasn't been established from enough refuels yet."
+        }
       }
     },
     "overrides": {
@@ -1733,18 +1791,42 @@
       "loadError": "Could not load alerts"
     },
     "rules": {
-      "ODOMETER_ROLLBACK": { "title": "Odometer rolled back" },
-      "VOLUME_EXCEEDS_TANK_CAPACITY": { "title": "Volume exceeds tank capacity" },
-      "FUEL_TYPE_MISMATCH": { "title": "Fuel type mismatch" },
-      "CONSUMPTION_OVER_BASELINE": { "title": "Higher than expected consumption" },
-      "CONSUMPTION_UNDER_BASELINE": { "title": "Lower than expected consumption" },
-      "RAPID_REFUEL": { "title": "Refueled again too soon" },
-      "EXCESSIVE_DAILY_FREQUENCY": { "title": "Too many refuels in one day" },
-      "OFF_HOURS_PURCHASE": { "title": "After-hours refuel" },
-      "ODOMETER_NOT_ADVANCING": { "title": "Odometer not advancing" },
-      "IMPLAUSIBLE_VOLUME_FOR_TYPE": { "title": "Implausible volume for fuel type" },
-      "PRICE_MATH_MISMATCH": { "title": "Price-quantity mismatch" },
-      "MISSING_BASELINE": { "title": "Baseline not yet defined" }
+      "ODOMETER_ROLLBACK": {
+        "title": "Odometer rolled back"
+      },
+      "VOLUME_EXCEEDS_TANK_CAPACITY": {
+        "title": "Volume exceeds tank capacity"
+      },
+      "FUEL_TYPE_MISMATCH": {
+        "title": "Fuel type mismatch"
+      },
+      "CONSUMPTION_OVER_BASELINE": {
+        "title": "Higher than expected consumption"
+      },
+      "CONSUMPTION_UNDER_BASELINE": {
+        "title": "Lower than expected consumption"
+      },
+      "RAPID_REFUEL": {
+        "title": "Refueled again too soon"
+      },
+      "EXCESSIVE_DAILY_FREQUENCY": {
+        "title": "Too many refuels in one day"
+      },
+      "OFF_HOURS_PURCHASE": {
+        "title": "After-hours refuel"
+      },
+      "ODOMETER_NOT_ADVANCING": {
+        "title": "Odometer not advancing"
+      },
+      "IMPLAUSIBLE_VOLUME_FOR_TYPE": {
+        "title": "Implausible volume for fuel type"
+      },
+      "PRICE_MATH_MISMATCH": {
+        "title": "Price-quantity mismatch"
+      },
+      "MISSING_BASELINE": {
+        "title": "Baseline not yet defined"
+      }
     },
     "modal": {
       "prev": "Previous (← key)",
@@ -1810,7 +1892,10 @@
     }
   },
   "landing": {
-    "nav": { "login": "Log in", "blog": "Blog" },
+    "nav": {
+      "login": "Log in",
+      "blog": "Blog"
+    },
     "hero": {
       "badge": "For Turkish SMB fleets · KVKK-compliant",
       "title1": "The fuel leak you can't see in Excel.",
