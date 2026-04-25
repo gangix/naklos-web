@@ -253,8 +253,8 @@ const TruckDetailPage = () => {
   const tabs: { id: Tab; label: string }[] = [
     { id: 'genel', label: t('truckDetail.tabs.genel') },
     { id: 'yakit', label: t('truckDetail.tabs.yakit') },
-    { id: 'belgeler', label: t('truckDetail.tabs.belgeler') },
     { id: 'bakim', label: t('truckDetail.tabs.bakim') },
+    { id: 'belgeler', label: t('truckDetail.tabs.belgeler') },
   ];
 
   const complianceDocs = documents.filter((doc) => doc.documentType !== 'fuel-receipt');
