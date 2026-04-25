@@ -12,6 +12,7 @@ import { fuelAnomalyApi } from '../services/fuelAnomalyApi';
 import { fuelReviewApi } from '../services/api';
 import type { Severity } from '../types/severity';
 import { worstSeverity } from '../types/severity';
+import type { AnomalyPendingItem } from '../types/fuelAnomaly';
 
 /**
  * Shared pending-item counts for the fuel section so the top-nav badge and
@@ -43,6 +44,9 @@ interface FuelCountsValue {
    *  severity of their own). */
   worstPendingSeverity: Severity | null;
   pendingBreakdown: FuelPendingBreakdown;
+  /** Raw list of pending anomaly items, exposed so per-truck surfaces can
+   *  filter without an extra round-trip. */
+  pendingItems: AnomalyPendingItem[];
   refresh: () => void;
 }
 
@@ -54,6 +58,7 @@ const DEFAULT_VALUE: FuelCountsValue = {
   total: 0,
   worstPendingSeverity: null,
   pendingBreakdown: EMPTY_BREAKDOWN,
+  pendingItems: [],
   refresh: () => {},
 };
 
@@ -65,6 +70,7 @@ export function FuelCountsProvider({ children }: { children: ReactNode }) {
   const [unmatched, setUnmatched] = useState(0);
   const [worstPendingSeverity, setWorstPendingSeverity] = useState<Severity | null>(null);
   const [pendingBreakdown, setPendingBreakdown] = useState<FuelPendingBreakdown>(EMPTY_BREAKDOWN);
+  const [pendingItems, setPendingItems] = useState<AnomalyPendingItem[]>([]);
 
   const fetchCounts = useCallback(async () => {
     if (!fleetId || plan === 'FREE') {
@@ -72,6 +78,7 @@ export function FuelCountsProvider({ children }: { children: ReactNode }) {
       setUnmatched(0);
       setWorstPendingSeverity(null);
       setPendingBreakdown(EMPTY_BREAKDOWN);
+      setPendingItems([]);
       return;
     }
     const [anomalies, counts] = await Promise.all([
@@ -95,6 +102,7 @@ export function FuelCountsProvider({ children }: { children: ReactNode }) {
     }
     setPendingBreakdown(breakdown);
     setWorstPendingSeverity(worstSeverity(severities) ?? null);
+    setPendingItems(list);
   }, [fleetId, plan]);
 
   useEffect(() => {
@@ -116,9 +124,10 @@ export function FuelCountsProvider({ children }: { children: ReactNode }) {
       total: pending + unmatched,
       worstPendingSeverity,
       pendingBreakdown,
+      pendingItems,
       refresh,
     }),
-    [pending, unmatched, worstPendingSeverity, pendingBreakdown, refresh],
+    [pending, unmatched, worstPendingSeverity, pendingBreakdown, pendingItems, refresh],
   );
 
   return (
