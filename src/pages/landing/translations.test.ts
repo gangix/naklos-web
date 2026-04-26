@@ -69,14 +69,6 @@ describe('landing translations alignment', () => {
       'landing.features.fuel.title',
       'landing.features.maintenance.title',
 
-      // Comparison
-      'landing.comparison.eyebrow',
-      'landing.comparison.title',
-      'landing.comparison.subtitle',
-      'landing.comparison.footnote',
-      'landing.comparison.rows.monthly',
-      'landing.comparison.values.naklosFoundingPrice',
-
       // Pricing
       'landing.pricing.eyebrow',
       'landing.pricing.title',

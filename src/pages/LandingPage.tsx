@@ -1,7 +1,6 @@
 import Header from './landing/Header';
 import Hero from './landing/Hero';
 import Features from './landing/Features';
-import Comparison from './landing/Comparison';
 import Pricing from './landing/Pricing';
 import FAQ from './landing/FAQ';
 import FinalCTA from './landing/FinalCTA';
@@ -13,7 +12,6 @@ const LandingPage = () => {
       <Header />
       <Hero />
       <Features />
-      <Comparison />
       <Pricing />
       <FAQ />
       <FinalCTA />

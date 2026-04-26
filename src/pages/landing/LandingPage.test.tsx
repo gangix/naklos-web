@@ -42,7 +42,7 @@ const renderPage = () => render(
 );
 
 describe('LandingPage', () => {
-  it('renders all major sections (Hero / Features / Comparison / Pricing / FAQ / FinalCTA)', () => {
+  it('renders all major sections (Hero / Features / Pricing / FAQ / FinalCTA)', () => {
     renderPage();
 
     // Hero
@@ -50,10 +50,7 @@ describe('LandingPage', () => {
     expect(screen.getAllByText(/filonuzu/i).length).toBeGreaterThanOrEqual(1);
 
     // Features (3 pillars)
-    expect(screen.getByText(/üç şey, doğru yapılmış/i)).toBeInTheDocument();
-
-    // Comparison
-    expect(screen.getByText(/adil bir karşılaştırma/i)).toBeInTheDocument();
+    expect(screen.getByText(/tek ekran, üç farklı takip/i)).toBeInTheDocument();
 
     // Pricing — beta banner + cards
     expect(screen.getByText(/anlaşılır fiyatlandırma/i)).toBeInTheDocument();

@@ -1977,8 +1977,8 @@
       "trustNoHardware": "Donanım yok"
     },
     "features": {
-      "eyebrow": "Üç şey, doğru yapılmış",
-      "title": "Filonuzun unutulan şeyleri otomatik takipte",
+      "eyebrow": "Tek ekran, üç farklı takip",
+      "title": "Süresi dolacak belgeler. Yaklaşan bakımlar. Şüpheli yakıt dolumları. Hepsi tek panelde.",
       "docs": {
         "title": "Belgeler",
         "description": "Muayene, MTV, sigorta tarihlerini bir daha unutmayın. Bitiş 30/14/7 gün önceden e-posta uyarı."
@@ -2076,7 +2076,7 @@
       },
       "q5": {
         "q": "Kaç araca kadar ücretsiz?",
-        "a": "3 araca kadar her zaman ücretsiz. 4. aracı eklediğinizde Pro tier devreye girer (şu anda beta — yine ücretsiz). Ücretlendirme 2026 sonbaharında başlayacak; ilk 10 kurucu firma %30 indirimi 12 ay kilitler."
+        "a": "3 araca kadar her zaman ücretsiz. 4+ araç için Pro tier de şu anda beta süresince ücretsiz. Ücretlendirme başlamadan önce mutlaka önceden bildirim göndereceğiz."
       },
       "q6": {
         "q": "Türkçe destek var mı?",
