@@ -666,6 +666,7 @@
     "inviteFailed": "Davet e-postası gönderilemedi",
     "invitePending": "Davet gönderiliyor...",
     "inviteSent": "Davet gönderildi — sürücü henüz kabul etmedi",
+    "inviteAccepted": "Sürücü daveti kabul etti — hesap aktif",
     "inviteNotSent": "Davet henüz gönderilmedi",
     "resendInvite": "Tekrar Gönder",
     "confirmDelete": "Bu sürücü silinecek. Bu işlem geri alınamaz.",

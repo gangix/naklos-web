@@ -246,6 +246,18 @@ const DriversPage = () => {
                   <span className="text-xs text-yellow-600 font-medium">{t('driverDetail.invitePending')}</span>
                 </div>
               )}
+              {driver.inviteStatus === 'SENT' && (
+                <div className="flex items-center gap-1 mt-1">
+                  <Mail className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-xs text-emerald-600 font-medium">{t('driverDetail.inviteSent')}</span>
+                </div>
+              )}
+              {driver.inviteStatus === 'ACCEPTED' && (
+                <div className="flex items-center gap-1 mt-1">
+                  <Mail className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-xs text-emerald-700 font-medium">{t('driverDetail.inviteAccepted')}</span>
+                </div>
+              )}
 
               {/* License & Certificate warnings — tiered by CRITICAL/WARNING/INFO to mirror fuel-alert palette */}
               {getDriverWarnings(driver.id).length > 0 && (

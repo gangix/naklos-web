@@ -668,6 +668,7 @@
     "inviteFailed": "Einladungs-E-Mail konnte nicht gesendet werden",
     "invitePending": "Einladung wird gesendet...",
     "inviteSent": "Einladung gesendet — der Fahrer hat sie noch nicht akzeptiert",
+    "inviteAccepted": "Fahrer hat die Einladung angenommen — Konto aktiv",
     "inviteNotSent": "Einladung noch nicht gesendet",
     "resendInvite": "Erneut senden",
     "confirmDelete": "Fahrer löschen? Dies kann nicht rückgängig gemacht werden.",

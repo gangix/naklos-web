@@ -587,11 +587,11 @@ const DriverDetailPage = () => {
         </Link>
       )}
 
-      {/* Invite status — NOT_INVITED (with email), PENDING, SENT, FAILED all surface here. ACCEPTED hides the card entirely. */}
+      {/* Invite status — NOT_INVITED (with email), PENDING, SENT, FAILED, ACCEPTED all surface here. */}
       {(() => {
         const status = driver.inviteStatus;
         const canInvite = !!driver.email && status !== 'ACCEPTED';
-        if (status === 'ACCEPTED' || (status === 'NOT_INVITED' && !driver.email)) {
+        if (status === 'NOT_INVITED' && !driver.email) {
           return null;
         }
         const tone =
@@ -601,11 +601,14 @@ const DriverDetailPage = () => {
             ? { bg: 'bg-yellow-50 border-yellow-200', icon: 'text-yellow-500', text: 'text-yellow-700', btn: 'border-yellow-300 text-yellow-700 hover:bg-yellow-50' }
             : status === 'SENT'
             ? { bg: 'bg-emerald-50 border-emerald-200', icon: 'text-emerald-500', text: 'text-emerald-700', btn: 'border-emerald-300 text-emerald-700 hover:bg-emerald-50' }
+            : status === 'ACCEPTED'
+            ? { bg: 'bg-emerald-100 border-emerald-300', icon: 'text-emerald-700', text: 'text-emerald-800', btn: '' }
             : { bg: 'bg-gray-50 border-gray-200', icon: 'text-gray-500', text: 'text-gray-700', btn: 'border-primary-300 text-primary-700 hover:bg-primary-50' };
         const label =
           status === 'FAILED' ? t('driverDetail.inviteFailed')
           : status === 'PENDING' ? t('driverDetail.invitePending')
           : status === 'SENT' ? t('driverDetail.inviteSent')
+          : status === 'ACCEPTED' ? t('driverDetail.inviteAccepted')
           : t('driverDetail.inviteNotSent');
         return (
           <div className={`rounded-lg p-4 shadow-sm mb-4 border ${tone.bg}`}>
