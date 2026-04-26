@@ -1911,6 +1911,7 @@
   "landing": {
     "betaPill": "Currently in beta — all features free",
     "nav": {
+      "beta": "BETA · free",
       "features": "Features",
       "pricing": "Pricing",
       "faq": "FAQ",
