@@ -14,6 +14,21 @@ function getUserFriendlyMessage(status: number): string {
   }
 }
 
+/**
+ * Error thrown by `apiCall` / `multipartCall` when the response is not OK.
+ * Carries the HTTP status so callers can branch on specific codes (e.g. the
+ * invite-acceptance page distinguishing 409 "already accepted" from 410
+ * "token expired") instead of brittle message-string matching.
+ */
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 export interface PageResponse<T> {
   content: T[];
   totalElements: number;
@@ -75,7 +90,7 @@ export async function apiCall<T>(
       // Body wasn't JSON (e.g. plain-text error from upstream proxy) — keep generic.
     }
 
-    throw new Error(userMessage);
+    throw new ApiError(userMessage, response.status);
   }
 
   // Handle empty responses (e.g., 204 No Content for DELETE)
@@ -129,7 +144,7 @@ async function multipartCall<T>(endpoint: string, formData: FormData): Promise<T
       // Body wasn't JSON (e.g. plain-text error from upstream proxy) — keep generic.
     }
 
-    throw new Error(userMessage);
+    throw new ApiError(userMessage, response.status);
   }
 
   return response.json();
@@ -516,6 +531,26 @@ export const fuelReviewApi = {
     apiCall<void>(
       `/fleets/${fleetId}/fuel-review/dismissed-entries/${entryId}/undismiss`,
       { method: 'POST' }),
+};
+
+// Public invite API — endpoints under /public are unauthenticated.
+// `apiCall` only attaches the Keycloak Bearer header when keycloak.token is
+// set, so calling these from an unauthenticated page (e.g. /invite/:token)
+// works without modification.
+export interface InvitePreview {
+  firstName: string;
+  email: string;
+  fleetName: string;
+}
+
+export const publicInviteApi = {
+  preview: (token: string): Promise<InvitePreview> =>
+    apiCall<InvitePreview>(`/public/invite/${encodeURIComponent(token)}/preview`),
+  accept: (token: string, password: string): Promise<void> =>
+    apiCall(`/public/invite/accept`, {
+      method: 'POST',
+      body: JSON.stringify({ token, password }),
+    }),
 };
 
 // Invoice API — fleet is derived from JWT

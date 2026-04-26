@@ -17,6 +17,7 @@ import DriverDetailPage from './pages/DriverDetailPage';
 import SettingsPage from './pages/SettingsPage';
 import FleetSetupPage from './pages/FleetSetupPage';
 import LandingPage from './pages/LandingPage';
+import InviteAcceptPage from './pages/InviteAcceptPage';
 import FoundingTermsPage from './pages/legal/FoundingTermsPage';
 import KvkkPolicyPage from './pages/legal/KvkkPolicyPage';
 import CookiePolicyPage from './pages/legal/CookiePolicyPage';
@@ -174,6 +175,7 @@ function App() {
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
           <Route path="/blog" element={<Suspense fallback={<BlogRouteFallback />}><BlogIndexPage /></Suspense>} />
           <Route path="/blog/:slug" element={<Suspense fallback={<BlogRouteFallback />}><BlogPostPage /></Suspense>} />
+          <Route path="/invite/:token" element={<InviteAcceptPage />} />
           <Route path="*" element={<LandingPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -212,6 +214,7 @@ function App() {
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
           <Route path="/blog" element={<Suspense fallback={<BlogRouteFallback />}><BlogIndexPage /></Suspense>} />
           <Route path="/blog/:slug" element={<Suspense fallback={<BlogRouteFallback />}><BlogPostPage /></Suspense>} />
+          <Route path="/invite/:token" element={<InviteAcceptPage />} />
           <Route path="*" element={<FleetSetupPage />} />
         </Routes>
         <Toaster position="top-center" richColors />
@@ -232,6 +235,7 @@ function App() {
           <Route path="/cerez-politikasi" element={<CookiePolicyPage />} />
           <Route path="/blog" element={<Suspense fallback={<BlogRouteFallback />}><BlogIndexPage /></Suspense>} />
           <Route path="/blog/:slug" element={<Suspense fallback={<BlogRouteFallback />}><BlogPostPage /></Suspense>} />
+          <Route path="/invite/:token" element={<InviteAcceptPage />} />
           <Route path="/" element={<Navigate to={homeRoute} replace />} />
 
           {isSystemAdmin && (

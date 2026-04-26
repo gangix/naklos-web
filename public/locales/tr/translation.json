@@ -2169,5 +2169,25 @@
       "body": "OPET, Shell veya BP ekstreninizi yükleyin. İlk anomaliyi dakikalar içinde gösteririz.",
       "button": "Ücretsiz başla →"
     }
+  },
+  "invite": {
+    "title": "Hoş geldiniz",
+    "welcome": "Merhaba {{firstName}}, {{fleetName}} filosuna sürücü olarak davet edildiniz. Hesabınızı oluşturmak için bir şifre belirleyin.",
+    "emailLabel": "E-posta",
+    "emailHint": "Hesabınız bu e-posta adresine bağlanacak.",
+    "passwordLabel": "Şifre",
+    "passwordPlaceholder": "En az 8 karakter",
+    "passwordConfirmLabel": "Şifreyi tekrar yazın",
+    "submit": "Hesabımı oluştur",
+    "submitting": "Oluşturuluyor...",
+    "successTitle": "Hesabınız oluşturuldu",
+    "successBody": "Artık {{email}} ve şifrenizle giriş yapabilirsiniz.",
+    "loginCta": "Giriş yap",
+    "errors": {
+      "tokenExpired": "Bu davet bağlantısının süresi dolmuş veya geçersiz. Filo yöneticinizle iletişime geçin.",
+      "alreadyAccepted": "Bu hesap zaten oluşturulmuş. Giriş yapabilirsiniz.",
+      "passwordsMismatch": "Şifreler eşleşmiyor.",
+      "passwordTooShort": "Şifre en az 8 karakter olmalı."
+    }
   }
 }

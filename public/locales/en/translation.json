@@ -2251,5 +2251,25 @@
       "body": "Upload your OPET, Shell, or BP statement. We'll show the first anomaly within minutes.",
       "button": "Start free →"
     }
+  },
+  "invite": {
+    "title": "Welcome",
+    "welcome": "Hi {{firstName}}, you've been invited to join {{fleetName}} as a driver. Set a password to create your account.",
+    "emailLabel": "Email",
+    "emailHint": "Your account will be linked to this email address.",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "passwordConfirmLabel": "Confirm password",
+    "submit": "Create my account",
+    "submitting": "Creating...",
+    "successTitle": "Your account is ready",
+    "successBody": "You can now sign in with {{email}} and your password.",
+    "loginCta": "Sign in",
+    "errors": {
+      "tokenExpired": "This invitation link has expired or is invalid. Please contact your fleet manager.",
+      "alreadyAccepted": "This account has already been created. You can sign in now.",
+      "passwordsMismatch": "Passwords don't match.",
+      "passwordTooShort": "Password must be at least 8 characters."
+    }
   }
 }
