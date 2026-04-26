@@ -555,7 +555,7 @@
     "fileEmpty": "File appears to be empty",
     "fileReadError": "Could not read file",
     "import": "Import",
-    "bulkImportUpgrade": "Bulk import is available on the Professional plan",
+    "bulkImportUpgrade": "Bulk import is available on the Pro plan",
     "truckLabel": "Plate",
     "truckType": "Truck Type",
     "capacityKg": "Capacity (kg)",
@@ -594,8 +594,7 @@
     "statusInactive": "Inactive",
     "statusActive": "Active",
     "planFree": "Starter (Free)",
-    "planProfessional": "Professional (499 ₺/mo)",
-    "planBusiness": "Business (999 ₺/mo)",
+    "planPro": "Pro",
     "planEnterprise": "Enterprise"
   },
   "clientDetail": {
@@ -923,8 +922,7 @@
   },
   "plan": {
     "free": "Free",
-    "professional": "Professional",
-    "business": "Business",
+    "pro": "Pro",
     "enterprise": "Enterprise",
     "cardTitle": "Subscription plan",
     "upgrade": {
@@ -1084,8 +1082,7 @@
     "current": "Current",
     "recommended": "Recommended",
     "upgradeButton": "Upgrade Plan",
-    "priceProfessional": "499 ₺/mo",
-    "priceBusiness": "999 ₺/mo",
+    "pricePro": "$5/mo",
     "priceEnterprise": "Custom pricing"
   },
   "fuelReview": {
@@ -2085,13 +2082,10 @@
         "feature5": "Phone + Slack support",
         "cta": "Get in touch"
       },
-      "eyebrow_old": "Pricing",
-      "title_old": "Pricing that makes sense.",
       "foundingBanner": "Founding customers lock in 30% off for 12 months when billing ships.",
       "tiers": {
         "free": "Starter",
         "pro": "Owner",
-        "business": "Business",
         "enterprise": "Enterprise"
       },
       "popular": "Most Popular",
@@ -2101,13 +2095,10 @@
       "contactUs": "Talk to us",
       "foundingCta": "Get founding access",
       "proPrice": "₺199",
-      "businessPrice": "₺149",
-      "businessNote": "25+ trucks",
       "futureLabel": "When billing ships",
       "lockInLabel": "Founding lock-in (30% off, 12 mo)",
       "termsLinkLabel": "Founding access terms",
       "ownerLockInPrice": "₺139",
-      "businessLockInPrice": "₺104",
       "features": {
         "trucks5": "All modules enabled",
         "trucks25": "Volume discount (25%)",

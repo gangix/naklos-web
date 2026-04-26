@@ -553,7 +553,7 @@
     "fileEmpty": "Dosya boş görünüyor",
     "fileReadError": "Dosya okunamadı",
     "import": "İçe Aktar",
-    "bulkImportUpgrade": "Toplu içe aktarma özelliği Profesyonel planda kullanılabilir",
+    "bulkImportUpgrade": "Toplu içe aktarma özelliği Pro planda kullanılabilir",
     "truckLabel": "Plaka",
     "truckType": "Araç Tipi",
     "capacityKg": "Kapasite (kg)",
@@ -592,8 +592,7 @@
     "statusInactive": "Pasif",
     "statusActive": "Aktif",
     "planFree": "Başlangıç (Ücretsiz)",
-    "planProfessional": "Profesyonel (499 TL/ay)",
-    "planBusiness": "İşletme (999 TL/ay)",
+    "planPro": "Pro",
     "planEnterprise": "Kurumsal"
   },
   "clientDetail": {
@@ -920,9 +919,8 @@
     "psychotechnical": "Psikoteknik Belgesi"
   },
   "plan": {
-    "free": "Başlangıç",
-    "professional": "Profesyonel",
-    "business": "İşletme",
+    "free": "Ücretsiz",
+    "pro": "Pro",
     "enterprise": "Kurumsal",
     "cardTitle": "Abonelik Planı",
     "upgrade": {
@@ -1081,8 +1079,7 @@
     "current": "Mevcut",
     "recommended": "Önerilen",
     "upgradeButton": "Planı Yükselt",
-    "priceProfessional": "499 ₺/ay",
-    "priceBusiness": "999 ₺/ay",
+    "pricePro": "₺55/ay",
     "priceEnterprise": "Özel fiyat"
   },
   "fuelReview": {

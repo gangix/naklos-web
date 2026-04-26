@@ -555,7 +555,7 @@
     "fileEmpty": "Die Datei scheint leer zu sein",
     "fileReadError": "Datei konnte nicht gelesen werden",
     "import": "Importieren",
-    "bulkImportUpgrade": "Der Massenimport ist im Professional-Tarif verfügbar",
+    "bulkImportUpgrade": "Der Massenimport ist im Pro-Tarif verfügbar",
     "truckLabel": "Kennzeichen",
     "truckType": "Fahrzeugtyp",
     "capacityKg": "Kapazität (kg)",
@@ -594,8 +594,7 @@
     "statusInactive": "Inaktiv",
     "statusActive": "Aktiv",
     "planFree": "Starter (Kostenlos)",
-    "planProfessional": "Professional (499 ₺/Monat)",
-    "planBusiness": "Business (999 ₺/Monat)",
+    "planPro": "Pro",
     "planEnterprise": "Enterprise"
   },
   "clientDetail": {
@@ -922,9 +921,8 @@
     "psychotechnical": "Psychotechnisches Gutachten"
   },
   "plan": {
-    "free": "Kostenlos",
-    "professional": "Professional",
-    "business": "Business",
+    "free": "Free",
+    "pro": "Pro",
     "enterprise": "Enterprise",
     "cardTitle": "Abonnement",
     "upgrade": {
@@ -1084,8 +1082,7 @@
     "current": "Aktuell",
     "recommended": "Empfohlen",
     "upgradeButton": "Plan upgraden",
-    "priceProfessional": "499 ₺/Monat",
-    "priceBusiness": "999 ₺/Monat",
+    "pricePro": "5 €/Monat",
     "priceEnterprise": "Individuelle Preise"
   },
   "fuelReview": {
@@ -2085,13 +2082,10 @@
         "feature5": "Telefon + Slack-Support",
         "cta": "Kontakt aufnehmen"
       },
-      "eyebrow_old": "Preise",
-      "title_old": "Preise, die Sinn machen.",
       "foundingBanner": "Gründungskunden sichern sich 30% Rabatt für 12 Monate, wenn die Abrechnung startet.",
       "tiers": {
         "free": "Starter",
         "pro": "Owner",
-        "business": "Business",
         "enterprise": "Enterprise"
       },
       "popular": "Am Beliebtesten",
@@ -2101,13 +2095,10 @@
       "contactUs": "Sprechen wir",
       "foundingCta": "Gründungszugang erhalten",
       "proPrice": "₺199",
-      "businessPrice": "₺149",
-      "businessNote": "25+ Lkw",
       "futureLabel": "Wenn die Abrechnung startet",
       "lockInLabel": "Gründungsrabatt (30% Rabatt, 12 Monate)",
       "termsLinkLabel": "Gründungszugang-Bedingungen",
       "ownerLockInPrice": "₺139",
-      "businessLockInPrice": "₺104",
       "features": {
         "trucks5": "Alle Module aktiv",
         "trucks25": "Mengenrabatt (25%)",
