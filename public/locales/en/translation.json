@@ -1111,7 +1111,7 @@
       "formats": "File formats",
       "plates": "Plates",
       "settings": "Settings",
-      "alertsConfig": "Alert rules"
+      "alertsConfig": "Anomaly settings"
     },
     "resolutions": {
       "title": "Plate Rules",
@@ -1665,14 +1665,14 @@
         }
       },
       "rules": {
-        "title": "Alert rules",
-        "subtitle": "Toggle each rule and fine-tune its settings.",
+        "title": "Fuel anomaly detections",
+        "subtitle": "12 different detection methods — toggle each on/off or adjust sensitivity.",
         "enabled": "Active",
         "notify": "Email",
         "threshold": "Settings",
         "save": "Save",
         "saved": "Saved",
-        "rescanNote": "Existing entries will be re-scanned with the new rules.",
+        "rescanNote": "Existing entries will be re-scanned with the new settings.",
         "ODOMETER_ROLLBACK": {
           "desc": "Fires when the odometer is lower than the previous entry."
         },
@@ -1712,8 +1712,8 @@
       }
     },
     "overrides": {
-      "sectionTitle": "Fuel rule settings",
-      "subtitle": "Baseline and rule configuration for this truck.",
+      "sectionTitle": "Fuel anomaly settings",
+      "subtitle": "Baseline and anomaly settings for this truck.",
       "baseline": {
         "title": "Consumption baseline",
         "manual": "Manual",
@@ -1737,8 +1737,8 @@
       "saving": "Saving…",
       "saved": "Settings updated",
       "rescanNote": "This truck's entries will be re-scanned with the new settings.",
-      "rulesTitle": "Per-truck rule overrides",
-      "rulesEmpty": "No custom rule overrides for this truck.",
+      "rulesTitle": "Per-truck anomaly overrides",
+      "rulesEmpty": "No per-truck anomaly overrides for this vehicle.",
       "ruleOn": "On",
       "ruleOff": "Off"
     },
@@ -1763,9 +1763,9 @@
     "filters": {
       "all": "All",
       "byTruck": "Truck",
-      "byRule": "Rule",
+      "byRule": "Anomaly type",
       "anyTruck": "Truck: All",
-      "anyRule": "Rule: All",
+      "anyRule": "Anomaly type: All",
       "lastDays": "Last 7 days"
     },
     "card": {
@@ -1887,7 +1887,7 @@
       "required": "required",
       "FALSE_POSITIVE": {
         "title": "System detected it incorrectly",
-        "desc": "The refuel was normal; the rule fired unnecessarily."
+        "desc": "Entry is normal; alert was triggered unnecessarily."
       },
       "DATA_ENTRY_ERROR": {
         "title": "Entry was wrong — I fixed it",
@@ -2085,7 +2085,7 @@
         "foundingBadge_full": "Founding spots full",
         "feature1": "Everything in Free",
         "feature2": "Unlimited vehicles + drivers",
-        "feature3": "Fuel anomaly engine (12 rules)",
+        "feature3": "Fuel anomaly engine (12 detections)",
         "feature4": "Bulk Excel/CSV import",
         "feature5": "Priority email support",
         "cta": "Start free — beta is free"

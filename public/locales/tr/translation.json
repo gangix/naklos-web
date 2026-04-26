@@ -1108,7 +1108,7 @@
       "formats": "Dosya Formatları",
       "plates": "Plakalar",
       "settings": "Ayarlar",
-      "alertsConfig": "Uyarı Kuralları"
+      "alertsConfig": "Anomali Ayarları"
     },
     "resolutions": {
       "title": "Plaka Kuralları",
@@ -1662,14 +1662,14 @@
         }
       },
       "rules": {
-        "title": "Uyarı kuralları",
-        "subtitle": "Her kuralı aç/kapat ve ayarlarını düzenle.",
+        "title": "Yakıt anomali tespitleri",
+        "subtitle": "12 farklı tespit yöntemi — her birini aç/kapat veya hassasiyetini ayarla.",
         "enabled": "Aktif",
         "notify": "E-posta",
         "threshold": "Ayarlar",
         "save": "Kaydet",
         "saved": "Kaydedildi",
-        "rescanNote": "Mevcut kayıtlar yeni kurallarla tekrar taranacak.",
+        "rescanNote": "Mevcut kayıtlar yeni ayarlarla tekrar taranacak.",
         "ODOMETER_ROLLBACK": {
           "desc": "Aracın kilometresi bir önceki kayıttan küçükse tetiklenir."
         },
@@ -1709,8 +1709,8 @@
       }
     },
     "overrides": {
-      "sectionTitle": "Yakıt kural ayarları",
-      "subtitle": "Bu araç için baseline ve kural ayarları.",
+      "sectionTitle": "Yakıt anomali ayarları",
+      "subtitle": "Bu araç için baseline ve anomali ayarları.",
       "baseline": {
         "title": "Tüketim baseline'ı",
         "manual": "Elle girilen",
@@ -1734,8 +1734,8 @@
       "saving": "Kaydediliyor…",
       "saved": "Ayarlar güncellendi",
       "rescanNote": "Bu aracın kayıtları yeni ayarlarla tekrar taranacak.",
-      "rulesTitle": "Bu araca özel kural ayarları",
-      "rulesEmpty": "Bu araç için özel kural ayarı yok.",
+      "rulesTitle": "Bu araca özel anomali ayarları",
+      "rulesEmpty": "Bu araç için özel anomali ayarı yok.",
       "ruleOn": "Açık",
       "ruleOff": "Kapalı"
     },
@@ -1760,9 +1760,9 @@
     "filters": {
       "all": "Tümü",
       "byTruck": "Araç",
-      "byRule": "Kural",
+      "byRule": "Anomali türü",
       "anyTruck": "Araç: Tümü",
-      "anyRule": "Kural: Tümü",
+      "anyRule": "Anomali türü: Tümü",
       "lastDays": "Son 7 gün"
     },
     "card": {
@@ -1884,7 +1884,7 @@
       "required": "zorunlu",
       "FALSE_POSITIVE": {
         "title": "Sistem yanlış algılamış",
-        "desc": "Dolum normal; kural gereksiz tetiklendi."
+        "desc": "Dolum normal; uyarı gereksiz tetiklendi."
       },
       "DATA_ENTRY_ERROR": {
         "title": "Yakıt girişi yanlış yapılmış, düzelttim",
@@ -2061,7 +2061,7 @@
         "foundingBadge_full": "Kurucu kontenjanı doldu",
         "feature1": "Free tüm özellikleri",
         "feature2": "Sınırsız araç + sürücü",
-        "feature3": "Yakıt anomali motoru (12 kural)",
+        "feature3": "Yakıt anomali motoru (12 tespit)",
         "feature4": "Toplu Excel/CSV içe aktarma",
         "feature5": "E-posta öncelikli destek",
         "cta": "Hemen başla — beta ücretsiz"

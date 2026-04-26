@@ -1111,7 +1111,7 @@
       "formats": "Dateiformate",
       "plates": "Kennzeichen",
       "settings": "Einstellungen",
-      "alertsConfig": "Warnregeln"
+      "alertsConfig": "Anomalie-Einstellungen"
     },
     "resolutions": {
       "title": "Kennzeichen-Regeln",
@@ -1665,14 +1665,14 @@
         }
       },
       "rules": {
-        "title": "Warnregeln",
-        "subtitle": "Jede Regel ein-/ausschalten und ihre Einstellungen anpassen.",
+        "title": "Kraftstoff-Anomalie-Erkennungen",
+        "subtitle": "12 verschiedene Erkennungsmethoden — jede einzeln ein-/ausschalten oder die Empfindlichkeit anpassen.",
         "enabled": "Aktiv",
         "notify": "E-Mail",
         "threshold": "Einstellungen",
         "save": "Speichern",
         "saved": "Gespeichert",
-        "rescanNote": "Bestehende Einträge werden mit den neuen Regeln neu geprüft.",
+        "rescanNote": "Bestehende Einträge werden mit den neuen Einstellungen erneut geprüft.",
         "ODOMETER_ROLLBACK": {
           "desc": "Löst aus, wenn der Kilometerstand niedriger ist als zuvor."
         },
@@ -1712,8 +1712,8 @@
       }
     },
     "overrides": {
-      "sectionTitle": "Kraftstoff-Regeleinstellungen",
-      "subtitle": "Basiswert und Regeln für dieses Fahrzeug.",
+      "sectionTitle": "Kraftstoff-Anomalie-Einstellungen",
+      "subtitle": "Baseline- und Anomalie-Einstellungen für dieses Fahrzeug.",
       "baseline": {
         "title": "Verbrauchs-Basiswert",
         "manual": "Manuell",
@@ -1737,8 +1737,8 @@
       "saving": "Wird gespeichert…",
       "saved": "Einstellungen aktualisiert",
       "rescanNote": "Die Einträge dieses Fahrzeugs werden mit den neuen Einstellungen neu geprüft.",
-      "rulesTitle": "Fahrzeug-spezifische Regeln",
-      "rulesEmpty": "Keine individuellen Regeln für dieses Fahrzeug.",
+      "rulesTitle": "Fahrzeugspezifische Anomalie-Einstellungen",
+      "rulesEmpty": "Keine fahrzeugspezifischen Anomalie-Einstellungen.",
       "ruleOn": "An",
       "ruleOff": "Aus"
     },
@@ -1763,9 +1763,9 @@
     "filters": {
       "all": "Alle",
       "byTruck": "Fahrzeug",
-      "byRule": "Regel",
+      "byRule": "Anomalietyp",
       "anyTruck": "Fahrzeug: Alle",
-      "anyRule": "Regel: Alle",
+      "anyRule": "Anomalietyp: Alle",
       "lastDays": "Letzte 7 Tage"
     },
     "card": {
@@ -1887,7 +1887,7 @@
       "required": "erforderlich",
       "FALSE_POSITIVE": {
         "title": "System hat es falsch erkannt",
-        "desc": "Tankung war normal; die Regel hat unnötig ausgelöst."
+        "desc": "Eintrag ist normal; Warnung wurde unnötig ausgelöst."
       },
       "DATA_ENTRY_ERROR": {
         "title": "Eingabe war falsch — ich habe sie korrigiert",
@@ -2085,7 +2085,7 @@
         "foundingBadge_full": "Gründungsplätze vergeben",
         "feature1": "Alles aus Kostenlos",
         "feature2": "Unbegrenzte Fahrzeuge + Fahrer",
-        "feature3": "Kraftstoff-Anomalie-Engine (12 Regeln)",
+        "feature3": "Kraftstoff-Anomalie-Engine (12 Erkennungen)",
         "feature4": "Massen-Excel/CSV-Import",
         "feature5": "Prioritäts-E-Mail-Support",
         "cta": "Kostenlos starten — Beta ist kostenlos"
