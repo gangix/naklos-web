@@ -48,12 +48,25 @@ export async function apiCall<T>(
     console.error(`API Error ${response.status} ${options?.method ?? 'GET'} ${endpoint}:`, errorBody);
 
     // BE returns ErrorResponse JSON like { status, message, details, path }.
-    // Prefer the locale-aware `details` field for user display; fall back to the
-    // generic status-based message only if the body isn't JSON or has no message.
+    // ValidationErrorResponse additionally carries `fieldErrors` (Map<field,msg>);
+    // when present, surface those per-field messages so the user sees the actual
+    // validation problems rather than the generic "Validation request error".
+    // Fall back to `details` → `message` → status-based generic message.
     let userMessage = getUserFriendlyMessage(response.status);
     try {
       const parsed = JSON.parse(errorBody);
-      if (typeof parsed?.details === 'string' && parsed.details.length > 0) {
+      if (
+        parsed?.fieldErrors &&
+        typeof parsed.fieldErrors === 'object' &&
+        Object.keys(parsed.fieldErrors).length > 0
+      ) {
+        const joined = Object.values(parsed.fieldErrors)
+          .filter((v): v is string => typeof v === 'string' && v.length > 0)
+          .join('\n');
+        if (joined.length > 0) {
+          userMessage = joined;
+        }
+      } else if (typeof parsed?.details === 'string' && parsed.details.length > 0) {
         userMessage = parsed.details;
       } else if (typeof parsed?.message === 'string' && parsed.message.length > 0) {
         userMessage = parsed.message;
@@ -89,12 +102,25 @@ async function multipartCall<T>(endpoint: string, formData: FormData): Promise<T
     console.error(`API Error ${response.status} POST ${endpoint}:`, errorBody);
 
     // BE returns ErrorResponse JSON like { status, message, details, path }.
-    // Prefer the locale-aware `details` field for user display; fall back to the
-    // generic status-based message only if the body isn't JSON or has no message.
+    // ValidationErrorResponse additionally carries `fieldErrors` (Map<field,msg>);
+    // when present, surface those per-field messages so the user sees the actual
+    // validation problems rather than the generic "Validation request error".
+    // Fall back to `details` → `message` → status-based generic message.
     let userMessage = getUserFriendlyMessage(response.status);
     try {
       const parsed = JSON.parse(errorBody);
-      if (typeof parsed?.details === 'string' && parsed.details.length > 0) {
+      if (
+        parsed?.fieldErrors &&
+        typeof parsed.fieldErrors === 'object' &&
+        Object.keys(parsed.fieldErrors).length > 0
+      ) {
+        const joined = Object.values(parsed.fieldErrors)
+          .filter((v): v is string => typeof v === 'string' && v.length > 0)
+          .join('\n');
+        if (joined.length > 0) {
+          userMessage = joined;
+        }
+      } else if (typeof parsed?.details === 'string' && parsed.details.length > 0) {
         userMessage = parsed.details;
       } else if (typeof parsed?.message === 'string' && parsed.message.length > 0) {
         userMessage = parsed.message;

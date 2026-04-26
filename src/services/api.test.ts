@@ -111,4 +111,60 @@ describe('apiCall error handling', () => {
 
     await expect(apiCall('/anything')).rejects.toThrow('Geçersiz istek');
   });
+
+  it('joins fieldErrors values with newline so the user sees every problem', async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockErrorResponse(
+        400,
+        JSON.stringify({
+          status: 400,
+          message: 'Validation failed',
+          details: 'Validation request error',
+          fieldErrors: {
+            email: 'Geçersiz e-posta',
+            phone: 'Telefon E.164 formatında olmalı',
+          },
+          path: '/api/drivers',
+        }),
+      ),
+    );
+
+    await expect(apiCall('/drivers', { method: 'POST' })).rejects.toThrow(
+      'Geçersiz e-posta\nTelefon E.164 formatında olmalı',
+    );
+  });
+
+  it('falls back to generic when fieldErrors is present but all values are empty', async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockErrorResponse(
+        400,
+        JSON.stringify({
+          status: 400,
+          message: '',
+          details: '',
+          fieldErrors: { email: '', phone: '' },
+        }),
+      ),
+    );
+
+    await expect(apiCall('/anything')).rejects.toThrow('Geçersiz istek');
+  });
+
+  it('prefers fieldErrors over `details` when both are present', async () => {
+    (globalThis.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce(
+      mockErrorResponse(
+        400,
+        JSON.stringify({
+          status: 400,
+          message: 'Validation failed',
+          details: 'Validation request error',
+          fieldErrors: { phone: 'Telefon E.164 formatında olmalı' },
+        }),
+      ),
+    );
+
+    await expect(apiCall('/anything')).rejects.toThrow(
+      'Telefon E.164 formatında olmalı',
+    );
+  });
 });
