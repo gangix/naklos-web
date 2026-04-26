@@ -97,6 +97,56 @@ export function buildIndexMeta(locale: string): string {
   ].join('\n');
 }
 
+export function buildLandingMeta(locale: string): string {
+  const url = SITE_URL;
+  const ogImage = abs(DEFAULT_OG_IMAGE);
+  const attr = (s: string) => escapeAttr(s);
+  const titles: Record<string, { title: string; description: string }> = {
+    tr: {
+      title: 'Naklos · Türkiye için filo yönetim platformu',
+      description: 'KOBİ filoları için yakıt, muayene, MTV ve bakım takibi. Donanım yok, taahhüt yok, 3 araca kadar her zaman ücretsiz.',
+    },
+    en: {
+      title: 'Naklos · Fleet management for Turkish small fleets',
+      description: 'Fuel, inspection, tax and maintenance tracking for SMB fleets. No hardware, no commitment, free for up to 3 vehicles.',
+    },
+    de: {
+      title: 'Naklos · Flottenmanagement für türkische KMU',
+      description: 'Kraftstoff-, Inspektions-, Steuer- und Wartungsverfolgung für KMU-Flotten. Keine Hardware, keine Verpflichtung, bis zu 3 Fahrzeuge kostenlos.',
+    },
+  };
+  const meta = titles[locale] ?? titles['tr'];
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url,
+    logo: `${SITE_URL}/naklos-icon.svg`,
+    description: meta.description,
+    sameAs: [],
+  };
+
+  return [
+    `<title>${escapeHtml(meta.title)}</title>`,
+    `<meta name="description" content="${attr(meta.description)}">`,
+    `<link rel="canonical" href="${attr(url)}">`,
+    `<meta name="robots" content="index, follow">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:site_name" content="${attr(SITE_NAME)}">`,
+    `<meta property="og:title" content="${attr(meta.title)}">`,
+    `<meta property="og:description" content="${attr(meta.description)}">`,
+    `<meta property="og:url" content="${attr(url)}">`,
+    `<meta property="og:image" content="${attr(ogImage)}">`,
+    `<meta property="og:locale" content="${ogLocale(locale)}">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:title" content="${attr(meta.title)}">`,
+    `<meta name="twitter:description" content="${attr(meta.description)}">`,
+    `<meta name="twitter:image" content="${attr(ogImage)}">`,
+    `<script type="application/ld+json">${JSON.stringify(jsonLd, null, 2).replace(/</g, '\\u003c')}</script>`,
+  ].join('\n');
+}
+
 function escapeHtml(s: string): string {
   return s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]!));
 }

@@ -49,8 +49,10 @@ async function main() {
   const mod = await importSsr();
   const {
     renderBlogRoute,
+    renderLandingRoute,
     buildIndexMeta,
     buildPostMeta,
+    buildLandingMeta,
     buildSitemap,
     buildRobots,
     listPosts,
@@ -60,12 +62,27 @@ async function main() {
   const shellPath = join(distDir, 'index.html');
   const shell = await readFile(shellPath, 'utf8');
   // Strip the generic title and description from the shell — the prerender
-  // script injects post-specific ones per route.
+  // script injects route-specific ones per page.
   const shellSansMeta = shell
     .replace(/<title>[\s\S]*?<\/title>\s*/, '')
     .replace(/<meta\s+name="description"[^>]*>\s*/, '');
 
-  // 1) /blog (TR for now; add per-locale later if EN posts exist)
+  // 0) Save the empty SPA shell as _app.html BEFORE we overwrite index.html
+  //    with the prerendered landing. public/_redirects rewrites SPA-only routes
+  //    (/manager/*, /driver/*) to /_app.html so authenticated users don't briefly
+  //    see landing content while React mounts.
+  await writeHtml('_app.html', shell);
+
+  // 1) / (landing) — overwrite the SPA shell with the prerendered TR landing.
+  //    This is the page Google indexes for naklos.com.tr.
+  {
+    const body = await renderLandingRoute('tr');
+    const head = buildLandingMeta('tr');
+    const html = injectIntoShell(shellSansMeta, body, head);
+    await writeHtml('index.html', html);
+  }
+
+  // 2) /blog (TR for now; add per-locale later if EN posts exist)
   {
     const body = await renderBlogRoute('/blog', 'tr');
     const head = buildIndexMeta('tr');
@@ -73,9 +90,10 @@ async function main() {
     await writeHtml('blog/index.html', html);
   }
 
-  // 2) /blog/:slug for every (locale, slug)
-  // TR is processed first (primary language); any slug already written is skipped
-  // so a TR post always wins over a later EN/DE post with the same slug.
+  // 3) /blog/:slug — written as <slug>.html (not <slug>/index.html) so CF Pages
+  //    serves at /blog/<slug> directly, no 307 redirect to a trailing-slash URL.
+  //    TR processed first; any slug already written is skipped so a TR post
+  //    always wins over a later EN/DE post with the same slug.
   const writtenSlugs = new Set();
   for (const locale of ['tr', 'en', 'de']) {
     for (const post of listPosts(locale)) {
@@ -85,18 +103,15 @@ async function main() {
       const body = await renderBlogRoute(urlPath, locale);
       const head = buildPostMeta(post.frontmatter);
       const html = injectIntoShell(shellSansMeta, body, head);
-      // Path is locale-agnostic: /blog/<slug>/index.html. Locale fallback
-      // covered by the SPA's client-side i18n; prerender writes the
-      // canonical TR version when the post exists in TR.
-      await writeHtml(`blog/${post.frontmatter.slug}/index.html`, html);
+      await writeHtml(`blog/${post.frontmatter.slug}.html`, html);
     }
   }
 
-  // 3) sitemap.xml
+  // 4) sitemap.xml
   const sitemap = buildSitemap(collectSitemapEntries());
   await writeHtml('sitemap.xml', sitemap);
 
-  // 4) robots.txt
+  // 5) robots.txt
   const robots = buildRobots();
   await writeHtml('robots.txt', robots);
 

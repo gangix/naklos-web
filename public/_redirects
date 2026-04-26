@@ -1,0 +1,21 @@
+# Cloudflare Pages routing.
+#
+# Rewrite (200) — server keeps the original URL but serves a different file.
+# We want SPA-only routes to serve the EMPTY shell (_app.html), not the
+# prerendered landing (index.html). Otherwise authenticated users navigating
+# directly to /manager/trucks would briefly see landing content while React
+# mounts, then jump to the right page.
+#
+# Order matters: first match wins. Public/SEO routes (/, /blog, /legal/*) fall
+# through to their static prerendered files via CF's normal asset serving.
+
+/manager/*       /_app.html   200
+/driver/*        /_app.html   200
+/admin/*         /_app.html   200
+/onboarding      /_app.html   200
+/onboarding/*    /_app.html   200
+/login           /_app.html   200
+/signin          /_app.html   200
+/signup          /_app.html   200
+/auth/*          /_app.html   200
+/silent-check-sso /_app.html  200

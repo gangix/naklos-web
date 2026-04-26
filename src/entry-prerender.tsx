@@ -12,8 +12,9 @@ import { initReactI18next } from 'react-i18next';
 import { AuthContext } from './contexts/AuthContext';
 import BlogIndexPage from './pages/blog/BlogIndexPage';
 import BlogPostPage from './pages/blog/BlogPostPage';
+import LandingPage from './pages/LandingPage';
 import { listPosts } from './content/loader';
-import { buildIndexMeta, buildPostMeta } from './prerender/metaBuilder';
+import { buildIndexMeta, buildPostMeta, buildLandingMeta } from './prerender/metaBuilder';
 import { buildSitemap, buildRobots, type SitemapEntry } from './prerender/sitemapBuilder';
 
 // ---------------------------------------------------------------------------
@@ -74,6 +75,7 @@ const stubAuth = {
 } as unknown as ContextType<typeof AuthContext>;
 
 const routes = [
+  { path: '/',           element: <LandingPage /> },
   { path: '/blog',       element: <BlogIndexPage /> },
   { path: '/blog/:slug', element: <BlogPostPage /> },
 ];
@@ -100,6 +102,12 @@ export async function renderBlogRoute(url: string, locale: string): Promise<stri
   );
 }
 
+export async function renderLandingRoute(locale: string): Promise<string> {
+  // Reuses the same routing/i18n machinery as renderBlogRoute. The landing
+  // route ('/') is registered in `routes` above so the static handler matches it.
+  return renderBlogRoute('/', locale);
+}
+
 export function collectSitemapEntries(): SitemapEntry[] {
   const today = new Date().toISOString().slice(0, 10);
   const entries: SitemapEntry[] = [
@@ -119,4 +127,4 @@ export function collectSitemapEntries(): SitemapEntry[] {
   return entries.filter((e) => (seen.has(e.path) ? false : (seen.add(e.path), true)));
 }
 
-export { buildIndexMeta, buildPostMeta, buildSitemap, buildRobots, listPosts };
+export { buildIndexMeta, buildPostMeta, buildLandingMeta, buildSitemap, buildRobots, listPosts };
