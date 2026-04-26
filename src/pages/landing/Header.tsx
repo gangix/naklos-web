@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
+import LanguageSwitcher from '../../components/common/LanguageSwitcher';
 
 const Header = () => {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ const Header = () => {
           <a href="#faq" className="hover:text-slate-900 transition-colors">{t('landing.nav.faq')}</a>
         </nav>
         <div className="flex items-center gap-3">
+          <LanguageSwitcher variant="light" />
           <button
             type="button"
             onClick={login}
