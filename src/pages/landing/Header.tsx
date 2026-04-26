@@ -21,7 +21,6 @@ const Header = () => {
         </a>
         <nav className="hidden md:flex items-center gap-7 text-sm text-slate-600 font-medium">
           <a href="/#features" className="hover:text-slate-900 transition-colors">{t('landing.nav.features')}</a>
-          <a href="/#compare" className="hover:text-slate-900 transition-colors">{t('landing.nav.comparison')}</a>
           <a href="/#pricing" className="hover:text-slate-900 transition-colors">{t('landing.nav.pricing')}</a>
           <a href="/#faq" className="hover:text-slate-900 transition-colors">{t('landing.nav.faq')}</a>
           <a href="/blog" className="hover:text-slate-900 transition-colors">{t('landing.nav.blog')}</a>

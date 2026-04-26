@@ -45,12 +45,15 @@ describe('LandingPage', () => {
   it('renders all major sections (Hero / Features / Pricing / FAQ / FinalCTA)', () => {
     renderPage();
 
-    // Hero
-    expect(screen.getAllByText(/excel'i bırakın/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/filonuzu/i).length).toBeGreaterThanOrEqual(1);
+    // Hero — capability-led (no "Excel" in hero per landing-v3 plan)
+    expect(screen.getAllByText(/filo yönetimi/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/tek panelde/i).length).toBeGreaterThanOrEqual(1);
 
     // Features (3 pillars)
     expect(screen.getByText(/tek ekran, üç farklı takip/i)).toBeInTheDocument();
+
+    // Comparison — now demoted to a small "still using Excel?" callout, late on the page
+    expect(screen.getAllByText(/hâlâ excel kullanıyorsan/i).length).toBeGreaterThanOrEqual(1);
 
     // Pricing — beta banner + cards
     expect(screen.getByText(/anlaşılır fiyatlandırma/i)).toBeInTheDocument();

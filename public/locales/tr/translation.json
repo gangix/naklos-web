@@ -1971,11 +1971,11 @@
     },
     "betaPill": "Şu anda beta — tüm özellikler ücretsiz",
     "hero": {
-      "title1": "Excel'i bırakın.",
-      "title2": "Filonuzu",
-      "title3": "büyütün.",
-      "subtitle": "Küçük filolar için <strong>yakıt, muayene, bakım takibi</strong>. Donanım yok, taahhüt yok, 3 araca kadar ücretsiz.",
+      "title1": "Filo yönetimi — muayene, yakıt ve bakım.",
+      "title2": "Tek panelde.",
+      "subtitle": "Süresi dolacak belgeler 30 gün önceden e-posta. <strong>12 farklı yakıt anomali tespiti.</strong> Bakım takvimi ve sürücü için mobil uygulama.",
       "cta": "Hemen başla — ücretsiz",
+      "ctaCaption": "Donanım yok. Taahhüt yok. 3 araca kadar her zaman ücretsiz.",
       "trustNoCard": "Kart bilgisi gerekmez",
       "trustKvkk": "KVKK uyumlu",
       "trustSupport": "Türkçe destek",
@@ -1983,40 +1983,29 @@
     },
     "features": {
       "eyebrow": "Tek ekran, üç farklı takip",
-      "title": "Süresi dolacak belgeler. Yaklaşan bakımlar. Şüpheli yakıt dolumları. Hepsi tek panelde.",
+      "title": "Süresi dolacak belgeler. Yaklaşan bakımlar. Yakıt anomalileri. Hepsi tek panelde.",
       "docs": {
         "title": "Belgeler",
-        "description": "Muayene, MTV, sigorta tarihlerini bir daha unutmayın. Bitime 30, 14 ve 7 gün kala e-posta uyarısı."
+        "description": "Muayene, sigorta, MTV, K belgesi, ADR — 30, 14 ve 7 gün kala e-posta uyarı. Sahibi ve muhasebe tek e-posta ile bilgilendirilir."
       },
       "fuel": {
         "title": "Yakıt",
-        "description": "Yakıt ekstrenizi uygulamaya yükleyin veya e-posta ile gönderin. Şüpheli dolumlar otomatik işaretlenir, araç bazlı tüketim görünür."
+        "description": "12 farklı yakıt anomalisi otomatik tespit edilir — tank kapasitesi aşımı, anormal tüketim, kilometre tutarsızlığı, çift dolum ve daha fazlası. Sistem işaretler, sen kararı verirsin."
       },
       "maintenance": {
         "title": "Bakım",
-        "description": "Periyodik bakım takvimleri otomatik hatırlatma ile. Sürücü servisten dönerken 'servis girdim' tek dokunuş."
+        "description": "Periyodik bakım takvimi otomatik hatırlatma yollar. Sürücü servisten dönerken tek dokunuşla 'servis girdim' yazar. Filo geçmişi tek panelde."
       }
     },
     "comparison": {
-      "eyebrow": "Excel'den naklos'a",
-      "title": "Excel kayıt eder. naklos uyarır.",
-      "subtitle": "Muayene yaklaşıyor. Şüpheli yakıt dolumu var. Excel size söylemez — naklos söyler.",
-      "rows": {
-        "monthly": "Aylık maliyet (10 araç)",
-        "docs": "Belge bitiş hatırlatma",
-        "anomaly": "Yakıt anomali tespiti",
-        "maintenance": "Bakım takvimi",
-        "driverApp": "Sürücü mobil uygulaması"
+      "eyebrow": "Hâlâ Excel kullanıyorsan",
+      "lead": "10 araçlık bir filoda Excel'in göremediği üç şey:",
+      "bullets": {
+        "b1": "Belge bitiş tarihleri sessizce geçer",
+        "b2": "Yakıt anomalileri aylar boyunca fark edilmez",
+        "b3": "Bakım takvimi unutulur — fenni muayenede patlar"
       },
-      "values": {
-        "yok": "yok",
-        "manuel": "manuel",
-        "auto": "otomatik",
-        "autoAlert": "otomatik uyarı",
-        "rules_one": "{{count}} kural",
-        "rules_other": "{{count}} kural",
-        "naklosFoundingPrice": "₺550 kurucu"
-      }
+      "closing": "naklos bu üçünü otomatikleştirir. 3 araca kadar her zaman ücretsiz."
     },
     "pricing": {
       "eyebrow": "Anlaşılır fiyatlandırma",
@@ -2104,7 +2093,6 @@
     },
     "nav": {
       "features": "Özellikler",
-      "comparison": "Karşılaştırma",
       "pricing": "Fiyatlandırma",
       "faq": "SSS",
       "blog": "Blog",

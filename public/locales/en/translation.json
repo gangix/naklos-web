@@ -1912,7 +1912,6 @@
     "betaPill": "Currently in beta — all features free",
     "nav": {
       "features": "Features",
-      "comparison": "Comparison",
       "pricing": "Pricing",
       "faq": "FAQ",
       "blog": "Blog",
@@ -1920,11 +1919,11 @@
     },
     "hero": {
       "badge": "For Turkish SMB fleets · KVKK-compliant",
-      "title1": "Leave Excel behind.",
-      "title2": "Grow your",
-      "title3": "fleet.",
-      "subtitle": "Fuel, <strong>vehicle inspection</strong> and maintenance tracking for small fleets. No hardware, no commitment, free up to 3 vehicles.",
+      "title1": "Fleet management — inspection, fuel, and maintenance.",
+      "title2": "One dashboard.",
+      "subtitle": "Document expiry alerts 30 days out. <strong>12 different fuel anomaly detections.</strong> Maintenance calendar and a mobile app for your drivers.",
       "cta": "Start free — no card required",
+      "ctaCaption": "No hardware. No commitment. Free for up to 3 vehicles.",
       "trustNoCard": "No card required",
       "trustKvkk": "GDPR-aligned data protection",
       "trustSupport": "English support",
@@ -1976,18 +1975,18 @@
     },
     "features": {
       "eyebrow": "One screen, three tracking areas",
-      "title": "Expiring documents. Upcoming maintenance. Suspicious fill-ups. All in one dashboard.",
+      "title": "Expiring documents. Upcoming maintenance. Fuel anomalies. All in one dashboard.",
       "docs": {
         "title": "Documents",
-        "description": "Never miss vehicle inspection, vehicle tax or insurance dates again. Email reminders 30, 14 and 7 days before expiry."
+        "description": "Inspection, insurance, MTV, K-license, ADR — email reminders at 30, 14 and 7 days. Owner and accountant notified together."
       },
       "fuel": {
         "title": "Fuel",
-        "description": "Upload your fuel statement or forward it by email. Suspicious fill-ups are flagged automatically; per-vehicle consumption is visible at a glance."
+        "description": "12 fuel anomaly detections run automatically — tank capacity overflow, abnormal consumption, odometer inconsistencies, rapid refills and more. System flags, you decide."
       },
       "maintenance": {
         "title": "Maintenance",
-        "description": "Scheduled maintenance with automatic reminders. One tap for drivers to log a service visit on their way back from the garage."
+        "description": "Recurring maintenance calendar with automatic reminders. One tap for drivers to log a service visit on their way back from the garage. Full history on one dashboard."
       },
       "srHeading": "What Naklos does for your fleet",
       "vehicles": {
@@ -2000,25 +1999,14 @@
       }
     },
     "comparison": {
-      "eyebrow": "From Excel to naklos",
-      "title": "Excel stores. naklos alerts.",
-      "subtitle": "An inspection date is approaching. A suspicious fuel fill is logged. Excel won't tell you — naklos will.",
-      "rows": {
-        "monthly": "Monthly cost (10 vehicles)",
-        "docs": "Document expiry reminders",
-        "anomaly": "Fuel anomaly detection",
-        "maintenance": "Maintenance schedule",
-        "driverApp": "Driver mobile app"
+      "eyebrow": "Still using Excel?",
+      "lead": "Three things a 10-vehicle Excel sheet can't see:",
+      "bullets": {
+        "b1": "Document expiry dates silently pass",
+        "b2": "Fuel anomalies go unnoticed for months",
+        "b3": "Maintenance calendar gets forgotten — fails at inspection"
       },
-      "values": {
-        "yok": "none",
-        "manuel": "manual",
-        "auto": "automatic",
-        "autoAlert": "automatic alert",
-        "rules_one": "{{count}} rule",
-        "rules_other": "{{count}} rules",
-        "naklosFoundingPrice": "₺550 founding"
-      }
+      "closing": "naklos automates all three. Free for up to 3 vehicles."
     },
     "benefits": {
       "title": "Goodbye, spreadsheets.",

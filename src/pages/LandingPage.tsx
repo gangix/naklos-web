@@ -14,10 +14,10 @@ const LandingPage = () => {
       <Header />
       <Hero />
       <Features />
-      <Comparison />
       <Pricing />
       <FAQ />
       <ContactForm />
+      <Comparison />
       <FinalCTA />
       <Footer />
     </div>

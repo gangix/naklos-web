@@ -1912,7 +1912,6 @@
     "betaPill": "Aktuell in Beta — alle Funktionen kostenlos",
     "nav": {
       "features": "Funktionen",
-      "comparison": "Vergleich",
       "pricing": "Preise",
       "faq": "FAQ",
       "blog": "Blog",
@@ -1920,11 +1919,11 @@
     },
     "hero": {
       "badge": "Für türkische KMU-Flotten · KVKK-konform",
-      "title1": "Excel hinter sich lassen.",
-      "title2": "Ihre Flotte",
-      "title3": "wachsen lassen.",
-      "subtitle": "Kraftstoff-, <strong>Hauptuntersuchung (HU)</strong>- und Wartungsverfolgung für kleine Flotten. Keine Hardware, keine Bindung, bis 3 Fahrzeuge kostenlos.",
+      "title1": "Flottenmanagement — Hauptuntersuchung, Kraftstoff und Wartung.",
+      "title2": "Ein Dashboard.",
+      "subtitle": "Dokumentenablauf-Warnungen 30 Tage im Voraus. <strong>12 verschiedene Kraftstoff-Anomalie-Erkennungen.</strong> Wartungskalender und eine Mobile App für Ihre Fahrer.",
       "cta": "Kostenlos starten — keine Karte nötig",
+      "ctaCaption": "Keine Hardware. Keine Verpflichtung. Bis zu 3 Fahrzeuge kostenlos.",
       "trustNoCard": "Keine Kreditkarte",
       "trustKvkk": "DSGVO-konform",
       "trustSupport": "Deutschsprachiger Support",
@@ -1976,18 +1975,18 @@
     },
     "features": {
       "eyebrow": "Ein Bildschirm, drei Bereiche",
-      "title": "Ablaufende Dokumente. Anstehende Wartungen. Verdächtige Tankungen. Alles in einem Dashboard.",
+      "title": "Ablaufende Dokumente. Anstehende Wartungen. Kraftstoff-Anomalien. Alles in einem Dashboard.",
       "docs": {
         "title": "Dokumente",
-        "description": "Vergessen Sie HU, Kfz-Steuer und Versicherungsfristen nie wieder. E-Mail-Erinnerungen 30, 14 und 7 Tage vor Ablauf."
+        "description": "Hauptuntersuchung, Versicherung, Kfz-Steuer, K-Lizenz, ADR — E-Mail-Erinnerungen nach 30, 14 und 7 Tagen. Inhaber und Buchhaltung werden gemeinsam benachrichtigt."
       },
       "fuel": {
         "title": "Kraftstoff",
-        "description": "Laden Sie Ihre Kraftstoffabrechnung hoch oder senden Sie sie per E-Mail. Verdächtige Tankungen werden automatisch markiert; der Verbrauch pro Fahrzeug ist auf einen Blick sichtbar."
+        "description": "12 Kraftstoff-Anomalien werden automatisch erkannt — Tanküberfüllung, ungewöhnlicher Verbrauch, Tachoabweichungen, Doppeltankungen und mehr. Das System markiert, Sie entscheiden."
       },
       "maintenance": {
         "title": "Wartung",
-        "description": "Regelmäßige Wartungspläne mit automatischen Erinnerungen. Fahrer können einen Werkstattbesuch mit einem Tippen direkt auf dem Rückweg eintragen."
+        "description": "Wiederkehrender Wartungskalender mit automatischen Erinnerungen. Mit einem Tippen tragen Fahrer einen Werkstattbesuch direkt auf dem Rückweg ein. Die gesamte Historie auf einem Dashboard."
       },
       "srHeading": "Was Naklos für Ihre Flotte tut",
       "vehicles": {
@@ -2000,25 +1999,14 @@
       }
     },
     "comparison": {
-      "eyebrow": "Von Excel zu naklos",
-      "title": "Excel speichert. naklos warnt.",
-      "subtitle": "Eine HU steht an. Eine verdächtige Tankung ist erfasst. Excel sagt es Ihnen nicht — naklos schon.",
-      "rows": {
-        "monthly": "Monatliche Kosten (10 Fahrzeuge)",
-        "docs": "Ablauferinnerungen für Dokumente",
-        "anomaly": "Kraftstoff-Anomalieerkennung",
-        "maintenance": "Wartungsplan",
-        "driverApp": "Fahrer-App (mobil)"
+      "eyebrow": "Noch Excel im Einsatz?",
+      "lead": "Drei Dinge, die eine 10-Fahrzeug-Excel-Tabelle nicht sehen kann:",
+      "bullets": {
+        "b1": "Ablaufdaten von Dokumenten verstreichen still",
+        "b2": "Kraftstoff-Anomalien bleiben monatelang unentdeckt",
+        "b3": "Wartungskalender wird vergessen — und scheitert bei der Hauptuntersuchung"
       },
-      "values": {
-        "yok": "keine",
-        "manuel": "manuell",
-        "auto": "automatisch",
-        "autoAlert": "automatische Warnung",
-        "rules_one": "{{count}} Regel",
-        "rules_other": "{{count}} Regeln",
-        "naklosFoundingPrice": "₺550 Gründung"
-      }
+      "closing": "naklos automatisiert alle drei. Bis zu 3 Fahrzeuge dauerhaft kostenlos."
     },
     "benefits": {
       "title": "Auf Wiedersehen, Tabellenkalkulationen.",

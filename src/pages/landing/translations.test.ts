@@ -53,7 +53,6 @@ describe('landing translations alignment', () => {
       // Hero
       'landing.hero.title1',
       'landing.hero.title2',
-      'landing.hero.title3',
       'landing.hero.subtitle',
       'landing.hero.cta',
       'landing.hero.trustNoCard',
@@ -99,7 +98,6 @@ describe('landing translations alignment', () => {
 
       // Nav + footer
       'landing.nav.features',
-      'landing.nav.comparison',
       'landing.nav.pricing',
       'landing.nav.faq',
       'landing.nav.login',

@@ -1,82 +1,35 @@
-import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const Comparison = () => {
   const { t } = useTranslation();
 
-  const headerCell = 'text-center py-3.5 px-4 text-xs font-semibold text-slate-600';
-  const headerCellNaklos = 'text-center py-3.5 px-4 text-xs font-extrabold text-primary-700 bg-primary-50/50 border-x border-primary-100';
-  const rowLabel = 'py-3 px-4 text-slate-700 font-medium';
-  const cellExcel = 'text-center py-3 px-4 text-slate-600';
-  const cellNaklos = 'text-center py-3 px-4 bg-primary-50/50 border-x border-primary-100';
-
-  const rows: Array<{ labelKey: string; excel: ReactNode; naklos: ReactNode }> = [
-    {
-      labelKey: 'landing.comparison.rows.monthly',
-      excel: <span className="font-mono">₺0</span>,
-      naklos: (
-        <>
-          <span className="font-extrabold text-primary-700 text-base font-mono">₺790</span>
-          <span className="block text-[10px] text-slate-500 mt-0.5">{t('landing.comparison.values.naklosFoundingPrice')}</span>
-        </>
-      ),
-    },
-    {
-      labelKey: 'landing.comparison.rows.docs',
-      excel: <span className="text-slate-500">{t('landing.comparison.values.manuel')}</span>,
-      naklos: <span className="font-semibold text-confirm-700">{t('landing.comparison.values.autoAlert')}</span>,
-    },
-    {
-      labelKey: 'landing.comparison.rows.anomaly',
-      excel: <span className="text-slate-500">{t('landing.comparison.values.yok')}</span>,
-      naklos: (
-        <span className="font-semibold text-confirm-700">
-          {t('landing.comparison.values.rules', { count: 12 })}
-        </span>
-      ),
-    },
-    {
-      labelKey: 'landing.comparison.rows.maintenance',
-      excel: <span className="text-slate-500">{t('landing.comparison.values.manuel')}</span>,
-      naklos: <span className="font-semibold text-confirm-700">{t('landing.comparison.values.auto')}</span>,
-    },
-    {
-      labelKey: 'landing.comparison.rows.driverApp',
-      excel: <span className="text-slate-500">{t('landing.comparison.values.yok')}</span>,
-      naklos: <span className="font-semibold text-confirm-700">✓</span>,
-    },
+  const bullets = [
+    t('landing.comparison.bullets.b1'),
+    t('landing.comparison.bullets.b2'),
+    t('landing.comparison.bullets.b3'),
   ];
 
   return (
-    <section id="compare" className="py-20 md:py-24">
+    <section id="compare" className="py-16 md:py-20">
       <div className="max-w-3xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-10">
-          <p className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3">{t('landing.comparison.eyebrow')}</p>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
-            {t('landing.comparison.title')}
+        <div className="rounded-2xl border border-slate-200 bg-white p-8 md:p-10 shadow-card">
+          <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight mb-3">
+            {t('landing.comparison.eyebrow')}
           </h2>
-          <p className="text-slate-600 mt-3 max-w-xl mx-auto">{t('landing.comparison.subtitle')}</p>
-        </div>
+          <p className="text-slate-600 mb-5">{t('landing.comparison.lead')}</p>
 
-        <div className="bg-white rounded-2xl shadow-card border border-slate-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="text-left py-3.5 px-4 text-[11px] font-semibold uppercase tracking-wider text-slate-500" />
-                <th className={headerCell}>Excel</th>
-                <th className={headerCellNaklos}>naklos Pro</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {rows.map((row) => (
-                <tr key={row.labelKey}>
-                  <td className={rowLabel}>{t(row.labelKey)}</td>
-                  <td className={cellExcel}>{row.excel}</td>
-                  <td className={cellNaklos}>{row.naklos}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ul className="space-y-2.5 mb-6">
+            {bullets.map((b) => (
+              <li key={b} className="flex items-start gap-3 text-slate-700">
+                <span aria-hidden="true" className="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-urgent-500 flex-shrink-0" />
+                <span className="text-sm md:text-base">{b}</span>
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-sm md:text-base font-semibold text-slate-900">
+            {t('landing.comparison.closing')}
+          </p>
         </div>
       </div>
     </section>

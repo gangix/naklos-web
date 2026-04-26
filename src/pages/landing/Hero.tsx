@@ -20,15 +20,14 @@ const Hero = () => {
 
             <h1 className="text-5xl md:text-6xl lg:text-[68px] font-extrabold text-slate-900 mb-5 leading-[1.02] tracking-tight">
               {t('landing.hero.title1')}<br />
-              <span className="font-extrabold text-accent-500">{t('landing.hero.title2')}</span>{' '}
-              {t('landing.hero.title3')}
+              <span className="font-extrabold text-accent-500">{t('landing.hero.title2')}</span>
             </h1>
 
             <p className="text-lg md:text-xl text-slate-600 max-w-xl mx-auto lg:mx-0 mb-9 leading-relaxed">
               <Trans i18nKey="landing.hero.subtitle" components={{ strong: <strong className="text-slate-900 font-semibold" /> }} />
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 mb-6">
+            <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 mb-3">
               <button
                 type="button"
                 onClick={() => register()}
@@ -37,10 +36,11 @@ const Hero = () => {
                 {t('landing.hero.cta')}
                 <span aria-hidden="true" className="group-hover:translate-x-0.5 transition-transform">→</span>
               </button>
-              <a href="#compare" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors px-2 py-2">
-                {t('landing.nav.comparison')} →
-              </a>
             </div>
+
+            <p className="text-xs font-medium text-slate-500 mb-6 text-center lg:text-left">
+              {t('landing.hero.ctaCaption')}
+            </p>
 
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2 text-xs font-medium text-slate-500">
               {[
