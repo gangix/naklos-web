@@ -817,6 +817,14 @@
       "lastLocation": "Son Konum",
       "docStatus": "Belge",
       "noDriver": "Atanmadı"
+    },
+    "summary": {
+      "docs_one": "{{count}} belge",
+      "docs_other": "{{count}} belge",
+      "fuel_one": "{{count}} yakıt uyarısı",
+      "fuel_other": "{{count}} yakıt uyarısı",
+      "maintenance_one": "{{count}} bakım",
+      "maintenance_other": "{{count}} bakım"
     }
   },
   "trucksPage": {

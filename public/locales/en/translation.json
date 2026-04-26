@@ -819,6 +819,14 @@
       "lastLocation": "Last Location",
       "docStatus": "Docs",
       "noDriver": "Unassigned"
+    },
+    "summary": {
+      "docs_one": "{{count}} document",
+      "docs_other": "{{count}} documents",
+      "fuel_one": "{{count}} fuel alert",
+      "fuel_other": "{{count}} fuel alerts",
+      "maintenance_one": "{{count}} maintenance",
+      "maintenance_other": "{{count}} maintenance"
     }
   },
   "trucksPage": {

@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { AlertCircle, AlertTriangle, Download, MapPin, Truck as TruckIcon } from 'lucide-react';
+import { AlertCircle, AlertTriangle, Download, FileText, Fuel, MapPin, Truck as TruckIcon, Wrench } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
@@ -358,27 +358,64 @@ const TrucksPage = () => {
                 )}
               </div>
 
-              {/* Document warnings — tiered by CRITICAL/WARNING/INFO to mirror fuel-alert palette */}
-              {getTruckWarnings(truck.id).length > 0 && (
-                <div className="mt-3 pt-3 border-t border-gray-100 space-y-1">
-                  {getTruckWarnings(truck.id).map((warning, index) => {
-                    const tone =
-                      warning.severity === 'CRITICAL'
-                        ? { bg: 'bg-urgent-50 text-urgent-700', icon: <AlertCircle className="w-3.5 h-3.5 text-urgent-500 inline flex-shrink-0" /> }
-                        : warning.severity === 'WARNING'
-                        ? { bg: 'bg-attention-50 text-attention-700', icon: <AlertTriangle className="w-3.5 h-3.5 text-attention-500 inline flex-shrink-0" /> }
-                        : { bg: 'bg-info-50 text-info-700', icon: <AlertTriangle className="w-3.5 h-3.5 text-info-500 inline flex-shrink-0" /> };
-                    return (
-                      <div
-                        key={`${truck.id}-${warning.type}-${index}`}
-                        className={`text-xs px-2 py-1 rounded ${tone.bg}`}
-                      >
-                        <span className="inline-flex items-center gap-1">{tone.icon} {t(warning.key, warning.params)}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              {/* Domain summary — instead of one row per warning (which can
+                  produce 8+ rows for a single truck), show one chip per
+                  domain (docs / fuel / maintenance) with worst severity +
+                  count. Manager clicks into TruckDetail for per-warning
+                  detail (the EntityWarningsRollup there shows it all). */}
+              {(() => {
+                const all = getTruckWarnings(truck.id);
+                if (all.length === 0) return null;
+                const docs = all.filter((w) => w.key.startsWith('warning.'));
+                const fuels = all.filter((w) => w.key === 'truckTable.fuelAnomaly');
+                const maintenance = all.filter((w) => w.key === 'truckTable.maintenanceDue');
+                const worstOf = (group: typeof all) => {
+                  if (group.some((w) => w.severity === 'CRITICAL')) return 'CRITICAL';
+                  if (group.some((w) => w.severity === 'WARNING')) return 'WARNING';
+                  return 'INFO';
+                };
+                const toneClass = (sev: 'CRITICAL' | 'WARNING' | 'INFO') =>
+                  sev === 'CRITICAL'
+                    ? 'bg-urgent-50 text-urgent-700'
+                    : sev === 'WARNING'
+                    ? 'bg-attention-50 text-attention-700'
+                    : 'bg-info-50 text-info-700';
+                const summary: Array<{ key: string; sev: 'CRITICAL' | 'WARNING' | 'INFO'; icon: React.ReactNode; label: string }> = [];
+                if (docs.length > 0) {
+                  summary.push({
+                    key: 'docs',
+                    sev: worstOf(docs),
+                    icon: <FileText className="w-3.5 h-3.5 inline flex-shrink-0" />,
+                    label: t('trucks.summary.docs', { count: docs.length }),
+                  });
+                }
+                if (fuels.length > 0) {
+                  summary.push({
+                    key: 'fuel',
+                    sev: worstOf(fuels),
+                    icon: <Fuel className="w-3.5 h-3.5 inline flex-shrink-0" />,
+                    label: t('trucks.summary.fuel', { count: fuels.length }),
+                  });
+                }
+                if (maintenance.length > 0) {
+                  summary.push({
+                    key: 'maintenance',
+                    sev: worstOf(maintenance),
+                    icon: <Wrench className="w-3.5 h-3.5 inline flex-shrink-0" />,
+                    label: t('trucks.summary.maintenance', { count: maintenance.length }),
+                  });
+                }
+                return (
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap gap-1.5">
+                    {summary.map((s) => (
+                      <span key={s.key} className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded ${toneClass(s.sev)}`}>
+                        {s.icon}
+                        {s.label}
+                      </span>
+                    ))}
+                  </div>
+                );
+              })()}
             </Link>
           );
         })}

@@ -819,6 +819,14 @@
       "lastLocation": "Letzter Ort",
       "docStatus": "Dok.",
       "noDriver": "Nicht zugewiesen"
+    },
+    "summary": {
+      "docs_one": "{{count}} Dokument",
+      "docs_other": "{{count}} Dokumente",
+      "fuel_one": "{{count}} Kraftstoff-Warnung",
+      "fuel_other": "{{count}} Kraftstoff-Warnungen",
+      "maintenance_one": "{{count}} Wartung",
+      "maintenance_other": "{{count}} Wartungen"
     }
   },
   "trucksPage": {
