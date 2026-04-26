@@ -67,6 +67,12 @@ const Hero = () => {
 };
 
 function HeroProductMock() {
+  const { t } = useTranslation();
+  const docList = [
+    t('landing.heroMock.docs.itemInspection'),
+    t('landing.heroMock.docs.itemInsurance'),
+    t('landing.heroMock.docs.itemKasko'),
+  ].join(', ');
   return (
     <div className="relative">
       <div className="absolute -top-6 -left-6 w-24 h-24 bg-accent-500/15 rounded-full blur-3xl" aria-hidden="true" />
@@ -82,31 +88,31 @@ function HeroProductMock() {
           {/* Date + truck/driver tally — mirrors the real dashboard's header
               chips so the mockup feels like the actual product. */}
           <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1 flex-wrap">
-            <span className="font-medium text-slate-600">Cuma</span>
+            <span className="font-medium text-slate-600">{t('landing.heroMock.dayOfWeek')}</span>
             <span className="text-slate-300">·</span>
-            <span>26 Nisan 2026</span>
+            <span>{t('landing.heroMock.date')}</span>
             <span className="text-slate-300">·</span>
             <span className="inline-flex items-center gap-1 text-slate-600">
               <Truck className="w-3 h-3 text-blue-500" aria-hidden="true" />
               <span className="font-semibold tabular-nums">12</span>
-              <span>araç</span>
+              <span>{t('landing.heroMock.vehiclesLabel')}</span>
             </span>
             <span className="text-slate-300">·</span>
             <span className="inline-flex items-center gap-1 text-slate-600">
               <Users className="w-3 h-3 text-emerald-500" aria-hidden="true" />
               <span className="font-semibold tabular-nums">8</span>
-              <span>sürücü</span>
+              <span>{t('landing.heroMock.driversLabel')}</span>
             </span>
           </div>
-          <p className="text-xl font-extrabold text-slate-900 tracking-tight mb-3">Filom</p>
+          <p className="text-xl font-extrabold text-slate-900 tracking-tight mb-3">{t('landing.heroMock.pageTitle')}</p>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 mb-3">
-            Bugün incelemelerin
-            <span className="ml-1.5 normal-case tracking-normal text-urgent-700">(3 acil)</span>
+            {t('landing.heroMock.todaysReviews')}
+            <span className="ml-1.5 normal-case tracking-normal text-urgent-700">{t('landing.heroMock.urgentSuffix', { count: 3 })}</span>
           </p>
           <div className="bg-white rounded-xl shadow-card border border-slate-200 overflow-hidden divide-y divide-slate-100">
-            <MockRow tone="urgent" plate="34 ABC 123" subline="3 belge · Muayene, Sigorta, Kasko" rightPill="3 gün" />
-            <MockRow tone="urgent" plate="7 yakıt uyarısı" subline="2 acil · 5 uyarı" sublineColor="text-urgent-700 font-semibold" rightPill="aç" isUppercase />
-            <MockRow tone="attention" plate="07 QRS 300" subline="1 bakım · Motor yağı" rightPill="25 gün" notFilled />
+            <MockRow tone="urgent" plate="34 ABC 123" subline={t('landing.heroMock.docs.subline', { count: 3, list: docList })} rightPill={t('landing.heroMock.daysShort', { count: 3 })} />
+            <MockRow tone="urgent" plate={t('landing.heroMock.fuelAggregate.title', { count: 7 })} subline={t('landing.heroMock.fuelAggregate.subline', { urgent: 2, warning: 5 })} sublineColor="text-urgent-700 font-semibold" rightPill={t('landing.heroMock.fuelAggregate.openPill')} isUppercase />
+            <MockRow tone="attention" plate="07 QRS 300" subline={t('landing.heroMock.maintenance.subline', { count: 1, item: t('landing.heroMock.maintenance.engineOil') })} rightPill={t('landing.heroMock.daysShort', { count: 25 })} notFilled />
           </div>
         </div>
       </div>

@@ -1955,6 +1955,36 @@
         }
       }
     },
+    "heroMock": {
+      "dayOfWeek": "Freitag",
+      "date": "26. Apr 2026",
+      "vehiclesLabel": "Fahrzeuge",
+      "driversLabel": "Fahrer",
+      "pageTitle": "Meine Flotte",
+      "todaysReviews": "Heutige Prüfungen",
+      "urgentSuffix_one": "({{count}} dringend)",
+      "urgentSuffix_other": "({{count}} dringend)",
+      "daysShort_one": "{{count}} Tag",
+      "daysShort_other": "{{count}} Tage",
+      "fuelAggregate": {
+        "title_one": "{{count}} Kraftstoff-Warnung",
+        "title_other": "{{count}} Kraftstoff-Warnungen",
+        "subline": "{{urgent}} dringend · {{warning}} Warnungen",
+        "openPill": "öffnen"
+      },
+      "docs": {
+        "subline_one": "{{count}} Dokument · {{list}}",
+        "subline_other": "{{count}} Dokumente · {{list}}",
+        "itemInspection": "Hauptuntersuchung",
+        "itemInsurance": "Versicherung",
+        "itemKasko": "Vollkasko"
+      },
+      "maintenance": {
+        "subline_one": "{{count}} Wartung · {{item}}",
+        "subline_other": "{{count}} Wartungen · {{item}}",
+        "engineOil": "Motoröl"
+      }
+    },
     "howItWorks": {
       "eyebrow": "So funktioniert's",
       "title": "Drei Schritte — von Daten zur Aktion",

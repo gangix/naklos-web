@@ -1981,6 +1981,31 @@
       "trustSupport": "Türkçe destek",
       "trustNoHardware": "Donanım yok"
     },
+    "heroMock": {
+      "dayOfWeek": "Cuma",
+      "date": "26 Nisan 2026",
+      "vehiclesLabel": "araç",
+      "driversLabel": "sürücü",
+      "pageTitle": "Filom",
+      "todaysReviews": "Bugün incelemelerin",
+      "urgentSuffix": "({{count}} acil)",
+      "daysShort": "{{count}} gün",
+      "fuelAggregate": {
+        "title": "{{count}} yakıt uyarısı",
+        "subline": "{{urgent}} acil · {{warning}} uyarı",
+        "openPill": "aç"
+      },
+      "docs": {
+        "subline": "{{count}} belge · {{list}}",
+        "itemInspection": "Muayene",
+        "itemInsurance": "Sigorta",
+        "itemKasko": "Kasko"
+      },
+      "maintenance": {
+        "subline": "{{count}} bakım · {{item}}",
+        "engineOil": "Motor yağı"
+      }
+    },
     "features": {
       "eyebrow": "Tek ekran, üç farklı takip",
       "title": "Süresi dolacak belgeler. Yaklaşan bakımlar. Yakıt anomalileri. Hepsi tek panelde.",

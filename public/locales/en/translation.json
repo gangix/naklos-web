@@ -1955,6 +1955,36 @@
         }
       }
     },
+    "heroMock": {
+      "dayOfWeek": "Friday",
+      "date": "26 Apr 2026",
+      "vehiclesLabel": "trucks",
+      "driversLabel": "drivers",
+      "pageTitle": "My Fleet",
+      "todaysReviews": "Today's reviews",
+      "urgentSuffix_one": "({{count}} urgent)",
+      "urgentSuffix_other": "({{count}} urgent)",
+      "daysShort_one": "{{count}} day",
+      "daysShort_other": "{{count}} days",
+      "fuelAggregate": {
+        "title_one": "{{count}} fuel alert",
+        "title_other": "{{count}} fuel alerts",
+        "subline": "{{urgent}} urgent · {{warning}} warnings",
+        "openPill": "open"
+      },
+      "docs": {
+        "subline_one": "{{count}} doc · {{list}}",
+        "subline_other": "{{count}} docs · {{list}}",
+        "itemInspection": "Inspection",
+        "itemInsurance": "Insurance",
+        "itemKasko": "Comprehensive"
+      },
+      "maintenance": {
+        "subline_one": "{{count}} maintenance · {{item}}",
+        "subline_other": "{{count}} maintenance · {{item}}",
+        "engineOil": "Engine oil"
+      }
+    },
     "howItWorks": {
       "eyebrow": "How it works",
       "title": "Three steps — data to action",
