@@ -1,4 +1,5 @@
 import { useTranslation, Trans } from 'react-i18next';
+import { Truck, Users } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Hero = () => {
@@ -78,6 +79,26 @@ function HeroProductMock() {
           <span className="ml-3 text-[11px] font-mono text-slate-400">naklos.com.tr/manager/dashboard</span>
         </div>
         <div className="p-5">
+          {/* Date + truck/driver tally — mirrors the real dashboard's header
+              chips so the mockup feels like the actual product. */}
+          <div className="flex items-center gap-2 text-[11px] text-slate-500 mb-1 flex-wrap">
+            <span className="font-medium text-slate-600">Cuma</span>
+            <span className="text-slate-300">·</span>
+            <span>26 Nisan 2026</span>
+            <span className="text-slate-300">·</span>
+            <span className="inline-flex items-center gap-1 text-slate-600">
+              <Truck className="w-3 h-3 text-blue-500" aria-hidden="true" />
+              <span className="font-semibold tabular-nums">12</span>
+              <span>araç</span>
+            </span>
+            <span className="text-slate-300">·</span>
+            <span className="inline-flex items-center gap-1 text-slate-600">
+              <Users className="w-3 h-3 text-emerald-500" aria-hidden="true" />
+              <span className="font-semibold tabular-nums">8</span>
+              <span>sürücü</span>
+            </span>
+          </div>
+          <p className="text-xl font-extrabold text-slate-900 tracking-tight mb-3">Filom</p>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500 mb-3">
             Bugün incelemelerin
             <span className="ml-1.5 normal-case tracking-normal text-urgent-700">(3 acil)</span>

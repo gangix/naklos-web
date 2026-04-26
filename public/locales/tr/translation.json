@@ -1969,7 +1969,7 @@
       "title1": "Excel'i bırakın.",
       "title2": "Filonuzu",
       "title3": "büyütün.",
-      "subtitle": "Türkiye'deki küçük filolar için <strong>yakıt, muayene, bakım takibi</strong>. Donanım yok, taahhüt yok, 3 araca kadar ücretsiz.",
+      "subtitle": "Küçük filolar için <strong>yakıt, muayene, bakım takibi</strong>. Donanım yok, taahhüt yok, 3 araca kadar ücretsiz.",
       "cta": "Hemen başla — ücretsiz",
       "trustNoCard": "Kart bilgisi gerekmez",
       "trustKvkk": "KVKK uyumlu",
@@ -1985,7 +1985,7 @@
       },
       "fuel": {
         "title": "Yakıt",
-        "description": "\"Yakıt fişi nerede?\" sorununa son. Excel ya da e-posta ile gelen ekstreniz otomatik içe aktarılır, anomaliler işaretlenir."
+        "description": "Yakıt ekstrenizi uygulamaya yükleyin veya e-posta ile gönderin. Şüpheli dolumlar otomatik işaretlenir, araç bazlı tüketim görünür."
       },
       "maintenance": {
         "title": "Bakım",
