@@ -108,7 +108,7 @@ const TermsOfServicePage = () => {
           <section>
             <h2 className="text-xl font-bold text-gray-900 mb-3">10. İletişim</h2>
             <p>
-              Kullanım şartları hakkında sorularınız için <strong>olcay.bilir@gmail.com</strong> adresi
+              Kullanım şartları hakkında sorularınız için <strong>info@naklos.com.tr</strong> adresi
               üzerinden bize ulaşabilirsiniz.
             </p>
           </section>
