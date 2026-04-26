@@ -7,13 +7,14 @@ import { useFleet } from '../contexts/FleetContext';
 import AddClientModal from '../components/common/AddClientModal';
 import UpgradeModal from '../components/common/UpgradeModal';
 import { TextInput } from '../components/common/FormField';
+import { limitOf, planOf } from '../utils/planLimits';
 
 const ClientsPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { data: clients, loading: clientsLoading, refresh } = useClients();
   const { plan } = useFleet();
-  const maxClients = { FREE: 3, PROFESSIONAL: -1, BUSINESS: -1, ENTERPRISE: -1 }[plan] ?? 3;
+  const maxClients = limitOf(planOf(plan), 'client');
   const [searchQuery, setSearchQuery] = useState('');
   const [addClientModalOpen, setAddClientModalOpen] = useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = useState(false);

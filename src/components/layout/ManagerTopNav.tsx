@@ -96,8 +96,7 @@ const ManagerTopNav = () => {
 
   const planLabel = t(`plan.${(plan ?? 'FREE').toLowerCase()}`, {
     defaultValue:
-      plan === 'PROFESSIONAL' ? 'Profesyonel'
-      : plan === 'BUSINESS' ? 'İşletme'
+      plan === 'PRO' ? 'Pro'
       : plan === 'ENTERPRISE' ? 'Kurumsal'
       : 'Başlangıç',
   });
@@ -115,8 +114,7 @@ const ManagerTopNav = () => {
           </div>
           <span className="text-lg font-extrabold tracking-tight text-white">Naklos</span>
           <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ml-2 ${
-            plan === 'PROFESSIONAL' ? 'bg-blue-500/20 text-blue-300' :
-            plan === 'BUSINESS' ? 'bg-violet-500/20 text-violet-300' :
+            plan === 'PRO' ? 'bg-blue-500/20 text-blue-300' :
             plan === 'ENTERPRISE' ? 'bg-amber-500/20 text-amber-300' :
             'bg-white/10 text-slate-400'
           }`}>

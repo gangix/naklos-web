@@ -5,8 +5,7 @@ import { PLAN_LIMITS, PLAN_NEXT, planOf } from '../../utils/planLimits';
 const CONTACT_EMAIL = 'mailto:info@naklos.com.tr?subject=Naklos%20Plan%20Upgrade';
 
 const NEXT_PRICE_KEY: Record<string, string> = {
-  PROFESSIONAL: 'upgrade.priceProfessional',
-  BUSINESS: 'upgrade.priceBusiness',
+  PRO: 'upgrade.pricePro',
   ENTERPRISE: 'upgrade.priceEnterprise',
 };
 

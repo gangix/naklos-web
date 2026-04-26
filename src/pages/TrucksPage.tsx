@@ -17,6 +17,7 @@ import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
 import ViewToggle, { type TruckView } from '../components/trucks/ViewToggle';
 import TruckTable from '../components/trucks/TruckTable';
+import { limitOf, planOf } from '../utils/planLimits';
 
 // localStorage can throw (Safari private mode, strict CSP, quota full).
 // Wrap reads/writes so the page still renders when storage is unavailable.
@@ -40,7 +41,7 @@ const TrucksPage = () => {
   const { t } = useTranslation();
   const { plan } = useFleet();
   const { trucks, loading: trucksLoading, refresh: refreshRoster } = useFleetRoster();
-  const maxTrucks = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
+  const maxTrucks = limitOf(planOf(plan), 'truck');
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<DerivedStatus | 'all'>('all');
   const [addTruckModalOpen, setAddTruckModalOpen] = useState(false);

@@ -12,12 +12,13 @@ import BulkImportModal from '../components/common/BulkImportModal';
 import UpgradeModal from '../components/common/UpgradeModal';
 import { computeDriverWarnings, type DriverWarning } from '../utils/driverWarnings';
 import { todayMidnightMs } from '../utils/expiry';
+import { limitOf, planOf } from '../utils/planLimits';
 
 const DriversPage = () => {
   const { t } = useTranslation();
   const { plan } = useFleet();
   const { drivers, loading: driversLoading, refresh: refreshRoster } = useFleetRoster();
-  const maxDrivers = { FREE: 5, PROFESSIONAL: 25, BUSINESS: 100, ENTERPRISE: -1 }[plan] ?? 5;
+  const maxDrivers = limitOf(planOf(plan), 'driver');
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<DerivedStatus | 'all'>('all');
   const [addDriverModalOpen, setAddDriverModalOpen] = useState(false);

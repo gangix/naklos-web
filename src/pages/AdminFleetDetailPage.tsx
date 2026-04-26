@@ -153,8 +153,7 @@ const AdminFleetDetailPage = () => {
               className="border border-gray-300 rounded-lg px-3 py-2 text-sm font-medium"
             >
               <option value="FREE">{t('admin.planFree')}</option>
-              <option value="PROFESSIONAL">{t('admin.planProfessional')}</option>
-              <option value="BUSINESS">{t('admin.planBusiness')}</option>
+              <option value="PRO">{t('admin.planPro')}</option>
               <option value="ENTERPRISE">{t('admin.planEnterprise')}</option>
             </select>
           </div>
