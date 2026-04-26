@@ -1904,14 +1904,25 @@
     }
   },
   "landing": {
+    "betaPill": "Currently in beta — all features free",
     "nav": {
-      "login": "Log in",
-      "blog": "Blog"
+      "features": "Features",
+      "comparison": "Comparison",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "login": "Sign in"
     },
     "hero": {
       "badge": "For Turkish SMB fleets · KVKK-compliant",
-      "title1": "The fuel leak you can't see in Excel.",
-      "title2": "We surface it the day it happens.",
+      "title1": "Leave Excel behind.",
+      "title2": "Grow your",
+      "title3": "fleet.",
+      "subtitle": "Fuel, <strong>vehicle inspection</strong> and maintenance tracking for small fleets. No hardware, no commitment, free up to 3 vehicles.",
+      "cta": "Start free — no card required",
+      "trustNoCard": "No card required",
+      "trustKvkk": "GDPR-aligned data protection",
+      "trustSupport": "English support",
+      "trustNoHardware": "No hardware",
       "tagline": "The fuel leak you can't see in Excel. The inspection you'll miss next month. The license that expired yesterday. Naklos surfaces them before they cost you.",
       "ctaPrimary": "Start free",
       "ctaPrimarySub": "No credit card. No sales call.",
@@ -1958,15 +1969,21 @@
       }
     },
     "features": {
-      "srHeading": "What Naklos does for your fleet",
-      "fuel": {
-        "title": "Your cards spend. Which ones aren't driving?",
-        "description": "Per-vehicle anomaly rules flag suspicious fill-ups. Email alert in minutes. Built for the way fuel cards actually get abused in Turkey."
-      },
+      "eyebrow": "One screen, three tracking areas",
+      "title": "Expiring documents. Upcoming maintenance. Suspicious fill-ups. All in one dashboard.",
       "docs": {
-        "title": "30-day warning before every roadside check",
-        "description": "Inspection, license, SRC, K-belge, insurance — automatic reminders before expiry. Avoid ₺2,000–₺10,000 fines."
+        "title": "Documents",
+        "description": "Never forget vehicle inspection, vehicle tax or insurance dates again. Email alerts 30/14/7 days before expiry."
       },
+      "fuel": {
+        "title": "Fuel",
+        "description": "Upload your fuel statement or forward it by email. Suspicious fill-ups are flagged automatically; per-vehicle consumption is visible at a glance."
+      },
+      "maintenance": {
+        "title": "Maintenance",
+        "description": "Scheduled maintenance with automatic reminders. One tap for drivers to log a service visit on their way back from the garage."
+      },
+      "srHeading": "What Naklos does for your fleet",
       "vehicles": {
         "title": "Know which truck burns 22 L/100km, and which burns 28",
         "description": "L/100 km, cost per km, side-by-side comparison. The efficient vs. the expensive, with numbers."
@@ -1974,6 +1991,27 @@
       "drivers": {
         "title": "Paste the Excel. We take it from there.",
         "description": "Bulk-import vehicles, drivers and fuel transactions. No GPS box, no terminal, no hardware."
+      }
+    },
+    "comparison": {
+      "eyebrow": "From Excel to naklos",
+      "title": "Same job, far less effort",
+      "subtitle": "The difference between Excel and naklos for a small fleet of 10 vehicles.",
+      "rows": {
+        "monthly": "Monthly cost (10 vehicles)",
+        "docs": "Document expiry reminders",
+        "anomaly": "Fuel anomaly detection",
+        "maintenance": "Maintenance schedule",
+        "driverApp": "Driver mobile app"
+      },
+      "values": {
+        "yok": "none",
+        "manuel": "manual",
+        "auto": "automatic",
+        "autoAlert": "automatic alert",
+        "rules_one": "{{count}} rule",
+        "rules_other": "{{count}} rules",
+        "naklosFoundingPrice": "₺550 founding"
       }
     },
     "benefits": {
@@ -1994,9 +2032,52 @@
       "cta": "Talk to us"
     },
     "pricing": {
-      "eyebrow": "Pricing",
-      "title": "Pricing that makes sense.",
-      "subtitle": "Per truck, per month. Plain pricing. No hardware, no contracts.",
+      "eyebrow": "Clear pricing",
+      "title": "Per vehicle. Flat rate. No cliffs.",
+      "subtitle": "Free up to 3 vehicles. ₺79/vehicle/mo for 4+. <strong>30% off for the first 10 fleets, locked for 12 months.</strong>",
+      "betaBanner": "Currently in beta — all Pro features free. We'll let you know when billing begins.",
+      "free": {
+        "title": "Free",
+        "subtitle": "Start small. Always free.",
+        "price": "₺0",
+        "period": "/mo",
+        "feature1": "Up to 3 vehicles",
+        "feature2": "All core features",
+        "feature3": "Document tracking + alerts",
+        "feature4": "Maintenance schedule + service log",
+        "feature5": "Driver app",
+        "cta": "Start free"
+      },
+      "pro": {
+        "title": "Pro",
+        "subtitle": "4+ vehicles. Unlimited.",
+        "standardPrice": "₺79",
+        "foundingPrice": "₺55",
+        "period": "/vehicle/mo",
+        "foundingNote": "First 10 fleets · 30% off · locked for 12 months",
+        "foundingBadge_remaining_one": "Founding · {{count}} spot left",
+        "foundingBadge_remaining_other": "Founding · {{count}} spots left",
+        "foundingBadge_full": "Founding spots full",
+        "feature1": "Everything in Free",
+        "feature2": "Unlimited vehicles + drivers",
+        "feature3": "Fuel anomaly engine (12 rules)",
+        "feature4": "Bulk Excel/CSV import",
+        "feature5": "Priority email support",
+        "cta": "Start free — beta is free"
+      },
+      "enterprise": {
+        "title": "Enterprise",
+        "subtitle": "100+ vehicles, multiple locations",
+        "price": "Contact us",
+        "feature1": "Everything in Pro",
+        "feature2": "Custom onboarding + training",
+        "feature3": "Multi-location management",
+        "feature4": "Service level agreement (SLA)",
+        "feature5": "Phone + Slack support",
+        "cta": "Get in touch"
+      },
+      "eyebrow_old": "Pricing",
+      "title_old": "Pricing that makes sense.",
       "foundingBanner": "Founding customers lock in 30% off for 12 months when billing ships.",
       "tiers": {
         "free": "Starter",
@@ -2005,7 +2086,6 @@
         "enterprise": "Enterprise"
       },
       "popular": "Most Popular",
-      "free": "Free",
       "freeSub": "founding access · free during rollout",
       "perMonth": "/truck/mo",
       "contactPrice": "Contact us",
@@ -2036,6 +2116,44 @@
         "prioritySupport": "Email priority support"
       }
     },
+    "faq": {
+      "eyebrow": "Frequently asked questions",
+      "title": "The first six questions everyone asks",
+      "q1": {
+        "q": "Is any hardware required?",
+        "a": "No. naklos is a software-only fleet management system. No GPS box, card reader or terminal needed. Your existing fuel card + Excel/email + phone is enough."
+      },
+      "q2": {
+        "q": "How does data come from my existing fuel cards?",
+        "a": "Import your monthly statement (OPET, Shell, BP, Petrol Ofisi, Aytemiz, TP Excel files) — we parse it instantly and convert it into per-vehicle fuel records. Email forwarding to a dedicated address for automatic import is coming soon."
+      },
+      "q3": {
+        "q": "Is it GDPR-aligned?",
+        "a": "Yes. Your data is stored on Turkey/EU servers in compliance with KVKK + GDPR principles. Privacy notice, explicit consent, data deletion rights — all managed with one click from the naklos interface."
+      },
+      "q4": {
+        "q": "What if I want to cancel?",
+        "a": "Any time, one click. No contract, no commitment. Download all your data as a ZIP, then delete the account. The free tier for up to 3 vehicles always stays open."
+      },
+      "q5": {
+        "q": "How many vehicles are free?",
+        "a": "Up to 3 vehicles, always free. For 4+ vehicles the Pro tier is also free during the current beta. We'll always notify users before billing begins."
+      },
+      "q6": {
+        "q": "Is support available in English?",
+        "a": "English support is available. The full interface, emails and driver app are also available in English. Email + WhatsApp support during business hours. Pro customers get a reply within 24 hours."
+      }
+    },
+    "finalCta": {
+      "title1": "Switching from Excel",
+      "title2": "takes 10",
+      "title3": "minutes.",
+      "subtitle": "Add your first vehicle and start tracking documents and maintenance in minutes. No card required.",
+      "cta": "Start free — no card required",
+      "foundingFooter_remaining_one": "First 10 founding fleets · ₺55/vehicle/mo locked for 12 months · {{count}} spot left",
+      "foundingFooter_remaining_other": "First 10 founding fleets · ₺55/vehicle/mo locked for 12 months · {{count}} spots left",
+      "foundingFooter_full": "Founding spots full · standard ₺79/vehicle/mo"
+    },
     "contact": {
       "title": "Talk to a human",
       "subtitle": "Questions about a tier, a custom integration, or a fleet under 5 trucks? Drop a note — we reply within 1 business day.",
@@ -2064,15 +2182,17 @@
       }
     },
     "footer": {
+      "copyright": "© 2026 · Built in Turkey",
+      "kvkk": "GDPR-aligned data protection",
+      "terms": "Terms",
+      "contact": "Contact",
+      "blog": "Blog",
       "privacy": "Privacy Policy",
-      "terms": "Terms of Service",
-      "kvkk": "KVKK Notice",
       "cookies": "Cookie Policy",
       "foundingTerms": "Founding access terms",
       "legalHeading": "Naklos Teknoloji Ltd. Şti.",
       "taxLabel": "VKN:",
-      "addressLabel": "Adres:",
-      "copyright": "© {{year}} Naklos. All rights reserved."
+      "addressLabel": "Adres:"
     }
   },
   "foundingTerms": {

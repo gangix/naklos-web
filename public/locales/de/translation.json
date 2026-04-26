@@ -1904,14 +1904,25 @@
     }
   },
   "landing": {
+    "betaPill": "Aktuell in Beta — alle Funktionen kostenlos",
     "nav": {
-      "login": "Anmelden",
-      "blog": "Blog"
+      "features": "Funktionen",
+      "comparison": "Vergleich",
+      "pricing": "Preise",
+      "faq": "FAQ",
+      "login": "Anmelden"
     },
     "hero": {
       "badge": "Für türkische KMU-Flotten · KVKK-konform",
-      "title1": "Der Kraftstoffverlust, den Excel verbirgt.",
-      "title2": "Wir machen ihn am selben Tag sichtbar.",
+      "title1": "Excel hinter sich lassen.",
+      "title2": "Ihre Flotte",
+      "title3": "wachsen lassen.",
+      "subtitle": "Kraftstoff-, <strong>Hauptuntersuchung (HU)</strong>- und Wartungsverfolgung für kleine Flotten. Keine Hardware, keine Bindung, bis 3 Fahrzeuge kostenlos.",
+      "cta": "Kostenlos starten — keine Karte nötig",
+      "trustNoCard": "Keine Kreditkarte",
+      "trustKvkk": "DSGVO-konform",
+      "trustSupport": "Deutschsprachiger Support",
+      "trustNoHardware": "Keine Hardware",
       "tagline": "Der Kraftstoffverlust, den Excel verbirgt. Die Inspektion, die Sie nächsten Monat verpassen. Der Führerschein, der gestern abgelaufen ist. Naklos zeigt sie, bevor sie Geld kosten.",
       "ctaPrimary": "Kostenlos starten",
       "ctaPrimarySub": "Keine Kreditkarte. Kein Verkaufsgespräch.",
@@ -1958,15 +1969,21 @@
       }
     },
     "features": {
-      "srHeading": "Was Naklos für Ihre Flotte tut",
-      "fuel": {
-        "title": "Ihre Karten geben aus. Welche davon fahren nicht?",
-        "description": "Fahrzeugbezogene Anomalieregeln markieren verdächtige Tankvorgänge. E-Mail-Warnung in Minuten. Gebaut für die Art, wie Tankkarten in der Türkei tatsächlich missbraucht werden."
-      },
+      "eyebrow": "Ein Bildschirm, drei Bereiche",
+      "title": "Ablaufende Dokumente. Anstehende Wartungen. Verdächtige Tankungen. Alles in einem Dashboard.",
       "docs": {
-        "title": "30 Tage Vorwarnung vor jeder Straßenkontrolle",
-        "description": "Inspektion, Führerschein, SRC, K-Belge, Versicherung — automatische Erinnerungen vor Ablauf. Vermeiden Sie ₺2.000–₺10.000 Strafen."
+        "title": "Dokumente",
+        "description": "HU, Kfz-Steuer und Versicherungsfristen nie mehr vergessen. E-Mail-Warnungen 30/14/7 Tage vor Ablauf."
       },
+      "fuel": {
+        "title": "Kraftstoff",
+        "description": "Laden Sie Ihre Kraftstoffabrechnung hoch oder senden Sie sie per E-Mail. Verdächtige Tankungen werden automatisch markiert; der Verbrauch pro Fahrzeug ist auf einen Blick sichtbar."
+      },
+      "maintenance": {
+        "title": "Wartung",
+        "description": "Regelmäßige Wartungspläne mit automatischen Erinnerungen. Fahrer können einen Werkstattbesuch mit einem Tippen direkt auf dem Rückweg eintragen."
+      },
+      "srHeading": "Was Naklos für Ihre Flotte tut",
       "vehicles": {
         "title": "Welcher Lkw verbraucht 22 L/100km, und welcher 28",
         "description": "L/100 km, Kosten pro km, Side-by-Side-Vergleich. Das Effiziente gegen das Teure — mit Zahlen."
@@ -1974,6 +1991,27 @@
       "drivers": {
         "title": "Fügen Sie das Excel ein. Den Rest übernehmen wir.",
         "description": "Massenimport von Fahrzeugen, Fahrern und Tankvorgängen. Keine GPS-Box, kein Terminal, keine Hardware."
+      }
+    },
+    "comparison": {
+      "eyebrow": "Von Excel zu naklos",
+      "title": "Dieselbe Arbeit, viel weniger Aufwand",
+      "subtitle": "Der Unterschied zwischen Excel und naklos für eine kleine Flotte mit 10 Fahrzeugen.",
+      "rows": {
+        "monthly": "Monatliche Kosten (10 Fahrzeuge)",
+        "docs": "Ablauferinnerungen für Dokumente",
+        "anomaly": "Kraftstoff-Anomalieerkennung",
+        "maintenance": "Wartungsplan",
+        "driverApp": "Fahrer-App (mobil)"
+      },
+      "values": {
+        "yok": "keine",
+        "manuel": "manuell",
+        "auto": "automatisch",
+        "autoAlert": "automatische Warnung",
+        "rules_one": "{{count}} Regel",
+        "rules_other": "{{count}} Regeln",
+        "naklosFoundingPrice": "₺550 Gründung"
       }
     },
     "benefits": {
@@ -1994,9 +2032,52 @@
       "cta": "Sprechen wir"
     },
     "pricing": {
-      "eyebrow": "Preise",
-      "title": "Preise, die Sinn machen.",
-      "subtitle": "Pro Lkw, pro Monat. Klare Preise. Keine Hardware, keine Verträge.",
+      "eyebrow": "Klare Preise",
+      "title": "Pro Fahrzeug. Pauschalpreis. Keine Preistreppen.",
+      "subtitle": "Bis 3 Fahrzeuge kostenlos. ₺79/Fahrzeug/Monat ab 4+. <strong>30% Rabatt für die ersten 10 Firmen, 12 Monate fest.</strong>",
+      "betaBanner": "Aktuell in Beta — alle Pro-Funktionen kostenlos. Wir informieren Sie, wenn die Abrechnung beginnt.",
+      "free": {
+        "title": "Kostenlos",
+        "subtitle": "Klein anfangen. Immer kostenlos.",
+        "price": "₺0",
+        "period": "/Monat",
+        "feature1": "Bis zu 3 Fahrzeuge",
+        "feature2": "Alle Grundfunktionen",
+        "feature3": "Dokumentenverfolgung + Warnungen",
+        "feature4": "Wartungsplan + Serviceeintrag",
+        "feature5": "Fahrer-App",
+        "cta": "Kostenlos starten"
+      },
+      "pro": {
+        "title": "Pro",
+        "subtitle": "4+ Fahrzeuge. Unbegrenzt.",
+        "standardPrice": "₺79",
+        "foundingPrice": "₺55",
+        "period": "/Fahrzeug/Monat",
+        "foundingNote": "Ersten 10 Firmen · 30% Rabatt · 12 Monate fest",
+        "foundingBadge_remaining_one": "Gründung · {{count}} Platz frei",
+        "foundingBadge_remaining_other": "Gründung · {{count}} Plätze frei",
+        "foundingBadge_full": "Gründungsplätze vergeben",
+        "feature1": "Alles aus Kostenlos",
+        "feature2": "Unbegrenzte Fahrzeuge + Fahrer",
+        "feature3": "Kraftstoff-Anomalie-Engine (12 Regeln)",
+        "feature4": "Massen-Excel/CSV-Import",
+        "feature5": "Prioritäts-E-Mail-Support",
+        "cta": "Kostenlos starten — Beta ist kostenlos"
+      },
+      "enterprise": {
+        "title": "Enterprise",
+        "subtitle": "100+ Fahrzeuge, mehrere Standorte",
+        "price": "Kontakt aufnehmen",
+        "feature1": "Alles aus Pro",
+        "feature2": "Individuelles Onboarding + Schulung",
+        "feature3": "Mehrstandort-Verwaltung",
+        "feature4": "Service Level Agreement (SLA)",
+        "feature5": "Telefon + Slack-Support",
+        "cta": "Kontakt aufnehmen"
+      },
+      "eyebrow_old": "Preise",
+      "title_old": "Preise, die Sinn machen.",
       "foundingBanner": "Gründungskunden sichern sich 30% Rabatt für 12 Monate, wenn die Abrechnung startet.",
       "tiers": {
         "free": "Starter",
@@ -2005,7 +2086,6 @@
         "enterprise": "Enterprise"
       },
       "popular": "Am Beliebtesten",
-      "free": "Kostenlos",
       "freeSub": "Gründungszugang · kostenlos während Rollout",
       "perMonth": "/Lkw/Monat",
       "contactPrice": "Kontakt",
@@ -2036,6 +2116,44 @@
         "prioritySupport": "E-Mail-Prioritätssupport"
       }
     },
+    "faq": {
+      "eyebrow": "Häufig gestellte Fragen",
+      "title": "Die ersten sechs Fragen, die jeder stellt",
+      "q1": {
+        "q": "Ist Hardware erforderlich?",
+        "a": "Nein. naklos ist ein rein softwarebasiertes Flottenmanagement-System. Keine GPS-Box, kein Kartenlesegerät, kein Terminal nötig. Ihre vorhandene Tankkarte + Excel/E-Mail + Smartphone reicht völlig aus."
+      },
+      "q2": {
+        "q": "Wie kommen Daten von meinen bestehenden Tankkarten?",
+        "a": "Importieren Sie Ihre Monatsabrechnung (OPET, Shell, BP, Petrol Ofisi, Aytemiz, TP Excel-Dateien) — wir parsen sie sofort und wandeln sie in fahrzeugbezogene Kraftstoffeinträge um. Das automatische Weiterleiten per E-Mail an eine dedizierte Adresse kommt in Kürze."
+      },
+      "q3": {
+        "q": "Ist es DSGVO-konform?",
+        "a": "Ja. Ihre Daten werden auf Servern in der Türkei/EU gemäß KVKK + DSGVO-Grundsätzen gespeichert. Datenschutzerklärung, ausdrückliche Einwilligung, Löschrechte — alles mit einem Klick über die naklos-Oberfläche verwaltbar."
+      },
+      "q4": {
+        "q": "Was, wenn ich kündigen möchte?",
+        "a": "Jederzeit, ein Klick. Kein Vertrag, keine Bindung. Laden Sie alle Daten als ZIP herunter und löschen Sie das Konto. Der kostenlose Tarif für bis zu 3 Fahrzeuge bleibt immer zugänglich."
+      },
+      "q5": {
+        "q": "Wie viele Fahrzeuge sind kostenlos?",
+        "a": "Bis zu 3 Fahrzeuge immer kostenlos. Für 4+ Fahrzeuge ist der Pro-Tarif während der aktuellen Beta ebenfalls kostenlos. Wir benachrichtigen alle Nutzer, bevor die Abrechnung beginnt."
+      },
+      "q6": {
+        "q": "Gibt es deutschsprachigen Support?",
+        "a": "Support ist auf Deutsch verfügbar. Die gesamte Oberfläche, E-Mails und die Fahrer-App sind ebenfalls auf Deutsch erhältlich. E-Mail + WhatsApp-Support während der Geschäftszeiten. Pro-Kunden erhalten eine Antwort innerhalb von 24 Stunden."
+      }
+    },
+    "finalCta": {
+      "title1": "Der Wechsel von Excel",
+      "title2": "dauert 10",
+      "title3": "Minuten.",
+      "subtitle": "Erstes Fahrzeug hinzufügen und in Minuten mit der Dokument- und Wartungsverfolgung beginnen. Keine Kreditkarte nötig.",
+      "cta": "Kostenlos starten — keine Karte nötig",
+      "foundingFooter_remaining_one": "Ersten 10 Gründungsfirmen · ₺55/Fahrzeug/Monat 12 Monate fest · {{count}} Platz frei",
+      "foundingFooter_remaining_other": "Ersten 10 Gründungsfirmen · ₺55/Fahrzeug/Monat 12 Monate fest · {{count}} Plätze frei",
+      "foundingFooter_full": "Gründungsplätze vergeben · Standard ₺79/Fahrzeug/Monat"
+    },
     "contact": {
       "title": "Mit einem Menschen sprechen",
       "subtitle": "Fragen zu einem Tarif, einer individuellen Integration oder einer Flotte unter 5 Lkw? Hinterlassen Sie eine Nachricht — wir antworten innerhalb von 1 Werktag.",
@@ -2064,15 +2182,17 @@
       }
     },
     "footer": {
+      "copyright": "© 2026 · Entwickelt in der Türkei",
+      "kvkk": "DSGVO-konform",
+      "terms": "AGB",
+      "contact": "Kontakt",
+      "blog": "Blog",
       "privacy": "Datenschutzerklärung",
-      "terms": "Nutzungsbedingungen",
-      "kvkk": "KVKK-Hinweis",
       "cookies": "Cookie-Richtlinie",
       "foundingTerms": "Gründungszugang-Bedingungen",
       "legalHeading": "Naklos Teknoloji Ltd. Şti.",
       "taxLabel": "Steuernummer:",
-      "addressLabel": "Adresse:",
-      "copyright": "© {{year}} Naklos. Alle Rechte vorbehalten."
+      "addressLabel": "Adresse:"
     }
   },
   "foundingTerms": {
