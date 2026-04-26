@@ -20,7 +20,7 @@ const Hero = () => {
 
             <h1 className="text-5xl md:text-6xl lg:text-[68px] font-extrabold text-slate-900 mb-5 leading-[1.02] tracking-tight">
               {t('landing.hero.title1')}<br />
-              <span className="font-serif italic font-normal text-primary-700">{t('landing.hero.title2')}</span>{' '}
+              <span className="font-extrabold text-accent-500">{t('landing.hero.title2')}</span>{' '}
               {t('landing.hero.title3')}
             </h1>
 

@@ -22,7 +22,7 @@ const FinalCTA = () => {
       <div className="relative max-w-3xl mx-auto px-4 md:px-6 text-center">
         <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 leading-tight">
           {t('landing.finalCta.title1')}<br />
-          <span className="font-serif italic font-normal text-primary-200">{t('landing.finalCta.title2')}</span>{' '}
+          <span className="font-extrabold text-accent-500">{t('landing.finalCta.title2')}</span>{' '}
           {t('landing.finalCta.title3')}
         </h2>
         <p className="text-primary-100 text-lg mb-8 max-w-xl mx-auto">{t('landing.finalCta.subtitle')}</p>

@@ -24,7 +24,7 @@ const Pricing = () => {
     <section id="pricing" className="py-20 md:py-28 bg-white border-t border-slate-100">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         <div className="text-center mb-10">
-          <p className="font-serif italic text-sm text-primary-700 mb-3">{t('landing.pricing.eyebrow')}</p>
+          <p className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3">{t('landing.pricing.eyebrow')}</p>
           <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mb-3">
             {t('landing.pricing.title')}
           </h2>
