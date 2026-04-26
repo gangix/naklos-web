@@ -1041,9 +1041,7 @@
     "classDE": "DE (Bus + Anhänger)",
     "licenseExpiryDate": "Führerschein-Ablaufdatum",
     "licenseExpiryHint": "Leer lassen und der Fahrer erscheint als \"Dokumente fehlen\".",
-    "tempPassword": "Temporäres Passwort",
-    "tempPasswordPlaceholder": "Mindestens 8 Zeichen",
-    "tempPasswordHint": "Passwort, mit dem sich der Fahrer in der mobilen App anmeldet und beim ersten Login ändert. Bei Leerlassen wird der Fahrer gespeichert, kann sich aber nicht anmelden.",
+    "inviteNote": "Dem Fahrer wird ein Einladungslink per E-Mail gesendet. Über diesen Link legt er sein eigenes Passwort fest und meldet sich in der App an.",
     "addingDriver": "Wird hinzugefügt…",
     "addDriverButton": "Fahrer hinzufügen"
   },

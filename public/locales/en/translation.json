@@ -1041,9 +1041,7 @@
     "classDE": "DE (Bus + Trailer)",
     "licenseExpiryDate": "License Expiry Date",
     "licenseExpiryHint": "Leave blank and the driver shows up as \"missing docs\".",
-    "tempPassword": "Temporary Password",
-    "tempPasswordPlaceholder": "At least 8 characters",
-    "tempPasswordHint": "Password the driver uses to sign in to the mobile app, then changes on first login. Leave blank and the driver is saved but can't sign in to the app.",
+    "inviteNote": "An invitation link will be emailed to the driver. They'll set their own password and sign in by clicking the link.",
     "addingDriver": "Adding…",
     "addDriverButton": "Add Driver"
   },

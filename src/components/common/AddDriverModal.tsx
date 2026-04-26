@@ -23,7 +23,6 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
     licenseNumber: '',
     licenseClass: 'C',
     licenseExpiryDate: '',
-    temporaryPassword: '',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,10 +32,7 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
 
     try {
       const { licenseExpiryDate, ...registerPayload } = formData;
-      const created = await driverApi.register({
-        ...registerPayload,
-        temporaryPassword: formData.temporaryPassword || undefined,
-      }) as { id: string };
+      const created = await driverApi.register(registerPayload) as { id: string };
 
       // Backend Driver.register() doesn't take expiryDate — it's set via a
       // separate mutator. Send it immediately after register so the fresh
@@ -60,7 +56,6 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
         licenseNumber: '',
         licenseClass: 'C',
         licenseExpiryDate: '',
-        temporaryPassword: '',
       });
       onSuccess();
       onClose();
@@ -165,15 +160,9 @@ const AddDriverModal = ({ isOpen, onClose, onSuccess }: AddDriverModalProps) => 
               hint={t('addDriver.licenseExpiryHint')}
             />
 
-            <TextInput
-              label={t('addDriver.tempPassword')}
-              type="password"
-              minLength={8}
-              value={formData.temporaryPassword}
-              onChange={(e) => setFormData({ ...formData, temporaryPassword: e.target.value })}
-              placeholder={t('addDriver.tempPasswordPlaceholder')}
-              hint={t('addDriver.tempPasswordHint')}
-            />
+            <div className="rounded-lg bg-primary-50 border border-primary-200 px-3 py-2 text-xs text-primary-800">
+              {t('addDriver.inviteNote')}
+            </div>
 
             <div className="flex gap-3 pt-4">
               <button

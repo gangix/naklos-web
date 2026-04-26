@@ -1038,9 +1038,7 @@
     "classDE": "DE (Otobüs + Römork)",
     "licenseExpiryDate": "Ehliyet Geçerlilik Tarihi",
     "licenseExpiryHint": "Boş bırakırsanız sürücü \"belge eksik\" olarak işaretlenir.",
-    "tempPassword": "Geçici Şifre",
-    "tempPasswordPlaceholder": "En az 8 karakter",
-    "tempPasswordHint": "Sürücünün mobil uygulamada ilk girişte kullanacağı şifre — sonrasında kendi değiştirir. Boş bırakırsanız sürücü kaydedilir ama uygulamaya giriş yapamaz.",
+    "inviteNote": "Sürücüye davet bağlantısı içeren bir e-posta gönderilir. Sürücü bağlantıya tıklayarak kendi şifresini belirler ve uygulamaya giriş yapar.",
     "addingDriver": "Ekleniyor...",
     "addDriverButton": "Sürücü Ekle"
   },
