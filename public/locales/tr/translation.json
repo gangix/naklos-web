@@ -1993,30 +1993,24 @@
       }
     },
     "comparison": {
-      "eyebrow": "Adil bir karşılaştırma",
-      "title": "Excel'den uzak, Arvento'ya yakın değil",
-      "subtitle": "10 araçlık küçük filo için aylık maliyet ve özellikler.",
-      "footnote": "Kaynaklar: Fleetio Essential ($5/araç/ay × kur ortalaması), Arvento 24-ay paketi, naklos beta (Mart 2026).",
+      "eyebrow": "Excel'den naklos'a",
+      "title": "Aynı işi, çok daha az çabayla",
+      "subtitle": "10 araçlık küçük filo için Excel ile naklos arasındaki fark.",
       "rows": {
-        "monthly": "Aylık (10 araç)",
-        "hardware": "Donanım",
-        "commitment": "Taahhüt",
-        "kvkk": "Türkçe arayüz + KVKK",
-        "docs": "Muayene/MTV otomatik takip",
+        "monthly": "Aylık maliyet (10 araç)",
+        "docs": "Belge bitiş hatırlatma",
         "anomaly": "Yakıt anomali tespiti",
-        "cancel": "İptal"
+        "maintenance": "Bakım takvimi",
+        "driverApp": "Sürücü mobil uygulaması"
       },
       "values": {
         "yok": "yok",
         "manuel": "manuel",
-        "kismen": "kısmen",
-        "always": "istediğin zaman",
-        "monthly": "aylık",
-        "longTerm": "12–24 ay",
-        "needed": "gerekli",
-        "duringContract": "sözleşme süresince",
-        "naklosFoundingPrice": "₺550 kurucu",
-        "anomalyRulesNote": "(12 kural)"
+        "auto": "otomatik",
+        "autoAlert": "otomatik uyarı",
+        "rules_one": "{{count}} kural",
+        "rules_other": "{{count}} kural",
+        "naklosFoundingPrice": "₺550 kurucu"
       }
     },
     "pricing": {
