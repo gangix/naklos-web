@@ -4,6 +4,7 @@ import Features from './landing/Features';
 import Comparison from './landing/Comparison';
 import Pricing from './landing/Pricing';
 import FAQ from './landing/FAQ';
+import ContactForm from './landing/ContactForm';
 import FinalCTA from './landing/FinalCTA';
 import Footer from './landing/Footer';
 
@@ -16,6 +17,7 @@ const LandingPage = () => {
       <Comparison />
       <Pricing />
       <FAQ />
+      <ContactForm />
       <FinalCTA />
       <Footer />
     </div>

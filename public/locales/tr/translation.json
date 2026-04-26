@@ -2047,7 +2047,17 @@
         "feature5": "E-posta öncelikli destek",
         "cta": "Hemen başla — beta ücretsiz"
       },
-      "enterpriseLink": "50+ araçlı filonuz mu var? <a>Bize özel teklif için ulaşın →</a>"
+      "enterprise": {
+        "title": "Kurumsal",
+        "subtitle": "100+ araç, çoklu lokasyon",
+        "price": "Bize ulaşın",
+        "feature1": "Pro tüm özellikleri",
+        "feature2": "Özel onboarding + eğitim",
+        "feature3": "Çoklu lokasyon yönetimi",
+        "feature4": "Hizmet seviyesi anlaşması (SLA)",
+        "feature5": "Telefon + Slack desteği",
+        "cta": "İletişime geç"
+      }
     },
     "faq": {
       "eyebrow": "Sık sorulan sorular",

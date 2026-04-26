@@ -78,7 +78,9 @@ describe('landing translations alignment', () => {
       'landing.pricing.pro.title',
       'landing.pricing.pro.standardPrice',
       'landing.pricing.pro.foundingPrice',
-      'landing.pricing.enterpriseLink',
+      'landing.pricing.enterprise.title',
+      'landing.pricing.enterprise.price',
+      'landing.pricing.enterprise.cta',
 
       // FAQ
       'landing.faq.eyebrow',
