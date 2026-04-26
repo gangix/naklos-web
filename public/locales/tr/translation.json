@@ -1981,7 +1981,7 @@
       "title": "Süresi dolacak belgeler. Yaklaşan bakımlar. Şüpheli yakıt dolumları. Hepsi tek panelde.",
       "docs": {
         "title": "Belgeler",
-        "description": "Muayene, MTV, sigorta tarihlerini bir daha unutmayın. Bitiş 30/14/7 gün önceden e-posta uyarı."
+        "description": "Muayene, MTV, sigorta tarihlerini bir daha unutmayın. Bitime 30, 14 ve 7 gün kala e-posta uyarısı."
       },
       "fuel": {
         "title": "Yakıt",
