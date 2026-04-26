@@ -130,7 +130,7 @@
   "maintenance": {
     "sectionTitle": "Maintenance",
     "addRecord": "Log service",
-    "noSchedules": "No maintenance schedules found.",
+    "noSchedules": "No maintenance calendars found.",
     "scheduleEdit": "Edit",
     "scheduleSave": "Save",
     "scheduleCancel": "Cancel",
@@ -902,9 +902,9 @@
     "maintenance": {
       "title": "Maintenance",
       "logService": "Log service",
-      "noSchedules": "No maintenance schedules yet. Contact your fleet manager.",
-      "subtitle_one": "{{count}} active schedule",
-      "subtitle_other": "{{count}} active schedules"
+      "noSchedules": "No maintenance calendar yet. Contact your fleet manager.",
+      "subtitle_one": "{{count}} entry in maintenance calendar",
+      "subtitle_other": "{{count}} entries in maintenance calendar"
     }
   },
   "categoryLabel": {
@@ -2069,7 +2069,7 @@
         "feature1": "Up to 3 vehicles",
         "feature2": "All core features",
         "feature3": "Document tracking + alerts",
-        "feature4": "Maintenance schedule + service log",
+        "feature4": "Maintenance calendar + service log",
         "feature5": "Driver app",
         "cta": "Start free"
       },

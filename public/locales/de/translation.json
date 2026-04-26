@@ -130,7 +130,7 @@
   "maintenance": {
     "sectionTitle": "Wartung",
     "addRecord": "Service eintragen",
-    "noSchedules": "Keine Wartungspläne gefunden.",
+    "noSchedules": "Kein Wartungskalender gefunden.",
     "scheduleEdit": "Bearbeiten",
     "scheduleSave": "Speichern",
     "scheduleCancel": "Abbrechen",
@@ -902,9 +902,9 @@
     "maintenance": {
       "title": "Wartung",
       "logService": "Service eintragen",
-      "noSchedules": "Noch keine Wartungspläne. Wenden Sie sich an Ihren Flottenmanager.",
-      "subtitle_one": "{{count}} aktiver Wartungsplan",
-      "subtitle_other": "{{count}} aktive Wartungspläne"
+      "noSchedules": "Noch kein Wartungskalender. Wenden Sie sich an Ihren Flottenmanager.",
+      "subtitle_one": "{{count}} Eintrag im Wartungskalender",
+      "subtitle_other": "{{count}} Einträge im Wartungskalender"
     }
   },
   "categoryLabel": {
@@ -2069,7 +2069,7 @@
         "feature1": "Bis zu 3 Fahrzeuge",
         "feature2": "Alle Grundfunktionen",
         "feature3": "Dokumentenverfolgung + Warnungen",
-        "feature4": "Wartungsplan + Serviceeintrag",
+        "feature4": "Wartungskalender + Serviceeintrag",
         "feature5": "Fahrer-App",
         "cta": "Kostenlos starten"
       },
