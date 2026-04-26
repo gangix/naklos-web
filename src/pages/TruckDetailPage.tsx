@@ -209,7 +209,6 @@ const TruckDetailPage = () => {
   }, [truck, truckId, allFuelAnomalies, maintenanceSchedules, t]);
 
   const docWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'doc'), [truckEntityWarnings]);
-  const fuelWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'fuel'), [truckEntityWarnings]);
   const maintenanceWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'maintenance'), [truckEntityWarnings]);
 
   if (loading) {
@@ -339,18 +338,7 @@ const TruckDetailPage = () => {
 
   const tabs: { id: Tab; label: React.ReactNode }[] = [
     { id: 'genel', label: t('truckDetail.tabs.genel') },
-    {
-      id: 'yakit',
-      label: (
-        <span className="inline-flex items-center">
-          {t('truckDetail.tabs.yakit')}
-          <TabSeverityBadge
-            severity={worstSeverity(fuelWarnings)}
-            count={fuelWarnings.filter((w) => w.severity !== 'INFO').length}
-          />
-        </span>
-      ),
-    },
+    { id: 'yakit', label: t('truckDetail.tabs.yakit') },
     {
       id: 'bakim',
       label: (
