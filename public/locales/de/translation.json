@@ -1995,8 +1995,8 @@
     },
     "comparison": {
       "eyebrow": "Von Excel zu naklos",
-      "title": "Dieselbe Arbeit, viel weniger Aufwand",
-      "subtitle": "Der Unterschied zwischen Excel und naklos für eine kleine Flotte mit 10 Fahrzeugen.",
+      "title": "Excel speichert. naklos warnt.",
+      "subtitle": "Eine HU steht an. Eine verdächtige Tankung ist erfasst. Excel sagt es Ihnen nicht — naklos schon.",
       "rows": {
         "monthly": "Monatliche Kosten (10 Fahrzeuge)",
         "docs": "Ablauferinnerungen für Dokumente",

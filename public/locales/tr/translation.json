@@ -1994,8 +1994,8 @@
     },
     "comparison": {
       "eyebrow": "Excel'den naklos'a",
-      "title": "Aynı işi, çok daha az çabayla",
-      "subtitle": "10 araçlık küçük filo için Excel ile naklos arasındaki fark.",
+      "title": "Excel kayıt eder. naklos uyarır.",
+      "subtitle": "Muayene yaklaşıyor. Şüpheli yakıt dolumu var. Excel size söylemez — naklos söyler.",
       "rows": {
         "monthly": "Aylık maliyet (10 araç)",
         "docs": "Belge bitiş hatırlatma",
