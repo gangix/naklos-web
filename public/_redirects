@@ -18,4 +18,5 @@
 /signin          /_app.html   200
 /signup          /_app.html   200
 /auth/*          /_app.html   200
+/invite/*        /_app.html   200
 /silent-check-sso /_app.html  200
