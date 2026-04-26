@@ -46,7 +46,23 @@ export async function apiCall<T>(
   if (!response.ok) {
     const errorBody = await response.text();
     console.error(`API Error ${response.status} ${options?.method ?? 'GET'} ${endpoint}:`, errorBody);
-    throw new Error(getUserFriendlyMessage(response.status));
+
+    // BE returns ErrorResponse JSON like { status, message, details, path }.
+    // Prefer the locale-aware `details` field for user display; fall back to the
+    // generic status-based message only if the body isn't JSON or has no message.
+    let userMessage = getUserFriendlyMessage(response.status);
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (typeof parsed?.details === 'string' && parsed.details.length > 0) {
+        userMessage = parsed.details;
+      } else if (typeof parsed?.message === 'string' && parsed.message.length > 0) {
+        userMessage = parsed.message;
+      }
+    } catch {
+      // Body wasn't JSON (e.g. plain-text error from upstream proxy) — keep generic.
+    }
+
+    throw new Error(userMessage);
   }
 
   // Handle empty responses (e.g., 204 No Content for DELETE)
@@ -71,7 +87,23 @@ async function multipartCall<T>(endpoint: string, formData: FormData): Promise<T
   if (!response.ok) {
     const errorBody = await response.text();
     console.error(`API Error ${response.status} POST ${endpoint}:`, errorBody);
-    throw new Error(getUserFriendlyMessage(response.status));
+
+    // BE returns ErrorResponse JSON like { status, message, details, path }.
+    // Prefer the locale-aware `details` field for user display; fall back to the
+    // generic status-based message only if the body isn't JSON or has no message.
+    let userMessage = getUserFriendlyMessage(response.status);
+    try {
+      const parsed = JSON.parse(errorBody);
+      if (typeof parsed?.details === 'string' && parsed.details.length > 0) {
+        userMessage = parsed.details;
+      } else if (typeof parsed?.message === 'string' && parsed.message.length > 0) {
+        userMessage = parsed.message;
+      }
+    } catch {
+      // Body wasn't JSON (e.g. plain-text error from upstream proxy) — keep generic.
+    }
+
+    throw new Error(userMessage);
   }
 
   return response.json();
