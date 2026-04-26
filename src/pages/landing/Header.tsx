@@ -10,9 +10,7 @@ const Header = () => {
     <header className="border-b border-slate-200 bg-warm sticky top-0 z-30 backdrop-blur-sm bg-warm/90">
       <div className="max-w-6xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2 group" aria-label="naklos">
-          <div className="w-8 h-8 rounded-lg bg-primary-700 flex items-center justify-center text-white font-extrabold text-sm">
-            N
-          </div>
+          <img src="/naklos-icon.svg" alt="" className="w-8 h-8" aria-hidden="true" />
           <span className="font-extrabold text-slate-900 tracking-tight group-hover:text-primary-700 transition-colors">naklos</span>
           <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-confirm-500/10 text-confirm-700 border border-confirm-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-confirm-500" aria-hidden="true" />
