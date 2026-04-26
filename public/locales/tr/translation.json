@@ -665,6 +665,7 @@
     "deletingDriver": "Siliniyor...",
     "inviteFailed": "Davet e-postası gönderilemedi",
     "invitePending": "Davet gönderiliyor...",
+    "inviteSent": "Davet gönderildi — sürücü henüz kabul etmedi",
     "inviteNotSent": "Davet henüz gönderilmedi",
     "resendInvite": "Tekrar Gönder",
     "confirmDelete": "Bu sürücü silinecek. Bu işlem geri alınamaz.",

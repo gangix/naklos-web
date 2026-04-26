@@ -587,22 +587,25 @@ const DriverDetailPage = () => {
         </Link>
       )}
 
-      {/* Invite status — NOT_INVITED (with email), PENDING, FAILED all surface here */}
+      {/* Invite status — NOT_INVITED (with email), PENDING, SENT, FAILED all surface here. ACCEPTED hides the card entirely. */}
       {(() => {
         const status = driver.inviteStatus;
-        const canInvite = !!driver.email && (status === 'FAILED' || status === 'NOT_INVITED');
-        if (status !== 'FAILED' && status !== 'PENDING' && !(status === 'NOT_INVITED' && driver.email)) {
+        const canInvite = !!driver.email && status !== 'ACCEPTED';
+        if (status === 'ACCEPTED' || (status === 'NOT_INVITED' && !driver.email)) {
           return null;
         }
         const tone =
           status === 'FAILED'
             ? { bg: 'bg-red-50 border-red-200', icon: 'text-red-500', text: 'text-red-700', btn: 'border-red-300 text-red-700 hover:bg-red-50' }
             : status === 'PENDING'
-            ? { bg: 'bg-yellow-50 border-yellow-200', icon: 'text-yellow-500', text: 'text-yellow-700', btn: '' }
+            ? { bg: 'bg-yellow-50 border-yellow-200', icon: 'text-yellow-500', text: 'text-yellow-700', btn: 'border-yellow-300 text-yellow-700 hover:bg-yellow-50' }
+            : status === 'SENT'
+            ? { bg: 'bg-emerald-50 border-emerald-200', icon: 'text-emerald-500', text: 'text-emerald-700', btn: 'border-emerald-300 text-emerald-700 hover:bg-emerald-50' }
             : { bg: 'bg-gray-50 border-gray-200', icon: 'text-gray-500', text: 'text-gray-700', btn: 'border-primary-300 text-primary-700 hover:bg-primary-50' };
         const label =
           status === 'FAILED' ? t('driverDetail.inviteFailed')
           : status === 'PENDING' ? t('driverDetail.invitePending')
+          : status === 'SENT' ? t('driverDetail.inviteSent')
           : t('driverDetail.inviteNotSent');
         return (
           <div className={`rounded-lg p-4 shadow-sm mb-4 border ${tone.bg}`}>
@@ -627,7 +630,7 @@ const DriverDetailPage = () => {
                   className={`flex items-center gap-1 px-3 py-1.5 bg-white border rounded-lg text-xs font-medium ${tone.btn}`}
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
-                  {status === 'FAILED' ? t('common.resend') : t('common.send')}
+                  {status === 'NOT_INVITED' ? t('common.send') : t('common.resend')}
                 </button>
               )}
             </div>

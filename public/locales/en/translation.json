@@ -667,6 +667,7 @@
     "deletingDriver": "Deleting...",
     "inviteFailed": "Failed to send invitation email",
     "invitePending": "Sending invitation...",
+    "inviteSent": "Invite sent — driver hasn't accepted yet",
     "inviteNotSent": "Invite not sent yet",
     "resendInvite": "Resend",
     "confirmDelete": "Delete this driver? This cannot be undone.",
