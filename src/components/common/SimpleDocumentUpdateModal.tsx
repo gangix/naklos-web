@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
-import { FileText, Pencil, Upload } from 'lucide-react';
+import { FileText, Upload } from 'lucide-react';
 import { truckApi, driverApi } from '../../services/api';
 import { FileInput, TextInput } from './FormField';
 import ConfirmActionModal from '../fuel/ConfirmActionModal';
@@ -41,33 +41,39 @@ const SimpleDocumentUpdateModal = ({
   const { t } = useTranslation();
   const [expiryDate, setExpiryDate] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [documents, setDocuments] = useState<TruckDocument[]>([]);
-  const [editingDocId, setEditingDocId] = useState<string | null>(null);
-  const [editingExpiry, setEditingExpiry] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
+  const [currentDoc, setCurrentDoc] = useState<TruckDocument | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingDocs, setLoadingDocs] = useState(false);
-  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
+  const [loadingDoc, setLoadingDoc] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      loadDocuments();
+      loadCurrentDoc();
     }
   }, [isOpen, relatedId, category]);
 
-  const loadDocuments = async () => {
-    setLoadingDocs(true);
+  // Pre-populate expiry input from current doc when it loads.
+  useEffect(() => {
+    setExpiryDate(currentDoc?.expiryDate ?? '');
+  }, [currentDoc]);
+
+  const loadCurrentDoc = async () => {
+    setLoadingDoc(true);
     try {
       const allDocs = (relatedType === 'driver'
         ? await driverApi.getDocuments(relatedId)
         : await truckApi.getDocuments(relatedId)) as TruckDocument[];
-      // Filter documents by category
-      const filtered = allDocs.filter((doc) => doc.documentType === category);
-      setDocuments(filtered);
+      // The "current" doc for a category = most recently uploaded one of that type.
+      const latest = allDocs
+        .filter((doc) => doc.documentType === category)
+        .sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())[0] ?? null;
+      setCurrentDoc(latest);
     } catch (err) {
       console.error('Error loading documents:', err);
+      setCurrentDoc(null);
     } finally {
-      setLoadingDocs(false);
+      setLoadingDoc(false);
     }
   };
 
@@ -96,56 +102,67 @@ const SimpleDocumentUpdateModal = ({
     setError(null);
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
-      setError(t('simpleDocUpdate.selectFileError'));
-      return;
-    }
-
+  const handleSave = async () => {
     if (!expiryDate) {
       setError(t('simpleDocUpdate.expiryDateError'));
       return;
     }
 
-    setIsUploading(true);
+    // Two save paths:
+    //  1. New file picked (replace or first upload)  -> upload (multipart) with expiry
+    //  2. No new file but expiry changed             -> updateDocumentExpiry on current doc
+    // If neither, we early-return.
+    const expiryChanged = expiryDate !== (currentDoc?.expiryDate ?? '');
+    if (!selectedFile && !expiryChanged) {
+      onClose();
+      return;
+    }
+
+    setIsSaving(true);
     setError(null);
 
     try {
-      if (relatedType === 'driver') {
-        await driverApi.uploadDocument(relatedId, selectedFile, category, expiryDate);
-      } else {
-        await truckApi.uploadDocument(relatedId, selectedFile, category, expiryDate);
+      if (selectedFile) {
+        if (relatedType === 'driver') {
+          await driverApi.uploadDocument(relatedId, selectedFile, category, expiryDate);
+        } else {
+          await truckApi.uploadDocument(relatedId, selectedFile, category, expiryDate);
+        }
+        toast.success(t('toast.success.documentUploaded'));
+      } else if (currentDoc) {
+        if (relatedType === 'driver') {
+          await driverApi.updateDocumentExpiry(currentDoc.id, expiryDate);
+        } else {
+          await truckApi.updateDocumentExpiry(currentDoc.id, expiryDate);
+        }
+        toast.success(t('toast.success.expiryUpdated'));
       }
 
-      toast.success(t('toast.success.documentUploaded'));
       setSelectedFile(null);
-      setExpiryDate('');
-      await loadDocuments(); // Reload documents list
-      // Also update the expiry date in the parent
+      await loadCurrentDoc();
+      // Tell the parent so its expiry-date columns refresh.
       await onUpdate(category, expiryDate);
     } catch (err) {
-      console.error('Error uploading document:', err);
+      console.error('Error saving document:', err);
       setError(err instanceof Error ? err.message : t('toast.error.documentUpload'));
     } finally {
-      setIsUploading(false);
+      setIsSaving(false);
     }
   };
 
-  const handleDelete = (documentId: string, fileName: string) => {
-    setPendingDelete({ id: documentId, name: fileName });
-  };
-
-  const runDeleteDocument = async () => {
-    if (!pendingDelete) return;
+  const runDeleteCurrent = async () => {
+    if (!currentDoc) return;
     try {
       if (relatedType === 'driver') {
-        await driverApi.deleteDocument(pendingDelete.id);
+        await driverApi.deleteDocument(currentDoc.id);
       } else {
-        await truckApi.deleteDocument(pendingDelete.id);
+        await truckApi.deleteDocument(currentDoc.id);
       }
       toast.success(t('toast.success.documentDeleted'));
-      setPendingDelete(null);
-      await loadDocuments();
+      setPendingDelete(false);
+      setCurrentDoc(null);
+      setSelectedFile(null);
+      setExpiryDate('');
       await onUpdate(category, '');
     } catch (err) {
       console.error('Error deleting document:', err);
@@ -153,45 +170,12 @@ const SimpleDocumentUpdateModal = ({
     }
   };
 
-  const handleEditExpiry = (doc: TruckDocument) => {
-    setEditingDocId(doc.id);
-    setEditingExpiry(doc.expiryDate || '');
-  };
-
-  const handleSaveExpiry = async (documentId: string) => {
-    if (!editingExpiry) {
-      toast.warning(t('toast.warning.enterExpiryDate'));
-      return;
-    }
-
-    try {
-      if (relatedType === 'driver') {
-        await driverApi.updateDocumentExpiry(documentId, editingExpiry);
-      } else {
-        await truckApi.updateDocumentExpiry(documentId, editingExpiry);
-      }
-      toast.success(t('toast.success.expiryUpdated'));
-      setEditingDocId(null);
-      setEditingExpiry('');
-      await loadDocuments();
-      // Refresh parent component to update expiry dates
-      await onUpdate(category, editingExpiry);
-    } catch (err) {
-      console.error('Error updating expiry:', err);
-      toast.error(t('toast.error.expiryUpdate'));
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingDocId(null);
-    setEditingExpiry('');
-  };
-
   const handleClose = () => {
     setExpiryDate('');
     setSelectedFile(null);
     setError(null);
-    setIsUploading(false);
+    setIsSaving(false);
+    setCurrentDoc(null);
     onClose();
   };
 
@@ -201,9 +185,18 @@ const SimpleDocumentUpdateModal = ({
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
+  const downloadCurrent = () => {
+    if (!currentDoc) return;
+    if (relatedType === 'driver') {
+      driverApi.downloadDocument(currentDoc.id);
+    } else {
+      truckApi.downloadDocument(currentDoc.id);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white">
           <h2 className="text-lg font-bold text-gray-900">
@@ -218,7 +211,7 @@ const SimpleDocumentUpdateModal = ({
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-6">
+        <div className="p-4 space-y-4">
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-xs text-gray-600 mb-1">
               {relatedType === 'truck' ? t('simpleDocUpdate.vehicle') : t('simpleDocUpdate.driver')}
@@ -232,148 +225,84 @@ const SimpleDocumentUpdateModal = ({
             </div>
           )}
 
-          {/* File Upload Section */}
-          <div className="border-2 border-primary-200 bg-primary-50 rounded-lg p-4 space-y-4">
-            <div>
-              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><Upload className="w-5 h-5" /> {t('simpleDocUpdate.uploadNew')}</h3>
-              <p className="text-xs text-gray-600 mt-1">{t('simpleDocUpdate.uploadHint')}</p>
-            </div>
-
-            <FileInput
-              label={t('simpleDocUpdate.selectFile')}
-              accept=".pdf,.jpg,.jpeg,.png"
-              onChange={handleFileSelected}
-              selectedFileName={selectedFile ? `${selectedFile.name} (${formatFileSize(selectedFile.size)})` : null}
-            />
-
-            <TextInput
-              label={t('simpleDocUpdate.expiryDate')}
-              type="date"
-              value={expiryDate}
-              onChange={(e) => setExpiryDate(e.target.value)}
-            />
-
-            <button
-              onClick={handleUpload}
-              disabled={!selectedFile || !expiryDate || isUploading}
-              className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isUploading ? t('simpleDocUpdate.uploading') : t('simpleDocUpdate.uploadButton')}
-            </button>
-          </div>
-
-          {/* Uploaded Documents List */}
-          {(
-          <div className="border-2 border-blue-200 bg-blue-50 rounded-lg p-4 space-y-4">
-            <div>
-              <h3 className="font-semibold text-gray-900 flex items-center gap-1.5"><FileText className="w-5 h-5" /> {t('simpleDocUpdate.uploadedDocuments')}</h3>
-              <p className="text-xs text-gray-600 mt-1">
-                {t('simpleDocUpdate.editDateHint')}
-              </p>
-            </div>
-
-            {loadingDocs ? (
-              <p className="text-sm text-gray-600">{t('simpleDocUpdate.loading')}</p>
-            ) : documents.length === 0 ? (
-              <p className="text-sm text-gray-600">{t('simpleDocUpdate.noDocuments')}</p>
-            ) : (
-              <div className="space-y-2">
-                {documents.map((doc) => (
-                  <div key={doc.id} className={editingDocId === doc.id ? "bg-yellow-50 border-2 border-yellow-400 rounded-lg p-3" : "bg-white rounded-lg p-3 border border-gray-200"}>
-                    {editingDocId === doc.id ? (
-                      // Edit mode
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <Pencil className="w-4 h-4 text-gray-600" />
-                          <p className="text-sm font-medium text-gray-900">{doc.fileName}</p>
-                        </div>
-                        <div className="bg-white rounded p-2 border border-yellow-300">
-                          <TextInput
-                            label={t('simpleDocUpdate.newExpiryDate')}
-                            type="date"
-                            tone="warning"
-                            value={editingExpiry}
-                            onChange={(e) => setEditingExpiry(e.target.value)}
-                            hint={`${t('simpleDocUpdate.current')}: ${doc.expiryDate ? new Date(doc.expiryDate).toLocaleDateString('tr-TR') : t('simpleDocUpdate.notSpecified')}`}
-                          />
-                        </div>
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() => handleSaveExpiry(doc.id)}
-                            className="flex-1 px-3 py-2 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
-                          >
-                            {t('simpleDocUpdate.saveDateBtn')}
-                          </button>
-                          <button
-                            onClick={handleCancelEdit}
-                            className="flex-1 px-3 py-2 text-sm border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
-                          >
-                            {t('simpleDocUpdate.cancelEditBtn')}
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      // View mode
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">{doc.fileName}</p>
-                          <p className="text-xs text-gray-600">
-                            {formatFileSize(doc.fileSize)} •
-                            {doc.expiryDate && ` ${t('simpleDocUpdate.lastExpiry')}: ${new Date(doc.expiryDate).toLocaleDateString('tr-TR')}`} •
-                            {t('simpleDocUpdate.uploadDate')}: {new Date(doc.uploadedAt).toLocaleDateString('tr-TR')}
-                          </p>
-                        </div>
-                        <div className="flex gap-2 ml-4">
-                          <button
-                            onClick={() => handleEditExpiry(doc)}
-                            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-                          >
-                            {t('simpleDocUpdate.editDate')}
-                          </button>
-                          <button
-                            onClick={() => relatedType === 'driver' ? driverApi.downloadDocument(doc.id) : truckApi.downloadDocument(doc.id)}
-                            className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-                          >
-                            {t('simpleDocUpdate.download')}
-                          </button>
-                          <button
-                            onClick={() => handleDelete(doc.id, doc.fileName)}
-                            className="text-sm text-red-600 hover:text-red-700 font-medium"
-                          >
-                            {t('simpleDocUpdate.delete')}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
+          {/* Current document */}
+          {loadingDoc ? (
+            <p className="text-sm text-gray-600">{t('simpleDocUpdate.loading')}</p>
+          ) : currentDoc ? (
+            <div className="border border-gray-200 rounded-lg p-3 bg-white flex items-start gap-3">
+              <FileText className="w-5 h-5 text-gray-500 mt-0.5 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">{currentDoc.fileName}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{formatFileSize(currentDoc.fileSize)}</p>
               </div>
-            )}
-          </div>
+              <button
+                onClick={downloadCurrent}
+                className="text-xs font-medium text-primary-600 hover:text-primary-700 flex-shrink-0"
+              >
+                {t('simpleDocUpdate.download')}
+              </button>
+            </div>
+          ) : (
+            <div className="border border-dashed border-gray-300 rounded-lg p-3 text-center">
+              <p className="text-sm text-gray-500">{t('simpleDocUpdate.noCurrentDoc')}</p>
+            </div>
           )}
 
+          {/* File input — replace or upload first */}
+          <FileInput
+            label={currentDoc ? t('simpleDocUpdate.replaceFile') : t('simpleDocUpdate.selectFile')}
+            accept=".pdf,.jpg,.jpeg,.png"
+            onChange={handleFileSelected}
+            selectedFileName={selectedFile ? `${selectedFile.name} (${formatFileSize(selectedFile.size)})` : null}
+          />
+
+          {/* Expiry date — pre-populated from current doc */}
+          <TextInput
+            label={t('simpleDocUpdate.expiryDate')}
+            type="date"
+            value={expiryDate}
+            onChange={(e) => setExpiryDate(e.target.value)}
+          />
         </div>
 
         {/* Footer */}
         <div className="flex gap-3 p-4 border-t border-gray-200 sticky bottom-0 bg-white">
+          {currentDoc && (
+            <button
+              onClick={() => setPendingDelete(true)}
+              className="px-3 py-2 text-sm border border-red-300 text-red-700 rounded-lg font-medium hover:bg-red-50"
+              disabled={isSaving}
+            >
+              {t('simpleDocUpdate.delete')}
+            </button>
+          )}
           <button
             onClick={handleClose}
             className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50"
+            disabled={isSaving}
           >
             {t('simpleDocUpdate.close')}
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!expiryDate || isSaving || (!selectedFile && expiryDate === (currentDoc?.expiryDate ?? ''))}
+            className="flex-1 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
+          >
+            <Upload className="w-4 h-4" />
+            {isSaving ? t('simpleDocUpdate.uploading') : t('simpleDocUpdate.saveBtn')}
           </button>
         </div>
       </div>
 
-      {pendingDelete && (
+      {pendingDelete && currentDoc && (
         <ConfirmActionModal
           title={t('confirmDelete.document.title')}
-          description={t('confirmDelete.document.description', { filename: pendingDelete.name })}
+          description={t('confirmDelete.document.description', { filename: currentDoc.fileName })}
           bullets={[t('common.irreversible')]}
           confirmLabel={t('common.delete')}
           tone="danger"
-          onConfirm={runDeleteDocument}
-          onClose={() => setPendingDelete(null)}
+          onConfirm={runDeleteCurrent}
+          onClose={() => setPendingDelete(false)}
         />
       )}
     </div>

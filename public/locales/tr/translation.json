@@ -339,27 +339,8 @@
     "cpcExpiring_other": "CPC Belgesi {{count}} gün içinde sona erecek ({{driverName}})"
   },
   "approval": {
-    "title": "Onay Bekleyenler",
-    "pending": "Bekliyor",
-    "approved": "Onaylandı",
-    "rejected": "Reddedildi",
     "approve": "Onayla",
-    "reject": "Reddet",
-    "review": "İncele",
-    "documentSubmission": "Belge Güncellemesi",
-    "truckRequest": "Araç Talebi",
-    "submittedBy": "Gönderen",
-    "submittedAt": "Gönderim Tarihi",
-    "suggestedDate": "Önerilen Tarih",
-    "currentDate": "Mevcut Tarih",
-    "newDate": "Yeni Tarih",
-    "previousDocument": "Önceki Belge",
-    "newDocument": "Yeni Belge",
-    "confirmDate": "Tarihi Onayla",
-    "selectReason": "Ret Nedeni Seçin",
-    "rejectionNote": "Not (opsiyonel)",
-    "noPendingApprovals": "Onay bekleyen öğe yok",
-    "pendingCount": "bekliyor"
+    "reject": "Reddet"
   },
   "documentUpload": {
     "title": "Belge Güncelle",
@@ -393,14 +374,6 @@
     "rejected": "Reddedildi",
     "noTruckAssigned": "Henüz araç atanmadı",
     "requestTruck": "Araç Talep Et"
-  },
-  "rejectionReason": {
-    "blurry": "Fotoğraf bulanık",
-    "wrong_type": "Yanlış belge türü",
-    "expired": "Süresi geçmiş belge",
-    "mismatch": "Bilgiler uyuşmuyor",
-    "incomplete": "Eksik sayfa",
-    "other": "Diğer"
   },
   "profile": {
     "title": "Profil",
@@ -725,31 +698,19 @@
     "management": "Yönetimi",
     "vehicle": "Araç",
     "driver": "Sürücü",
-    "uploadNew": "Yeni Belge Yükle",
-    "uploadHint": "Yeni bir belge dosyası yüklemek için bu bölümü kullanın",
-    "selectFile": "Dosya Seç *",
-    "selected": "Seçili",
+    "selectFile": "Dosya Yükle *",
+    "replaceFile": "Dosyayı Değiştir",
     "expiryDate": "Geçerlilik Tarihi *",
-    "uploading": "Yükleniyor...",
-    "uploadButton": "Belgeyi Yükle",
-    "uploadedDocuments": "Yüklenmiş Belgeler",
-    "editDateHint": "Mevcut belge tarihlerini güncellemek için \"Tarih Düzenle\" butonuna tıklayın",
+    "uploading": "Kaydediliyor...",
+    "saveBtn": "Kaydet",
     "loading": "Yükleniyor...",
-    "noDocuments": "Henüz belge yüklenmemiş. Yukarıdaki bölümden yeni belge yükleyebilirsiniz.",
-    "newExpiryDate": "Yeni Geçerlilik Tarihi Girin",
-    "current": "Mevcut",
+    "noCurrentDoc": "Henüz belge yüklenmemiş.",
     "notSpecified": "Belirtilmemiş",
-    "saveDateBtn": "Kaydet",
-    "cancelEditBtn": "İptal",
-    "editDate": "Tarih Düzenle",
     "download": "İndir",
     "delete": "Sil",
-    "lastExpiry": "Son geçerlilik",
-    "uploadDate": "Yüklenme",
     "close": "Kapat",
     "selectFileError": "Lütfen bir dosya seçin",
-    "expiryDateError": "Lütfen geçerlilik tarihi girin",
-    "confirmDelete": "Bu belgeyi silmek istediğinizden emin misiniz?"
+    "expiryDateError": "Lütfen geçerlilik tarihi girin"
   },
   "docUploadModal": {
     "currentExpiry": "Mevcut Geçerlilik Tarihi",
@@ -769,12 +730,6 @@
     "rejectTitle": "Talebi Reddet",
     "rejectHint": "Sürücüye neden araç atanamadığını açıklayın.",
     "rejectionReason": "Red Nedeni *"
-  },
-  "docReview": {
-    "currentExpiry": "Mevcut Geçerlilik",
-    "noPreviousDoc": "Önceki belge yok",
-    "expiryConfirmHint": "Sürücünün önerdiği tarihi kontrol edin ve onaylayın veya düzeltin.",
-    "driverExplanation": "Sürücüye açıklama..."
   },
   "driversPage": {
     "addDriver": "+ Sürücü Ekle",

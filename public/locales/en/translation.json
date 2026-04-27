@@ -341,27 +341,8 @@
     "cpcExpiring_other": "CPC certificate expires in {{count}} days ({{driverName}})"
   },
   "approval": {
-    "title": "Pending Approvals",
-    "pending": "Pending",
-    "approved": "Approved",
-    "rejected": "Rejected",
     "approve": "Approve",
-    "reject": "Reject",
-    "review": "Review",
-    "documentSubmission": "Document Update",
-    "truckRequest": "Truck Request",
-    "submittedBy": "Submitted By",
-    "submittedAt": "Submitted On",
-    "suggestedDate": "Suggested Date",
-    "currentDate": "Current Date",
-    "newDate": "New Date",
-    "previousDocument": "Previous Document",
-    "newDocument": "New Document",
-    "confirmDate": "Confirm Date",
-    "selectReason": "Select Rejection Reason",
-    "rejectionNote": "Note (optional)",
-    "noPendingApprovals": "No pending approvals",
-    "pendingCount": "pending"
+    "reject": "Reject"
   },
   "documentUpload": {
     "title": "Update Document",
@@ -395,14 +376,6 @@
     "rejected": "Rejected",
     "noTruckAssigned": "No truck assigned yet",
     "requestTruck": "Request a Truck"
-  },
-  "rejectionReason": {
-    "blurry": "Photo is blurry",
-    "wrong_type": "Wrong document type",
-    "expired": "Document is expired",
-    "mismatch": "Information mismatch",
-    "incomplete": "Incomplete pages",
-    "other": "Other"
   },
   "profile": {
     "title": "Profile",
@@ -727,31 +700,19 @@
     "management": "Management",
     "vehicle": "Vehicle",
     "driver": "Driver",
-    "uploadNew": "Upload New Document",
-    "uploadHint": "Use this section to upload a new document file",
-    "selectFile": "Select File *",
-    "selected": "Selected",
+    "selectFile": "Upload File *",
+    "replaceFile": "Replace File",
     "expiryDate": "Expiry Date *",
-    "uploading": "Uploading...",
-    "uploadButton": "Upload Document",
-    "uploadedDocuments": "Uploaded Documents",
-    "editDateHint": "Click the \"Edit Date\" button to update the expiry date of an existing document",
+    "uploading": "Saving...",
+    "saveBtn": "Save",
     "loading": "Loading...",
-    "noDocuments": "No documents uploaded yet. Use the section above to upload a new document.",
-    "newExpiryDate": "Enter New Expiry Date",
-    "current": "Current",
+    "noCurrentDoc": "No document uploaded yet.",
     "notSpecified": "Not specified",
-    "saveDateBtn": "Save",
-    "cancelEditBtn": "Cancel",
-    "editDate": "Edit Date",
     "download": "Download",
     "delete": "Delete",
-    "lastExpiry": "Last expiry",
-    "uploadDate": "Uploaded",
     "close": "Close",
     "selectFileError": "Please select a file",
-    "expiryDateError": "Please enter an expiry date",
-    "confirmDelete": "Are you sure you want to delete this document?"
+    "expiryDateError": "Please enter an expiry date"
   },
   "docUploadModal": {
     "currentExpiry": "Current Expiry Date",
@@ -771,12 +732,6 @@
     "rejectTitle": "Reject Request",
     "rejectHint": "Explain to the driver why a truck cannot be assigned.",
     "rejectionReason": "Rejection Reason *"
-  },
-  "docReview": {
-    "currentExpiry": "Current Expiry",
-    "noPreviousDoc": "No previous document",
-    "expiryConfirmHint": "Review and confirm or correct the date suggested by the driver.",
-    "driverExplanation": "Explanation for driver..."
   },
   "driversPage": {
     "addDriver": "+ Add Driver",

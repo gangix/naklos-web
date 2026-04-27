@@ -341,27 +341,8 @@
     "cpcExpiring_other": "CPC-Bescheinigung läuft in {{count}} Tagen ab ({{driverName}})"
   },
   "approval": {
-    "title": "Ausstehende Genehmigungen",
-    "pending": "Ausstehend",
-    "approved": "Genehmigt",
-    "rejected": "Abgelehnt",
     "approve": "Genehmigen",
-    "reject": "Ablehnen",
-    "review": "Prüfen",
-    "documentSubmission": "Dokumentaktualisierung",
-    "truckRequest": "Fahrzeuganfrage",
-    "submittedBy": "Eingereicht von",
-    "submittedAt": "Eingereicht am",
-    "suggestedDate": "Vorgeschlagenes Datum",
-    "currentDate": "Aktuelles Datum",
-    "newDate": "Neues Datum",
-    "previousDocument": "Vorheriges Dokument",
-    "newDocument": "Neues Dokument",
-    "confirmDate": "Datum bestätigen",
-    "selectReason": "Ablehnungsgrund auswählen",
-    "rejectionNote": "Anmerkung (optional)",
-    "noPendingApprovals": "Keine ausstehenden Genehmigungen",
-    "pendingCount": "ausstehend"
+    "reject": "Ablehnen"
   },
   "documentUpload": {
     "title": "Dokument aktualisieren",
@@ -395,14 +376,6 @@
     "rejected": "Abgelehnt",
     "noTruckAssigned": "Noch kein Fahrzeug zugewiesen",
     "requestTruck": "Fahrzeug anfragen"
-  },
-  "rejectionReason": {
-    "blurry": "Foto unscharf",
-    "wrong_type": "Falscher Dokumenttyp",
-    "expired": "Dokument abgelaufen",
-    "mismatch": "Daten stimmen nicht überein",
-    "incomplete": "Seite fehlt",
-    "other": "Sonstiges"
   },
   "profile": {
     "title": "Profil",
@@ -727,31 +700,19 @@
     "management": "Verwaltung",
     "vehicle": "Fahrzeug",
     "driver": "Fahrer",
-    "uploadNew": "Neues Dokument hochladen",
-    "uploadHint": "Verwenden Sie diesen Bereich, um eine neue Dokumentdatei hochzuladen",
-    "selectFile": "Datei auswählen *",
-    "selected": "Ausgewählt",
+    "selectFile": "Datei hochladen *",
+    "replaceFile": "Datei ersetzen",
     "expiryDate": "Ablaufdatum *",
-    "uploading": "Wird hochgeladen...",
-    "uploadButton": "Dokument hochladen",
-    "uploadedDocuments": "Hochgeladene Dokumente",
-    "editDateHint": "Klicken Sie auf \"Datum bearbeiten\", um das Datum vorhandener Dokumente zu aktualisieren",
+    "uploading": "Wird gespeichert...",
+    "saveBtn": "Speichern",
     "loading": "Wird geladen...",
-    "noDocuments": "Noch keine Dokumente hochgeladen. Sie können über den obigen Bereich neue Dokumente hochladen.",
-    "newExpiryDate": "Neues Ablaufdatum eingeben",
-    "current": "Aktuell",
+    "noCurrentDoc": "Noch kein Dokument hochgeladen.",
     "notSpecified": "Nicht angegeben",
-    "saveDateBtn": "Speichern",
-    "cancelEditBtn": "Abbrechen",
-    "editDate": "Datum bearbeiten",
     "download": "Herunterladen",
     "delete": "Löschen",
-    "lastExpiry": "Letztes Ablaufdatum",
-    "uploadDate": "Hochgeladen am",
     "close": "Schließen",
     "selectFileError": "Bitte wählen Sie eine Datei aus",
-    "expiryDateError": "Bitte geben Sie ein Ablaufdatum ein",
-    "confirmDelete": "Sind Sie sicher, dass Sie dieses Dokument löschen möchten?"
+    "expiryDateError": "Bitte geben Sie ein Ablaufdatum ein"
   },
   "docUploadModal": {
     "currentExpiry": "Aktuelles Ablaufdatum",
@@ -771,12 +732,6 @@
     "rejectTitle": "Anfrage ablehnen",
     "rejectHint": "Erläutern Sie dem Fahrer, warum kein Fahrzeug zugewiesen werden kann.",
     "rejectionReason": "Ablehnungsgrund *"
-  },
-  "docReview": {
-    "currentExpiry": "Aktuelle Gültigkeit",
-    "noPreviousDoc": "Kein vorheriges Dokument",
-    "expiryConfirmHint": "Überprüfen und bestätigen Sie das vom Fahrer vorgeschlagene Datum oder korrigieren Sie es.",
-    "driverExplanation": "Erklärung an den Fahrer..."
   },
   "driversPage": {
     "addDriver": "+ Fahrer hinzufügen",

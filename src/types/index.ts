@@ -216,7 +216,6 @@ export interface TripTemplate {
 }
 
 // Document Management Types
-export type DocumentSubmissionStatus = 'pending' | 'approved' | 'rejected';
 export type DocumentCategory =
   | 'license'
   | 'src'
@@ -229,27 +228,6 @@ export type DocumentCategory =
   | 'adr-vehicle'
   | 'adr-driver'
   | 'psychotechnical';
-
-export interface DocumentSubmission {
-  id: string;
-  category: DocumentCategory;
-  relatedType: 'driver' | 'truck';
-  relatedId: string; // driverId or truckId
-  relatedName: string; // driver name or truck plate
-  submittedBy: 'driver' | 'manager';
-  submittedByName: string;
-  imageDataUrl: string; // base64 photo
-  suggestedExpiryDate: string;
-  confirmedExpiryDate: string | null; // set by manager on approval
-  status: DocumentSubmissionStatus;
-  submittedAt: string;
-  reviewedAt: string | null;
-  reviewedBy: string | null;
-  rejectionReason: string | null; // predefined code
-  rejectionNote: string | null; // free text (required for 'other')
-  previousImageDataUrl: string | null; // for side-by-side comparison
-  previousExpiryDate: string | null;
-}
 
 // Truck Assignment Request Types
 export type AssignmentRequestStatus = 'pending' | 'approved' | 'rejected';

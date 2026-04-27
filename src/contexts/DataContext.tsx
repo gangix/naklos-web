@@ -3,26 +3,21 @@ import type { ReactNode } from 'react';
 import { tripApi, invoiceApi } from '../services/api';
 import { useFleet } from './FleetContext';
 import { useAuth } from './AuthContext';
-import type { Trip, Invoice, DocumentSubmission, TruckAssignmentRequest } from '../types';
+import type { Trip, Invoice, TruckAssignmentRequest } from '../types';
 // Using real API - no mock data
 const initialTrips: any[] = [];
 const initialInvoices: any[] = [];
-const initialDocSubmissions: any[] = [];
 const initialTruckRequests: any[] = [];
 
 interface DataContextType {
   trips: Trip[];
   invoices: Invoice[];
-  documentSubmissions: DocumentSubmission[];
   truckAssignmentRequests: TruckAssignmentRequest[];
   refreshTrips: () => Promise<void>;
   refreshInvoices: () => Promise<void>;
   updateTrip: (tripId: string, updates: Partial<Trip>) => Promise<void>;
   addTrip: (trip: Trip) => void;
   addInvoice: (invoice: Invoice) => void;
-  submitDocument: (submission: Omit<DocumentSubmission, 'id' | 'submittedAt' | 'status' | 'reviewedAt' | 'reviewedBy'>) => void;
-  approveDocument: (id: string, confirmedDate: string) => void;
-  rejectDocument: (id: string, reason: string, note: string | null) => void;
   requestTruckAssignment: (request: Omit<TruckAssignmentRequest, 'id' | 'requestedAt' | 'status' | 'reviewedAt' | 'reviewedBy' | 'assignedTruckId' | 'assignedTruckPlate'>) => void;
   approveTruckRequest: (id: string, assignedTruckId: string, assignedTruckPlate: string) => void;
   rejectTruckRequest: (id: string, note: string) => void;
@@ -35,7 +30,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const { isFleetManager } = useAuth();
   const [trips, setTrips] = useState<Trip[]>(initialTrips);
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
-  const [documentSubmissions, setDocumentSubmissions] = useState<DocumentSubmission[]>(initialDocSubmissions);
   const [truckAssignmentRequests, setTruckAssignmentRequests] = useState<TruckAssignmentRequest[]>(initialTruckRequests);
 
   // Load trips and invoices from backend - only for managers (drivers use their own endpoints)
@@ -96,55 +90,6 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setInvoices((prev) => [...prev, invoice]);
   };
 
-  const submitDocument = (submission: Omit<DocumentSubmission, 'id' | 'submittedAt' | 'status' | 'reviewedAt' | 'reviewedBy'>) => {
-    const newSubmission: DocumentSubmission = {
-      ...submission,
-      id: `doc-sub-${Date.now()}`,
-      status: 'pending',
-      submittedAt: new Date().toISOString(),
-      reviewedAt: null,
-      reviewedBy: null,
-    };
-    setDocumentSubmissions((prev) => [newSubmission, ...prev]);
-    // TODO: Send push notification to manager
-  };
-
-  const approveDocument = (id: string, confirmedDate: string) => {
-    setDocumentSubmissions((prev) =>
-      prev.map((sub) =>
-        sub.id === id
-          ? {
-              ...sub,
-              status: 'approved' as const,
-              confirmedExpiryDate: confirmedDate,
-              reviewedAt: new Date().toISOString(),
-              reviewedBy: 'Fleet Manager',
-            }
-          : sub
-      )
-    );
-    // TODO: Update actual driver/truck expiry date in mockDrivers/mockTrucks
-    // TODO: Send push notification to driver
-  };
-
-  const rejectDocument = (id: string, reason: string, note: string | null) => {
-    setDocumentSubmissions((prev) =>
-      prev.map((sub) =>
-        sub.id === id
-          ? {
-              ...sub,
-              status: 'rejected' as const,
-              rejectionReason: reason,
-              rejectionNote: note,
-              reviewedAt: new Date().toISOString(),
-              reviewedBy: 'Fleet Manager',
-            }
-          : sub
-      )
-    );
-    // TODO: Send push notification to driver with rejection reason
-  };
-
   const requestTruckAssignment = (request: Omit<TruckAssignmentRequest, 'id' | 'requestedAt' | 'status' | 'reviewedAt' | 'reviewedBy' | 'assignedTruckId' | 'assignedTruckPlate'>) => {
     const newRequest: TruckAssignmentRequest = {
       ...request,
@@ -202,16 +147,12 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       value={{
         trips,
         invoices,
-        documentSubmissions,
         truckAssignmentRequests,
         refreshTrips: loadTrips,
         refreshInvoices: loadInvoices,
         updateTrip,
         addTrip,
         addInvoice,
-        submitDocument,
-        approveDocument,
-        rejectDocument,
         requestTruckAssignment,
         approveTruckRequest,
         rejectTruckRequest,
