@@ -85,7 +85,11 @@ const DashboardPage = () => {
         { date: driver.licenseExpiryDate, labelKey: 'doc.license', mandatory: true },
       ];
       const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
-      checks.push({ date: srcCert?.expiryDate, labelKey: 'doc.src', mandatory: false });
+      // SRC is required for commercial freight drivers in TR — must match
+      // utils/driverWarnings.ts which also treats SRC as mandatory. Otherwise
+      // the dashboard rollup silently drops 'SRC missing' while the sidebar
+      // badge still surfaces it (inconsistent + confusing for the manager).
+      checks.push({ date: srcCert?.expiryDate, labelKey: 'doc.src', mandatory: true });
       const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
       if (cpcCert) {
         checks.push({ date: cpcCert.expiryDate, labelKey: 'doc.cpc', mandatory: false });
