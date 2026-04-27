@@ -21,6 +21,14 @@ export interface DriverWarning {
 // so dashboard rollup, sidebar badge, and detail-page chips agree on tones.
 const severityFromDays = canonicalSeverityFromDays;
 
+/** Short `doc.*` i18n keys per driver doc type. Kept here so the dashboard,
+ *  the driver detail page rollup, and per-card tone lookups all agree. */
+export const DRIVER_DOC_LABEL_KEYS: Record<DriverWarning['type'], string> = {
+  license: 'doc.license',
+  src: 'doc.src',
+  cpc: 'doc.cpc',
+};
+
 /** Driver warnings with TR-KOBİ-fleet semantics:
  *  - License: always required — warn on missing/expired/expiring.
  *  - SRC: required for commercial freight — warn on missing/expired/expiring.

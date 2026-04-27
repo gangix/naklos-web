@@ -10,7 +10,7 @@ import { FileInput, Select, TextInput } from '../components/common/FormField';
 import { ArrowLeft, ChevronRight, Mail, RefreshCw } from 'lucide-react';
 import { formatDate } from '../utils/format';
 import { deriveDriverStatus, STATUS_BADGE } from '../utils/derivedStatus';
-import { computeDriverWarnings } from '../utils/driverWarnings';
+import { computeDriverWarnings, DRIVER_DOC_LABEL_KEYS } from '../utils/driverWarnings';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import Avatar from '../components/common/Avatar';
 import EntityWarningsRollup from '../components/common/EntityWarningsRollup';
@@ -18,7 +18,7 @@ import TabSeverityBadge from '../components/common/TabSeverityBadge';
 import { pushRecent } from '../utils/recentEntities';
 import type { DocumentCategory, Driver } from '../types';
 import type { EntityWarning } from '../types/entityWarning';
-import { worstSeverity, severityFromDays } from '../utils/severity';
+import { worstSeverity } from '../utils/severity';
 import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 
 type Tab = 'genel' | 'belgeler';
@@ -98,40 +98,29 @@ const DriverDetailPage = () => {
     }
   };
 
-  const driverWarnings = driver ? computeDriverWarnings(driver) : [];
+  const driverWarnings = useMemo(() => (driver ? computeDriverWarnings(driver) : []), [driver]);
 
   const driverEntityWarnings = useMemo<EntityWarning[]>(() => {
     if (!driver) return [];
     const warnings: EntityWarning[] = [];
 
-    // License (mandatory)
-    if (!driver.licenseExpiryDate) {
-      warnings.push({ kind: 'doc', severity: 'CRITICAL', labelKey: 'doc.license', daysLeft: null, isMandatory: true });
-    } else {
-      const days = daysUntil(driver.licenseExpiryDate);
-      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-        warnings.push({ kind: 'doc', severity: severityFromDays(days), labelKey: 'doc.license', daysLeft: days, isMandatory: true });
-      }
-    }
-
-    // SRC, CPC (optional — missing doesn't surface)
-    const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
-    if (srcCert?.expiryDate) {
-      const days = daysUntil(srcCert.expiryDate);
-      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-        warnings.push({ kind: 'doc', severity: severityFromDays(days), labelKey: 'doc.src', daysLeft: days, isMandatory: false });
-      }
-    }
-    const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
-    if (cpcCert?.expiryDate) {
-      const days = daysUntil(cpcCert.expiryDate);
-      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-        warnings.push({ kind: 'doc', severity: severityFromDays(days), labelKey: 'doc.cpc', daysLeft: days, isMandatory: false });
-      }
+    // Doc warnings sourced from canonical `computeDriverWarnings` so the
+    // Belgeler tab badge, dashboard rollup, and sidebar count agree on
+    // mandatoriness (only `license` is mandatory; SRC missing is canonical
+    // CRITICAL but treated as `isMandatory: true` only for license here so
+    // tone/labelling matches the legacy detail-page behavior).
+    for (const w of driverWarnings) {
+      warnings.push({
+        kind: 'doc',
+        severity: w.severity,
+        labelKey: DRIVER_DOC_LABEL_KEYS[w.type],
+        daysLeft: w.daysLeft,
+        isMandatory: w.type === 'license',
+      });
     }
 
     return warnings;
-  }, [driver]);
+  }, [driver, driverWarnings]);
 
   // Record a "recent visit" so the ⌘K palette can surface this driver.
   useEffect(() => {
@@ -186,6 +175,26 @@ const DriverDetailPage = () => {
     setUploadCategory(category);
     setUploadCurrentExpiry(currentExpiry);
     setUploadModalOpen(true);
+  };
+
+  // Per-card tone for the Belgeler tab — surfaces warning state on the
+  // outer container so the manager spots which docs need attention. Mirrors
+  // ExpiryBadge's color buckets (≤7d → red, 8–30d → yellow). Non-mandatory
+  // docs (ADR-driver, psychotechnical, CPC) only color when an on-record
+  // date is expired/expiring; missing stays neutral.
+  const cardToneFor = (
+    date: string | null,
+    mandatory: boolean,
+  ): { border: string; bg: string } => {
+    const days = daysUntil(date);
+    if (days === null) {
+      return mandatory
+        ? { border: 'border-red-300', bg: 'bg-red-50' }
+        : { border: 'border-gray-200', bg: 'bg-white' };
+    }
+    if (days < 0 || days <= 7) return { border: 'border-red-300', bg: 'bg-red-50' };
+    if (days <= WARN_THRESHOLD_DAYS) return { border: 'border-yellow-300', bg: 'bg-yellow-50' };
+    return { border: 'border-gray-200', bg: 'bg-white' };
   };
 
   const handleDocumentSave = async (category: DocumentCategory, expiryDate: string) => {
@@ -662,59 +671,74 @@ const DriverDetailPage = () => {
       {activeTab === 'belgeler' && (
         <>
           {/* License info card */}
-          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-900">{t('driver.license')}</h2>
-              <button
-                onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                {t('documentCard.manageBtn')}
-              </button>
-            </div>
-            <div className="space-y-3 mb-3">
-              <div>
-                <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
-                <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
+          {(() => {
+            const tone = cardToneFor(driver.licenseExpiryDate, true);
+            return (
+              <div className={`rounded-xl p-4 shadow-sm border mb-4 ${tone.border} ${tone.bg}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-lg font-bold text-gray-900">{t('driver.license')}</h2>
+                  <button
+                    onClick={() => handleDocumentUpdate('license', driver.licenseExpiryDate)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <div className="space-y-3 mb-3">
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.licenseNumber')}</p>
+                    <p className="text-sm font-medium text-gray-900">{driver.licenseNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-600 mb-1">{t('driver.licenseClass')}</p>
+                    <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
+                  </div>
+                </div>
+                <ExpiryBadge
+                  label={t('driver.licenseExpiry')}
+                  date={driver.licenseExpiryDate}
+                />
               </div>
-              <div>
-                <p className="text-xs text-gray-600 mb-1">{t('driver.licenseClass')}</p>
-                <p className="text-sm font-medium text-gray-900">{driver.licenseClass}</p>
+            );
+          })()}
+
+          {/* ADR (Driver) — non-mandatory; missing stays neutral. */}
+          {(() => {
+            const tone = cardToneFor(null, false);
+            return (
+              <div className={`rounded-xl p-4 shadow-sm border mb-4 ${tone.border} ${tone.bg}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-lg font-bold text-gray-900">{t('driver.adrDriver')}</h2>
+                  <button
+                    onClick={() => handleDocumentUpdate('adr-driver', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge label="" date={null} />
               </div>
-            </div>
-            <ExpiryBadge
-              label={t('driver.licenseExpiry')}
-              date={driver.licenseExpiryDate}
-            />
-          </div>
+            );
+          })()}
 
-          {/* ADR (Driver) */}
-          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-900">{t('driver.adrDriver')}</h2>
-              <button
-                onClick={() => handleDocumentUpdate('adr-driver', null)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                {t('documentCard.manageBtn')}
-              </button>
-            </div>
-            <ExpiryBadge label="" date={null} />
-          </div>
-
-          {/* Psikoteknik */}
-          <div className="bg-white rounded-xl p-4 shadow-sm mb-4">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-lg font-bold text-gray-900">{t('driver.psychotechnical')}</h2>
-              <button
-                onClick={() => handleDocumentUpdate('psychotechnical', null)}
-                className="text-sm text-primary-600 font-medium"
-              >
-                {t('documentCard.manageBtn')}
-              </button>
-            </div>
-            <ExpiryBadge label="" date={null} />
-          </div>
+          {/* Psikoteknik — non-mandatory; missing stays neutral. */}
+          {(() => {
+            const tone = cardToneFor(null, false);
+            return (
+              <div className={`rounded-xl p-4 shadow-sm border mb-4 ${tone.border} ${tone.bg}`}>
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-lg font-bold text-gray-900">{t('driver.psychotechnical')}</h2>
+                  <button
+                    onClick={() => handleDocumentUpdate('psychotechnical', null)}
+                    className="text-sm text-primary-600 font-medium"
+                  >
+                    {t('documentCard.manageBtn')}
+                  </button>
+                </div>
+                <ExpiryBadge label="" date={null} />
+              </div>
+            );
+          })()}
 
           {/* Certificates section */}
           <div className="mb-4">

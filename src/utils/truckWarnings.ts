@@ -19,6 +19,15 @@ export interface TruckWarning {
 // (≤7=CRITICAL, ≤30=WARNING, >30=INFO). One source of truth shared with
 // the dashboard, sidebar badge, and detail-page chips.
 
+/** Maps a canonical truck warning's `type` field onto the short `doc.*` i18n
+ *  key used by detail-page chips, the dashboard rollup, and per-card tone
+ *  lookups on the Belgeler tab. Centralized here so consumers can't drift. */
+export const TRUCK_DOC_LABEL_KEYS: Record<TruckWarning['type'], string> = {
+  'compulsory-insurance': 'doc.compulsoryInsurance',
+  'comprehensive-insurance': 'doc.comprehensiveInsurance',
+  inspection: 'doc.inspection',
+};
+
 interface ExpiryKeys {
   missing?: string;
   expired: string;

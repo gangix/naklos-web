@@ -13,7 +13,7 @@ import ConfirmActionModal from '../components/fuel/ConfirmActionModal';
 import { Select } from '../components/common/FormField';
 import { deriveTruckStatus, STATUS_BADGE } from '../utils/derivedStatus';
 import { efficiencyStatus } from '../utils/fuelStats';
-import { computeTruckWarnings } from '../utils/truckWarnings';
+import { computeTruckWarnings, TRUCK_DOC_LABEL_KEYS } from '../utils/truckWarnings';
 import TruckFuelTab from '../components/fuel/TruckFuelTab';
 import EfficiencyStatusPill from '../components/fuel/EfficiencyStatusPill';
 import TruckAnomalyOverridesSection from '../components/fuel-alerts/TruckAnomalyOverridesSection';
@@ -94,7 +94,7 @@ const TruckDetailPage = () => {
     fetchDocuments();
   }, [truckId]);
 
-  const truckWarnings = truck ? computeTruckWarnings(truck) : [];
+  const truckWarnings = useMemo(() => (truck ? computeTruckWarnings(truck) : []), [truck]);
 
   const { pendingItems: allFuelAnomalies } = useFuelCounts();
   const [maintenanceSchedules, setMaintenanceSchedules] = useState<MaintenanceScheduleDto[]>([]);
@@ -152,29 +152,19 @@ const TruckDetailPage = () => {
 
     const warnings: EntityWarning[] = [];
 
-    // Doc warnings (mandatory + within 30 days, OR mandatory + missing)
-    const docs: Array<{ date: string | null; key: string; mandatory: boolean }> = [
-      { date: truck.compulsoryInsuranceExpiry,    key: 'doc.compulsoryInsurance',    mandatory: true },
-      { date: truck.comprehensiveInsuranceExpiry, key: 'doc.comprehensiveInsurance', mandatory: true },
-      { date: truck.inspectionExpiry,             key: 'doc.inspection',             mandatory: true },
-    ];
-    for (const d of docs) {
-      if (!d.date) {
-        if (d.mandatory) {
-          warnings.push({ kind: 'doc', severity: 'CRITICAL', labelKey: d.key, daysLeft: null, isMandatory: true });
-        }
-        continue;
-      }
-      const days = daysUntil(d.date);
-      if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-        warnings.push({
-          kind: 'doc',
-          severity: severityFromDays(days),
-          labelKey: d.key,
-          daysLeft: days,
-          isMandatory: d.mandatory,
-        });
-      }
+    // Doc warnings sourced from the canonical `computeTruckWarnings` so the
+    // Belgeler tab badge, dashboard rollup, and sidebar count agree on what
+    // counts (e.g. comprehensive-insurance is optional — missing is NOT a
+    // warning, only expired/expiring is). Earlier this loop maintained its
+    // own mandatoriness table and drifted from canonical.
+    for (const w of truckWarnings) {
+      warnings.push({
+        kind: 'doc',
+        severity: w.severity,
+        labelKey: TRUCK_DOC_LABEL_KEYS[w.type],
+        daysLeft: w.daysLeft,
+        isMandatory: w.type !== 'comprehensive-insurance',
+      });
     }
 
     // Fuel anomalies for THIS truck
@@ -206,7 +196,7 @@ const TruckDetailPage = () => {
     }
 
     return warnings;
-  }, [truck, truckId, allFuelAnomalies, maintenanceSchedules, t]);
+  }, [truck, truckWarnings, truckId, allFuelAnomalies, maintenanceSchedules, t]);
 
   const docWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'doc'), [truckEntityWarnings]);
   const maintenanceWarnings = useMemo(() => truckEntityWarnings.filter((w) => w.kind === 'maintenance'), [truckEntityWarnings]);
@@ -377,6 +367,27 @@ const TruckDetailPage = () => {
       .filter((d) => d.documentType === documentType && d.expiryDate)
       .sort((a, b) => (a.uploadedAt < b.uploadedAt ? 1 : -1));
     return docs[0]?.expiryDate ?? null;
+  };
+
+  // Per-card tone for the Belgeler tab — surfaces warning state on the
+  // outer container so a manager spots which docs need attention without
+  // scanning each card's expiry text. Mirrors ExpiryBadge's color buckets
+  // (≤7d critical → red, 8–30d warning → yellow). For non-mandatory docs
+  // (comprehensive/tachograph/k-cert/adr) a missing date is neutral; only
+  // an expired/expiring on-record date gets a tinted tone.
+  const cardToneFor = (
+    date: string | null,
+    mandatory: boolean,
+  ): { border: string; bg: string } => {
+    const days = daysUntil(date);
+    if (days === null) {
+      return mandatory
+        ? { border: 'border-red-300', bg: 'bg-red-50' }
+        : { border: 'border-gray-200', bg: 'bg-white' };
+    }
+    if (days < 0 || days <= 7) return { border: 'border-red-300', bg: 'bg-red-50' };
+    if (days <= WARN_THRESHOLD_DAYS) return { border: 'border-yellow-300', bg: 'bg-yellow-50' };
+    return { border: 'border-gray-200', bg: 'bg-white' };
   };
 
   return (
@@ -581,106 +592,140 @@ const TruckDetailPage = () => {
           <div className="mb-4">
             <div className="space-y-3">
               {/* Compulsory Insurance */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.compulsoryInsurance')}</h3>
-                  <button
-                    onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    {t('documentCard.manageBtn')}
-                  </button>
-                </div>
-                <ExpiryBadge
-                  label=""
-                  date={truck.compulsoryInsuranceExpiry}
-                />
-              </div>
+              {(() => {
+                const tone = cardToneFor(truck.compulsoryInsuranceExpiry, true);
+                return (
+                  <div className={`rounded-xl p-4 shadow-sm border ${tone.border} ${tone.bg}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.compulsoryInsurance')}</h3>
+                      <button
+                        onClick={() => handleDocumentUpdate('compulsory-insurance', truck.compulsoryInsuranceExpiry)}
+                        className="text-sm text-primary-600 font-medium"
+                      >
+                        {t('documentCard.manageBtn')}
+                      </button>
+                    </div>
+                    <ExpiryBadge
+                      label=""
+                      date={truck.compulsoryInsuranceExpiry}
+                    />
+                  </div>
+                );
+              })()}
 
-              {/* Comprehensive Insurance */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
-                  <button
-                    onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    {t('documentCard.manageBtn')}
-                  </button>
-                </div>
-                <ExpiryBadge
-                  label=""
-                  date={truck.comprehensiveInsuranceExpiry}
-                />
-              </div>
+              {/* Comprehensive Insurance — optional per canonical, so missing
+                  stays neutral; only color when expired/expiring. */}
+              {(() => {
+                const tone = cardToneFor(truck.comprehensiveInsuranceExpiry, false);
+                return (
+                  <div className={`rounded-xl p-4 shadow-sm border ${tone.border} ${tone.bg}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.comprehensiveInsurance')}</h3>
+                      <button
+                        onClick={() => handleDocumentUpdate('comprehensive-insurance', truck.comprehensiveInsuranceExpiry)}
+                        className="text-sm text-primary-600 font-medium"
+                      >
+                        {t('documentCard.manageBtn')}
+                      </button>
+                    </div>
+                    <ExpiryBadge
+                      label=""
+                      date={truck.comprehensiveInsuranceExpiry}
+                    />
+                  </div>
+                );
+              })()}
 
               {/* Inspection */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.inspection')}</h3>
-                  <button
-                    onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    {t('documentCard.manageBtn')}
-                  </button>
-                </div>
-                <ExpiryBadge
-                  label=""
-                  date={truck.inspectionExpiry}
-                />
-              </div>
+              {(() => {
+                const tone = cardToneFor(truck.inspectionExpiry, true);
+                return (
+                  <div className={`rounded-xl p-4 shadow-sm border ${tone.border} ${tone.bg}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.inspection')}</h3>
+                      <button
+                        onClick={() => handleDocumentUpdate('inspection', truck.inspectionExpiry)}
+                        className="text-sm text-primary-600 font-medium"
+                      >
+                        {t('documentCard.manageBtn')}
+                      </button>
+                    </div>
+                    <ExpiryBadge
+                      label=""
+                      date={truck.inspectionExpiry}
+                    />
+                  </div>
+                );
+              })()}
 
               {/* Tachograph */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.tachograph')}</h3>
-                  <button
-                    onClick={() => handleDocumentUpdate('tachograph', latestExpiryFor('tachograph'))}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    {t('documentCard.manageBtn')}
-                  </button>
-                </div>
-                <ExpiryBadge
-                  label=""
-                  date={latestExpiryFor('tachograph')}
-                />
-              </div>
+              {(() => {
+                const date = latestExpiryFor('tachograph');
+                const tone = cardToneFor(date, false);
+                return (
+                  <div className={`rounded-xl p-4 shadow-sm border ${tone.border} ${tone.bg}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.tachograph')}</h3>
+                      <button
+                        onClick={() => handleDocumentUpdate('tachograph', date)}
+                        className="text-sm text-primary-600 font-medium"
+                      >
+                        {t('documentCard.manageBtn')}
+                      </button>
+                    </div>
+                    <ExpiryBadge
+                      label=""
+                      date={date}
+                    />
+                  </div>
+                );
+              })()}
 
               {/* K-type transport permit */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.kCertificate')}</h3>
-                  <button
-                    onClick={() => handleDocumentUpdate('k-certificate', latestExpiryFor('k-certificate'))}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    {t('documentCard.manageBtn')}
-                  </button>
-                </div>
-                <ExpiryBadge
-                  label=""
-                  date={latestExpiryFor('k-certificate')}
-                />
-              </div>
+              {(() => {
+                const date = latestExpiryFor('k-certificate');
+                const tone = cardToneFor(date, false);
+                return (
+                  <div className={`rounded-xl p-4 shadow-sm border ${tone.border} ${tone.bg}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.kCertificate')}</h3>
+                      <button
+                        onClick={() => handleDocumentUpdate('k-certificate', date)}
+                        className="text-sm text-primary-600 font-medium"
+                      >
+                        {t('documentCard.manageBtn')}
+                      </button>
+                    </div>
+                    <ExpiryBadge
+                      label=""
+                      date={date}
+                    />
+                  </div>
+                );
+              })()}
 
               {/* ADR (vehicle) */}
-              <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.adrVehicle')}</h3>
-                  <button
-                    onClick={() => handleDocumentUpdate('adr-vehicle', latestExpiryFor('adr-vehicle'))}
-                    className="text-sm text-primary-600 font-medium"
-                  >
-                    {t('documentCard.manageBtn')}
-                  </button>
-                </div>
-                <ExpiryBadge
-                  label=""
-                  date={latestExpiryFor('adr-vehicle')}
-                />
-              </div>
+              {(() => {
+                const date = latestExpiryFor('adr-vehicle');
+                const tone = cardToneFor(date, false);
+                return (
+                  <div className={`rounded-xl p-4 shadow-sm border ${tone.border} ${tone.bg}`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.adrVehicle')}</h3>
+                      <button
+                        onClick={() => handleDocumentUpdate('adr-vehicle', date)}
+                        className="text-sm text-primary-600 font-medium"
+                      >
+                        {t('documentCard.manageBtn')}
+                      </button>
+                    </div>
+                    <ExpiryBadge
+                      label=""
+                      date={date}
+                    />
+                  </div>
+                );
+              })()}
             </div>
           </div>
 

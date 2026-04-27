@@ -7,29 +7,17 @@ import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { useMaintenanceWarnings } from '../contexts/MaintenanceWarningsContext';
 import { severityFromDays, worstSeverity } from '../utils/severity';
-import { computeDriverWarnings, type DriverWarning } from '../utils/driverWarnings';
-import { computeTruckWarnings, type TruckWarning } from '../utils/truckWarnings';
+import { computeDriverWarnings, DRIVER_DOC_LABEL_KEYS, type DriverWarning } from '../utils/driverWarnings';
+import { computeTruckWarnings, TRUCK_DOC_LABEL_KEYS, type TruckWarning } from '../utils/truckWarnings';
 import PriorityBriefing, {
   type PriorityDocGroup,
   type PriorityDocItem,
 } from '../components/dashboard/PriorityBriefing';
 
-/** Map a canonical truck warning's `type` field onto the dashboard's existing
- *  `doc.*` i18n key. Keeps the rollup card's wording identical to before the
- *  refactor — the canonical util uses `warning.*Expired/Expiring/Missing`
- *  keys (sentence-form, used in toasts/lists), but the dashboard renders
- *  short doc-name labels. */
-const TRUCK_DOC_LABEL_KEYS: Record<TruckWarning['type'], string> = {
-  'compulsory-insurance': 'doc.compulsoryInsurance',
-  'comprehensive-insurance': 'doc.comprehensiveInsurance',
-  inspection: 'doc.inspection',
-};
-
-const DRIVER_DOC_LABEL_KEYS: Record<DriverWarning['type'], string> = {
-  license: 'doc.license',
-  src: 'doc.src',
-  cpc: 'doc.cpc',
-};
+// TRUCK_DOC_LABEL_KEYS / DRIVER_DOC_LABEL_KEYS map the canonical warning
+// `type` fields onto short `doc.*` i18n keys. Defined alongside the
+// warnings utils so detail-page chips, the rollup card here, and per-card
+// tone lookups on Belgeler tabs share one mapping (no drift).
 
 const truckWarningToItem = (w: TruckWarning): PriorityDocItem => ({
   labelKey: TRUCK_DOC_LABEL_KEYS[w.type],
