@@ -23,12 +23,12 @@ const Header = () => {
           <a href="/#faq" className="hover:text-slate-900 transition-colors">{t('landing.nav.faq')}</a>
           <a href="/blog" className="hover:text-slate-900 transition-colors">{t('landing.nav.blog')}</a>
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <LanguageSwitcher variant="light" />
           <button
             type="button"
             onClick={login}
-            className="hidden sm:inline text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+            className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
           >
             {t('landing.nav.login')}
           </button>
