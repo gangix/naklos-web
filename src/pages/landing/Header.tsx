@@ -12,7 +12,7 @@ const Header = () => {
         <a href="/" className="flex items-center gap-2 group" aria-label="naklos">
           <img src="/naklos-icon.svg" alt="" className="w-8 h-8" aria-hidden="true" />
           <span className="font-extrabold text-slate-900 tracking-tight group-hover:text-primary-700 transition-colors">naklos</span>
-          <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-confirm-500/10 text-confirm-700 border border-confirm-500/20">
+          <span className="ml-2 hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-confirm-500/10 text-confirm-700 border border-confirm-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-confirm-500" aria-hidden="true" />
             {t('landing.nav.beta')}
           </span>
@@ -35,9 +35,10 @@ const Header = () => {
           <button
             type="button"
             onClick={register}
-            className="px-4 py-1.5 bg-primary-700 hover:bg-primary-800 text-white text-sm font-bold rounded-lg transition-colors"
+            className="px-4 py-1.5 bg-primary-700 hover:bg-primary-800 text-white text-sm font-bold rounded-lg transition-colors whitespace-nowrap"
           >
-            {t('landing.hero.cta')}
+            <span className="md:hidden">{t('landing.nav.cta')}</span>
+            <span className="hidden md:inline">{t('landing.hero.cta')}</span>
           </button>
         </div>
       </div>

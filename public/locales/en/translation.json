@@ -1872,7 +1872,8 @@
       "pricing": "Pricing",
       "faq": "FAQ",
       "blog": "Blog",
-      "login": "Sign in"
+      "login": "Sign in",
+      "cta": "Start free"
     },
     "hero": {
       "badge": "For Turkish SMB fleets · KVKK-compliant",
