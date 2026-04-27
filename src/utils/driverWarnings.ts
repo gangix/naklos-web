@@ -10,6 +10,10 @@ export interface DriverWarning {
    *  INFO     = 15–30 days left. */
   severity: Severity;
   type: 'license' | 'src' | 'cpc';
+  /** Days until expiry. Negative = already expired. null = date missing.
+   *  Mirrors {@link TruckWarning.daysLeft} so callers (e.g. dashboard rollup)
+   *  can sort/aggregate driver and truck warnings the same way. */
+  daysLeft: number | null;
 }
 
 const CRITICAL_MAX_DAYS = 1;
@@ -76,18 +80,31 @@ function pushExpiry(
   const days = daysUntil(date, todayMs);
   if (days === null) {
     if (keys.missing) {
-      out.push({ key: keys.missing, params: { driverName }, severity: 'CRITICAL', type });
+      out.push({
+        key: keys.missing,
+        params: { driverName },
+        severity: 'CRITICAL',
+        type,
+        daysLeft: null,
+      });
     }
     return;
   }
   if (days < 0) {
-    out.push({ key: keys.expired, params: { driverName }, severity: 'CRITICAL', type });
+    out.push({
+      key: keys.expired,
+      params: { driverName },
+      severity: 'CRITICAL',
+      type,
+      daysLeft: days,
+    });
   } else if (days <= WARN_THRESHOLD_DAYS) {
     out.push({
       key: keys.expiring,
       params: { driverName, count: days },
       severity: severityFromDays(days),
       type,
+      daysLeft: days,
     });
   }
 }

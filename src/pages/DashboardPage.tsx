@@ -6,12 +6,67 @@ import { useFleet } from '../contexts/FleetContext';
 import { useFleetRoster } from '../contexts/FleetRosterContext';
 import { useFuelCounts } from '../contexts/FuelCountsContext';
 import { useMaintenanceWarnings } from '../contexts/MaintenanceWarningsContext';
-import { daysUntil, WARN_THRESHOLD_DAYS } from '../utils/expiry';
 import { severityFromDays, worstSeverity } from '../utils/severity';
+import { computeDriverWarnings, type DriverWarning } from '../utils/driverWarnings';
+import { computeTruckWarnings, type TruckWarning } from '../utils/truckWarnings';
 import PriorityBriefing, {
   type PriorityDocGroup,
   type PriorityDocItem,
 } from '../components/dashboard/PriorityBriefing';
+
+/** Map a canonical truck warning's `type` field onto the dashboard's existing
+ *  `doc.*` i18n key. Keeps the rollup card's wording identical to before the
+ *  refactor — the canonical util uses `warning.*Expired/Expiring/Missing`
+ *  keys (sentence-form, used in toasts/lists), but the dashboard renders
+ *  short doc-name labels. */
+const TRUCK_DOC_LABEL_KEYS: Record<TruckWarning['type'], string> = {
+  'compulsory-insurance': 'doc.compulsoryInsurance',
+  'comprehensive-insurance': 'doc.comprehensiveInsurance',
+  inspection: 'doc.inspection',
+};
+
+const DRIVER_DOC_LABEL_KEYS: Record<DriverWarning['type'], string> = {
+  license: 'doc.license',
+  src: 'doc.src',
+  cpc: 'doc.cpc',
+};
+
+const truckWarningToItem = (w: TruckWarning): PriorityDocItem => ({
+  labelKey: TRUCK_DOC_LABEL_KEYS[w.type],
+  daysLeft: w.daysLeft,
+  severity: w.severity,
+});
+
+const driverWarningToItem = (w: DriverWarning): PriorityDocItem => ({
+  labelKey: DRIVER_DOC_LABEL_KEYS[w.type],
+  daysLeft: w.daysLeft,
+  severity: w.severity,
+});
+
+const groupFromItems = (
+  entity: 'truck' | 'driver',
+  entityId: string,
+  name: string,
+  items: PriorityDocItem[],
+): PriorityDocGroup => {
+  let worstDaysLeft: number | null = null;
+  for (const item of items) {
+    if (item.daysLeft === null) continue;
+    if (worstDaysLeft === null || item.daysLeft < worstDaysLeft) {
+      worstDaysLeft = item.daysLeft;
+    }
+  }
+  const worstSev = worstSeverity(
+    items.map((i) => ({
+      kind: 'doc' as const,
+      severity: i.severity,
+      labelKey: i.labelKey,
+      daysLeft: i.daysLeft,
+      isMandatory: false,
+    })),
+  );
+  return { entity, entityId, name, items, worstDaysLeft, worstSeverity: worstSev };
+};
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -31,71 +86,25 @@ const DashboardPage = () => {
   const docWarningGroups = useMemo<PriorityDocGroup[]>(() => {
     const groups: PriorityDocGroup[] = [];
 
-    const collectItems = (
-      entity: 'truck' | 'driver',
-      entityId: string,
-      name: string,
-      checks: Array<{ date: string | null | undefined; labelKey: string; mandatory: boolean }>,
-    ) => {
-      const items: PriorityDocItem[] = [];
-      for (const { date, labelKey, mandatory } of checks) {
-        if (!date) {
-          // Missing date: only emit when mandatory (optional-missing stays hidden,
-          // matching the prior behaviour for non-mandatory docs).
-          if (mandatory) {
-            items.push({ labelKey, daysLeft: null, severity: 'CRITICAL' });
-          }
-          continue;
-        }
-        const days = daysUntil(date);
-        if (days !== null && days <= WARN_THRESHOLD_DAYS) {
-          items.push({ labelKey, daysLeft: days, severity: severityFromDays(days) });
-        }
-      }
-      if (items.length === 0) return;
-
-      let worstDaysLeft: number | null = null;
-      for (const item of items) {
-        if (item.daysLeft === null) continue;
-        if (worstDaysLeft === null || item.daysLeft < worstDaysLeft) {
-          worstDaysLeft = item.daysLeft;
-        }
-      }
-      const worstSev = worstSeverity(items.map((i) => ({
-        kind: 'doc' as const,
-        severity: i.severity,
-        labelKey: i.labelKey,
-        daysLeft: i.daysLeft,
-        isMandatory: false,
-      })));
-
-      groups.push({ entity, entityId, name, items, worstDaysLeft, worstSeverity: worstSev });
-    };
-
+    // Source of truth = computeTruckWarnings / computeDriverWarnings (same
+    // utils used by the sidebar badge + per-entity detail pages). Dashboard
+    // used to maintain its own list of mandatory-doc fields here, which
+    // drifted (e.g. SRC mandatory-missing was silently dropped). Now we
+    // just consume the canonical warnings and adapt them to PriorityDocItem.
     for (const truck of trucks) {
-      collectItems('truck', truck.id, truck.plateNumber, [
-        { date: truck.compulsoryInsuranceExpiry,    labelKey: 'doc.compulsoryInsurance',    mandatory: true },
-        { date: truck.comprehensiveInsuranceExpiry, labelKey: 'doc.comprehensiveInsurance', mandatory: true },
-        { date: truck.inspectionExpiry,             labelKey: 'doc.inspection',             mandatory: true },
-      ]);
+      const warnings = computeTruckWarnings(truck);
+      if (warnings.length === 0) continue;
+      const items = warnings.map(truckWarningToItem);
+      groups.push(groupFromItems('truck', truck.id, truck.plateNumber, items));
     }
 
     for (const driver of drivers) {
-      const checks: Array<{ date: string | null | undefined; labelKey: string; mandatory: boolean }> = [
-        { date: driver.licenseExpiryDate, labelKey: 'doc.license', mandatory: true },
-      ];
-      const srcCert = driver.certificates?.find((c) => c.type === 'SRC');
-      // SRC is required for commercial freight drivers in TR — must match
-      // utils/driverWarnings.ts which also treats SRC as mandatory. Otherwise
-      // the dashboard rollup silently drops 'SRC missing' while the sidebar
-      // badge still surfaces it (inconsistent + confusing for the manager).
-      checks.push({ date: srcCert?.expiryDate, labelKey: 'doc.src', mandatory: true });
-      const cpcCert = driver.certificates?.find((c) => c.type === 'CPC');
-      if (cpcCert) {
-        checks.push({ date: cpcCert.expiryDate, labelKey: 'doc.cpc', mandatory: false });
-      }
-
-      collectItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, checks);
+      const warnings = computeDriverWarnings(driver);
+      if (warnings.length === 0) continue;
+      const items = warnings.map(driverWarningToItem);
+      groups.push(
+        groupFromItems('driver', driver.id, `${driver.firstName} ${driver.lastName}`, items),
+      );
     }
 
     // Expired first, then soonest; entries with only missing dates go last.
