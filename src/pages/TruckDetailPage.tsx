@@ -367,6 +367,18 @@ const TruckDetailPage = () => {
 
   const complianceDocs = documents.filter((doc) => doc.documentType !== 'fuel-receipt');
 
+  /** Latest expiry date for a given doc category from the loaded documents
+   *  array. Used by Belgeler tab cards for opt-in categories (tachograph,
+   *  K-belgesi, ADR) where the Truck entity doesn't carry a top-level field.
+   *  Returns null when no doc of that type has been uploaded — the card shows
+   *  the neutral "Eklenmedi" state instead of a red "Eksik" warning. */
+  const latestExpiryFor = (documentType: string): string | null => {
+    const docs = complianceDocs
+      .filter((d) => d.documentType === documentType && d.expiryDate)
+      .sort((a, b) => (a.uploadedAt < b.uploadedAt ? 1 : -1));
+    return docs[0]?.expiryDate ?? null;
+  };
+
   return (
     <div className="p-4 pb-20">
       {/* Header with back button */}
@@ -624,7 +636,7 @@ const TruckDetailPage = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.tachograph')}</h3>
                   <button
-                    onClick={() => handleDocumentUpdate('tachograph', null)}
+                    onClick={() => handleDocumentUpdate('tachograph', latestExpiryFor('tachograph'))}
                     className="text-sm text-primary-600 font-medium"
                   >
                     {t('documentCard.manageBtn')}
@@ -632,7 +644,7 @@ const TruckDetailPage = () => {
                 </div>
                 <ExpiryBadge
                   label=""
-                  date={null}
+                  date={latestExpiryFor('tachograph')}
                 />
               </div>
 
@@ -641,7 +653,7 @@ const TruckDetailPage = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.kCertificate')}</h3>
                   <button
-                    onClick={() => handleDocumentUpdate('k-certificate', null)}
+                    onClick={() => handleDocumentUpdate('k-certificate', latestExpiryFor('k-certificate'))}
                     className="text-sm text-primary-600 font-medium"
                   >
                     {t('documentCard.manageBtn')}
@@ -649,7 +661,7 @@ const TruckDetailPage = () => {
                 </div>
                 <ExpiryBadge
                   label=""
-                  date={null}
+                  date={latestExpiryFor('k-certificate')}
                 />
               </div>
 
@@ -658,7 +670,7 @@ const TruckDetailPage = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-sm font-extrabold tracking-tight text-gray-900">{t('truck.adrVehicle')}</h3>
                   <button
-                    onClick={() => handleDocumentUpdate('adr-vehicle', null)}
+                    onClick={() => handleDocumentUpdate('adr-vehicle', latestExpiryFor('adr-vehicle'))}
                     className="text-sm text-primary-600 font-medium"
                   >
                     {t('documentCard.manageBtn')}
@@ -666,7 +678,7 @@ const TruckDetailPage = () => {
                 </div>
                 <ExpiryBadge
                   label=""
-                  date={null}
+                  date={latestExpiryFor('adr-vehicle')}
                 />
               </div>
             </div>
