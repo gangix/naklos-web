@@ -1,6 +1,7 @@
 import type { Driver } from '../types';
 import type { Severity } from '../types/severity';
 import { daysUntil, todayMidnightMs, WARN_THRESHOLD_DAYS } from './expiry';
+import { severityFromDays as canonicalSeverityFromDays } from './severity';
 
 export interface DriverWarning {
   key: string;
@@ -16,14 +17,9 @@ export interface DriverWarning {
   daysLeft: number | null;
 }
 
-const CRITICAL_MAX_DAYS = 1;
-const WARNING_MAX_DAYS = 14;
-
-function severityFromDays(days: number): Severity {
-  if (days < 0 || days <= CRITICAL_MAX_DAYS) return 'CRITICAL';
-  if (days <= WARNING_MAX_DAYS) return 'WARNING';
-  return 'INFO';
-}
+// Use the canonical app-wide mapping (≤7=CRITICAL, ≤30=WARNING, >30=INFO)
+// so dashboard rollup, sidebar badge, and detail-page chips agree on tones.
+const severityFromDays = canonicalSeverityFromDays;
 
 /** Driver warnings with TR-KOBİ-fleet semantics:
  *  - License: always required — warn on missing/expired/expiring.
